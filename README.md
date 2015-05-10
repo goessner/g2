@@ -30,9 +30,11 @@ Here is an example for getting a better understanding of **g2**'s basic concepts
 </script>
 ```
 There are a few things to note:
-1. Only two objects `g2` and `ctx` are involved.
-1. A couple of graphics commands are applied to the `g2` object.
-1. Those two objects are nearly completely independent from each other. Only the last code line establishes a loose coupling between them.
+
+* Only two objects `g2` and `ctx` are involved.
+* A couple of graphics commands are applied to the `g2` object.
+* Those two objects are nearly completely independent from each other. Only the last code line establishes a loose coupling between them.
+
 
 
 ### How the queue works ###
