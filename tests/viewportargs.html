@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>args</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>viewport args</h1>
+    <canvas id="a" width="100", height="150"></canvas>
+    <canvas id="b" width="100", height="150"></canvas>
+    <canvas id="c" width="100", height="150"></canvas>
+    <canvas id="d" width="100", height="150"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+      function ctx(id) { return document.getElementById(id).getContext("2d"); }
+      g2()
+        .grid().use("origin").txt("none",40,30).lin(20,30,80,130)
+        .lin(80,30,20,130).cir(50,80,4).exe(ctx("a"));
+      g2({cartesian:true})
+        .grid().use("origin").txt("cartesian",25,20).lin(20,30,80,130)
+        .lin(80,30,20,130).cir(50,80,4).exe(ctx("b"));
+      g2({cartesian:true,pan:{dx:20,dy:40}})
+        .grid().use("origin").txt("pan",40,20).lin(20,30,80,130)
+        .lin(80,30,20,130).cir(50,80,4).exe(ctx("c"));
+      g2({cartesian:true,zoom:{scl:2,x:50,y:75}})
+        .grid().use("origin").txt("zoom",35,40).lin(20,30,80,130)
+        .lin(80,30,20,130).cir(50,80,4).exe(ctx("d"));
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - use</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - use</h1>
+    <canvas id="c" width="200" height="200"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+      var yinyang = g2().beg()
+                          .cir(0,0,5)
+                          .beg()
+                            .style("fs","@ls")  // use current 'ls' as fillStyle ...
+                            .p().m(0,-5).a(Math.PI,0,0).a(-Math.PI,0,5).a(-Math.PI,0,-5).z()
+                            .fill()
+                            .cir(0,-2.5,0.75)
+                          .end()
+                          .style("ls","@fs")   // use current 'fs' as lineStyle ...
+                          .cir(0,2.5,0.75)
+                        .end();
+      g2()
+       .style("ls","#666","fs","#eee","lw",1,"lj","round")
+       .use(yinyang,50,100,0,5)   // with scaling lineWidth
+       .style("lw",2,"lwnosc",true)
+       .use(yinyang,150,100,0,5)  // without scaling lineWidth
+       .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

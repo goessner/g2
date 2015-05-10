@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - mouse pan</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - mouse pan</h1>
+    <canvas id="c" width="500", height="300"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+      var ctx = document.getElementById("c").getContext("2d"),
+          rec = ctx.canvas.getBoundingClientRect(),
+          g = g2({cartesian:true}).clr().grid().use("origin").txt("origin",10,10)
+                .lin(20,30,80,130).lin(80,30,20,130).cir(50,80,4);
+          onmove = function(e) {
+             if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // any button pressed ...
+                var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+                    dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+                g.pan(dx, g.state.cartesian ? -dy : dy);
+             }
+             e.preventDefault(); 
+             return false; 
+          },
+          render = function render() { g.exe(ctx); requestAnimationFrame(render); };
+
+      ctx.canvas.addEventListener("mousemove", onmove, false);
+      render();
+   </script>
+</body>
+</html>

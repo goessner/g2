@@ -4,9 +4,9 @@
 
 ### Introduction ###
 
-**g2** is a tiny 2D graphics library based on the [command pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript). It helps to build a [command queue](http://en.wikipedia.org/wiki/Command_queue) of graphics commands easily for later addressing the concrete rendering context and executing the commands in a compact time frame.
+**g2** is a tiny 2D graphics library based on the [command pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript) principle. It helps to easily build a [command queue](http://en.wikipedia.org/wiki/Command_queue) of graphics commands for later addressing the concrete rendering context and executing the commands in a compact time frame.
 
-For getting a better understanding of the basic concepts an example always helps.
+Here is an example for getting a better understanding of **g2**'s basic concepts.
 
 ```javascript
 <canvas id="c" width="300", height="200"></canvas>
@@ -20,7 +20,7 @@ For getting a better understanding of the basic concepts an example always helps
      .l(200, 50) // lineTo
      .l(200,150)
      .l(100,150)
-	 .z()        // close path
+     .z()        // close path
      .drw();     // stroke and fill
 
     // do further calculations and ...
@@ -29,27 +29,46 @@ For getting a better understanding of the basic concepts an example always helps
     g.exe(ctx);  // finally render graphics addressing 'ctx'.
 </script>
 ```
+There are a few things to note:
+1. Only two objects `g2` and `ctx` are involved.
+1. A couple of graphics commands are applied to the `g2` object.
+1. Those two objects are nearly completely independent from each other. Only the last code line establishes a loose coupling between them.
 
-*g2* supports the [*HTML5 canvas 2D context*](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) as the only renderer at current. And it is more than merely a thin wrapper around the canvas context.
 
-*g2* helps in
+### How the queue works ###
+Every invokation of a `g2` command method stores an equivalent graphics context or custom function in `g2`'s command queue. Finally with the help of the `g2.exe` method the queue is handed over to a graphics context instance for rendering.
 
-* collecting graphics commands in a queue for fast and compact rendering at a later time.
-* abstracting away the renderer *instance* as well as the renderer *api*.
-* separating an applications *model* from its *view*.
+![img01]
 
-Let's elaborate these points a little more.
+The command queue is implemented as an array holding objects containing a function pointer and an optional arguments array. So the command queue of the example above looks like this:
 
-Graphics intense applications as simulations and games often work with *back buffers* for improving the visual experience. A back buffer is a temporary invisible graphics context used to draw on during a certain time frame. On completion that graphics context simply is made visible. So a *g2* object, while at first collecting graphics commands and finally rendering them, acts similar to a back buffer.
+```javascript
+    [ {c:CanvasRenderingContext2D.prototype.beginPath},
+  {c:CanvasRenderingContext2D.prototype.moveTo, a:[100,50]},
+  {c:CanvasRenderingContext2D.prototype.lineTo, a:[200,50]},
+  {c:CanvasRenderingContext2D.prototype.lineTo, a:[200,150]},
+  {c:CanvasRenderingContext2D.prototype.lineTo, a:[100,150]},
+  {c:CanvasRenderingContext2D.prototype.closePath},
+  {c:g2.prototype.drw.cmd} ]
+```
+Applying this array of Function objects to a specific canvas context results in only very little additional runtime cost (performing the loop and possibly invoking wrapper functions) and moderate additional memory cost (the queue) compared to directly addressing the canvas context:
 
-A *g2* object is very loosely coupled with a graphics context. We can decide at the latest at rendering time, where to send the graphics commands stored in the queue to, or even send them to multiple different graphics contexts. Rendering the same graphics to a main window and in parallel to a small zoom-in window would be an example for this.
+```javascript
+ctx.beginPath();
+ctx.moveTo(100,50);
+ctx.lineTo(200,50);
+ctx.lineTo(200,150);
+ctx.lineTo(100,150);
+ctx.closePath();
+ctx.fill(); ctx.stroke();   // g2.prototype.drw.cmd
+```
 
-Assume a graphics application managing geometric shapes. The applications model will primarily consist of a container holding objects representing shapes. Discussing now the problem, how to render the shapes (the *view* in MVC speech) may lead to the demand, to strictly separate the model from the view. But then, who knows better how to draw a shape than the shape itself? One or multiple lightweight *g2* objects may act here as neutral mediators between the model's shapes and the graphics context, as in: "Show me how to draw yourself, I will hand this recipe over to a suitable renderer later!"
+Once you have successfully built a command queue, you can apply it repeatedly to one or multiple graphics contexts via its `exe`-method.
 
 
 ### Features ###
 
-**g2** is basically two things: a small javascript library **and** a lightweight javascript object holding the command queue. The function call `g2()` works as a constructor without requiring `new`. (There are [controversial](http://javascript.crockford.com/prototypal.html) [discussions](http://www.2ality.com/2013/07/defending-constructors.html) on the web regarding this).
+**g2** is basically two things: a small javascript 2D graphicd library **and** a lightweight javascript object holding the command queue. The function call `g2()` works as a constructor without requiring `new`. (There are [controversial](http://javascript.crockford.com/prototypal.html) [discussions](http://www.2ality.com/2013/07/defending-constructors.html) on the web about that).
 
 *g2* further supports
 
@@ -70,40 +89,58 @@ Assume a graphics application managing geometric shapes. The applications model 
   * `use`
 * render the command queue to a graphics context.
   * `exe`
-* an optional accompanying viewport object.
+* viewport properties and initialization methods.
+  * `cartesian,pan,zoom,trf`
 
 A more detailed exploration of these features follows.
 
 
-### How the queue works ###
-Every invokation of a `g2` command method stores an equivalent graphics context' function in `g2`'s command queue. Finally with the help of the `g2.exe` method the queue is handed over to a graphics context instance for rendering.
+### Benefits ###
 
-![img01]
+*g2* is more than merely a thin wrapper around the canvas context. It helps in
 
-The command queue is implemented as an array holding objects containing a function pointer and an optional arguments array. So the command queue of the example above looks like this:
+* collecting graphics commands in a queue for fast and compact rendering at a later time.
+* decoupling the graphics commands from the renderer *instance* as well as abstracting away the renderer *api*.
+* separating an applications *model* from its *view*.
 
+Let's elaborate these points a little more.
+
+##### Fast Rendering #####
+Graphics intense applications like simulations and games often work with *back buffers* for improving the visual experience. A back buffer is a temporarily invisible graphics context used to draw on during a certain time frame. On completion that graphics context simply is made visible. A *g2* object, while at first collecting graphics commands and finally rendering them, acts similar to a back buffer.
+
+##### Decoupling #####
+A *g2* object is very loosely coupled with a graphics context. We can decide at the latest at rendering time, where to send the graphics commands stored in the queue to, or even send them to multiple different graphics contexts. Rendering the same graphics to a main window and in parallel to a small zoom-in window would be an example for this.
+
+In parallel implementations (libraries) the same graphics commands can be used to address *SVG* or *webGL*.
+
+*g2* supports the [*HTML5 canvas 2D context*](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) as the only renderer at current.
+
+##### Separating Model from View #####
+Assume a graphics application managing geometric shapes. The applications model will primarily consist of a container holding objects representing shapes. Discussing now the problem, how to render the shapes (the *view* in MVC speech) may lead to the demand, to strictly separate the model from the view.
 ```javascript
-    [ {c:CanvasRenderingContext2D.prototype.beginPath},
-      {c:CanvasRenderingContext2D.prototype.moveTo, a:[100,50]},
-      {c:CanvasRenderingContext2D.prototype.lineTo, a:[200,50]},
-      {c:CanvasRenderingContext2D.prototype.lineTo, a:[200,150]},
-      {c:CanvasRenderingContext2D.prototype.lineTo, a:[100,150]},
-	  {c:CanvasRenderingContext2D.prototype.closePath},
-      {c:g2.prototype.drw.cmd} ]
-```
-Applying this array of Function objects to a specific canvas context results in only very little additional runtime cost (performing the loop and possibly invoking wrapper functions) and moderate additional memory cost (the queue) compared to directly addressing the canvas context:
+class Circle {
+   constructor(x,y,r) { ... }
+   render(g) {g.cir(this.x,this.y,this.r)}
+}
+class Rect {
+   constructor(x,y,w,h) { ... }
+   render(g) {g.rec(this.x,this.y,this.w,this.h)}
+}
 
-```javascript
-    ctx.beginPath();
-    ctx.moveTo(100,50);
-    ctx.lineTo(200,50);
-    ctx.lineTo(200,150);
-    ctx.lineTo(100,150);
-    ctx.closePath();
-    ctx.fill(); ctx.stroke();   // g2.prototype.drw.cmd
-```
+let model = [new Circle(1,2,3),new Rect(4,5,6,7),...],
+    g = g2().grid().style(...),
+    ctx1 = getElementById('c1').getContext('2d'), // view 1
+    ctx2 = getElementById('c2').getContext('2d'), // view 2
 
-Once you have successfully built a command queue, you can apply it repeatedly to one or multiple graphics contexts via its `exe`-method.
+for (let i of model)    // build command queue of ...
+   shapes[i].render(g);  // ... model's shapes drawing commands.
+
+g.exe(ctx1);  // render to view 1
+g.exe(ctx2);  // render to view 2
+
+```
+But then, who knows better how to draw a shape than the shape itself? One or multiple lightweight *g2* objects may act here as neutral mediators between the model's shapes and the graphics context, as in: "Show me how to draw yourself, I will hand this recipe over to a suitable renderer later!"
+
 
 ### Path commands ###
 *todo*
@@ -124,9 +161,46 @@ Once you have successfully built a command queue, you can apply it repeatedly to
 *todo*
 
 ### Multiple *g2* objects ###
-* Copying
-* Referencing
-* Symbol libraries
+#### Copying
+*todo*
+#### Referencing
+Reusing graphics defined by other *g2* objects is easily achived via the `use` command. The graphics being reused can be positioned, rotated and scaled.
+
+Syntax:
+```javascript
+use(g,x,y,ang,scl)
+    {object} g Reference to 'g2' object
+    {float}  x Position-x  [default 0]
+    {float}  y Position-y  [default 0]
+    {float}  ang Rotation angle  [default 0]
+    {float}  scl Scaling factor  [default 1]
+```
+Please note, that the `g2.use` command intentionally only supports *uniform (isotropic) scaling*.
+
+Example:
+```javascript
+var yinyang = g2().beg()
+                    .cir(0,0,5)
+                    .beg()
+                      .style("fs","@ls")  // use current 'ls' as fillStyle ...
+                      .p().m(0,-5).a(Math.PI,0,0).a(-Math.PI,0,5).a(-Math.PI,0,-5).z()
+                      .fill()
+                      .cir(0,-2.5,0.75)
+                    .end()
+                    .style("ls","@fs")   // use current 'fs' as lineStyle ...
+                    .cir(0,2.5,0.75)
+                  .end();
+g2()
+ .style("ls","#666","fs","#eee","lw",1,"lj","round")
+ .use(yinyang,50,100,0,5)   // with scaling lineWidth
+ .style("lw",2,"lwnosc",true)
+ .use(yinyang,150,100,0,5)  // without scaling lineWidth
+ .exe(document.getElementById("c").getContext("2d"));
+```
+Output: ![img-yinyang]
+
+##### Symbol libraries
+*todo*
 
 ### Multiple graphics contexts ###
 * different viewports
@@ -148,3 +222,4 @@ Once you have successfully built a command queue, you can apply it repeatedly to
 
 
 [img01]: ./img/g2-concept.png "g2 command queue"
+[img-yinyang]: ./img/g2-yinyang.png "g2.use yinyang example"
