@@ -32,13 +32,13 @@ Here is an example for getting a better understanding of **g2**'s basic concepts
 There are a few things to note:
 
 * Only two objects `g2` and `ctx` are involved.
-* A couple of graphics commands are applied to the `g2` object.
-* Those two objects are nearly completely independent from each other. Only the last code line establishes a loose coupling between them.
+* A couple of graphics commands are invoked via the `g2` object.
+* Both objects are nearly completely independent from each other. Only the last code line establishes a loose connection between them.
 
 
 
 ### How the queue works ###
-Every invokation of a `g2` command method stores an equivalent graphics context or custom function in `g2`'s command queue. Finally with the help of the `g2.exe` method the queue is handed over to a graphics context instance for rendering.
+Every invokation of a `g2` command method stores an equivalent graphics context - or custom function - in `g2`'s command queue. Finally with the help of the `g2.exe` method the queue is handed over to a graphics context instance for rendering.
 
 ![img01]
 
