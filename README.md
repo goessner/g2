@@ -5,7 +5,7 @@
 
 ### Why ###
 
-Who might need *yet another 2D graphics library* ? Well, *(non-software)* engineers and scientists want an easy way to create some prototypal - static or interactive - web based graphics. They want a simple and intuitive API fully documented on a single cheat sheet for comfortably extending the library to their special needs while .
+Who might need *yet another 2D graphics library* ? Well, *(non-software)* engineers and scientists mostly need an easy way to create some prototypal - static or interactive - web based graphics. They want a simple and intuitive API fully documented on a single page cheat sheet.
 
 
 ### Introduction ###
@@ -119,7 +119,7 @@ Graphics intense applications like simulations and games often work with *back b
 ##### Decoupling #####
 A *g2* object is very loosely coupled with a graphics context. We can decide at the latest at rendering time, where to send the graphics commands stored in the queue to, or even send them to multiple different graphics contexts. Rendering the same graphics to a main window and in parallel to a small zoom-in window would be an example for this.
 
-In parallel implementations (libraries) the same graphics commands can be used to address *SVG* or *webGL*.
+In parallel implementations (libraries) the same graphics commands could be used to address *SVG* or *webGL*.
 
 *g2* supports the [*HTML5 canvas 2D context*](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D) as the only renderer at current.
 
