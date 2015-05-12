@@ -2,6 +2,12 @@
 
 ## A 2D graphics command queue ##
 
+
+### Why ###
+
+Who might need *yet another 2D graphics library* ? Well, *(non-software)* engineers and scientists want an easy way to create some prototypal - static or interactive - web based graphics. They want a simple and intuitive API fully documented on a single cheat sheet for comfortably extending the library to their special needs while .
+
+
 ### Introduction ###
 
 **g2** is a tiny 2D graphics library based on the [command pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript) principle. It helps to easily build a [command queue](http://en.wikipedia.org/wiki/Command_queue) of graphics commands for later addressing the concrete rendering context and executing the commands in a compact time frame.
@@ -45,7 +51,7 @@ Every invokation of a `g2` command method stores an equivalent graphics context 
 The command queue is implemented as an array holding objects containing a function pointer and an optional arguments array. So the command queue of the example above looks like this:
 
 ```javascript
-    [ {c:CanvasRenderingContext2D.prototype.beginPath},
+[ {c:CanvasRenderingContext2D.prototype.beginPath},
   {c:CanvasRenderingContext2D.prototype.moveTo, a:[100,50]},
   {c:CanvasRenderingContext2D.prototype.lineTo, a:[200,50]},
   {c:CanvasRenderingContext2D.prototype.lineTo, a:[200,150]},
@@ -70,7 +76,7 @@ Once you have successfully built a command queue, you can apply it repeatedly to
 
 ### Features ###
 
-**g2** is basically two things: a small javascript 2D graphicd library **and** a lightweight javascript object holding the command queue. The function call `g2()` works as a constructor without requiring `new`. (There are [controversial](http://javascript.crockford.com/prototypal.html) [discussions](http://www.2ality.com/2013/07/defending-constructors.html) on the web about that).
+**g2** is basically two things: a small javascript 2D graphics library **and** a lightweight javascript object holding the command queue. The function call `g2()` works as a constructor without requiring `new`. (There are [controversial](http://javascript.crockford.com/prototypal.html) [discussions](http://www.2ality.com/2013/07/defending-constructors.html) on the web about that).
 
 *g2* further supports
 
@@ -91,7 +97,7 @@ Once you have successfully built a command queue, you can apply it repeatedly to
   * `use`
 * render the command queue to a graphics context.
   * `exe`
-* viewport properties and initialization methods.
+* viewport initialization methods.
   * `cartesian,pan,zoom,trf`
 
 A more detailed exploration of these features follows.
@@ -143,6 +149,11 @@ g.exe(ctx2);  // render to view 2
 ```
 But then, who knows better how to draw a shape than the shape itself? One or multiple lightweight *g2* objects may act here as neutral mediators between the model's shapes and the graphics context, as in: "Show me how to draw yourself, I will hand this recipe over to a suitable renderer later!"
 
+
+### Accompanying viewport object ###
+* cartesian coordinate system
+* zoom and pan
+* interactivity
 
 ### Path commands ###
 *todo*
@@ -211,11 +222,6 @@ Output: ![img-yinyang]
 ### Animation ###
 * don't forget `del`.
 * don't forget `clr`.
-
-### Accompanying viewport object ###
-* cartesian coordinate system
-* zoom and pan
-* interactivity
 
 ### Extending *g2* ###
 * using `cpy` command

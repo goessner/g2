@@ -42,6 +42,20 @@ function g2() {
       return g2.apply(Object.create(g2.prototype),arguments);
 }
 
+// === g2 statics ====
+/**
+ * Current version.
+ * @type {string}
+ * @const
+ */
+g2.version = "1.0";
+g2.transparent = "rgba(0, 0, 0, 0)";
+
+/**
+ * constructor.
+ * @method
+ * @returns {object} g2
+ */
 g2.prototype.constructor = function constructor(args) {
    this.state = g2.State.create();
    this.state.trf0 = {x:0,y:0,scl:1}; // holding initial zoom, pan, ...
@@ -797,15 +811,6 @@ g2.prototype.dump = function(space) {
    }
    return JSON.stringify(trace(this), undefined, space);
 };
-
-// === g2 statics ====
-/**
- * Current version.
- * @type {string}
- * @const
- */
-g2.version = "1.3";
-g2.transparent = "rgba(0, 0, 0, 0)";
 
 // State stack management class.
 g2.State = Class({
