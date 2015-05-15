@@ -14,10 +14,10 @@ var ctx = document.getElementById("canvas").getContext("2d");  // Grab canvas co
 
 var numberOfRaindrops = 10,
     raindrops = new Array(numberOfRaindrops),
-	lastRefresh,
-	speed = 100,
-	umbrella = g2(),
-	g = g2();
+    lastRefresh,
+    speed = 100,
+    umbrella = g2(),
+    g = g2();
 	
 createRaindrops();
 createUmbrella();
@@ -34,10 +34,10 @@ function createRaindrops() {
 		var x = randomX();
 		var y = randomY();
 		raindrops[i] = { x: x,
-						 y: y,
-						 g: g2(),
-						 update: function() { (this.g).del().style("ls","#0600ff","lw",8,"lc","round").lin(this.x,this.y-5,this.x,this.y) }
-						};
+		                 y: y,
+		                 g: g2(),
+		                 update: function() { (this.g).del().style("ls","#0600ff","lw",8,"lc","round").lin(this.x,this.y-5,this.x,this.y) }
+		               };
 	}
 }
 
@@ -46,8 +46,8 @@ function randomY() { return Math.random() * -120; }
 		
 function createUmbrella() {
 	umbrella.grid().style("lw",8,"ls","#30833a","fs","#73df80","lj","round")
-			.p().m(100,70).l(100,210).a(-3.14,130,210).stroke()
-			.p().m(10,140).a(1,70,140).a(1,130,140).a(1,190,140).a(-2.3,10,140).z().drw();
+	        .p().m(100,70).l(100,210).a(-3.14,130,210).stroke()
+	        .p().m(10,140).a(1,70,140).a(1,130,140).a(1,190,140).a(-2.3,10,140).z().drw();
 }
 
 function step(time) {
