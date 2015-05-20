@@ -57,9 +57,9 @@ g2.transparent = "rgba(0, 0, 0, 0)";
  * @returns {object} g2
  */
 g2.prototype.constructor = function constructor(args) {
-   this.state = g2.State.create();
-   this.state.trf0 = {x:0,y:0,scl:1}; // holding initial zoom, pan, ...
-   if (args) {
+   if (args) {  // only root g2's should have arguments ...
+      this.state = g2.State.create();
+      this.state.trf0 = {x:0,y:0,scl:1}; // holding initial zoom, pan, ...
       if (args.zoom) this.zoom(args.zoom.scl,args.zoom.x,args.zoom.y);
       if (args.pan)  this.pan(args.pan.dx,args.pan.dy);
       if (args.trf)  this.trf0(args.trf.x,args.trf.y,args.trf.scl);
@@ -70,8 +70,9 @@ g2.prototype.constructor = function constructor(args) {
 };
 g2.prototype.constructor.cmd = function constructor_c(self) {
    if (this.fillStyle === "#000000") { // root g2 found ... because parent g2's would have already modified 'fillStyle' to transparent.
-      var state = self.state, cartesian = state.cartesian;
-      this.setTransform(1,0,0,cartesian?-1:1,0.5,(cartesian?this.canvas.height:0)+0.5);
+      var state = self.state || (self.state = g2.State.create());
+      if (!state.trf0) state.trf0 = {x:0,y:0,scl:1};
+      this.setTransform(1,0,0,state.cartesian?-1:1,0.5,(state.cartesian?this.canvas.height:0)+0.5);
       state.clear()
            .set("fs","transparent",this)
            .set("trf",state.trf0,this)
@@ -134,10 +135,19 @@ g2.prototype.trf0 = function trf0(x,y,scl) {
 
 // Path commands
 
-// internal helper method .. get current path point from previous command object
+// internal helper method .. 
+// get current path point from previous command object
 g2.prototype._curPnt = function() {
    var lastcmd = this.cmds.length && this.cmds[this.cmds.length-1] || false;
    return lastcmd && (lastcmd.cp || lastcmd.a);
+};
+// internal helper method .. 
+// get index of last command with a proxy method
+g2.prototype._lastProxyIdx = function() {
+   for (var i = this.cmds.length-1; i > 0; i--)
+      if (this.cmds[i].c.hasOwnProperty("proxy"))
+         return i;
+   return 0;  // command with index '0' cannot have 'proxy' property ..
 };
 
 /**
@@ -383,25 +393,6 @@ g2.prototype.img.cmd = function img_c(self,image,x,y,b,h,xoff,yoff,dx,dy) {
 };
 
 /**
- * Draw dot with size of stroke width using stroke color.
- * @method
- * @returns {object} g2
- * @param {float} x x coordinate
- * @param {float} y y coordinate
- */
-g2.prototype.dot = function dot(x,y) {
-   this.cmds.push({c:dot.cmd,a:[x,y]});
-   return this;
-};
-g2.prototype.dot.cmd = function dot_c(x,y) {
-   var w = this.lineWidth;
-   this.beginPath();
-   this.moveTo(x-w/2,y);
-   this.lineTo(x+w/2,y);
-   this.stroke();
-};
-
-/**
  * Draw line.
  * @method
  * @returns {object} g2
@@ -530,9 +521,9 @@ g2.prototype.ply.cmd = function ply_c(parr,closed) {
 
 g2.ply = {
    iterators: {
-      "x,y":   function itr(arr,i) { return i < arr.length/2 ? {x:arr[2*i],y:arr[2*i+1]} : {done:true}; },
-      "[x,y]": function itr(arr,i) { return i < arr.length ? {x:arr[i][0],y:arr[i][1]} : {done:true}; },
-      "{x,y}": function itr(arr,i) { return i < arr.length ? arr[i] : {done:true}; }
+      "x,y":   function itr(arr,i) { return i < arr.length/2 ? {x:arr[2*i],y:arr[2*i+1]} : {done:true,length:arr.length/2}; },
+      "[x,y]": function itr(arr,i) { return i < arr.length ? {x:arr[i][0],y:arr[i][1]} : {done:true,length:arr.length}; },
+      "{x,y}": function itr(arr,i) { return i < arr.length ? arr[i] : {done:true,length:arr.length}; }
    }
 };
 // default polygon point iterator ... assume flat array
@@ -621,7 +612,7 @@ g2.prototype.set.cmd = function set_c(name,opts) { for (var m in opts) g2[name][
  * @param {float}  size  Grid size (if g2 has a viewport object assigned, viewport's grid size is more relevant).
  */
 g2.prototype.grid = function grid(color,size) {
-   if (!this.state.gridBase) {
+   if (this.state && !this.state.gridBase) {  // grid intentionally supported only for root g2 object (with .state defined).
       this.state.gridBase = 2;
       this.state.gridExp  = 1;
       this.cmds.push({c:grid.cmd,a:[this,color,size]});
@@ -691,19 +682,19 @@ g2.prototype.use = function use(g,x,y,w,scl) {
    if (typeof g === "string")  // should be a member name of the 'g2.symbol' namespace
       g = g2.symbol[g];
    if (g && g !== this) // avoid self reference ..
-      this.cmds.push(arguments.length > 1 ? {c:use.cmd,a:[this,g,x,y,w,scl]}
-                                          : {c:use.cmd1,a:[this,g]});
+      this.cmds.push({c:use.cmd,a:[this,g,x,y,w,scl]});
    return this;
 };
-g2.prototype.use.cmd1 = function use_c1(self,g) {
-   self.exe(this,g);
-};
 g2.prototype.use.cmd = function use_c(self,g,x,y,w,scl) {
-   var state = self.state;
-   state.save(this);
-   state.set("trf",{x:x,y:y,w:w,scl:scl},this);
-   self.exe(this,g);
-   state.restore(this);
+   if (arguments.length > 2) {
+      var state = self.state;
+      state.save(this);
+      state.set("trf",{x:x||0,y:y||0,w:w||0,scl:scl||1},this);
+      self.exe(this,g);
+      state.restore(this);
+   }
+   else
+      self.exe(this,g);
 };
 
 // style command ..
@@ -880,8 +871,7 @@ g2.State = Class({
 });
 
 // initial state values ... corresponding to Canvas Context ...
-g2.State.transparent = "rgba(0, 0, 0, 0)";   // constant value
-g2.State.fs = g2.State.transparent;
+g2.State.fs = g2.transparent;
 g2.State.lm = "normal";  // linemode .. "normal" or 'jitter'
 g2.State.foc = "#000";   // fontColor
 g2.State.fos = "normal"; // fontStyle [normal | italic | oblique]

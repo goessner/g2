@@ -114,7 +114,7 @@ A more detailed exploration of these features follows.
 Let's elaborate these points a little more.
 
 ##### Fast Rendering #####
-Graphics intense applications like simulations and games often work with *back buffers* for improving the visual experience. A back buffer is a temporarily invisible graphics context used to draw on during a certain time frame. On completion that graphics context simply is made visible. A *g2* object, while at first collecting graphics commands and finally rendering them, acts similar to a back buffer.
+Graphics intense applications like simulations and games often work with *back buffers* for improving the visual experience. A back buffer is a temporarily invisible graphics context used to draw on during a certain time frame. On completion that graphics context is made visible then. Intermediate flicker effects are minimized by this technique. A *g2* object, while at first collecting graphics commands and finally rendering them, is acting similar to a back buffer.
 
 ##### Decoupling #####
 A *g2* object is very loosely coupled with a graphics context. We can decide at the latest at rendering time, where to send the graphics commands stored in the queue to, or even send them to multiple different graphics contexts. Rendering the same graphics to a main window and in parallel to a small zoom-in window would be an example for this.
@@ -192,22 +192,20 @@ Please note, that the `g2.use` command intentionally only supports *uniform (iso
 
 Example:
 ```javascript
-var yinyang = g2().beg()
-                    .cir(0,0,5)
-                    .beg()
-                      .style("fs","@ls")  // use current 'ls' as fillStyle ...
-                      .p().m(0,-5).a(Math.PI,0,0).a(-Math.PI,0,5).a(-Math.PI,0,-5).z()
-                      .fill()
-                      .cir(0,-2.5,0.75)
-                    .end()
-                    .style("ls","@fs")   // use current 'fs' as lineStyle ...
-                    .cir(0,2.5,0.75)
-                  .end();
+var yinyang = g2().cir(0,0,5)
+                  .beg()
+                    .style("fs","@ls")  // use current 'ls' as fillStyle ...
+                    .p().m(0,-5).a(Math.PI,0,0).a(-Math.PI,0,5).a(-Math.PI,0,-5).z()
+                    .fill()
+                    .cir(0,-2.5,0.75)
+                  .end()
+                  .style("ls","@fs")   // use current 'fs' as lineStyle ...
+                  .cir(0,2.5,0.75)
 g2()
  .style("ls","#666","fs","#eee","lw",1,"lj","round")
- .use(yinyang,50,100,0,5)   // with scaling lineWidth
+ .use(yinyang,50,100,0,5)   // scaling lineWidth
  .style("lw",2,"lwnosc",true)
- .use(yinyang,150,100,0,5)  // without scaling lineWidth
+ .use(yinyang,150,100,0,5)  // nonscaling lineWidth
  .exe(document.getElementById("c").getContext("2d"));
 ```
 Output: ![img-yinyang]

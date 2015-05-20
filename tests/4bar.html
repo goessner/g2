@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - circle / circle intersection</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - circle / circle intersection</h1>
+    <canvas id="c" width="400" height="300"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+
+    function CirCirX(r12,R1,R2) {
+       var len12 = Math.hypot(r12.x,r12.y),
+           R1n = R1/len12;
+       
+       if (len12 < Number.EPSILON)
+          return {x:R1,y:0};
+       else if (len12 > R1 + R2 || len12 < R1 - R2) // circles completely separated or circle2 inside of circle1 ...
+          return {x:R1n*r12.x,y:R1n*r12.y};
+       else if (len12 < R2 - R1) // circle1 inside of circle2 ...
+          return {x:-R1n*r12.x,y:-R1n*r12.y};
+       else {
+          var cp1 = (len12*len12 + R1*R1 - R2*R2)/(2*len12*R1),
+              sp1n = R1n*Math.sqrt(1 - cp1*cp1), cp1n = R1n*cp1;
+          return { x:cp1n*r12.x - sp1n*r12.y, y:cp1n*r12.y + sp1n*r12.x };
+       }
+    }
+
+	  var a = 25, b = 50, c = 30, d = 70,
+	      phia = Math.acos(( a*a - (b+c)*(b+c) + d*d)/(2*a*d)),
+         xsii = Math.acos((-a*a + (b+c)*(b+c) + d*d)/(2*(b+c)*d)),
+		   phii = Math.acos(( (a+b)*(a+b) - c*c + d*d)/(2*(a+b)*d)),
+         xsia = Math.acos((-(a+b)*(a+b) + c*c + d*d)/(2*c*d)),
+		   dphi = 0.02,
+		   phi = 0,
+         e, rA, rB,
+         theta, xsi,
+         ctx = document.getElementById("c").getContext("2d"),
+         fb = g2();
+         g = g2({cartesian:true})
+               .clr()
+               .grid()
+               .style("ls","#666","fs","#fee","lw",2,"lj","round")
+               .use(fb,100,100,0,3);
+
+    function fourbar_phi() {
+       var ax = a*Math.cos(phi), ay = a*Math.sin(phi),
+           rb = CirCirX({x:d-ax,y:-ay},b,c);
+       rA = {x:ax,y:ay};
+       rB = {x:ax+rb.x,y:ay+rb.y};
+    }
+       
+	 function render() { 
+       var x,y,r;
+	    if (phi+dphi > phia || phi+dphi < -phia) { dphi = -dphi; }
+	    phi += dphi;
+       fourbar_phi();
+       fb.del().p().m(0,0).l(rA.x,rA.y).l(rB.x,rB.y).l(d,0).drw()
+         .cir(0,0,3).cir(rA.x,rA.y,3).cir(rB.x,rB.y,3).cir(d,0,3);
+       g.exe(ctx);
+	    requestAnimationFrame(render); 
+	 }
+
+	 render();
+
+   </script>
+</body>
+</html>
