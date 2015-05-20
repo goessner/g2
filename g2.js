@@ -85,8 +85,8 @@ g2.prototype.constructor.cmd = function constructor_c(self) {
  * @method
  * @returns {object} g2
  */
-g2.prototype.cartesian = function cartesian() { 
-   this.state.cartesian = true;
+g2.prototype.cartesian = function cartesian() {
+   (this.state || (this.state = g2.State.create())).cartesian = true;
    return this;
 };
 
@@ -98,6 +98,7 @@ g2.prototype.cartesian = function cartesian() {
  * @param {float} dy y-component to pan
  */
 g2.prototype.pan = function pan(dx,dy) {
+   this.state = this.state || g2.State.create();
    this.state.trf0.x += dx;
    this.state.trf0.y += dy;
    return this;
@@ -112,6 +113,7 @@ g2.prototype.pan = function pan(dx,dy) {
  * @param {float} y y-component of zoom center.
  */
 g2.prototype.zoom = function zoom(scl,x,y) {
+   this.state = this.state || g2.State.create();
    this.state.trf0.x  = (1-scl)*(x||0) + scl*this.state.trf0.x;
    this.state.trf0.y  = (1-scl)*(y||0) + scl*this.state.trf0.y;
    this.state.trf0.scl *= scl;
@@ -127,6 +129,7 @@ g2.prototype.zoom = function zoom(scl,x,y) {
  * @param {float} scl Scaling factor.
  */
 g2.prototype.trf0 = function trf0(x,y,scl) {
+   this.state = this.state || g2.State.create();
    this.state.trf0.x = x;
    this.state.trf0.y = y;
    this.state.trf0.scl = scl;
@@ -612,11 +615,10 @@ g2.prototype.set.cmd = function set_c(name,opts) { for (var m in opts) g2[name][
  * @param {float}  size  Grid size (if g2 has a viewport object assigned, viewport's grid size is more relevant).
  */
 g2.prototype.grid = function grid(color,size) {
-   if (this.state && !this.state.gridBase) {  // grid intentionally supported only for root g2 object (with .state defined).
-      this.state.gridBase = 2;
-      this.state.gridExp  = 1;
-      this.cmds.push({c:grid.cmd,a:[this,color,size]});
-   }
+   this.state = this.state || g2.State.create();
+   this.state.gridBase = 2;
+   this.state.gridExp  = 1;
+   this.cmds.push({c:grid.cmd,a:[this,color,size]});
    return this;
 };
 g2.prototype.grid.cmd = function grid_c(self,color,size) {

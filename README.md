@@ -5,7 +5,8 @@
 
 ### Why ###
 
-Who might need *yet another 2D graphics library* ? Well, *(non-software)* engineers and scientists mostly need an easy way to create some prototypal - static or interactive - web based graphics. They want a simple and intuitive API fully documented on a single page cheat sheet.
+Who might need *yet another 2D graphics library* ? Well, *(non-software)* engineers and scientists mostly need an easy way to create some prototypal - static or interactive - web based graphics. 
+They want a small and high performant library with a simple and intuitive API fully documented on a single page cheat sheet.
 
 
 ### Introduction ###
