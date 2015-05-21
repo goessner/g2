@@ -59,7 +59,6 @@ g2.transparent = "rgba(0, 0, 0, 0)";
 g2.prototype.constructor = function constructor(args) {
    if (args) {  // only root g2's should have arguments ...
       this.state = g2.State.create();
-      this.state.trf0 = {x:0,y:0,scl:1}; // holding initial zoom, pan, ...
       if (args.zoom) this.zoom(args.zoom.scl,args.zoom.x,args.zoom.y);
       if (args.pan)  this.pan(args.pan.dx,args.pan.dy);
       if (args.trf)  this.trf0(args.trf.x,args.trf.y,args.trf.scl);
@@ -71,7 +70,6 @@ g2.prototype.constructor = function constructor(args) {
 g2.prototype.constructor.cmd = function constructor_c(self) {
    if (this.fillStyle === "#000000") { // root g2 found ... because parent g2's would have already modified 'fillStyle' to transparent.
       var state = self.state || (self.state = g2.State.create());
-      if (!state.trf0) state.trf0 = {x:0,y:0,scl:1};
       this.setTransform(1,0,0,state.cartesian?-1:1,0.5,(state.cartesian?this.canvas.height:0)+0.5);
       state.clear()
            .set("fs","transparent",this)
@@ -524,9 +522,9 @@ g2.prototype.ply.cmd = function ply_c(parr,closed) {
 
 g2.ply = {
    iterators: {
-      "x,y":   function itr(arr,i) { return i < arr.length/2 ? {x:arr[2*i],y:arr[2*i+1]} : {done:true,length:arr.length/2}; },
-      "[x,y]": function itr(arr,i) { return i < arr.length ? {x:arr[i][0],y:arr[i][1]} : {done:true,length:arr.length}; },
-      "{x,y}": function itr(arr,i) { return i < arr.length ? arr[i] : {done:true,length:arr.length}; }
+      "x,y":   function itr(arr,i) { return i < arr.length/2 ? {x:arr[2*i],y:arr[2*i+1]} : {done:true,count:arr.length/2}; },
+      "[x,y]": function itr(arr,i) { return i < arr.length ? {x:arr[i][0],y:arr[i][1]} : {done:true,count:arr.length}; },
+      "{x,y}": function itr(arr,i) { return i < arr.length ? arr[i] : {done:true,count:arr.length}; }
    }
 };
 // default polygon point iterator ... assume flat array
@@ -808,6 +806,7 @@ g2.prototype.dump = function(space) {
 // State stack management class.
 g2.State = Class({
    constructor: function() {
+      this.trf0 = {x:0,y:0,scl:1}; // holding initial zoom, pan, ...
       this.stack = [{}];
    },
    has: function(name,ctx) {
