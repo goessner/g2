@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - slider control</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - slider control</h1>
+    <canvas id="c" width="400" height="300"></canvas><br>
+    <input id="slider" type="range" style="min-width:375px;vertical-align:middle;margin:0;padding:0" min="0" max="360" value="0" step="1" />
+    <output id="angle" for="slider" style="text-align:right;">0</output>
+    <script src='../g2.js'></script>
+    <script>
+	  var ctx = document.getElementById("c").getContext("2d"),
+         slider = document.getElementById("slider"),
+         angle = document.getElementById("angle"),
+         dirty = true,
+         phi = 0,
+         crank = g2().lin(0,0,100,0),
+         g = g2({cartesian:true})
+               .clr()
+               .grid()
+               .style("ls","#666","fs","#fee","lw",3,"lc","round")
+               .use(crank,200,150)
+               .cir(200,150,5);
+    
+    function setAngle(e) {
+       if (angle.value !== slider.value) {
+          phi = (angle.value = slider.value)/180*Math.PI;
+          crank.del().lin(0,0,100*Math.cos(phi),100*Math.sin(phi));
+          dirty = true;
+       }
+       return true;
+    };
+	 function render() { 
+       if (dirty) {
+          g.exe(ctx);
+          dirty = false;
+       }
+	    requestAnimationFrame(render); 
+	 }
+
+    slider.addEventListener("input",setAngle,false);
+	 render();
+
+   </script>
+</body>
+</html>
