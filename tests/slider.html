@@ -13,7 +13,7 @@
     <output id="angle" for="slider" style="text-align:right;">0</output>
     <script src='../g2.js'></script>
     <script>
-	  var ctx = document.getElementById("c").getContext("2d"),
+      var ctx = document.getElementById("c").getContext("2d"),
          slider = document.getElementById("slider"),
          angle = document.getElementById("angle"),
          dirty = true,
@@ -34,16 +34,16 @@
        }
        return true;
     };
-	 function render() { 
+    function render() { 
        if (dirty) {
           g.exe(ctx);
           dirty = false;
        }
-	    requestAnimationFrame(render); 
-	 }
+       requestAnimationFrame(render); 
+    }
 
     slider.addEventListener("input",setAngle,false);
-	 render();
+    render();
 
    </script>
 </body>
