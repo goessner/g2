@@ -14,12 +14,10 @@ Object.setPrototypeOf = Object.setPrototypeOf || function(o,proto) { if (typeof(
 // Lightweight class definition (similar to ES6) based on Object.setPrototypeOf
 function Class(base,proto) { return proto ? Object.setPrototypeOf(proto,base) : Object.setPrototypeOf(base,{create: function() {var o = Object.create(this);o.constructor.apply(o,arguments);return o;}});}
 
-// read 'http://stackoverflow.com/questions/1114024/constructors-in-javascript-objects'
-// also read http://js-bits.blogspot.de/2010/08/constructors-without-using-new.html
 /**
- * Maintains an ordered list of 2D graphics commands.
+ * Maintains a queue of 2D graphics commands.
  * @class
- * @classdesc Maintains an ordered list of 2D graphics commands.
+ * @classdesc Maintains a queue of 2D graphics commands.
  * @param {object} args Arguments object [Optional] with one or more members of the following ..
  *                 { cartesian: <boolean>,
  *                   pan: { dx:<float>, dy:<float> },
@@ -31,9 +29,9 @@ function Class(base,proto) { return proto ? Object.setPrototypeOf(proto,base) : 
  * // How to use g2()
  * var ctx = document.getElementById("g").getContext("2d"); // Get your canvas context.
  * g2()                 // The first call of g2() creates an g2 object and returns itself.
- *  .lin(50,50,100,100) // Here your can list your commands.
+ *  .lin(50,50,100,100) // Append commands.
  *  .lin(100,100,200,50)
- *  .exe(ctx);          // Execute your commands.
+ *  .exe(ctx);          // Execute commands.
  */
 function g2() {
    if (this instanceof g2)
@@ -48,7 +46,7 @@ function g2() {
  * @type {string}
  * @const
  */
-g2.version = "1.0";
+g2.version = "1.0.0";
 g2.transparent = "rgba(0, 0, 0, 0)";
 
 /**
@@ -71,9 +69,8 @@ g2.prototype.constructor.cmd = function constructor_c(self) {
    if (this.fillStyle === "#000000") { // root g2 found ... because parent g2's would have already modified 'fillStyle' to transparent.
       var state = self.state || (self.state = g2.State.create());
       this.setTransform(1,0,0,state.cartesian?-1:1,0.5,(state.cartesian?this.canvas.height:0)+0.5);
-      state.clear()
-           .set("fs","transparent",this)
-           .set("trf",state.trf0,this)
+      state.reset(this)
+           .set("trf",state.trf0,this);
       this.font = state.font;
    }
 };
@@ -119,7 +116,7 @@ g2.prototype.zoom = function zoom(scl,x,y) {
 };
 
 /**
- * Set initial transform.
+ * Set initial transform directly.
  * @method
  * @returns {object} g2
  * @param {float} x x-translation.
@@ -143,7 +140,7 @@ g2.prototype._curPnt = function() {
    return lastcmd && (lastcmd.cp || lastcmd.a);
 };
 // internal helper method .. 
-// get index of last command with a proxy method
+// get index of last command having a proxy method implemented.
 g2.prototype._lastProxyIdx = function() {
    for (var i = this.cmds.length-1; i > 0; i--)
       if (this.cmds[i].c.hasOwnProperty("proxy"))
@@ -196,7 +193,7 @@ g2.prototype.l = function l(x,y) {
 };
 
 /**
- * Draw quadratic curve to point approximating the control point.
+ * Draw quadratic bezier curve to point.
  * @method
  * @returns {object} g2
  * @param {float} x1 x coordinate of control point
@@ -219,7 +216,7 @@ g2.prototype.q = function q(x1,y1,x,y) {
 };
 
 /**
- * Create bézier curve from position to point.
+ * Draw cubic bezier curve to point.
  * @method
  * @returns {object} g2
  * @param {float} x1 x coordinate of first control point
@@ -245,7 +242,7 @@ g2.prototype.c = function c(x1,y1,x2,y2,x,y) {
 
 // arc path command
 /**
- * Draw arc with an angular range dw to point [x,y].
+ * Draw arc with angular range dw to point [x,y].
  * @method
  * @returns {object} g2
  * @param {float} dw Angle in radians. Can be positive or negative.
@@ -376,23 +373,26 @@ g2.prototype.txt.cmd = function txt_c(self,s,x,y,maxWidth) {
  * @param {float} dy Y-delta. [optional]
  */
 g2.prototype.img = function img(uri,x,y,b,h,xoff,yoff,dx,dy) {
-   var image = new Image();  // use native Promise object in future ..
+   var image = new Image(), state = this.state ? this.state
+                                               : (this.state = g2.State.create());
+   state.loading++;
+   image.onload = function load() { state.loading--; };
+   image.onerror = function() { image.src = g2.prototype.img.broken; };
    image.src = uri;
-   this.cmds.push({c:img.cmd,a:[this,function(){return image;},x||0,y||0,b,h,xoff,yoff,dx,dy]});
+   this.cmds.push({c:img.cmd,a:[this,image,x||0,y||0,b,h,xoff,yoff,dx,dy]});
    return this;
 };
-g2.prototype.img.cmd = function img_c(self,image,x,y,b,h,xoff,yoff,dx,dy) {
-   var img = image();
+g2.prototype.img.cmd = function img_c(self,img,x,y,b,h,xoff,yoff,dx,dy) {
    b = b || img && img.width;
-   h = h || img && img.height;
-   if (self.state.cartesian) { this.save(); this.scale(1,-1); y = -y-h; }
-   if (xoff || yoff || dx || dy)  // non-zero anyone .. ?
-      this.drawImage(img,xoff,yoff,dx,dy,x,y,b,h);
-   else
-      this.drawImage(img,x,y,b,h);
-   if (self.state.cartesian) { this.restore(); }
+	h = h || img && img.height;
+	if (self.state.cartesian) { this.save(); this.scale(1,-1); y = -y-h; }
+	if (xoff || yoff || dx || dy)  // non-zero anyone .. ?
+	   this.drawImage(img,xoff,yoff,dx,dy,x,y,b,h);
+	else
+	   this.drawImage(img,x,y,b,h);
+	if (self.state.cartesian) { this.restore(); }
 };
-
+g2.prototype.img.broken = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7";
 /**
  * Draw line.
  * @method
@@ -508,11 +508,8 @@ g2.prototype.ply.cmd = function ply_c(parr,closed) {
    if (!p.done) {      // draw polygon ..
       this.beginPath();
       this.moveTo(p.x,p.y);
-      p = itr(parr,i++);
-      while (!p.done) {
+      while (!(p = itr(parr,i++)).done)
          this.lineTo(p.x,p.y);
-         p = itr(parr,i++);
-      }
       if (closed)
          this.closePath();
    }
@@ -541,17 +538,13 @@ g2.ply.itr = g2.ply.iterators["x,y"];
  * @param {float} scl Scale factor
  */
 g2.prototype.beg = function beg(x,y,w,scl) {
-   this.cmds.push(arguments.length ? {c:beg.cmd2,a:[this,x||0,y||0,w||0,scl||1]}
-                                   : {c:beg.cmd1,a:[this]});
+   this.cmds.push({c:beg.cmd, a:(arguments.length ? [this,x||0,y||0,w||0,scl||1] : [this])});
    return this;
 };
-g2.prototype.beg.cmd1 = function beg_c1(self) {
+g2.prototype.beg.cmd = function beg_c(self,x,y,w,scl) {
    self.state.save(this);
-};
-g2.prototype.beg.cmd2 = function beg_c2(self,x,y,w,scl) {
-   var state = self.state;
-   state.save(this);
-   state.set("trf",{x:x,y:y,w:w,scl:scl},this);
+   if (arguments.length > 1)
+      self.state.set("trf",{x:x,y:y,w:w,scl:scl},this);
 };
 /**
  * End subcommands. Previous style state is restored.
@@ -583,28 +576,6 @@ g2.prototype.clr.cmd = function clr_c() {
 };
 
 // helper commands
-/**
- * Set static options for any command object.
- * @method
- * @returns {object} g2
- * @param {string} name
- * @param {object} op
- * @example
- *
- *   g2()
- *   .cir(25,25,20)
- *   .opts("label",{o:"s"})   // Set label position to south.
- *   .label("Circle")
- *   .exe(ctx);
- * ![Example](img/opts.png "Example")
- */
-g2.prototype.set = function set(name,opts) {
-   if (g2[name])
-      this.cmds.push({c:set.cmd,a:[name,opts]});
-   return this;
-};
-g2.prototype.set.cmd = function set_c(name,opts) { for (var m in opts) g2[name][m] = opts[m]; };
-
 /**
  * Show grid.
  * @method
@@ -679,10 +650,16 @@ g2.prototype.grid.getSize = function(state,scl) {
  * ![Example](img/sym.png "Example")
  */
 g2.prototype.use = function use(g,x,y,w,scl) {
-   if (typeof g === "string")  // should be a member name of the 'g2.symbol' namespace
+   if (typeof g === "string")  // must be a member name of the 'g2.symbol' namespace
       g = g2.symbol[g];
-   if (g && g !== this) // avoid self reference ..
-      this.cmds.push({c:use.cmd,a:[this,g,x,y,w,scl]});
+   if (g && g !== this) { // avoid self reference ..
+      if (g.state && g.state.loading) { // referencing g2 object containing images ...
+         var state = this.state || (this.state = g2.State.create());
+         state.loading++;
+         g.state.addListener("load",function() { state.loading--; });
+      }
+      this.cmds.push({c:use.cmd,a:arguments.length===1?[this,g]:[this,g,x,y,w,scl]});
+   }
    return this;
 };
 g2.prototype.use.cmd = function use_c(self,g,x,y,w,scl) {
@@ -723,15 +700,17 @@ g2.prototype.style.cmd = function style_c(self,list) {
  * @param {object} ctx Canvas Context
  * @param {object} g g2 Object to execute. [default=this] [optional]
  */
-g2.prototype.exe = function exe_c(ctx,g) {
+g2.prototype.exe = function exe(ctx,g) {
    var cmds = (g || this).cmds;
-   if (ctx && cmds) {
+   if (this.state && this.state.loading)  // give images a chance to complete loading ..
+      requestAnimationFrame(exe.bind(this,ctx,g));  // .. so wait a while ..
+   else if (ctx && cmds) {
       var gstate = g && g.state;
       if (g)   // external g2 in use .. copy state
          g.state = this.state;
       for (var i=0,n=cmds.length,cmd; i<n; i++)  // invoke the command queue
          (cmd=cmds[i]).c.apply(ctx,cmd.a);
-      if (g)  // external g2 in use .. restore style
+      if (g)  // external g2 in use .. restore state
          g.state = gstate;
       else // must be parent g2 ...
          ctx.fillStyle = "#000000";  // ... reset .. for properly reinitializing ...
@@ -760,10 +739,9 @@ g2.prototype.cpy = function cpy(g) {
 };
 
 /**
- * Delete commands from the given location to the end of the commands array.
+ * Delete all commands.
  * @method
  * @returns {object} g2
- * @param { undefined } delete commands array.
  */
 g2.prototype.del = function del() { // see http://jsperf.com/truncating-arrays-correctly
    this.cmds.length = 1;  // do not delete 'constructor' command.
@@ -806,9 +784,21 @@ g2.prototype.dump = function(space) {
 // State stack management class.
 g2.State = Class({
    constructor: function() {
-      this.trf0 = {x:0,y:0,scl:1}; // holding initial zoom, pan, ...
       this.stack = [{}];
+      this.trf0 = {x:0,y:0,scl:1}; // holding initial zoom, pan, ...
+      this._loading = 0;
+      this.on = {load:[]};
    },
+   // manage asynchrone image loading ...
+   get loading() { return this._loading; },
+   set loading(n) { if ((this._loading = n) === 0) this.invokeListeners("load"); },
+   // implement simple event listeners ...
+   hasListeners: function(name)   { return this.on[name] && this.on[name].length; },
+   hasListener: function(name,fn) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) if (this.on[name][i] === fn) return true; return false; },
+   addListener: function(name,fn) { if (!this.hasListener(name,fn)) this.on[name].push(fn); },
+   removeListener: function(name,fn) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) if (this.on[name][i] === fn) { this.on[name].splice(i,1); break; } },
+   invokeListeners: function(name) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) this.on[name][i](); },
+   // manage style attributes ...
    has: function(name,ctx) {
       name = this.alias[name] || name;
       return ctx && this.filter[name]
@@ -839,8 +829,13 @@ g2.State = Class({
       if (ctx) ctx.restore();
       return this;
    },
-   clear: function() {
+   reset: function(ctx) {
       this.stack = [{}];
+      this.loadfn = [];
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#000";
+      ctx.fillStyle = g2.transparent;
+      ctx.setLineDash([]);
       return this;
    },
    transform: function(t,ctx) {
@@ -936,9 +931,10 @@ g2.State.filter = {
       set: function(val,ctx) {
          if (ctx) {
             var scl = this.get("lwnosc") ? this.currentScale : 1,
-                lw = this.get("lw",ctx);
-            for (var i=0,n=val.length; i<n; i++) val[i] /= scl/lw;
-            ctx.setLineDash(val);
+                lw = this.get("lw",ctx),
+                ld = [];
+            for (var i=0,n=val.length; i<n; i++) ld.push(val[i]/scl*lw);
+            ctx.setLineDash(ld);
          }
       }
    },
@@ -1016,12 +1012,3 @@ g2.State.filter = {
 
 // create symbol namespace ..
 g2.symbol = {};
-g2.symbol.origin = function() {
-   var g = g2(), z = 2;
-   g.style("lc","round","lj","round","fs","snow","lw",1)
-    .p().m(6*z,0).l(0,0).l(0,6*z).stroke()
-    .p().m(10*z,0).l(6*z,3/4*z).a(-Math.PI/3,6*z,-3/4*z).z()
-        .m(0,10*z).l(3/4*z,6*z).a( Math.PI/3,-3/4*z,6*z).z().drw()
-    .cir(0,0,z);
-   return g;
-}();
