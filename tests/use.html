@@ -22,10 +22,10 @@
                         .style("ls","@fs")   // use current 'fs' as lineStyle ...
                         .cir(0,2.5,0.75);
 
-      g2().style("ls","#666","fs","#eee","lw",1,"lj","round")
-          .use(yinyang,50,100,0,5)   // with scaling lineWidth
-          .style("lw",2,"lwnosc",true)
-          .use(yinyang,150,100,0,5)  // without scaling lineWidth
+      g2().style("ls","#666","fs","#eee","lw",1,"lj","round") // scale lineWidth (default)
+          .use(yinyang,50,100,0,5)  
+          .style("lw",2,"lwnosc",true)  // don't scale lineWidth
+          .use(yinyang,150,100,0,5) 
           .exe(document.getElementById("c").getContext("2d"));
    </script>
 </body>
