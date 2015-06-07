@@ -51,15 +51,11 @@
              e.preventDefault(); 
              return false; 
           }
-          function ondown(e) {
-             var p = ptrPos(e,g,ctx);
-             if (sqr.over(p.x,p.y)) sqr.hit = true;
-          }
              
-          function render() { if (dirty) { sqr.draw(geo.del()); dirty = false; } g.exe(ctx); requestAnimationFrame(render); };
-
           ctx.canvas.addEventListener("mouseleave", onleave, false);
           ctx.canvas.addEventListener("mousemove", onmove, false);
+
+          function render() { if (dirty) { sqr.draw(geo.del()); dirty = false; } g.exe(ctx); requestAnimationFrame(render); };
 
           render();
    </script>
