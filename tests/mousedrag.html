@@ -17,7 +17,7 @@
              x:100,y:80,a:20,hit:false,
              move: function(dx,dy) { this.x+=dx; this.y+=dy; },
              over: function(x,y) { var dx=x-this.x,dy=y-this.y; return dx<this.a && dx>-this.a && dy<this.a && dy>-this.a; },
-             draw: function(g) { return g.beg().style("ls",this.hit?"green":this.sel?"red":"orange","fs","#eee").rec(this.x-this.a,this.y-this.a,2*this.a,2*this.a).end(); }
+             draw: function(g) { return g.beg().style("ls",this.hit?"green":"orange","fs","#eee").rec(this.x-this.a,this.y-this.a,2*this.a,2*this.a).end(); }
           },
           origin = g2().beg().style("lw",2,"fs","snow","ls","blue").p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
           mouseLoc = g2(),
