@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - ping-pong</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - ping-pong</h1>
+    <canvas id="c" width="500", height="300"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+      var ctx = document.getElementById("c").getContext("2d"),
+          w = ctx.canvas.width, h = ctx.canvas.height,
+          p = 210, dp = 10, b = 80, paddle = g2().rec(p,30,b,6),
+          x = 20, y = 30, dx = 5, dy = 2, r = 10, ball = g2().cir(x,y,r),
+          g = g2({cartesian:true}).clr().grid()
+                .beg().style("lw",2,"fs","orange","ls","navy","lj","round").use(paddle).end()
+                .beg().style("lw",1,"fs","lightgray","ls","navy").use(ball).end();
+
+      function movePaddle(dp) {
+         if (p + dp >= 0 && p + dp <= w - b) p += dp;
+         paddle.del().rec(p,30,b,6);
+      }
+
+      function moveBall() {
+         if (x + dx < 0 || x + dx > w - r) dx = -dx;
+         if (y + dy < 0 || y + dy > h - r) dy = -dy;
+         x += dx;
+         y += dy;
+         ball.del().cir(x,y,r);
+      }
+      
+      function onkeydown(e) {
+         if (e.keyCode === 39)
+            movePaddle(dp);
+         else if (e.keyCode === 37)
+            movePaddle(-dp);
+      }
+
+      function render() { moveBall(); g.exe(ctx); requestAnimationFrame(render); }
+
+      addEventListener("keydown", onkeydown, false);
+      render();
+   </script>
+</body>
+</html>

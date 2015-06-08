@@ -5,8 +5,8 @@
  */
 /* jshint proto: true */
 /* jshint -W014 */
-/* jshint -W030 */
 
+/* jshint -W030 */
 // Used polyfills
 Math.sign = Math.sign || function(x) { return +x > 0 ? 1 : (+x < 0 ? -1 : 0); };
 Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
@@ -129,6 +129,35 @@ g2.prototype.trf0 = function trf0(x,y,scl) {
    this.state.trf0.y = y;
    this.state.trf0.scl = scl;
    return this;
+};
+
+/**
+ * Get user coordinates from canvas coordinates for point (with respect to initial transform).
+ * @method
+ * @returns {object} v2
+ * @param {float} x x-translation.
+ * @param {float} y y-translation.
+ * @param {float} h Viewport (canvas) height.
+ */
+g2.prototype.pntToUsr = function pntToUsr(x,y,h) {
+   var trf = this.state && this.state.trf0 || false;
+   return !trf ? {x:x,y:y}
+               : this.state.cartesian ? {x:(x - trf.x)/trf.scl, y:-(y - (ctx.canvas.height-trf.y))/trf.scl}
+                                      : {x:(x - trf.x)/trf.scl, y:(y - trf.y)/trf.scl};
+};
+
+/**
+ * Get user coordinates from canvas coordinates for direction vector (with respect to initial transform).
+ * @method
+ * @returns {object} v2
+ * @param {float} x x-translation.
+ * @param {float} y y-translation.
+ */
+g2.prototype.vecToUsr = function vecToUsr(x,y) {
+   var trf = this.state && this.state.trf0 || false;
+   return !trf ? {x:x,y:y}
+               : this.state.cartesian ? {x:x/trf.scl, y:-y/trf.scl}
+                                      : {x:x/trf.scl, y:y/trf.scl};
 };
 
 // Path commands
@@ -527,7 +556,6 @@ g2.ply = {
 // default polygon point iterator ... assume flat array
 g2.ply.itr = g2.ply.iterators["x,y"];
 
-
 /**
  * Begin subcommands. Style state is saved. Optionally apply (similarity) transformation.
  * @method
@@ -663,15 +691,12 @@ g2.prototype.use = function use(g,x,y,w,scl) {
    return this;
 };
 g2.prototype.use.cmd = function use_c(self,g,x,y,w,scl) {
-   if (arguments.length > 2) {
-      var state = self.state;
-      state.save(this);
+   var state = self.state;
+   state.save(this);
+   if (arguments.length > 2)
       state.set("trf",{x:x||0,y:y||0,w:w||0,scl:scl||1},this);
-      self.exe(this,g);
-      state.restore(this);
-   }
-   else
-      self.exe(this,g);
+   self.exe(this,g);
+   state.restore(this);
 };
 
 // style command ..
@@ -805,13 +830,13 @@ g2.State = Class({
           || name in this.stack[this.stack.length-1]
           || this.hasOwnProperty(name);
    },
-   get: function(name,ctx) {  // omit 'ctx' in 'this.filter[name]' function to avoid infinite recursion ... !
+   get: function(name,ctx) {  // omit 'ctx' here when calling 'this.filter[name]' function to avoid infinite recursion ... !
       name = this.alias[name] || name;
       return ctx && this.filter[name] && this.filter[name].get && this.filter[name].get.call(this,ctx)
           || this.stack[this.stack.length-1][name]
           || this[name]
    },
-   set: function(name,val,ctx) { // omit 'ctx' in 'this.filter[name]' function to avoid infinite recursion ... !
+   set: function(name,val,ctx) { // omit 'ctx' here when calling 'this.filter[name]' function to avoid infinite recursion ... !
       name = this.alias[name] || name;
       if (ctx && this.filter[name] && this.filter[name].set)
          this.filter[name].set.call(this,val,ctx);
@@ -819,7 +844,7 @@ g2.State = Class({
          this.stack[this.stack.length-1][name] = val;
       return this;
    },
-   save: function(ctx) {
+   save: function(cmdIdx,ctx) {
       this.stack.push(JSON.parse(JSON.stringify(this.stack[this.stack.length-1])));
       if (ctx) ctx.save();
       return this;
@@ -875,7 +900,6 @@ g2.State.fow = "normal"; // fontWeight [normal | bold | bolder | lighter | 100 |
 g2.State.foz = 12;       // fontSize
 g2.State.fof = "serif";  // fontFamily [serif | sans-serif | monospace | cursiv | fantasy | arial | verdana | ... ] s. CSS
 g2.State.trf = {x:0,y:0,scl:1};
-
 
 g2.State.alias = {
    "strokeStyle": "ls",  // read: lineStroke ...
