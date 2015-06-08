@@ -142,7 +142,7 @@ g2.prototype.trf0 = function trf0(x,y,scl) {
 g2.prototype.pntToUsr = function pntToUsr(x,y,h) {
    var trf = this.state && this.state.trf0 || false;
    return !trf ? {x:x,y:y}
-               : this.state.cartesian ? {x:(x - trf.x)/trf.scl, y:-(y - (ctx.canvas.height-trf.y))/trf.scl}
+               : this.state.cartesian ? {x:(x - trf.x)/trf.scl, y:-(y - (h - trf.y))/trf.scl}
                                       : {x:(x - trf.x)/trf.scl, y:(y - trf.y)/trf.scl};
 };
 
