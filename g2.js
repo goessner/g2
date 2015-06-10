@@ -168,13 +168,13 @@ g2.prototype._curPnt = function() {
    var lastcmd = this.cmds.length && this.cmds[this.cmds.length-1] || false;
    return lastcmd && (lastcmd.cp || lastcmd.a);
 };
-// internal helper method .. 
-// get index of last command having a proxy method implemented.
-g2.prototype._lastProxyIdx = function() {
-   for (var i = this.cmds.length-1; i > 0; i--)
-      if (this.cmds[i].c.hasOwnProperty("proxy"))
+// get index of command resolving 'callbk' to 'true'.
+// see 'Array.prototype.findIndex'
+g2.prototype.findCmdIdx = function(callbk) { 
+   for (var i = this.cmds.length-1; i > 0; i--) 
+      if (callbk(this.cmds[i],i,this.cmds))
          return i;
-   return 0;  // command with index '0' cannot have 'proxy' property ..
+   return 0;  // command with index '0' signals 'failing' ...
 };
 
 /**
@@ -566,7 +566,7 @@ g2.ply.itr = g2.ply.iterators["x,y"];
  * @param {float} scl Scale factor
  */
 g2.prototype.beg = function beg(x,y,w,scl) {
-   this.cmds.push({c:beg.cmd, a:(arguments.length ? [this,x||0,y||0,w||0,scl||1] : [this])});
+   this.cmds.push({c:beg.cmd, a:(arguments.length ? [this,x||0,y||0,w||0,scl||1] : [this]), open:true});
    return this;
 };
 g2.prototype.beg.cmd = function beg_c(self,x,y,w,scl) {
@@ -580,11 +580,18 @@ g2.prototype.beg.cmd = function beg_c(self,x,y,w,scl) {
  * @returns {object} g2
  */
 g2.prototype.end = function end() {
-   this.cmds.push({c:end.cmd,a:[this]});
+   this.cmds.push({c:end.cmd,a:[this,this.findCmdIdx(end.isBeg)]});
    return this;
 };
-g2.prototype.end.cmd = function end_c(self) {
+g2.prototype.end.cmd = function end_c(self,begidx) {
    self.state.restore(this);
+};
+g2.prototype.end.isBeg = function(cmd) {
+   if (cmd.c === g2.prototype.beg.cmd && cmd.open === true) {
+      delete cmd.open;
+      return true;
+   }
+   return false;
 };
 
 /**
@@ -810,7 +817,7 @@ g2.prototype.dump = function(space) {
 g2.State = Class({
    constructor: function() {
       this.stack = [{}];
-      this.trf0 = {x:0,y:0,scl:1}; // holding initial zoom, pan, ...
+      this.trf0 = {x:0,y:0,w:0,scl:1}; // holding initial zoom, pan, ...
       this._loading = 0;
       this.on = {load:[]};
    },
@@ -844,7 +851,7 @@ g2.State = Class({
          this.stack[this.stack.length-1][name] = val;
       return this;
    },
-   save: function(cmdIdx,ctx) {
+   save: function(ctx) {
       this.stack.push(JSON.parse(JSON.stringify(this.stack[this.stack.length-1])));
       if (ctx) ctx.save();
       return this;
@@ -899,7 +906,7 @@ g2.State.fos = "normal"; // fontStyle [normal | italic | oblique]
 g2.State.fow = "normal"; // fontWeight [normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 ... ] s. CSS
 g2.State.foz = 12;       // fontSize
 g2.State.fof = "serif";  // fontFamily [serif | sans-serif | monospace | cursiv | fantasy | arial | verdana | ... ] s. CSS
-g2.State.trf = {x:0,y:0,scl:1};
+g2.State.trf = {x:0,y:0,w:0,scl:1};
 
 g2.State.alias = {
    "strokeStyle": "ls",  // read: lineStroke ...

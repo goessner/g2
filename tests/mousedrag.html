@@ -23,14 +23,14 @@
           mouseLoc = g2(),
           geo = g2(),
           g = g2({cartesian:true}).clr().grid().pan(10,10).use(origin).use(mouseLoc).use(geo);
-          
+
           function ptrPos(e,g) {
              var rect = e.target.getBoundingClientRect(),
                  x = e.clientX - Math.floor(rect.left) + e.target.scrollLeft,
                  y = e.clientY - Math.floor(rect.top)  + e.target.scrollTop;
              return g.pntToUsr(x,y,rect.height);
           }
-          function onleave(e) { dirty = !(sqr.hit = false); }
+          function onleave(e) { dirty = !(sqr.hit = false); return false; }
           function onmove(e) {
              var p = ptrPos(e,g,ctx), over = sqr.over(p.x,p.y);
              if (sqr.hit) {
