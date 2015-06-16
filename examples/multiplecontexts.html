@@ -3,22 +3,30 @@
 <head>
     <meta charset='utf-8'>
     <title>g2 - Multiple graphics contexts</title>
-    <style> canvas { border: 1px solid #000; } </style>
+    <style> canvas { border: 1px solid #000; margin:0; }</style>
 </head>
 
 <body>
     <h1>g2 - Multiple graphics contexts</h1>
-    <canvas id="c1" width="320" height="240"></canvas>
-	<canvas id="c2" width="320" height="240"></canvas>
+    <canvas id="c1" width="448" height="336" style="float:left;margin-right:1em;"></canvas>
+	<div style="float:left;"><canvas id="c2" width="320" height="240"></canvas>
+	<input type="range" id="range" min="100" max="800" value="300" style="display:block;width:100%;margin:0;" />
+	<div id="rangetext" style="text-align:center;">300%</span></div>
     <script src='../g2.js'></script>
     <script>
-var canvas1 = document.getElementById("c1"),
-    canvas2 = document.getElementById("c2"),
-	ctx1 = canvas1.getContext("2d"),
-	ctx2 = canvas2.getContext("2d"),
-	g = g2();
 	
-g.grid()
+var ctx1 = document.getElementById("c1").getContext("2d"),
+    ctx2 = document.getElementById("c2").getContext("2d"),
+    g = g2(),
+    g_sector = g2(),
+    slider = document.getElementById("range"),
+    prop = ctx1.canvas.offsetWidth/ctx2.canvas.offsetWidth,
+    zoomCenterX = ctx2.canvas.offsetWidth/2,
+    zoomCenterY = ctx2.canvas.offsetHeight/2,
+    zoomFactor = slider.value/100;
+
+g.clr()
+ .grid()
  .style("lw",1.5,"ls","grey","ld",[10,3,1,3],"lwnosc",true)
  .lin(15,120,312,120)
  .style("lw",2,"ls","black","ld",[])
@@ -32,14 +40,40 @@ g.grid()
  .style("lw",1.5)
  .p().m(285,104).l(163,104).a(0.5,156,101)
  .m(285,136).l(163,136).a(-0.5,156,139)
- .stroke().exe(ctx1);
- 
-var g_zoom = g2().clr().grid().use(g).exe(ctx2);
+ .stroke()
+ .exe(ctx2);
 
-canvas1.onmousemove = function(e){
-	var x = canvas1.offsetLeft-e.clientX+canvas1.offsetWidth/2;
-	var y = canvas1.offsetTop-e.clientY+canvas1.offsetHeight/2;
-	g_zoom.trf0(x,y,1).zoom(3,canvas1.offsetWidth/2,canvas1.offsetHeight/2).exe(ctx2);
+slider.addEventListener('input', updateRange, false);
+ctx1.canvas.addEventListener('mousemove', updatePos, false);
+ctx2.canvas.addEventListener('mousemove', updatePos, false);
+
+createSector();
+render();
+
+function updatePos(e) {
+	zoomCenterX = e.clientX-this.offsetLeft;
+	zoomCenterY = e.clientY-this.offsetTop;
+	if (this.id=="c1") { zoomCenterX /= prop; zoomCenterY /= prop; }
+	createSector();
+	render();
+}
+function updateRange(e) {
+	zoomFactor = e.currentTarget.value/100;
+	document.getElementById("rangetext").innerHTML = e.currentTarget.value + "%";
+	createSector();
+	render();
+}
+function createSector() {
+	var x = zoomCenterX-ctx1.canvas.offsetWidth/zoomFactor/2,
+	    y = zoomCenterY-ctx1.canvas.offsetHeight/zoomFactor/2,
+	    w = ctx1.canvas.offsetWidth/zoomFactor,
+	    h = ctx1.canvas.offsetHeight/zoomFactor;
+	g_sector.del().style("ls","red").rec(x,y,w,h);
+}
+function render() {
+	g.trf0(ctx1.canvas.offsetWidth/2-zoomCenterX*zoomFactor,ctx1.canvas.offsetHeight/2-zoomCenterY*zoomFactor,zoomFactor).exe(ctx1);
+	g.trf0(0,0,1).exe(ctx2);
+	g_sector.exe(ctx2);
 }
 	
     </script>
