@@ -1,51 +1,47 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <title>Hello g2!</title>
-        <meta charset="UTF-8" />
-    </head>
-    <body>
-        <canvas id="canvas" width="201" height="241" style="border:1px solid black;"></canvas>
-        <script src='../g2.js'></script>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - Animation</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
 
-        <script>
-		
-var ctx = document.getElementById("canvas").getContext("2d");  // Grab canvas context.
-var numberOfRaindrops = 10,
-    raindrops = [],
-    lastRefresh,
-    speed = 100,
-    g_rd = g2(),
-    g = g2().clr().grid().style("lw",8,"ls","#30833a","fs","#73df80","lj","round")  // static single umbrella ...
-            .p().m(100,70).l(100,210).a(-3.14,130,210).stroke()
-            .p().m(10,140).a(1,70,140).a(1,130,140).a(1,190,140).a(-2.3,10,140).z().drw()
-            .style("ls","#0600ff","lw",8,"lc","round").use(g_rd);
+<body>
+    <h1>g2 - Animation</h1>
+    <canvas id="c" width="400" height="180"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+var ctx = document.getElementById("c").getContext("2d");
 
-function randomX() { return Math.random() * (170 - 30) + 30; }
-function randomY() { return Math.random() * -120; }
-function updateRaindrops(g,dy) {
-	g.del();
-	for (var i=0; i<numberOfRaindrops; i++) {
-		raindrops[i].y += dy;
-		if (raindrops[i].y > 110) {
-			raindrops[i].y = randomY();
-			raindrops[i].x = randomX();
-		}
-		g.lin(raindrops[i].x,raindrops[i].y-5,raindrops[i].x,raindrops[i].y);
-	}
-}
-function step(time) {
-	updateRaindrops(g_rd,(time - lastRefresh || 0) * speed / 1000);
-	lastRefresh = time;
+var g = g2({cartesian:true}),
+	mechanism = g2();
+	
+var a = 50, b = 150, e = 50, phi = 0, phi_speed = 5, lastRefresh, A0 = {x:70,y:70}, A, B;
+
+g.clr()
+ .grid()
+ .style("fs","rgba(150,200,200,0.3)","ls","grey","lj","round")
+ .cir(A0.x,A0.y,a)
+ .rec(A0.x+a+60,A0.y+e-20-20,200,20)
+ .use(mechanism,A0.x,A0.y,0,1);
+
+window.requestAnimationFrame(render);
+
+function render(time) {
+	phi = (phi - (time - lastRefresh || 0) * phi_speed / 1000) % (Math.PI*2);
+	A = {x:a*Math.cos(phi), y:a*Math.sin(phi)};
+	B = {x:a*Math.cos(phi) + b*(Math.sqrt(1-(e/b-a/b*Math.sin(phi))^2)), y:e}
+	mechanism.del()
+			 .style("lw","6","fs","#D9EDF9","ls","#1B305C")
+			 .rec(B.x-30, B.y-15, 60, 30)
+			 .lin(0,0,A.x,A.y).lin(A.x,A.y,B.x,B.y)
+			 .style("fs","white")
+			 .cir(0,0,7).cir(A.x,A.y,7).cir(B.x,B.y,7);
 	g.exe(ctx);
-	window.requestAnimationFrame(step);
+	lastRefresh = time;
+	window.requestAnimationFrame(render);
 }
 
-for (var i = 0; i<numberOfRaindrops; i++) {  // create raindrops ...
-	raindrops.push({x:randomX(), y:randomY()});
-}
-window.requestAnimationFrame(step);  // start animation ..
-
-        </script>
-    </body>
+    </script>
+</body>
 </html>
