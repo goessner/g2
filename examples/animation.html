@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - Animation</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - Animation</h1>
+    <canvas id="c" width="400" height="180"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+var ctx = document.getElementById("c").getContext("2d");
+
+var g = g2({cartesian:true}),
+	mechanism = g2();
+	
+var a = 50, b = 150, e = 50, phi = 0, phi_speed = 5, lastRefresh, A0 = {x:70,y:70}, A, B;
+
+g.clr()
+ .grid()
+ .style("fs","rgba(150,200,200,0.3)","ls","grey","lj","round")
+ .cir(A0.x,A0.y,a)
+ .rec(A0.x+a+60,A0.y+e-20-20,200,20)
+ .use(mechanism,A0.x,A0.y,0,1);
+
+window.requestAnimationFrame(render);
+
+function render(time) {
+	phi = (phi - (time - lastRefresh || 0) * phi_speed / 1000) % (Math.PI*2);
+	A = {x:a*Math.cos(phi), y:a*Math.sin(phi)};
+	B = {x:a*Math.cos(phi) + b*(Math.sqrt(1-(e/b-a/b*Math.sin(phi))^2)), y:e}
+	mechanism.del()
+			 .style("lw","6","fs","#D9EDF9","ls","#1B305C")
+			 .rec(B.x-30, B.y-15, 60, 30)
+			 .lin(0,0,A.x,A.y).lin(A.x,A.y,B.x,B.y)
+			 .style("fs","white")
+			 .cir(0,0,7).cir(A.x,A.y,7).cir(B.x,B.y,7);
+	g.exe(ctx);
+	lastRefresh = time;
+	window.requestAnimationFrame(render);
+}
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - mouse drag</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - mouse drag</h1>
+    <canvas id="c" width="500", height="300"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+      var ctx = document.getElementById("c").getContext("2d"),
+          dirty = true,
+          sqr = {
+             x:100,y:80,a:20,hit:false,
+             move: function(dx,dy) { this.x+=dx; this.y+=dy; },
+             over: function(x,y) { var dx=x-this.x,dy=y-this.y; return dx<this.a && dx>-this.a && dy<this.a && dy>-this.a; },
+             draw: function(g) { return g.beg().style("ls",this.hit?"green":"orange","fs","#eee").rec(this.x-this.a,this.y-this.a,2*this.a,2*this.a).end(); }
+          },
+          origin = g2().beg().style("lw",2,"fs","snow","ls","blue").p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
+          mouseLoc = g2(),
+          geo = g2(),
+          g = g2({cartesian:true}).clr().grid().pan(10,10).use(origin).use(mouseLoc).use(geo);
+
+          function ptrPos(e,g) {
+             var rect = e.target.getBoundingClientRect(),
+                 x = e.clientX - Math.floor(rect.left) + e.target.scrollLeft,
+                 y = e.clientY - Math.floor(rect.top)  + e.target.scrollTop;
+             return g.pntToUsr(x,y,rect.height);
+          }
+          function onleave(e) { dirty = !(sqr.hit = false); return false; }
+          function onmove(e) {
+             var p = ptrPos(e,g,ctx), over = sqr.over(p.x,p.y);
+             if (sqr.hit) {
+                if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // button pressed ..
+                   var dp = g.vecToUsr(e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+                                       e.movementY || e.mozMovementY || e.webkitMovementY || 0);
+                   sqr.move(dp.x,dp.y);
+                   dirty = true;
+                }
+                else if (!over)
+                   dirty = !(sqr.hit = false);
+             }
+             else if (over) {
+                dirty = sqr.hit = true;
+             }
+
+             mouseLoc.del().txt("mouse: ("+p.x+","+p.y+")",10,280);
+             e.preventDefault(); 
+             return false; 
+          }
+             
+          ctx.canvas.addEventListener("mouseleave", onleave, false);
+          ctx.canvas.addEventListener("mousemove", onmove, false);
+
+          function render() { if (dirty) { sqr.draw(geo.del()); dirty = false; } g.exe(ctx); requestAnimationFrame(render); };
+
+          render();
+   </script>
+</body>
+</html>
