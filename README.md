@@ -5,7 +5,7 @@
 
 ### Why ###
 
-Who might need *yet another 2D graphics library* ? Well, *(non-software)* engineers and scientists mostly need an easy way to create some prototypal - static or interactive - web based graphics. 
+Who might need *yet another 2D graphics library* ? Well, *(non-software)* engineers and scientists mostly need an easy way to create some prototypal - static or interactive - web based graphics.
 They want a small and high performant library with a simple and intuitive API fully documented on a single page cheat sheet.
 
 
@@ -151,82 +151,7 @@ g.exe(ctx2);  // render to view 2
 But then, who knows better how to draw a shape than the shape itself? One or multiple lightweight *g2* objects may act here as neutral mediators between the model's shapes and the graphics context, as in: "Show me how to draw yourself, I will hand this recipe over to a suitable renderer later!"
 
 
-### Accompanying viewport object ###
-* cartesian coordinate system
-* zoom and pan
-* interactivity
-
-### Path commands ###
-*todo*
-
-### Element commands ###
-*todo*
-
-### Styling ###
-*todo*
-
-### Rendering commands ###
-*todo*
-
-### Saving and restoring state ###
-*todo*
-
-### Managing the command queue ###
-*todo*
-
-### Multiple *g2* objects ###
-#### Copying
-*todo*
-#### Referencing
-Reusing graphics defined by other *g2* objects is easily achived via the `use` command. The graphics being reused can be positioned, rotated and scaled.
-
-Syntax:
-```javascript
-use(g,x,y,ang,scl)
-    {object} g Reference to 'g2' object
-    {float}  x Position-x  [default 0]
-    {float}  y Position-y  [default 0]
-    {float}  ang Rotation angle  [default 0]
-    {float}  scl Scaling factor  [default 1]
-```
-Please note, that the `g2.use` command intentionally only supports *uniform (isotropic) scaling*.
-
-Example:
-```javascript
-var yinyang = g2().cir(0,0,5)
-                  .beg()
-                    .style("fs","@ls")  // use current 'ls' as fillStyle ...
-                    .p().m(0,-5).a(Math.PI,0,0).a(-Math.PI,0,5).a(-Math.PI,0,-5).z()
-                    .fill()
-                    .cir(0,-2.5,0.75)
-                  .end()
-                  .style("ls","@fs")   // use current 'fs' as lineStyle ...
-                  .cir(0,2.5,0.75)
-g2()
- .style("ls","#666","fs","#eee","lw",1,"lj","round")
- .use(yinyang,50,100,0,5)   // scaling lineWidth
- .style("lw",2,"lwnosc",true)
- .use(yinyang,150,100,0,5)  // nonscaling lineWidth
- .exe(document.getElementById("c").getContext("2d"));
-```
-Output: ![img-yinyang]
-
-##### Symbol libraries
-*todo*
-
-### Multiple graphics contexts ###
-* different viewports
-* layers
-
-### Animation ###
-* don't forget `del`.
-* don't forget `clr`.
-
-### Extending *g2* ###
-* using `cpy` command
-* plugins
-
-
+### Wiki ###
+See the [Wiki](/wiki/) to lern more about the usage of g2!
 
 [img01]: ./img/g2-concept.png "g2 command queue"
-[img-yinyang]: ./img/g2-yinyang.png "g2.use yinyang example"
