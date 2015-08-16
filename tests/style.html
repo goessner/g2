@@ -2,26 +2,26 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>g2 - lw</title>
+    <title>g2 - style</title>
     <style> canvas { border: 1px solid #000; } </style>
 </head>
 
 <body>
-    <h1>g2 - lw</h1>
+    <h1>g2 - style</h1>
     <canvas id="c" width="400" height="200"></canvas>
     <script src='../g2.js'></script>
     <script>
       var ctx = document.getElementById("c").getContext("2d"),
-          origin = g2().beg().style("lw",2,"fs","snow").p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
+          origin = g2().beg().style({lw:2,fs:"snow"}).p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
           g = g2({cartesian:true});
 
       g.clr().pan(10,10).grid().use(origin)
-       .style("ls","#789","lw",3,"ld",[2,2],"lwnosc",true)
+       .style({ls:"#789",lw:3,ld:[2,2],lwnosc:true})
        .rec(100,100,50,30)
        .beg(50,50,0,10)
          .rec(0,0,5,3)
        .end()
-       .exe(ctx).exe(ctx).exe(ctx);
+       .exe(ctx);
    </script>
 </body>
 </html>

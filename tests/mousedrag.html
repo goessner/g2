@@ -12,50 +12,61 @@
     <script src='../g2.js'></script>
     <script>
       var ctx = document.getElementById("c").getContext("2d"),
-          dirty = true,
           sqr = {
-             x:100,y:80,a:20,hit:false,
-             move: function(dx,dy) { this.x+=dx; this.y+=dy; },
-             over: function(x,y) { var dx=x-this.x,dy=y-this.y; return dx<this.a && dx>-this.a && dy<this.a && dy>-this.a; },
-             draw: function(g) { return g.beg().style("ls",this.hit?"green":"orange","fs","#eee").rec(this.x-this.a,this.y-this.a,2*this.a,2*this.a).end(); }
+             x:100,y:80,a:20,hit:false,dirty:true,
+             draw: function(g) { 
+                if (this.dirty) {
+                   g.del().beg().style("ls",this.hit?"green":"orange","fs","#eee").rec(this.x-this.a,this.y-this.a,2*this.a,2*this.a).end();
+                   this.dirty = false;
+                }
+             },
+             over: function(p) { var dx=p.x-this.x,dy=p.y-this.y; return dx<this.a && dx>-this.a && dy<this.a && dy>-this.a; },
+             drag: function(v) { this.x+=v.x; this.y+=v.y; },
+             onmove: function(g,e) {
+                var tg = e.target, rec = tg.getBoundingClientRect(),
+                    p = g.pntToUsr(e.clientX - Math.floor(rec.left) + tg.scrollLeft,
+                                   e.clientY - Math.floor(rec.top)  + tg.scrollTop,
+                                   rec.height),
+                    over = this.over(p);
+                if (this.hit) {
+                   if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // button pressed ..
+                      this.drag(g.vecToUsr(e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+                                           e.movementY || e.mozMovementY || e.webkitMovementY || 0));
+                      this.dirty = true;
+                   }
+                   else if (!over)
+                      this.dirty = !(this.hit = false);
+                }
+                else if (over)
+                   this.dirty = this.hit = true;
+
+                mouseLoc.del().txt("mouse: ("+p.x+","+p.y+")",10,280);
+                e.preventDefault(); 
+                return false; 
+             },
+             onenter: function(e) { 
+                ctx.canvas.addEventListener("mousemove", mousemoveHdl, false);
+                bg.grid(); 
+                return false; 
+             },
+             onleave: function(e) { 
+                ctx.canvas.removeEventListener("mousemove", mousemoveHdl, false);
+                bg.del();
+                this.dirty = !(this.hit = false); 
+                return false; 
+             }
           },
           origin = g2().beg().style("lw",2,"fs","snow","ls","blue").p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
           mouseLoc = g2(),
+          bg = g2(),
           geo = g2(),
-          g = g2({cartesian:true}).clr().grid().pan(10,10).use(origin).use(mouseLoc).use(geo);
+          g = g2({cartesian:true}).clr().use(bg).pan(10,10).use(origin).use(mouseLoc).use(geo),
+          mousemoveHdl = sqr.onmove.bind(sqr,g);
 
-          function ptrPos(e,g) {
-             var rect = e.target.getBoundingClientRect(),
-                 x = e.clientX - Math.floor(rect.left) + e.target.scrollLeft,
-                 y = e.clientY - Math.floor(rect.top)  + e.target.scrollTop;
-             return g.pntToUsr(x,y,rect.height);
-          }
-          function onleave(e) { dirty = !(sqr.hit = false); return false; }
-          function onmove(e) {
-             var p = ptrPos(e,g,ctx), over = sqr.over(p.x,p.y);
-             if (sqr.hit) {
-                if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) { // button pressed ..
-                   var dp = g.vecToUsr(e.movementX || e.mozMovementX || e.webkitMovementX || 0,
-                                       e.movementY || e.mozMovementY || e.webkitMovementY || 0);
-                   sqr.move(dp.x,dp.y);
-                   dirty = true;
-                }
-                else if (!over)
-                   dirty = !(sqr.hit = false);
-             }
-             else if (over) {
-                dirty = sqr.hit = true;
-             }
+          function render() { sqr.draw(geo); g.exe(ctx); requestAnimationFrame(render); }
 
-             mouseLoc.del().txt("mouse: ("+p.x+","+p.y+")",10,280);
-             e.preventDefault(); 
-             return false; 
-          }
-             
-          ctx.canvas.addEventListener("mouseleave", onleave, false);
-          ctx.canvas.addEventListener("mousemove", onmove, false);
-
-          function render() { if (dirty) { sqr.draw(geo.del()); dirty = false; } g.exe(ctx); requestAnimationFrame(render); };
+          ctx.canvas.addEventListener("mouseenter", sqr.onenter.bind(sqr), false);
+          ctx.canvas.addEventListener("mouseleave", sqr.onleave.bind(sqr), false);
 
           render();
    </script>

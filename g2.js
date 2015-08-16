@@ -8,11 +8,9 @@
 
 /* jshint -W030 */
 // Used polyfills
-Math.sign = Math.sign || function(x) { return +x > 0 ? 1 : (+x < 0 ? -1 : 0); };
 Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
-Object.setPrototypeOf = Object.setPrototypeOf || function(o,proto) { if (typeof(proto) === "object") o.__proto__ = proto; return o; };
-// Lightweight class definition (similar to ES6) based on Object.setPrototypeOf
-function Class(base,proto) { return proto ? Object.setPrototypeOf(proto,base) : Object.setPrototypeOf(base,{create: function() {var o = Object.create(this);o.constructor.apply(o,arguments);return o;}});}
+// Lightweight class definition (similar to ES6) based on __proto__ 
+function Class(base,proto) { if (proto) proto.__proto__ = base; return { create: function() { var o = Object.create(this); o.constructor.apply(o,arguments); return o; }, __proto__: proto || base }; }
 
 /**
  * Maintains a queue of 2D graphics commands.
@@ -43,6 +41,7 @@ function g2() {
 // === g2 statics ====
 /**
  * Current version.
+ * Using semantic versioning 'http://semver.org/'.
  * @type {string}
  * @const
  */
@@ -59,7 +58,7 @@ g2.prototype.constructor = function constructor(args) {
       this.state = g2.State.create();
       if (args.zoom) this.zoom(args.zoom.scl,args.zoom.x,args.zoom.y);
       if (args.pan)  this.pan(args.pan.dx,args.pan.dy);
-      if (args.trf)  this.trf0(args.trf.x,args.trf.y,args.trf.scl);
+      if (args.trf)  this.trf(args.trf.x,args.trf.y,args.trf.scl);
       if (args.cartesian) this.state.cartesian = args.cartesian;  // static property ...
    }
    this.cmds = [{c:constructor.cmd, a:[this]}];
@@ -123,7 +122,7 @@ g2.prototype.zoom = function zoom(scl,x,y) {
  * @param {float} y y-translation.
  * @param {float} scl Scaling factor.
  */
-g2.prototype.trf0 = function trf0(x,y,scl) {
+g2.prototype.trf = function trf(x,y,scl) {
    this.state = this.state || g2.State.create();
    this.state.trf0.x = x;
    this.state.trf0.y = y;
@@ -520,19 +519,29 @@ g2.prototype.arc.cmd = function arc_c(x,y,r,w,dw) {
  * @returns {object} this
  * @param {array} parr Array of points
  * @param {boolean} closed Draw closed polygon.
+ * @param {object} opts Options object.
+ *        { fmt:< "x,y"       Flat Array of x,y-values sequence [default]
+ *               |"[x,y]"     Array of [x,y] arrays
+ *               |"{x,y}">,   Array of {x:<x-val,y:<y-val>} objects
+ *          itr:<function(arr,idx)>     Has priority over 'fmt'.
+ *        }
  * @example
  *
  *   g2()
- *   .ply([[100,50],[120,60],[80,70]],false)
+ *   .ply([100,50,120,60,80,70]),
+ *   .ply([150,60],[170,70],[130,80]],true,{fmt:"[x,y]"}),
+ *   .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true,{fmt:"{x,y}"}),
  *   .exe(ctx);
  * ![Example](img/poly.png "Example")
  */
-g2.prototype.ply = function ply(parr,closed) {
-   this.cmds.push({c:ply.cmd,a:[parr,closed]});
+g2.prototype.ply = function ply(parr,closed,opts) {
+   var itr = opts && (opts.itr || opts.fmt && g2.prototype.ply.iterators[opts.fmt]) || false;
+   this.cmds.push({c:ply.cmd,a:[parr,closed,itr]});
    return this;
 };
-g2.prototype.ply.cmd = function ply_c(parr,closed) {
-   var p, i = 0, itr = g2.ply.itr;
+g2.prototype.ply.cmd = function ply_c(parr,closed,itr) {
+   var p, i = 0;
+   itr = itr || g2.prototype.ply.itr;
    p = itr(parr,i++);
    if (!p.done) {      // draw polygon ..
       this.beginPath();
@@ -546,15 +555,14 @@ g2.prototype.ply.cmd = function ply_c(parr,closed) {
    return i-1;  // number of points ..
 };
 
-g2.ply = {
-   iterators: {
-      "x,y":   function itr(arr,i) { return i < arr.length/2 ? {x:arr[2*i],y:arr[2*i+1]} : {done:true,count:arr.length/2}; },
-      "[x,y]": function itr(arr,i) { return i < arr.length ? {x:arr[i][0],y:arr[i][1]} : {done:true,count:arr.length}; },
-      "{x,y}": function itr(arr,i) { return i < arr.length ? arr[i] : {done:true,count:arr.length}; }
-   }
+// predefined polygon point iterators
+g2.prototype.ply.iterators = {
+   "x,y":   function itr(arr,i) { return i < arr.length/2 ? {x:arr[2*i],y:arr[2*i+1]} : {done:true,count:arr.length/2}; },
+   "[x,y]": function itr(arr,i) { return i < arr.length ? {x:arr[i][0],y:arr[i][1]} : {done:true,count:arr.length}; },
+   "{x,y}": function itr(arr,i) { return i < arr.length ? arr[i] : {done:true,count:arr.length}; }
 };
-// default polygon point iterator ... assume flat array
-g2.ply.itr = g2.ply.iterators["x,y"];
+// default polygon point iterator ... flat array
+g2.prototype.ply.itr = g2.prototype.ply.iterators["x,y"];
 
 /**
  * Begin subcommands. Style state is saved. Optionally apply (similarity) transformation.
@@ -616,7 +624,7 @@ g2.prototype.clr.cmd = function clr_c() {
  * @method
  * @returns {object} g2
  * @param {string} color CSS grid color
- * @param {float}  size  Grid size (if g2 has a viewport object assigned, viewport's grid size is more relevant).
+ * @param {float}  size  Grid size.
  */
 g2.prototype.grid = function grid(color,size) {
    this.state = this.state || g2.State.create();
@@ -629,7 +637,7 @@ g2.prototype.grid.cmd = function grid_c(self,color,size) {
    var state = self.state, trf = state.get("trf"),
        cartesian = state.cartesian,
        b = this.canvas.width, h = this.canvas.height,
-       sz = size || g2.prototype.grid.getSize(state,trf.scl),
+       sz = size || g2.prototype.grid.getSize(state,trf ? trf.scl : 1),
        xoff = trf.x ? trf.x%sz-sz : 0, yoff = trf.y ? trf.y%sz-sz : 0;
 
    this.save();
@@ -644,8 +652,8 @@ g2.prototype.grid.cmd = function grid_c(self,color,size) {
    this.restore();
 };
 g2.prototype.grid.getSize = function(state,scl) {
-   var base = state.gridBase,
-       exp = state.gridExp,
+   var base = state.gridBase || 2,
+       exp = state.gridExp || 1,
        sz;
    while ((sz = scl*base*Math.pow(10,exp)) < 14 || sz > 35) {
       if (sz < 14) {
@@ -708,19 +716,23 @@ g2.prototype.use.cmd = function use_c(self,g,x,y,w,scl) {
 
 // style command ..
 g2.prototype.style = function style() {
-   if (arguments && arguments.length)   // even number of arguments required .. not tested here ?
-      this.cmds.push({c:style.cmd,a:[this,Array.prototype.slice.call(arguments)]});
+   if (arguments) {
+      if (arguments.length > 1) {  // old style api with flat "name","value" pair list ... will be deprecated some time.
+         var styleObj = {};
+         for (var i=0; i<arguments.length; i+=2)
+            styleObj[arguments[i]] = arguments[i+1];
+         this.cmds.push({c:style.cmd,a:[this,styleObj]});
+      }
+      else if (typeof arguments[0] === "object")  // new style api ... arguments.length === 1
+         this.cmds.push({c:style.cmd,a:[this,arguments[0]]});
+   }
    return this;
 };
 g2.prototype.style.cmd = function style_c(self,list) {
-   var state=self.state,name,val;
-   for (var i=0; i<list.length; i+=2) {
-      name = list[i];
-      val = list[i+1];
-      val = typeof val === "string" && val[0] === "@"
-          ? state.get(val.substr(1),this)
-          : val;
-      state.set(name,val,this);
+   var state=self.state, val;
+   for (var m in list) {
+      val = list[m];
+      state.set(m, typeof val === "string" && val[0] === "@" ? state.get(val.substr(1),this) : val, this);
    }
 };
 
@@ -895,7 +907,7 @@ g2.State = Class({
       if (fow !== "normal") font += fow + " ";
       font += foz + "px " + fof;
       return font;
-   },
+   }
 });
 
 // initial state values ... corresponding to Canvas Context ...
@@ -1042,4 +1054,4 @@ g2.State.filter = {
 };
 
 // create symbol namespace ..
-g2.symbol = {};
+g2.symbol = Object.create(null); // {};
