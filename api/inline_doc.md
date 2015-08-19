@@ -18,7 +18,7 @@ Maintains a queue of 2D graphics commands.
     * [.cartesian()](#g2+cartesian) ⇒ <code>object</code>
     * [.pan(dx, dy)](#g2+pan) ⇒ <code>object</code>
     * [.zoom(scl, [x], [y])](#g2+zoom) ⇒ <code>object</code>
-    * [.trf0(x, y, scl)](#g2+trf0) ⇒ <code>object</code>
+    * [.trf(x, y, scl)](#g2+trf) ⇒ <code>object</code>
     * [.pntToUsr(x, y, h)](#g2+pntToUsr) ⇒ <code>object</code>
     * [.vecToUsr(x, y)](#g2+vecToUsr) ⇒ <code>object</code>
     * [.p()](#g2+p) ⇒ <code>object</code>
@@ -37,7 +37,7 @@ Maintains a queue of 2D graphics commands.
     * [.rec(x, y, b, h)](#g2+rec) ⇒ <code>object</code>
     * [.cir(x, y, r)](#g2+cir) ⇒ <code>object</code>
     * [.arc(x, y, r, [w], [dw])](#g2+arc) ⇒ <code>object</code>
-    * [.ply(parr, [closed])](#g2+ply) ⇒ <code>object</code>
+    * [.ply(parr, [closed], opts)](#g2+ply) ⇒ <code>object</code>
     * [.beg(x, y, w, scl)](#g2+beg) ⇒ <code>object</code>
     * [.end()](#g2+end) ⇒ <code>object</code>
     * [.clr()](#g2+clr) ⇒ <code>object</code>
@@ -83,8 +83,8 @@ Zoom within a viewport.
 | [x] | <code>float</code> | <code>0</code> | x-component of zoom center. |
 | [y] | <code>float</code> | <code>0</code> | y-component of zoom center. |
 
-<a name="g2+trf0"></a>
-### g2.trf0(x, y, scl) ⇒ <code>object</code>
+<a name="g2+trf"></a>
+### g2.trf(x, y, scl) ⇒ <code>object</code>
 Set transform directly within a viewport.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -101,20 +101,20 @@ Set transform directly within a viewport.
 Get user coordinates from canvas coordinates for point (with respect to initial transform).
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
-**Returns**: <code>object</code> - v2  
+**Returns**: <code>object</code> - User coordinates  {x, y}  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | x | <code>float</code> | x-translation. |
 | y | <code>float</code> | y-translation. |
-| h | <code>float</code> | Viewport (canvas) height. |
+| h | <code>float</code> | Viewport (canvas) height. Only needed in cartesian coordinate system. |
 
 <a name="g2+vecToUsr"></a>
 ### g2.vecToUsr(x, y) ⇒ <code>object</code>
 Get user coordinates from canvas coordinates for direction vector (with respect to initial transform).
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
-**Returns**: <code>object</code> - v2  
+**Returns**: <code>object</code> - User coordinates {x, y}  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -136,8 +136,8 @@ Move to point.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>float</code> &#124; <code>array</code> &#124; <code>object</code> | Point x coordinate. |
-| y | <code>float</code> &#124; <code>undefined</code> | Point y coordinate. |
+| x | <code>float</code> &#124; <code>array</code> &#124; <code>object</code> | Point x coordinate |
+| y | <code>float</code> &#124; <code>undefined</code> | Point y coordinate |
 
 <a name="g2+l"></a>
 ### g2.l(x, y) ⇒ <code>object</code>
@@ -355,20 +355,21 @@ Draw arc. No fill applied.  ![Example](img/arc.png "Example")
 var g = g2();g.arc(300,400,390,-Math.PI/4,-Math.PI/2) .exe(ctx);
 ```
 <a name="g2+ply"></a>
-### g2.ply(parr, [closed]) ⇒ <code>object</code>
-Draw polygon.  Using iterator function getting array and point index as parametersreturning corresponding point object {x:<float>,y:<float>} [optional].Default iterator expects sequence of x/y-coordinates as a flat array ([x0,y0,x1,y1,...])
+### g2.ply(parr, [closed], opts) ⇒ <code>object</code>
+Draw polygon.Using iterator function getting array and point index as parametersreturning corresponding point object {x:<float>,y:<float>} [optional].Default iterator expects sequence of x/y-coordinates as a flat array ([x0,y0,x1,y1,...])
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
-**Returns**: <code>object</code> - g2  
+**Returns**: <code>object</code> - this  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | parr | <code>array</code> |  | Array of points |
 | [closed] | <code>boolean</code> | <code>false</code> | Draw closed polygon. |
+| opts | <code>object</code> |  | Options object.        { fmt:< "x,y"       Flat Array of x,y-values sequence [default]               |"[x,y]"     Array of [x,y] arrays               |"{x,y}">,   Array of {x:<x-val,y:<y-val>} objects          itr:<function(arr,idx)>     Has priority over 'fmt'.        } |
 
 **Example**  
 ```js
-var g = g2();g.ply([[100,50,120,60,80,70]], false) .exe(ctx);
+g2().ply([100,50,120,60,80,70]),    .ply([150,60],[170,70],[130,80]],true,{fmt:"[x,y]"}),    .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true,{fmt:"{x,y}"}),    .exe(ctx);
 ```
 <a name="g2+beg"></a>
 ### g2.beg(x, y, w, scl) ⇒ <code>object</code>
@@ -395,7 +396,7 @@ End subcommands. Previous style state is restored.
 Clear canvas.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
-**Returns**: <code>object</code> - this  
+**Returns**: <code>object</code> - g2  
 <a name="g2+grid"></a>
 ### g2.grid([color], [size]) ⇒ <code>object</code>
 Show grid.
@@ -492,13 +493,15 @@ Convert g2 command queue to JSON formatted string.
 
 <a name="g2.symbol"></a>
 ### g2.symbol : <code>object</code>
+Namespace for symbol objects. A symbol can be used by `use("symbolname")`.
+
 **Kind**: static property of <code>[g2](#g2)</code>  
-**Todo**
-
-- [ ] description
-
+**Example**  
+```js
+g2.symbol.circle = g2().cir(0,0,1);            // Define symbol of unit size '1'g2().use("circle", 100, 100, 0, 50).exe(ctx);  // Draw circle with radius 50 at position 100|100
+```
 <a name="g2.version"></a>
 ### g2.version : <code>string</code>
-Current version.
+Current version.Using semantic versioning 'http://semver.org/'.
 
 **Kind**: static constant of <code>[g2](#g2)</code>  

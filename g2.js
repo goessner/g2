@@ -14,22 +14,19 @@ function Class(base,proto) { if (proto) proto.__proto__ = base; return { create:
 
 /**
  * Maintains a queue of 2D graphics commands.
- * @class
- * @classdesc Maintains a queue of 2D graphics commands.
- * @param {object} args Arguments object [Optional] with one or more members of the following ..
+ * @param {object} [args] Arguments object with one or more members of the following:
  *                 { cartesian: <boolean>,
  *                   pan: { dx:<float>, dy:<float> },
  *                   zoom: { x:<float>, y:<float> }, scl:<float> },
  *                   trf: { x:<float>, y:<float> }, scl:<float> }
  *                 }
  * @example
- *
  * // How to use g2()
- * var ctx = document.getElementById("g").getContext("2d"); // Get your canvas context.
- * g2()                 // The first call of g2() creates an g2 object and returns itself.
- *  .lin(50,50,100,100) // Append commands.
+ * var ctx = document.getElementById("c").getContext("2d"); // Get your canvas context.
+ * g2()                  // The first call of g2() creates a g2 object and returns itself.
+ *  .lin(50,50,100,100)  // Append commands.
  *  .lin(100,100,200,50)
- *  .exe(ctx);          // Execute commands.
+ *  .exe(ctx);           // Execute commands.
  */
 function g2() {
    if (this instanceof g2)
@@ -49,9 +46,10 @@ g2.version = "1.0.0";
 g2.transparent = "rgba(0, 0, 0, 0)";
 
 /**
- * constructor.
+ * Constructor.
  * @method
  * @returns {object} g2
+ * @private
  */
 g2.prototype.constructor = function constructor(args) {
    if (args) {  // only root g2's should have arguments ...
@@ -75,7 +73,7 @@ g2.prototype.constructor.cmd = function constructor_c(self) {
 };
 
 /**
- * Set cartesian coordinates mode.
+ * Set cartesian coordinates mode within a viewport.
  * @method
  * @returns {object} g2
  */
@@ -85,11 +83,11 @@ g2.prototype.cartesian = function cartesian() {
 };
 
 /**
- * Set initial transform by pan.
+ * Pan a distance within a viewport.
  * @method
  * @returns {object} g2
- * @param {float} dx x-component to pan
- * @param {float} dy y-component to pan
+ * @param {float} dx x-component to pan.
+ * @param {float} dy y-component to pan.
  */
 g2.prototype.pan = function pan(dx,dy) {
    this.state = this.state || g2.State.create();
@@ -99,12 +97,12 @@ g2.prototype.pan = function pan(dx,dy) {
 };
 
 /**
- * Set initial transform by zoom.
+ * Zoom within a viewport.
  * @method
  * @returns {object} g2
- * @param {float} scl zoom scaling factor.
- * @param {float} x x-component of zoom center.
- * @param {float} y y-component of zoom center.
+ * @param {float} scl Scaling factor.
+ * @param {float} [x=0] x-component of zoom center.
+ * @param {float} [y=0] y-component of zoom center.
  */
 g2.prototype.zoom = function zoom(scl,x,y) {
    this.state = this.state || g2.State.create();
@@ -115,7 +113,7 @@ g2.prototype.zoom = function zoom(scl,x,y) {
 };
 
 /**
- * Set initial transform directly.
+ * Set transform directly within a viewport.
  * @method
  * @returns {object} g2
  * @param {float} x x-translation.
@@ -133,10 +131,10 @@ g2.prototype.trf = function trf(x,y,scl) {
 /**
  * Get user coordinates from canvas coordinates for point (with respect to initial transform).
  * @method
- * @returns {object} v2
+ * @returns {object} User coordinates  {x, y}
  * @param {float} x x-translation.
  * @param {float} y y-translation.
- * @param {float} h Viewport (canvas) height.
+ * @param {float} h Viewport (canvas) height. Only needed in cartesian coordinate system.
  */
 g2.prototype.pntToUsr = function pntToUsr(x,y,h) {
    var trf = this.state && this.state.trf0 || false;
@@ -148,7 +146,7 @@ g2.prototype.pntToUsr = function pntToUsr(x,y,h) {
 /**
  * Get user coordinates from canvas coordinates for direction vector (with respect to initial transform).
  * @method
- * @returns {object} v2
+ * @returns {object} User coordinates {x, y}
  * @param {float} x x-translation.
  * @param {float} y y-translation.
  */
@@ -199,21 +197,19 @@ g2.prototype.m = function m(x,y) {
 };
 
 /**
- * Draw line to point.
+ * Create line to point.
  * @method
  * @returns {object} g2
- * @param {float} x Point x coordinate
- * @param {float} y Point y coordinate
+ * @param {float} x Point x coordinate.
+ * @param {float} y Point y coordinate.
  * @example
- *
- *   g2()
- *   .p()
- *   .m(0,50)
- *   .l(300,0)
- *   .l(400,100)
- *   .stroke()
- *   .exe(ctx);
- * ![Example](img/line.png "Example")
+ * var g = g2();  // Create g2 object.
+ * g.p()          // Begin path.
+ *  .m(0,50)      // Move to point.
+ *  .l(300,0)     // Create line to point.
+ *  .l(400,100)   // ...
+ *  .stroke()     // Stroke path.
+ *  .exe(ctx);    // Render to canvas context.
  */
 g2.prototype.l = function l(x,y) {
    this.cmds.push({c:CanvasRenderingContext2D.prototype.lineTo,a:[x,y]});
@@ -221,22 +217,21 @@ g2.prototype.l = function l(x,y) {
 };
 
 /**
- * Draw quadratic bezier curve to point.
+ * Create quadratic bezier curve to point.  
+ * ![Example](img/quadratic.png "Example")
  * @method
  * @returns {object} g2
- * @param {float} x1 x coordinate of control point
- * @param {float} y1 y coordinate of control point
- * @param {float} x x coordinate of point
- * @param {float} y y coordinate of point
+ * @param {float} x1 x coordinate of control point.
+ * @param {float} y1 y coordinate of control point.
+ * @param {float} x x coordinate of point.
+ * @param {float} y y coordinate of point.
  * @example
- *
- *   g2()
- *   .p()
- *   .m(0,0)
- *   .q(200,200,400,0)
- *   .stroke()
- *   .exe(ctx);
- * ![Example](img/quadratic.png "Example")
+ * var g = g2();       // Create g2 object.
+ * g.p()               // Begin path.
+ *  .m(0,0)            // Move to point.
+ *  .q(200,200,400,0)  // Create quadratic bezier curve.
+ *  .stroke()          // Stroke path.
+ *  .exe(ctx);         // Render to canvas context.
  */
 g2.prototype.q = function q(x1,y1,x,y) {
    this.cmds.push({c:CanvasRenderingContext2D.prototype.quadraticCurveTo,a:[x1,y1,x,y],cp:[x,y]});
@@ -244,24 +239,23 @@ g2.prototype.q = function q(x1,y1,x,y) {
 };
 
 /**
- * Draw cubic bezier curve to point.
+ * Create cubic bezier curve to point.  
+ * ![Example](img/curve.png "Example")
  * @method
  * @returns {object} g2
- * @param {float} x1 x coordinate of first control point
- * @param {float} y1 y coordinate of first control point
- * @param {float} x2 x coordinate of second control point
- * @param {float} y2 y coordinate of second control point
- * @param {float} x x coordinate of endpoint
- * @param {float} y y coordinate of endpoint
+ * @param {float} x1 x coordinate of first control point.
+ * @param {float} y1 y coordinate of first control point.
+ * @param {float} x2 x coordinate of second control point.
+ * @param {float} y2 y coordinate of second control point.
+ * @param {float} x x coordinate of endpoint.
+ * @param {float} y y coordinate of endpoint.
  * @example
- *
- *   g2()
- *   .p()
- *   .m(0,100)
- *   .c(100,200,200,0,400,100)
- *   .stroke()
- *   .exe(ctx);
- * ![Example](img/curve.png "Example")
+ * var g = g2();                // Create g2 object.
+ * g.p()                        // Begin path.
+ *  .m(0,100)                   // Move to point.
+ *  .c(100,200,200,0,400,100)   // Create cubic bezier curve.
+ *  .stroke()                   // Stroke path.
+ *  .exe(ctx);                  // Render to canvas context.
  */
 g2.prototype.c = function c(x1,y1,x2,y2,x,y) {
    this.cmds.push({c:CanvasRenderingContext2D.prototype.bezierCurveTo,a:[x1,y1,x2,y2,x,y],cp:[x,y]});
@@ -270,21 +264,20 @@ g2.prototype.c = function c(x1,y1,x2,y2,x,y) {
 
 // arc path command
 /**
- * Draw arc with angular range dw to point [x,y].
+ * Draw arc with angular range dw to point.  
+ * ![Example](img/a.png "Example")
  * @method
  * @returns {object} g2
  * @param {float} dw Angle in radians. Can be positive or negative.
- * @param {float} x Target x coordinate
- * @param {float} y Target y coordinate
+ * @param {float} x Target x coordinate.
+ * @param {float} y Target y coordinate.
  * @example
- *
- *   g2()
- *   .p()
- *   .m(50,50)
- *   .a(2,300,100)
- *   .stroke()
- *   .exe(ctx);
- * ![Example](img/a.png "Example")
+ * var g = g2();    // Create g2 object.
+ * g.p()            // Begin path.
+ *  .m(50,50)       // Move to point.
+ *  .a(2,300,100)   // Create cubic bezier curve.
+ *  .stroke()       // Stroke path.
+ *  .exe(ctx);      // Render to canvas context.
  */
 g2.prototype.a = function a(dw,x,y) {
    var p1 = this._curPnt();
@@ -310,7 +303,7 @@ g2.prototype.z = function z() {
 /**
  * Stroke the current path or path object.
  * @method
- * @param {object} p Path2D object
+ * @param {object} [p] Path2D object
  * @returns {object} g2
  */
 g2.prototype.stroke = function stroke(p) {
@@ -322,7 +315,7 @@ g2.prototype.stroke = function stroke(p) {
 /**
  * Fill the current path or path object.
  * @method
- * @param {object} p Path2D object
+ * @param {object} [p] Path2D object
  * @returns {object} g2
  */
 g2.prototype.fill = function fill(p) {
@@ -335,7 +328,7 @@ g2.prototype.fill = function fill(p) {
  * Shortcut for stroke and fill the current path or path object.
  * In case of shadow, only the path interior creates shadow, not the path contour additionally.
  * @method
- * @param {object} p Path2D object [optional]
+ * @param {object} [p] Path2D object
  * @returns {object} g2
  */
 g2.prototype.drw = function drw(p) {
@@ -362,9 +355,9 @@ g2.prototype.drw.cmd = function drw_c(p) {
  * @method
  * @returns {object} g2
  * @param {string} s Drawing text
- * @param {float} x x coordinate of text position
- * @param {float} y y coordinate of text position
- * @param {float} maxWidth Currently not used due to Chrome 36 (can't deal with 'undefined')
+ * @param {float} [x=0] x coordinate of text position.
+ * @param {float} [y=0] y coordinate of text position.
+ * @param {float} [maxWidth] Currently not used due to Chrome 36 (can't deal with 'undefined').
  */
 g2.prototype.txt = function txt(s,x,y,maxWidth) {
    this.cmds.push({c:txt.cmd,a:[this,s,x||0,y||0,maxWidth]});
@@ -387,18 +380,18 @@ g2.prototype.txt.cmd = function txt_c(self,s,x,y,maxWidth) {
 };
 
 /**
- * Draw image
+ * Draw image.  
  * @method
- * @returns {object} this
- * @param {string} uri Image uri or data:url.
- * @param {float} x X-coordinate of image (upper left)
- * @param {float} y Y-coordinate of image (upper left)
- * @param {float} b Width. [optional]
- * @param {float} h Height. [optional]
- * @param {float} xoff X-offset. [optional]
- * @param {float} yoff Y-offset. [optional]
- * @param {float} dx X-delta. [optional]
- * @param {float} dy Y-delta. [optional]
+ * @returns {object} g2
+ * @param {string} uri Image uri or data:url. On error: Broken Image will be loaded.
+ * @param {float} [x=0] X-coordinate of image (upper left).
+ * @param {float} [y=0] Y-coordinate of image (upper left).
+ * @param {float} [b] Width.
+ * @param {float} [h] Height.
+ * @param {float} [xoff] X-offset.
+ * @param {float} [yoff] Y-offset.
+ * @param {float} [dx] X-delta.
+ * @param {float} [dy] Y-delta.
  */
 g2.prototype.img = function img(uri,x,y,b,h,xoff,yoff,dx,dy) {
    var image = new Image(), state = this.state ? this.state
@@ -425,15 +418,14 @@ g2.prototype.img.broken = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM///
  * Draw line.
  * @method
  * @returns {object} g2
- * @param {float} x1 Start x coordinate
- * @param {float} y1 Start y coordinate
- * @param {float} x2 End x coordinate
- * @param {float} y2 End y coordinate
+ * @param {float} x1 Start x coordinate.
+ * @param {float} y1 Start y coordinate.
+ * @param {float} x2 End x coordinate.
+ * @param {float} y2 End y coordinate.
  * @example
- *
- *   g2()
- *   .lin(10,10,190,10)
- *   .exe(ctx);
+ * var g = g2();        // Create g2 object.
+ * g.lin(10,10,190,10)  // Draw line.
+ *  .exe(ctx);          // Render to canvas context.
  */
 g2.prototype.lin = function lin(x1,y1,x2,y2) {
    this.cmds.push({c:lin.cmd,a:[x1,y1,x2,y2]});
@@ -450,10 +442,14 @@ g2.prototype.lin.cmd = function lin_c(x1,y1,x2,y2) {
  * Draw rectangle.
  * @method
  * @returns {object} g2
- * @param {float} x X-value upper left corner
- * @param {float} y Y-value  upper left corner
- * @param {float} b Width
- * @param {float} h Height
+ * @param {float} x x-value upper left corner.
+ * @param {float} y y-value upper left corner.
+ * @param {float} b Width.
+ * @param {float} h Height.
+ * @example
+ * var g = g2();        // Create g2 object.
+ * g.rec(100,80,40,30)  // Draw rectangle.
+ *  .exe(ctx);          // Render to canvas context.
  */
 g2.prototype.rec = function rec(x,y,b,h) {
    this.cmds.push({c:rec.cmd,a:[x,y,b,h]});
@@ -469,9 +465,13 @@ g2.prototype.rec.cmd = function rec_c(x,y,b,h) {
  * Draw circle.
  * @method
  * @returns {object} g2
- * @param {float} x X-value center
- * @param {float} y Y-value center
- * @param {float} r Radius
+ * @param {float} x x-value center.
+ * @param {float} y y-value center.
+ * @param {float} r Radius.
+ * @example
+ * var g = g2();     // Create g2 object.
+ * g.cir(100,80,20)  // Draw circle.
+ *  .exe(ctx);       // Render to canvas context.
  */
 g2.prototype.cir = function cir(x,y,r) {
    this.cmds.push({c:cir.cmd,a:[x,y,r]});
@@ -484,21 +484,20 @@ g2.prototype.cir.cmd = function cir_c(x,y,r) {
 };
 
 /**
- * Draw arc. No fill applied.
+ * Draw arc. No fill applied.  
+ * ![Example](img/arc.png "Example")
  * @method
  * @returns {object} g2
- * @param {float} x X-value center
- * @param {float} y Y-value center
- * @param {float} r Radius
- * @param {float} w Start angle (in radian) [default 0]
- * @param {float} dw Angular range in radian. In case of positive values it is running clockwise with
- *                left handed default coordinate system. [default 2*pi]
+ * @param {float} x x-value center.
+ * @param {float} y y-value center.
+ * @param {float} r Radius.
+ * @param {float} [w=0] Start angle (in radian).
+ * @param {float} [dw=2*pi] Angular range in radian. In case of positive values it is running clockwise with
+ *                left handed default coordinate system.
  * @example
- *
- *   g2()
- *   .arc(300,400,390,-Math.PI/4,-Math.PI/2)
- *   .exe(ctx);
- * ![Example](img/arc.png "Example")
+ * var g = g2();
+ * g.arc(300,400,390,-Math.PI/4,-Math.PI/2)
+ *  .exe(ctx);
  */
 g2.prototype.arc = function arc(x,y,r,w,dw) {
    this.cmds.push({c:arc.cmd,a:[x,y,r,w,dw]});
@@ -518,7 +517,7 @@ g2.prototype.arc.cmd = function arc_c(x,y,r,w,dw) {
  * @method
  * @returns {object} this
  * @param {array} parr Array of points
- * @param {boolean} closed Draw closed polygon.
+ * @param {boolean} [closed=false] Draw closed polygon.
  * @param {object} opts Options object.
  *        { fmt:< "x,y"       Flat Array of x,y-values sequence [default]
  *               |"[x,y]"     Array of [x,y] arrays
@@ -526,13 +525,10 @@ g2.prototype.arc.cmd = function arc_c(x,y,r,w,dw) {
  *          itr:<function(arr,idx)>     Has priority over 'fmt'.
  *        }
  * @example
- *
- *   g2()
- *   .ply([100,50,120,60,80,70]),
- *   .ply([150,60],[170,70],[130,80]],true,{fmt:"[x,y]"}),
- *   .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true,{fmt:"{x,y}"}),
- *   .exe(ctx);
- * ![Example](img/poly.png "Example")
+ * g2().ply([100,50,120,60,80,70]),
+ *     .ply([150,60],[170,70],[130,80]],true,{fmt:"[x,y]"}),
+ *     .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true,{fmt:"{x,y}"}),
+ *     .exe(ctx);
  */
 g2.prototype.ply = function ply(parr,closed,opts) {
    var itr = opts && (opts.itr || opts.fmt && g2.prototype.ply.iterators[opts.fmt]) || false;
@@ -568,10 +564,10 @@ g2.prototype.ply.itr = g2.prototype.ply.iterators["x,y"];
  * Begin subcommands. Style state is saved. Optionally apply (similarity) transformation.
  * @method
  * @returns {object} g2
- * @param {float} x Translation value x
- * @param {float} y Translation value y
- * @param {float} w Rotation angle (in radians)
- * @param {float} scl Scale factor
+ * @param {float} x Translation value x.
+ * @param {float} y Translation value y.
+ * @param {float} w Rotation angle (in radians).
+ * @param {float} scl Scale factor.
  */
 g2.prototype.beg = function beg(x,y,w,scl) {
    this.cmds.push({c:beg.cmd, a:(arguments.length ? [this,x||0,y||0,w||0,scl||1] : [this]), open:true});
@@ -605,7 +601,7 @@ g2.prototype.end.isBeg = function(cmd) {
 /**
  * Clear canvas.
  * @method
- * @returns {object} this
+ * @returns {object} g2
  */
 g2.prototype.clr = function clr() {
    this.cmds.push({c:clr.cmd});
@@ -623,8 +619,8 @@ g2.prototype.clr.cmd = function clr_c() {
  * Show grid.
  * @method
  * @returns {object} g2
- * @param {string} color CSS grid color
- * @param {float}  size  Grid size.
+ * @param {string} [color=#ccc] CSS grid color.
+ * @param {float} [size] Grid size (if g2 has a viewport object assigned, viewport's grid size is more relevant).
  */
 g2.prototype.grid = function grid(color,size) {
    this.state = this.state || g2.State.create();
@@ -678,19 +674,16 @@ g2.prototype.grid.getSize = function(state,scl) {
  * while applying a similarity transformation on them.
  * In fact you might want to build custom graphics libraries on top of that feature.
  * @method
- * @returns {object} this
+ * @returns {object} g2
  * @param {object | string} g g2 source object or symbol name found in 'g2.symbol' namespace.
- * @param {float} x Drawing x position
- * @param {float} y Drawing y position
- * @param {float} w Rotation Angle (in radians)
- * @param {float} Scale Factor x
+ * @param {float} [x=0] Drawing x position.
+ * @param {float} [y=0] Drawing y position.
+ * @param {float} [w=0] Rotation Angle (in radians).
+ * @param {float} [scl=1] Scale Factor.
  * @example
- *
- *	var symbol = g2().rec(0,0,30,10).lin(30,5,50,5,"arrow");
- *	g2()
- *	.use(symbol,10,10,0,3,3)
- *	.exe(ctx);
- * ![Example](img/sym.png "Example")
+ * g2.symbol.circle = g2().cir(0,0,1);  // Define symbol of unit size '1'.
+ * g2().use("circle", 100, 100, 0, 50)  // Draw circle with radius 50 at position 100|100.
+ *     .exe(ctx);                       // Render to canvas context.
  */
 g2.prototype.use = function use(g,x,y,w,scl) {
    if (typeof g === "string")  // must be a member name of the 'g2.symbol' namespace
@@ -715,6 +708,14 @@ g2.prototype.use.cmd = function use_c(self,g,x,y,w,scl) {
 };
 
 // style command ..
+/**
+ * @method
+ * @returns {object} g2
+ * @todo description
+ * @todo list
+ * @param {string} name
+ * @param {string | float | int | array | bool} val
+ */
 g2.prototype.style = function style() {
    if (arguments) {
       if (arguments.length > 1) {  // old style api with flat "name","value" pair list ... will be deprecated some time.
@@ -741,8 +742,8 @@ g2.prototype.style.cmd = function style_c(self,list) {
  * Execute g2 commands.
  * @method
  * @returns {object} g2
- * @param {object} ctx Canvas Context
- * @param {object} g g2 Object to execute. [default=this] [optional]
+ * @param {object} ctx Canvas Context.
+ * @param {object} [g=this] g2 Object to execute.
  */
 g2.prototype.exe = function exe(ctx,g) {
    var cmds = (g || this).cmds;
@@ -763,18 +764,20 @@ g2.prototype.exe = function exe(ctx,g) {
 };
 
 /**
- * Copy all g2 graphics commands from another g2 object.
+ * Copy all g2 graphics commands from a g2 object. The copied commands are discrete and independent.
  * @method
- * @returns {object} this
+ * @returns {object} g2
  * @param {object} g g2 object to copy commands from.
  * @example
- *
- *   var myStyle = g2().fs("#ccc").ls("green").lw(5);
- *   g2()
- *   .cpy(myStyle)
- *   .rec(10,10,200,50)
- *   .exe(ctx);
- * ![Example](img/cpy.png "Example")
+ * var circle = g2().cir(100,100,50);
+ * g2().cpy(circle);  // Copy all commands from 'circle'.
+ * @example
+ * function circle(g) {
+ *    // do some calculations to define a circle for sorts
+ *    return g.cir(100,100,50)
+ * }
+ * var g = g2();
+ * g.cpy(circle(g));
  */
 g2.prototype.cpy = function cpy(g) {
    if (g !== this)
@@ -793,9 +796,9 @@ g2.prototype.del = function del() { // see http://jsperf.com/truncating-arrays-c
 };
 
 /**
- * Convert g2 command stack to JSON formatted string.
- * @param {string} space Number of spaces to use for indenting JSON output [optional].
- * @return {string} JSON string of command stack.
+ * Convert g2 command queue to JSON formatted string.
+ * @param {string} [space] Number of spaces to use for indenting JSON output.
+ * @return {string} JSON string of command queue.
  */
 g2.prototype.dump = function(space) {
    function trace(obj) {
@@ -1054,4 +1057,11 @@ g2.State.filter = {
 };
 
 // create symbol namespace ..
+/**
+ * Namespace for symbol objects. A symbol can be used by `use("symbolname")`.
+ * @type {object}
+ * @example
+ * g2.symbol.circle = g2().cir(0,0,1);            // Define symbol of unit size '1'
+ * g2().use("circle", 100, 100, 0, 50).exe(ctx);  // Draw circle with radius 50 at position 100|100
+ */
 g2.symbol = Object.create(null); // {};
