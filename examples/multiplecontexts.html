@@ -71,8 +71,8 @@ function createSector() {
 	g_sector.del().style("ls","red").rec(x,y,w,h);
 }
 function render() {
-	g.trf0(ctx1.canvas.offsetWidth/2-zoomCenterX*zoomFactor,ctx1.canvas.offsetHeight/2-zoomCenterY*zoomFactor,zoomFactor).exe(ctx1);
-	g.trf0(0,0,1).exe(ctx2);
+	g.trf(ctx1.canvas.offsetWidth/2-zoomCenterX*zoomFactor,ctx1.canvas.offsetHeight/2-zoomCenterY*zoomFactor,zoomFactor).exe(ctx1);
+	g.trf(0,0,1).exe(ctx2);
 	g_sector.exe(ctx2);
 }
 	
