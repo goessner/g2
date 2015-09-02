@@ -152,6 +152,6 @@ But then, who knows better how to draw a shape than the shape itself? One or mul
 
 
 ### Wiki ###
-See the [Wiki](https://github.com/goessner/g2/wiki) to lern more about the usage of g2!
+See the [Wiki](https://github.com/goessner/g2/wiki) to learn more about the usage of g2!
 
 [img01]: ./img/g2-concept.png "g2 command queue"
