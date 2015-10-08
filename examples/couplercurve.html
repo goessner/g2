@@ -24,11 +24,11 @@
         return { rA:{x:ax,y:ay}, rB:{x:ax + kappa*gx - nu*gy,y: ay + kappa*gy + nu*gx} };
      }
      function drawFourbar(g,rA,rB,rC,rB0) {
-        g.style("fs","#eee","ls","transparent")
+        g.style({ fs:"#eee", ls:"transparent" })
          .ply([rA.x,rA.y,rB.x,rB.y,rC.x,rC.y])
-         .style("fs","transparent","ls","@nodcolor","lw",4)
+		 .style({ fs:"transparent", ls:"@nodcolor", lw:4 })
          .ply([0,0,rA.x,rA.y,rB.x,rB.y,rB0.x,rB0.y])
-         .style("fs","@nodfill","lw",1)
+         .style({ fs:"@nodfill", lw:1 })
          .cir(rA.x,rA.y,5)
          .cir(rB.x,rB.y,5)
          .cir(rC.x,rC.y,5)
@@ -64,7 +64,7 @@
          g = g2({cartesian:true})
                .clr()
                .grid()
-               .style("ls","#666","fs","#fee","lw",2,"lj","round")
+               .style({ ls:"#666", fs:"#fee", lw:2, lj:"round" })
                .use(fb,100,100);
 
      slider.addEventListener("input",setAngle,false);

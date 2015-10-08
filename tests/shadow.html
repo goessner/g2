@@ -11,17 +11,16 @@
     <canvas id="c" width="300", height="220"></canvas>
     <script src='../g2.js'></script>
     <script>
-      g2().style("lw",3,
-                 "ls","#456",
-                 "ld",[4,2,1,2],
-                 "fs","orange",
-                 "shx",5,
-                 "shy",5,
-                 "shb",5,
-                 "shc","rgba(0,0,0,0.5)")
+      g2().style({lw:3,
+                  ls:"#456",
+                  ld:[4,2,1,2],
+                  fs:"orange",
+                  shx:5,
+                  shy:5,
+                  shb:5,
+                  shc:"rgba(0,0,0,0.5)"})
           .rec(195,140,50,20)
-          .style("shx",10,
-                 "shy",10)
+          .style({shx:10,shy:10})
           .cir(150,110,50)
           .exe(document.getElementById("c").getContext("2d"));
     </script>

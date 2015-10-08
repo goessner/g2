@@ -25,11 +25,12 @@ var ctx1 = document.getElementById("c1").getContext("2d"),
     zoomCenterY = ctx2.canvas.offsetHeight/2,
     zoomFactor = slider.value/100;
 
+// Create g2 object for the technical drawing.
 g.clr()
  .grid()
- .style("lw",1.5,"ls","grey","ld",[10,3,1,3],"lwnosc",true)
+ .style({ lw:1.5, ls:"grey", ld:[10,3,1,3], lwnosc:true })
  .lin(15,120,312,120)
- .style("lw",2,"ls","black","ld",[])
+ .style({ lw:2, ls:"black", ld:[] })
  .rec(40,60,50,120)
  .rec(90,90,3,60)
  .rec(93,100,50,40)
@@ -37,12 +38,13 @@ g.clr()
  .rec(147,101,135,38)
  .p().m(282,101).l(285,104).l(285,136).l(282,139)
  .stroke()
- .style("lw",1.5)
+ .style({ lw:1.5 })
  .p().m(285,104).l(163,104).a(0.5,156,101)
  .m(285,136).l(163,136).a(-0.5,156,139)
  .stroke()
  .exe(ctx2);
 
+// Add Event Listener to the both canvas and the slider (input type 'range').
 slider.addEventListener('input', updateRange, false);
 ctx1.canvas.addEventListener('mousemove', updatePos, false);
 ctx2.canvas.addEventListener('mousemove', updatePos, false);
@@ -50,30 +52,37 @@ ctx2.canvas.addEventListener('mousemove', updatePos, false);
 createSector();
 render();
 
+// Update section when the mouse has moved.
 function updatePos(e) {
-	zoomCenterX = e.clientX-this.offsetLeft;
-	zoomCenterY = e.clientY-this.offsetTop;
-	if (this.id=="c1") { zoomCenterX /= prop; zoomCenterY /= prop; }
-	createSector();
-	render();
+    zoomCenterX = e.clientX-this.offsetLeft;
+    zoomCenterY = e.clientY-this.offsetTop;
+    if (this.id=="c1") { zoomCenterX /= prop; zoomCenterY /= prop; }
+    createSector();
+    render();
 }
+
+// Update range when the slider has adjusted.
 function updateRange(e) {
-	zoomFactor = e.currentTarget.value/100;
-	document.getElementById("rangetext").innerHTML = e.currentTarget.value + "%";
-	createSector();
-	render();
+    zoomFactor = e.currentTarget.value/100;
+    document.getElementById("rangetext").innerHTML = e.currentTarget.value + "%";
+    createSector();
+    render();
 }
+
+// Create red box.
 function createSector() {
-	var x = zoomCenterX-ctx1.canvas.offsetWidth/zoomFactor/2,
-	    y = zoomCenterY-ctx1.canvas.offsetHeight/zoomFactor/2,
-	    w = ctx1.canvas.offsetWidth/zoomFactor,
-	    h = ctx1.canvas.offsetHeight/zoomFactor;
-	g_sector.del().style("ls","red").rec(x,y,w,h);
+    var x = zoomCenterX-ctx1.canvas.offsetWidth/zoomFactor/2,
+        y = zoomCenterY-ctx1.canvas.offsetHeight/zoomFactor/2,
+        w = ctx1.canvas.offsetWidth/zoomFactor,
+        h = ctx1.canvas.offsetHeight/zoomFactor;
+    g_sector.del().style({ls:"red"}).rec(x,y,w,h);
 }
+
+// Render the red box and the technical drawing in both canvas (with different viewport properties).
 function render() {
-	g.trf(ctx1.canvas.offsetWidth/2-zoomCenterX*zoomFactor,ctx1.canvas.offsetHeight/2-zoomCenterY*zoomFactor,zoomFactor).exe(ctx1);
-	g.trf(0,0,1).exe(ctx2);
-	g_sector.exe(ctx2);
+    g.trf(ctx1.canvas.offsetWidth/2-zoomCenterX*zoomFactor,ctx1.canvas.offsetHeight/2-zoomCenterY*zoomFactor,zoomFactor).exe(ctx1);
+    g.trf(0,0,1).exe(ctx2);
+    g_sector.exe(ctx2);
 }
 	
     </script>

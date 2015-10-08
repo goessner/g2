@@ -16,8 +16,8 @@
           p = 210, dp = 10, b = 80, paddle = g2().rec(p,30,b,6),
           x = 20, y = 30, dx = 5, dy = 2, r = 10, ball = g2().cir(x,y,r),
           g = g2({cartesian:true}).clr().grid()
-                .beg().style("lw",2,"fs","orange","ls","navy","lj","round").use(paddle).end()
-                .beg().style("lw",1,"fs","lightgray","ls","navy").use(ball).end();
+                .beg().style({lw:2,fs:"orange",ls:"navy",lj:"round"}).use(paddle).end()
+                .beg().style({lw:1,fs:"lightgrey",ls:"navy"}).use(ball).end();
 
       function movePaddle(dp) {
          if (p + dp >= 0 && p + dp <= w - b) p += dp;

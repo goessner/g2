@@ -13,7 +13,7 @@
       var ctx = document.getElementById("c").getContext("2d"),
           rec = ctx.canvas.getBoundingClientRect(),
           cir = {x:50,y:80,r:10,over:function(p){return Math.hypot(p.x-this.x,p.y-this.y) < this.r;},edtval:function(){return this.r;},edtchg:function(val){this.r=+val;}},
-          origin = g2().beg().style("lw",2,"fs","snow").p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
+          origin = g2().beg().style({lw:2,fs:"snow"}).p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
           g = g2({cartesian:true}).clr().grid().use(origin).txt("origin",10,10)
                 .cir(cir.x,cir.y,cir.r),
           setvalue = function(e) {

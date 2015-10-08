@@ -80,7 +80,7 @@
                rB = {x:rA.x + this.rb.x, y:rA.y + this.rb.y};
            g.del().p().m(0,0).l(rA.x,rA.y).l(rB.x,rB.y).l(this.d,0).drw()
             .cir(rA.x,rA.y,3).cir(rB.x,rB.y,3).cir(0,0,3).cir(this.d,0,3);
-           g.style("ls","green");
+           g.style({ ls:"green" });
            if (this.calc === this.calcByPhi) g.cir(rA.x,rA.y,3);
            else                              g.cir(rB.x,rB.y,3);
 //           g.txt("psi="+Math.round(this.psi/Math.PI*180),-10,40);
@@ -106,9 +106,9 @@
          g = g2({cartesian:true})
                .clr()
                .grid()
-               .style("lw",2,"ld",[15,4,2,4])
+               .style({ lw:2, ld:[15,4,2,4] })
                .lin(100,150,310,150)
-               .style("ls","#666","fs","#fee","lw",2,"lj","round","ld",[])
+               .style({ ls:"#666", fs:"#fee", lw:2, lj:"round", ld:[] })
                .use(fbg,100,150,0,3);
 
      ctx.canvas.addEventListener("mouseover",over,false);

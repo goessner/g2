@@ -13,7 +13,7 @@
     <script>
       var ctx = document.getElementById("c").getContext("2d"),
           rec = ctx.canvas.getBoundingClientRect(),
-          origin = g2().beg().style("lw",2,"fs","snow").p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
+          origin = g2().beg().style({lw:2,fs:"snow"}).p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end(),
           g = g2({cartesian:true}).clr().grid().use(origin).txt("origin",10,10)
                 .lin(20,30,80,130).lin(80,30,20,130).cir(50,80,4);
           onwheel = function(e) { 

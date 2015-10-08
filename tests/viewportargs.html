@@ -15,7 +15,7 @@
     <script src='../g2.js'></script>
     <script>
       function ctx(id) { return document.getElementById(id).getContext("2d"); }
-      var origin = g2().beg().style("lw",2,"fs","snow").p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end();
+      var origin = g2().beg().style({lw:2,fs:"snow"}).p().m(20,0).l(0,0).l(0,20).stroke().cir(0,0,4).end();
       g2()
         .grid().use(origin).txt("none",40,30).lin(20,30,80,130)
         .lin(80,30,20,130).cir(50,80,4).exe(ctx("a"));

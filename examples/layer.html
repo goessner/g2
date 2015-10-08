@@ -19,7 +19,7 @@ var ctx1 = document.getElementById("c1").getContext("2d"),
     rects = [];
 
 for (var i = 0; i < 100; i++) {
-	rects[i] = {x: Math.random()*590, y: Math.random()*430, selected: false};
+    rects[i] = {x: Math.random()*590, y: Math.random()*430, selected: false};
 }
 
 update();  // First update for initialisation.
@@ -29,25 +29,25 @@ ctx2.canvas.addEventListener('mouseup',   update, false);
 ctx2.canvas.addEventListener('mousemove', move,   false);
 
 function update(e) {
-	layer1.del().clr().style("fs","#00BFFF");
-	layer2.del().clr().style("fs","red","shb",20,"shc","black");
-	if (e) { rects[0].selected = !rects[0].selected; }  // Select and Deselect first rectangle.
-	rects[0].selected ? layer2.trf(0,0,1).rec(rects[0].x, rects[0].y, 100, 100) :  // Draw first rectangle on the front layer...
-						layer1.style("fs","red").rec(rects[0].x, rects[0].y, 100, 100).style("fs","#00BFFF");  // ... or the background layer.
-	for (var i = 1; i < 100; i++) { layer1.rec(rects[i].x, rects[i].y, 50, 50); }
-	layer1.exe(ctx1);
-	layer2.exe(ctx2);
+    layer1.del().clr().style({ fs:"#00BFFF" });
+    layer2.del().clr().style({ fs:"red", shb:20, shc:"black" });
+    if (e) { rects[0].selected = !rects[0].selected; }  // Select and Deselect first rectangle.
+    rects[0].selected ? layer2.trf(0,0,1).rec(rects[0].x, rects[0].y, 100, 100) :  // Draw first rectangle on the front layer...
+                        layer1.style({ fs:"red" }).rec(rects[0].x, rects[0].y, 100, 100).style({ fs:"#00BFFF" });  // ... or the background layer.
+    for (var i = 1; i < 100; i++) { layer1.rec(rects[i].x, rects[i].y, 50, 50); }
+    layer1.exe(ctx1);
+    layer2.exe(ctx2);
 }
 
 // Drag the rectangle by panning within the viewport of the front layer.
 function move(e) { 
-	var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
-	    dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
-	if (rects[0].selected) {
-		rects[0].x += dx;
-		rects[0].y += dy;
-		layer2.pan(dx,dy).exe(ctx2);
-	}
+    var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+        dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+    if (rects[0].selected) {
+        rects[0].x += dx;
+        rects[0].y += dy;
+        layer2.pan(dx,dy).exe(ctx2);
+    }
  }
 
     </script>

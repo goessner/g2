@@ -45,7 +45,7 @@
 //           this.psi = -Math.atan2(this.rB.y-this.rB0.y,this.rB.x-this.rB0.x);
         },
         node: function(g,x,y,hit) {
-           return hit ? g.beg().style("ls","green","fs","lightgreen").cir(x,y,9).end() : g.cir(x,y,9);
+           return hit ? g.beg().style({ls:"green",fs:"lightgreen"}).cir(x,y,9).end() : g.cir(x,y,9);
         },
         draw: function(g) {
            var rA = this.rA,
@@ -116,7 +116,7 @@
            this.dirty = !!(this.hit = over);
 
         edit.del()
-            .style("lw",3,"ld",[15,4,2,4])
+            .style({lw:3,ld:[15,4,2,4]})
             .lin(0,0,fb.d,0)
             .txt("mouse: ("+p.x+","+p.y+")",-80,-90);
         e.preventDefault(); 
@@ -138,7 +138,7 @@
      var fb = fourbar.create(50, 150, 50, 150),
 //     var fb = fourbar.create(50, 150, 140, 210),
          ctx = document.getElementById("c").getContext("2d"),
-         edit = g2().style("lw",3,"ld",[15,4,2,4]).lin(0,0,fb.d,0),
+         edit = g2().style({lw:3,ld:[15,4,2,4]}).lin(0,0,fb.d,0),
          bgg = g2(),
          mecg = g2(),
          g = g2({cartesian:true})
@@ -146,7 +146,7 @@
                .pan(100,100)
                .use(bgg)
                .use(edit)
-               .style("ls","#666","fs","#fee","lw",6,"lj","round","ld",[])
+               .style({ls:"#666", fs:"#fee", lw:6, lj:"round", ld:[]})
                .use(mecg),
          mousemoveHdl = mousemove.bind(fb,g);
 
