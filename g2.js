@@ -3,14 +3,11 @@
  * @license
  * MIT License
  */
-/* jshint proto: true */
 /* jshint -W014 */
 
 /* jshint -W030 */
 // Used polyfills
 Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
-// Lightweight class definition (similar to ES6) based on __proto__ 
-function Class(base,proto) { if (proto) proto.__proto__ = base; return { create: function() { var o = Object.create(this); o.constructor.apply(o,arguments); return o; }, __proto__: proto || base }; }
 
 /**
  * Maintains a queue of 2D graphics commands.
@@ -829,228 +826,230 @@ g2.prototype.dump = function(space) {
 };
 
 // State stack management class.
-g2.State = Class({
-   constructor: function() {
-      this.stack = [{}];
-      this.trf0 = {x:0,y:0,w:0,scl:1}; // holding initial zoom, pan, ...
-      this._loading = 0;
-      this.on = {load:[]};
-   },
-   // manage asynchrone image loading ...
-   get loading() { return this._loading; },
-   set loading(n) { if ((this._loading = n) === 0) this.invokeListeners("load"); },
-   // implement simple event listeners ...
-   hasListeners: function(name)   { return this.on[name] && this.on[name].length; },
-   hasListener: function(name,fn) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) if (this.on[name][i] === fn) return true; return false; },
-   addListener: function(name,fn) { if (!this.hasListener(name,fn)) this.on[name].push(fn); },
-   removeListener: function(name,fn) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) if (this.on[name][i] === fn) { this.on[name].splice(i,1); break; } },
-   invokeListeners: function(name) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) this.on[name][i](); },
-   // manage style attributes ...
-   has: function(name,ctx) {
-      name = this.alias[name] || name;
-      return ctx && this.filter[name]
-          || name in this.stack[this.stack.length-1]
-          || this.hasOwnProperty(name);
-   },
-   get: function(name,ctx) {  // omit 'ctx' here when calling 'this.filter[name]' function to avoid infinite recursion ... !
-      name = this.alias[name] || name;
-      return ctx && this.filter[name] && this.filter[name].get && this.filter[name].get.call(this,ctx)
-          || this.stack[this.stack.length-1][name]
-          || this[name]
-   },
-   set: function(name,val,ctx) { // omit 'ctx' here when calling 'this.filter[name]' function to avoid infinite recursion ... !
-      name = this.alias[name] || name;
-      if (ctx && this.filter[name] && this.filter[name].set)
-         this.filter[name].set.call(this,val,ctx);
-      else
-         this.stack[this.stack.length-1][name] = val;
-      return this;
-   },
-   save: function(ctx) {
-      this.stack.push(JSON.parse(JSON.stringify(this.stack[this.stack.length-1])));
-      if (ctx) ctx.save();
-      return this;
-   },
-   restore: function(ctx) {
-      this.stack.pop();
-      if (ctx) ctx.restore();
-      return this;
-   },
-   reset: function(ctx) {
-      this.stack = [{}];
-      this.loadfn = [];
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = "#000";
-      ctx.fillStyle = g2.transparent;
-      ctx.setLineDash([]);
-      return this;
-   },
-   transform: function(t,ctx) {
-      var trf = this.stack[this.stack.length-1].trf || this.trf,
-          sw=t.w?Math.sin(t.w):0,cw=t.w?Math.cos(t.w):1;
-      this.stack[this.stack.length-1].trf = {
-         x:t.scl*cw*trf.x - t.scl*sw*trf.y + t.x,
-         y:t.scl*sw*trf.x + t.scl*cw*trf.y + t.y,
-         w: trf.w + t.w,
-         scl:trf.scl*t.scl
-      };
-      ctx.transform(t.scl*cw,t.scl*sw,-t.scl*sw,t.scl*cw,t.x,t.y);
-      return this;
-   },
-   get currentScale() { return (this.stack[this.stack.length-1].trf || this.trf).scl; },
-   get font() {
-      var fos = this.get("fos"),
-          fow = this.get("fow"),
-          foz = this.get("foz"),
-          fof = this.get("fof"),
-          font = "";
-      fos = fos === "normal" ? "" : fos;
-      fow = fow === "normal" ? "" : fow;
-      if (fos !== "normal") font += fos + " ";
-      if (fow !== "normal") font += fow + " ";
-      font += foz + "px " + fof;
-      return font;
-   }
-});
-
-// initial state values ... corresponding to Canvas Context ...
-g2.State.fs = g2.transparent;
-g2.State.lm = "normal";  // linemode .. "normal" or 'jitter'
-g2.State.foc = "#000";   // fontColor
-g2.State.fos = "normal"; // fontStyle [normal | italic | oblique]
-g2.State.fow = "normal"; // fontWeight [normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 ... ] s. CSS
-g2.State.foz = 12;       // fontSize
-g2.State.fof = "serif";  // fontFamily [serif | sans-serif | monospace | cursiv | fantasy | arial | verdana | ... ] s. CSS
-g2.State.trf = {x:0,y:0,w:0,scl:1};
-
-g2.State.alias = {
-   "strokeStyle": "ls",  // read: lineStroke ...
-   "fillStyle":   "fs",
-   "lineWidth":   "lw",
-   "lineCap":     "lc",
-   "lineJoin":    "lj",
-   "lineDash":    "ld",
-   "lineDashOffset":"lo",
-   "miterLimit": "ml",
-   "shadowOffsetX": "shx",
-   "shadowOffsetY":"shy",
-   "shadowBlur":"shb",
-   "shadowColor":"shc",
-   "fontColor":"foc",
-   "fontStyle":"fos",
-   "fontWeight":"fow",
-   "fontSize":"foz",
-   "fontFamily":"fof",
-   "textAlign":"thal",    // text horizontal align ..
-   "textBaseline":"tval",  // text vertical align ..
-   "fontSizeNonScalable": "foznosc",
-   "lineWidthNonScalable": "lwnosc"
-};
-g2.State.filterProperty = function(property) {
-   return { get: function(ctx) { return ctx[property]; }, set: function(val,ctx) { ctx[property] = val; } };
-};
-g2.State.filter = {
-   "ls": {
-      get: function(ctx) { return ctx.strokeStyle; },
-      set: function(val,ctx) { ctx.strokeStyle = val === "transparent" ? g2.transparent : val; }
-   },
-   "fs": {
-      get: function(ctx) { return ctx.fillStyle; },
-      set: function(val,ctx) { ctx.fillStyle = val === "transparent" ? g2.transparent : val; }
-   },
-   "lw": {
-      get: function(ctx) { return ctx.lineWidth*(this.get("lwnosc") ? this.currentScale : 1); },
-      set: function(val,ctx) { ctx.lineWidth = val/(this.get("lwnosc") ? this.currentScale : 1); }
-   },
-   "lc": g2.State.filterProperty("lineCap"),
-   "lj": g2.State.filterProperty("lineJoin"),
-   "ld": {
-      get: function(ctx) {
-         if (ctx) {
-            var lw = ctx.lineWidth,
-                ld = ctx.getLineDash();
-            for (var i=0,n=ld.length; i<n; i++) ld[i] /= lw;
-            return  ld;
-         }
-         return [];
+g2.State = {
+   create: function() { var o = Object.create(this.prototype); o.constructor.apply(o,arguments); return o; },
+   prototype: {
+      constructor: function() {
+         this.stack = [{}];
+         this.trf0 = {x:0,y:0,w:0,scl:1}; // holding initial zoom, pan, ...
+         this._loading = 0;
+         this.on = {load:[]};
       },
-      set: function(val,ctx) {
-         if (ctx) {
-            var scl = this.get("lwnosc") ? this.currentScale : 1,
-                lw = this.get("lw",ctx),
-                ld = [];
-            for (var i=0,n=val.length; i<n; i++) ld.push(val[i]/scl*lw);
-            ctx.setLineDash(ld);
-         }
-      }
-   },
-   "lo": {  // TODO: make lw-dependent ..
-      get: function(ctx) { return ctx.lineDashOffset; },
-      set: function(val,ctx) { ctx.lineDashOffset = val; }
-   },
-   "ml": g2.State.filterProperty("miterLimit"),
-   "shx": g2.State.filterProperty("shadowOffsetX"),
-   "shy": g2.State.filterProperty("shadowOffsetY"),
-   "shb": g2.State.filterProperty("shadowBlur"),
-   "shc": {
-      get: function(ctx) { return ctx.shadowColor; },
-      set: function(val,ctx) { ctx.shadowColor = val === "transparent" ? g2.transparent : val; }
-   },
-   "thal": g2.State.filterProperty("textAlign"),
-   "tval": g2.State.filterProperty("textBaseline"),
-   "fos": {
-      set: function(val,ctx) { this.set("fos",val); ctx.font = this.font; }
-   },
-   "fow": {
-      set: function(val,ctx) { this.set("fow",val); ctx.font = this.font; }
-   },
-   "foz": {
-      get: function(ctx) {
-         var scl = this.get("foznosc") ? this.currentScale : 1;
-         return this.get("foz")*scl;
+      // manage asynchrone image loading ...
+      get loading() { return this._loading; },
+      set loading(n) { if ((this._loading = n) === 0) this.invokeListeners("load"); },
+      // implement simple event listeners ...
+      hasListeners: function(name)   { return this.on[name] && this.on[name].length; },
+      hasListener: function(name,fn) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) if (this.on[name][i] === fn) return true; return false; },
+      addListener: function(name,fn) { if (!this.hasListener(name,fn)) this.on[name].push(fn); },
+      removeListener: function(name,fn) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) if (this.on[name][i] === fn) { this.on[name].splice(i,1); break; } },
+      invokeListeners: function(name) { if (this.on[name]) for (var i=0;i<this.on[name].length;i++) this.on[name][i](); },
+      // manage style attributes ...
+      has: function(name,ctx) {
+         name = this.alias[name] || name;
+         return ctx && this.filter[name]
+             || name in this.stack[this.stack.length-1]
+             || this.hasOwnProperty(name);
       },
-      set: function(val,ctx) {
-         var scl = this.get("foznosc") ? this.currentScale : 1;
-         this.set("foz",val/scl);
-         ctx.font = this.font;
+      get: function(name,ctx) {  // omit 'ctx' here when calling 'this.filter[name]' function to avoid infinite recursion ... !
+         name = this.alias[name] || name;
+         return ctx && this.filter[name] && this.filter[name].get && this.filter[name].get.call(this,ctx)
+             || this.stack[this.stack.length-1][name]
+             || this[name]
+      },
+      set: function(name,val,ctx) { // omit 'ctx' here when calling 'this.filter[name]' function to avoid infinite recursion ... !
+         name = this.alias[name] || name;
+         if (ctx && this.filter[name] && this.filter[name].set)
+            this.filter[name].set.call(this,val,ctx);
+         else
+            this.stack[this.stack.length-1][name] = val;
+         return this;
+      },
+      save: function(ctx) {
+         this.stack.push(JSON.parse(JSON.stringify(this.stack[this.stack.length-1])));
+         if (ctx) ctx.save();
+         return this;
+      },
+      restore: function(ctx) {
+         this.stack.pop();
+         if (ctx) ctx.restore();
+         return this;
+      },
+      reset: function(ctx) {
+         this.stack = [{}];
+         this.loadfn = [];
+         ctx.lineWidth = 1;
+         ctx.strokeStyle = "#000";
+         ctx.fillStyle = g2.transparent;
+         ctx.setLineDash([]);
+         return this;
+      },
+      transform: function(t,ctx) {
+         var trf = this.stack[this.stack.length-1].trf || this.trf,
+         sw=t.w?Math.sin(t.w):0,cw=t.w?Math.cos(t.w):1;
+         this.stack[this.stack.length-1].trf = {
+            x:t.scl*cw*trf.x - t.scl*sw*trf.y + t.x,
+            y:t.scl*sw*trf.x + t.scl*cw*trf.y + t.y,
+            w: trf.w + t.w,
+            scl:trf.scl*t.scl
+         };
+         ctx.transform(t.scl*cw,t.scl*sw,-t.scl*sw,t.scl*cw,t.x,t.y);
+         return this;
+      },
+      get currentScale() { return (this.stack[this.stack.length-1].trf || this.trf).scl; },
+      get font() {
+         var fos = this.get("fos"),
+             fow = this.get("fow"),
+             foz = this.get("foz"),
+             fof = this.get("fof"),
+             font = "";
+             fos = fos === "normal" ? "" : fos;
+             fow = fow === "normal" ? "" : fow;
+         if (fos !== "normal") font += fos + " ";
+         if (fow !== "normal") font += fow + " ";
+         font += foz + "px " + fof;
+         return font;
       }
    },
-   "fof": {
-      set: function(val,ctx) { this.set("fof",val); if (ctx) ctx.font = this.font; }
-   },
-   "lwnosc": {
-      set: function(val,ctx) {
-         if (val !== this.get("lwnosc")) {  // value changing ...
-            var lw  = this.get("lw",ctx);
-            this.set("lwnosc",val);
-            this.set("lw",lw,ctx);
-         }
-      }
-   },
-   "foznosc": {
-      set: function(val,ctx) {
-         if (val !== this.get("foznosc")) {  // value changing ...
-            var foz = this.get("foz");
-            this.set("foznosc",val);
-            this.set("foz",foz,ctx);
-         }
-      }
-   },
-   "trf": {
-      set: function(val,ctx) {
-         var sclChg = val.scl !== this.get("trf").scl,  // scale value changing ...
-             lw, ld, foz;
-         if (sclChg) {
-             lw = this.get("lw",ctx),
-             ld = this.get("ld",ctx),
-             foz = this.get("foz",ctx);
-         }
-         this.transform(val,ctx);
+   // initial state values ... corresponding to Canvas Context ...
+   fs: g2.transparent,  // fillStyle
+   lm: "normal",  // linemode .. "normal" or 'jitter'
+   foc: "#000",   // fontColor
+   fos: "normal", // fontStyle [normal | italic | oblique]
+   fow: "normal", // fontWeight [normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 ... ] s. CSS
+   foz: 12,       // fontSize
+   fof: "serif",  // fontFamily [serif | sans-serif | monospace | cursiv | fantasy | arial | verdana | ... ] s. CSS
+   trf: {x:0,y:0,w:0,scl:1},
 
-         if (sclChg) {
-            this.set("lw",lw,ctx);
-            this.set("ld",ld,ctx);
-            this.set("foz",foz,ctx);
+   alias: {
+      "strokeStyle": "ls",  // read: lineStroke ...
+      "fillStyle":   "fs",
+      "lineWidth":   "lw",
+      "lineCap":     "lc",
+      "lineJoin":    "lj",
+      "lineDash":    "ld",
+      "lineDashOffset":"lo",
+      "miterLimit": "ml",
+      "shadowOffsetX": "shx",
+      "shadowOffsetY":"shy",
+      "shadowBlur":"shb",
+      "shadowColor":"shc",
+      "fontColor":"foc",
+      "fontStyle":"fos",
+      "fontWeight":"fow",
+      "fontSize":"foz",
+      "fontFamily":"fof",
+      "textAlign":"thal",    // text horizontal align ..
+      "textBaseline":"tval",  // text vertical align ..
+      "fontSizeNonScalable": "foznosc",
+      "lineWidthNonScalable": "lwnosc"
+   },
+   filterProperty: function(property) {
+      return { get: function(ctx) { return ctx[property]; }, set: function(val,ctx) { ctx[property] = val; } };
+   },
+   filter: {
+      "ls": {
+            get: function(ctx) { return ctx.strokeStyle; },
+            set: function(val,ctx) { ctx.strokeStyle = val === "transparent" ? g2.transparent : val; }
+      },
+      "fs": {
+            get: function(ctx) { return ctx.fillStyle; },
+            set: function(val,ctx) { ctx.fillStyle = val === "transparent" ? g2.transparent : val; }
+      },
+      "lw": {
+            get: function(ctx) { return ctx.lineWidth*(this.get("lwnosc") ? this.currentScale : 1); },
+            set: function(val,ctx) { ctx.lineWidth = val/(this.get("lwnosc") ? this.currentScale : 1); }
+      },
+      "lc": g2.State.filterProperty("lineCap"),
+      "lj": g2.State.filterProperty("lineJoin"),
+      "ld": {
+         get: function(ctx) {
+            if (ctx) {
+               var lw = ctx.lineWidth,
+               ld = ctx.getLineDash();
+               for (var i=0,n=ld.length; i<n; i++) ld[i] /= lw;
+               return  ld;
+            }
+            return [];
+         },
+         set: function(val,ctx) {
+            if (ctx) {
+               var scl = this.get("lwnosc") ? this.currentScale : 1,
+               lw = this.get("lw",ctx),
+               ld = [];
+               for (var i=0,n=val.length; i<n; i++) ld.push(val[i]/scl*lw);
+               ctx.setLineDash(ld);
+            }
+         }
+      },
+      "lo": {  // TODO: make lw-dependent ..
+         get: function(ctx) { return ctx.lineDashOffset; },
+         set: function(val,ctx) { ctx.lineDashOffset = val; }
+      },
+      "ml": g2.State.filterProperty("miterLimit"),
+      "shx": g2.State.filterProperty("shadowOffsetX"),
+      "shy": g2.State.filterProperty("shadowOffsetY"),
+      "shb": g2.State.filterProperty("shadowBlur"),
+      "shc": {
+         get: function(ctx) { return ctx.shadowColor; },
+         set: function(val,ctx) { ctx.shadowColor = val === "transparent" ? g2.transparent : val; }
+      },
+      "thal": g2.State.filterProperty("textAlign"),
+      "tval": g2.State.filterProperty("textBaseline"),
+      "fos": {
+         set: function(val,ctx) { this.set("fos",val); ctx.font = this.font; }
+      },
+      "fow": {
+         set: function(val,ctx) { this.set("fow",val); ctx.font = this.font; }
+      },
+      "foz": {
+         get: function(ctx) {
+            var scl = this.get("foznosc") ? this.currentScale : 1;
+            return this.get("foz")*scl;
+         },
+         set: function(val,ctx) {
+            var scl = this.get("foznosc") ? this.currentScale : 1;
+            this.set("foz",val/scl);
+            ctx.font = this.font;
+         }
+      },
+      "fof": {
+         set: function(val,ctx) { this.set("fof",val); if (ctx) ctx.font = this.font; }
+      },
+      "lwnosc": {
+         set: function(val,ctx) {
+            if (val !== this.get("lwnosc")) {  // value changing ...
+                  var lw  = this.get("lw",ctx);
+                  this.set("lwnosc",val);
+                  this.set("lw",lw,ctx);
+            }
+         }
+      },
+      "foznosc": {
+         set: function(val,ctx) {
+            if (val !== this.get("foznosc")) {  // value changing ...
+               var foz = this.get("foz");
+               this.set("foznosc",val);
+               this.set("foz",foz,ctx);
+            }
+         }
+      },
+      "trf": {
+         set: function(val,ctx) {
+            var sclChg = val.scl !== this.get("trf").scl,  // scale value changing ...
+                lw, ld, foz;
+            if (sclChg) {
+               lw = this.get("lw",ctx),
+               ld = this.get("ld",ctx),
+               foz = this.get("foz",ctx);
+            }
+            this.transform(val,ctx);
+      
+            if (sclChg) {
+               this.set("lw",lw,ctx);
+               this.set("ld",ld,ctx);
+               this.set("foz",foz,ctx);
+            }
          }
       }
    }
