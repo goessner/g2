@@ -45,7 +45,7 @@ There are a few things to note:
 
 
 ### How the queue works ###
-Every invokation of a `g2` command method stores an equivalent graphics context - or custom function - in `g2`'s command queue. Finally with the help of the `g2.exe` method the queue is handed over to a graphics context instance for rendering.
+Every invokation of a `g2` command method stores an equivalent graphics context or custom function pointer in `g2`'s command queue. Finally with the help of the `g2.exe` method the queue is applied to a graphics context instance for rendering.
 
 ![img01]
 
