@@ -6,11 +6,23 @@ Maintains a queue of 2D graphics commands.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [args] | <code>object</code> | Arguments object with one or more members of the following:                 { cartesian: <boolean>,                   pan: { dx:<float>, dy:<float> },                   zoom: { x:<float>, y:<float> }, scl:<float> },                   trf: { x:<float>, y:<float> }, scl:<float> }                 } |
+| [args] | <code>object</code> | Arguments object with one or more members. |
+| [args.cartesian] | <code>bool</code> | Set cartesian coordinates. |
+| [args.pan] | <code>object</code> |  |
+| [args.pan.dx] | <code>float</code> | Pan in x. |
+| [args.pan.dy] | <code>float</code> | Pan in y. |
+| [args.zoom] | <code>object</code> |  |
+| [args.zoom.x] | <code>float</code> | Zoom center x. |
+| [args.zoom.y] | <code>float</code> | Zoom center y. |
+| [args.zoom.scl] | <code>float</code> | Zoom factor. |
+| [args.trf] | <code>object</code> |  |
+| [args.trf.x] | <code>float</code> | Transform in x. |
+| [args.trf.y] | <code>float</code> | Transform in y. |
+| [args.trf.scl] | <code>float</code> | Zoom factor. |
 
 **Example**  
 ```js
-// How to use g2()var ctx = document.getElementById("c").getContext("2d"); // Get your canvas context.g2()                  // The first call of g2() creates a g2 object and returns itself. .lin(50,50,100,100)  // Append commands. .lin(100,100,200,50) .exe(ctx);           // Execute commands.
+// How to use g2()var ctx = document.getElementById("c").getContext("2d"); // Get your canvas context.g2()                  // The first call of g2() creates a g2 object. .lin(50,50,100,100)  // Append commands. .lin(100,100,200,50) .exe(ctx);           // Execute commands.
 ```
 
 * [g2([args])](#g2)
@@ -37,13 +49,13 @@ Maintains a queue of 2D graphics commands.
     * [.rec(x, y, b, h)](#g2+rec) ⇒ <code>object</code>
     * [.cir(x, y, r)](#g2+cir) ⇒ <code>object</code>
     * [.arc(x, y, r, [w], [dw])](#g2+arc) ⇒ <code>object</code>
-    * [.ply(parr, [closed], opts)](#g2+ply) ⇒ <code>object</code>
+    * [.ply(parr, [closed], [opts])](#g2+ply) ⇒ <code>object</code>
     * [.beg(x, y, w, scl)](#g2+beg) ⇒ <code>object</code>
     * [.end()](#g2+end) ⇒ <code>object</code>
     * [.clr()](#g2+clr) ⇒ <code>object</code>
     * [.grid([color], [size])](#g2+grid) ⇒ <code>object</code>
     * [.use(g, [x], [y], [w], [scl])](#g2+use) ⇒ <code>object</code>
-    * [.style(name, val)](#g2+style) ⇒ <code>object</code>
+    * [.style(args)](#g2+style) ⇒ <code>object</code>
     * [.exe(ctx, [g])](#g2+exe) ⇒ <code>object</code>
     * [.cpy(g)](#g2+cpy) ⇒ <code>object</code>
     * [.del()](#g2+del) ⇒ <code>object</code>
@@ -157,7 +169,7 @@ var g = g2();  // Create g2 object.g.p()          // Begin path. .m(0,50)     
 ```
 <a name="g2+q"></a>
 ### g2.q(x1, y1, x, y) ⇒ <code>object</code>
-Create quadratic bezier curve to point.  ![Example](img/quadratic.png "Example")
+Create quadratic bezier curve to point.  ![Example](../img/q.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -175,7 +187,7 @@ var g = g2();       // Create g2 object.g.p()               // Begin path. .m(
 ```
 <a name="g2+c"></a>
 ### g2.c(x1, y1, x2, y2, x, y) ⇒ <code>object</code>
-Create cubic bezier curve to point.  ![Example](img/curve.png "Example")
+Create cubic bezier curve to point.  ![Example](../img/c.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -195,7 +207,7 @@ var g = g2();                // Create g2 object.g.p()                        /
 ```
 <a name="g2+a"></a>
 ### g2.a(dw, x, y) ⇒ <code>object</code>
-Draw arc with angular range dw to point.  ![Example](img/a.png "Example")
+Draw arc with angular range dw to point.  ![Example](../img/a.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -203,8 +215,8 @@ Draw arc with angular range dw to point.  ![Example](img/a.png "Example")
 | Param | Type | Description |
 | --- | --- | --- |
 | dw | <code>float</code> | Angle in radians. Can be positive or negative. |
-| x | <code>float</code> | Target x coordinate. |
-| y | <code>float</code> | Target y coordinate. |
+| x | <code>float</code> | x coordinate of endpoint. |
+| y | <code>float</code> | y coordinate of endpoint. |
 
 **Example**  
 ```js
@@ -265,7 +277,7 @@ Draw text.Using ctx.fillText if 'fontColor' is not 'transparent', else ctx.stro
 
 <a name="g2+img"></a>
 ### g2.img(uri, [x], [y], [b], [h], [xoff], [yoff], [dx], [dy]) ⇒ <code>object</code>
-Draw image.
+Draw image. It should be noted that the command queue will not be executed until all images have been completely loaded.This also applies to images of child objects. If an image can not be loaded, it will be replaced by a broken-image.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -337,7 +349,7 @@ var g = g2();     // Create g2 object.g.cir(100,80,20)  // Draw circle. .exe(c
 ```
 <a name="g2+arc"></a>
 ### g2.arc(x, y, r, [w], [dw]) ⇒ <code>object</code>
-Draw arc. No fill applied.  ![Example](img/arc.png "Example")
+Draw arc. No fill applied.  ![Example](../img/arc.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -355,7 +367,7 @@ Draw arc. No fill applied.  ![Example](img/arc.png "Example")
 var g = g2();g.arc(300,400,390,-Math.PI/4,-Math.PI/2) .exe(ctx);
 ```
 <a name="g2+ply"></a>
-### g2.ply(parr, [closed], opts) ⇒ <code>object</code>
+### g2.ply(parr, [closed], [opts]) ⇒ <code>object</code>
 Draw polygon.Using iterator function getting array and point index as parametersreturning corresponding point object {x:<float>,y:<float>} [optional].Default iterator expects sequence of x/y-coordinates as a flat array ([x0,y0,x1,y1,...])
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -365,7 +377,9 @@ Draw polygon.Using iterator function getting array and point index as parameter
 | --- | --- | --- | --- |
 | parr | <code>array</code> |  | Array of points |
 | [closed] | <code>boolean</code> | <code>false</code> | Draw closed polygon. |
-| opts | <code>object</code> |  | Options object.        { fmt:< "x,y"       Flat Array of x,y-values sequence [default]               |"[x,y]"     Array of [x,y] arrays               |"{x,y}">,   Array of {x:<x-val,y:<y-val>} objects          itr:<function(arr,idx)>     Has priority over 'fmt'.        } |
+| [opts] | <code>object</code> |  | Options object. |
+| [opts.fmt] | <code>string</code> | <code>&quot;x,y&quot;</code> | Predefined polygon point iterators: `"x,y"` (Flat Array of x,y-values sequence), `"[x,y]"` (Array of [x,y] arrays), `"{x,y}"` (Array of {x,y} objects) |
+| [opts.itr] | <code>function</code> |  | Iterator function getting array and point index as parameters: `function(arr,i)`. It has priority over 'fmt'. |
 
 **Example**  
 ```js
@@ -429,20 +443,64 @@ Use g2 graphics commands from another g2 source object by reference.With this c
 g2.symbol.circle = g2().cir(0,0,1);  // Define symbol of unit size '1'.g2().use("circle", 100, 100, 0, 50)  // Draw circle with radius 50 at position 100|100.    .exe(ctx);                       // Render to canvas context.
 ```
 <a name="g2+style"></a>
-### g2.style(name, val) ⇒ <code>object</code>
+### g2.style(args) ⇒ <code>object</code>
+Modifies the current graphics state.
+
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
-**Todo**
 
-- [ ] description
-- [ ] list
+| Param | Type | Description |
+| --- | --- | --- |
+| args | <code>object</code> | Modifies graphics state by any number of properties. As an property name many of the known canvas names, as well as their short form are permitted. |
+| args.fillStyle | <code>string</code> | Set fill color. |
+| args.fs | <code>string</code> | See 'fillStyle'. |
+| args.strokeStyle | <code>string</code> | Set stroke color. |
+| args.ls | <code>string</code> | See 'strokeStyle'. |
+| args.lineWidth | <code>float</code> | Set line width. |
+| args.lw | <code>float</code> | See 'lineWidth'. |
+| args.lineCap | <code>string</code> | Adds a cap to the line. Possible values: `butt`, `round` and `square` |
+| args.lc | <code>string</code> | See 'lineCap'. |
+| args.lineJoin | <code>string</code> | Set the way in which lines are joined. Possible values: `round`, `bevel` and `miter` |
+| args.lj | <code>string</code> | See 'lineJoin'. |
+| args.miterLimit | <code>float</code> | Set the mitering of the corner. |
+| args.ml | <code>float</code> | See 'miterLimit'. |
+| args.lineDash | <code>array</code> | Set the line dash. |
+| args.ld | <code>array</code> | See 'lineDash'. |
+| args.lineDashOffset | <code>int</code> | Set the offset of line dash. |
+| args.lo | <code>int</code> | See 'lineDashOffset'. |
+| args.lineMode | <code>string</code> | Set line mode. In _g2_'s basic form only `normal` supported. |
+| args.lm | <code>string</code> | See 'lineMode'. |
+| args.shadowOffsetX | <code>float</code> | Set the offset of the shadow in x. |
+| args.shx | <code>float</code> | See 'shadowOffsetX'. |
+| args.shadowOffsetY | <code>float</code> | Set the offset of the shadow in y. |
+| args.shy | <code>float</code> | See 'shadowOffsetY'. |
+| args.shadowBlur | <code>float</code> | Set the level of the blurring effect. |
+| args.shb | <code>float</code> | See 'shadowBlur'. |
+| args.shadowColor | <code>string</code> | Set the shadow color. |
+| args.shc | <code>string</code> | See 'shadowColor'. |
+| args.textAlign | <code>string</code> | Set holizontal text alignment. |
+| args.thal | <code>string</code> | See 'textAlign'. |
+| args.textBaseline | <code>string</code> | Set vertical text alignment. |
+| args.tval | <code>string</code> | See 'textBaseline'. |
+| args.fontFamily | <code>string</code> | Set font family. |
+| args.fof | <code>string</code> | See 'fontFamily'. |
+| args.fontSize | <code>float</code> | Set font size. |
+| args.foz | <code>float</code> | See 'fontSize'. |
+| args.fontColor | <code>string</code> | Set font color. |
+| args.foc | <code>string</code> | See 'fontColor'. |
+| args.fontWeight | <code>string</code> | Set font weight. |
+| args.fow | <code>string</code> | See 'fontWeight'. |
+| args.fontStyle | <code>string</code> | Set font style. |
+| args.fos | <code>string</code> | See 'fontStyle'. |
+| args.fontSizeNonScalable | <code>bool</code> | Prevent text scaling. |
+| args.foznosc | <code>bool</code> | See 'fontSizeNonScalable'. |
+| args.lineWidthNonScalable | <code>bool</code> | Prevent line scaling. |
+| args.lwnosc | <code>bool</code> | See 'lineWidthNonScalable'. |
 
-
-| Param | Type |
-| --- | --- |
-| name | <code>string</code> | 
-| val | <code>string</code> &#124; <code>float</code> &#124; <code>int</code> &#124; <code>array</code> &#124; <code>bool</code> | 
-
+**Example**  
+```js
+g = g2();g.style({ fillStyle:"#58dbfa",  // Set fill style.          lw:10,                // Set line width.          ls:"#313942",         // Set line style.          lj:"round" })         // Set line join. .rec(10,10,300,100) .style({ lw:20,                // Set line again.          fs:"transparent",     // Set fill style.          shx:10,               // Set shadow x-translation.          shc:"black",          // Set shadow color          shb:10,               // Set shadow blur.          ld:[0.05,0.25] })     // Set line dash. .p().m(40,40).c(150,150,200,0,280,50).drw();g.exe(ctx);
+```
 <a name="g2+exe"></a>
 ### g2.exe(ctx, [g]) ⇒ <code>object</code>
 Execute g2 commands.

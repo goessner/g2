@@ -11,12 +11,19 @@ Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
 
 /**
  * Maintains a queue of 2D graphics commands.
- * @param {object} [args] Arguments object with one or more members of the following:
- *                 { cartesian: <boolean>,
- *                   pan: { dx:<float>, dy:<float> },
- *                   zoom: { x:<float>, y:<float> }, scl:<float> },
- *                   trf: { x:<float>, y:<float> }, scl:<float> }
- *                 }
+ * @param {object} [args] Arguments object with one or more members.
+ * @param {bool} [args.cartesian] Set cartesian coordinates.
+ * @param {object} [args.pan]
+ * @param {float} [args.pan.dx] Pan in x.
+ * @param {float} [args.pan.dy] Pan in y.
+ * @param {object} [args.zoom]
+ * @param {float} [args.zoom.x] Zoom center x.
+ * @param {float} [args.zoom.y] Zoom center y.
+ * @param {float} [args.zoom.scl] Zoom factor.
+ * @param {object} [args.trf]
+ * @param {float} [args.trf.x] Transform in x.
+ * @param {float} [args.trf.y] Transform in y.
+ * @param {float} [args.trf.scl] Zoom factor.
  * @example
  * // How to use g2()
  * var ctx = document.getElementById("c").getContext("2d"); // Get your canvas context.
@@ -215,7 +222,7 @@ g2.prototype.l = function l(x,y) {
 
 /**
  * Create quadratic bezier curve to point.  
- * ![Example](img/quadratic.png "Example")
+ * ![Example](../img/q.png "Example")
  * @method
  * @returns {object} g2
  * @param {float} x1 x coordinate of control point.
@@ -237,7 +244,7 @@ g2.prototype.q = function q(x1,y1,x,y) {
 
 /**
  * Create cubic bezier curve to point.  
- * ![Example](img/curve.png "Example")
+ * ![Example](../img/c.png "Example")
  * @method
  * @returns {object} g2
  * @param {float} x1 x coordinate of first control point.
@@ -262,12 +269,12 @@ g2.prototype.c = function c(x1,y1,x2,y2,x,y) {
 // arc path command
 /**
  * Draw arc with angular range dw to point.  
- * ![Example](img/a.png "Example")
+ * ![Example](../img/a.png "Example")
  * @method
  * @returns {object} g2
  * @param {float} dw Angle in radians. Can be positive or negative.
- * @param {float} x Target x coordinate.
- * @param {float} y Target y coordinate.
+ * @param {float} x x coordinate of endpoint.
+ * @param {float} y y coordinate of endpoint.
  * @example
  * var g = g2();    // Create g2 object.
  * g.p()            // Begin path.
@@ -377,7 +384,8 @@ g2.prototype.txt.cmd = function txt_c(self,s,x,y,maxWidth) {
 };
 
 /**
- * Draw image.  
+ * Draw image. It should be noted that the command queue will not be executed until all images have been completely loaded.
+ * This also applies to images of child objects. If an image can not be loaded, it will be replaced by a broken-image.
  * @method
  * @returns {object} g2
  * @param {string} uri Image uri or data:url. On error: Broken Image will be loaded.
@@ -482,7 +490,7 @@ g2.prototype.cir.cmd = function cir_c(x,y,r) {
 
 /**
  * Draw arc. No fill applied.  
- * ![Example](img/arc.png "Example")
+ * ![Example](../img/arc.png "Example")
  * @method
  * @returns {object} g2
  * @param {float} x x-value center.
@@ -515,12 +523,9 @@ g2.prototype.arc.cmd = function arc_c(x,y,r,w,dw) {
  * @returns {object} this
  * @param {array} parr Array of points
  * @param {boolean} [closed=false] Draw closed polygon.
- * @param {object} opts Options object.
- *        { fmt:< "x,y"       Flat Array of x,y-values sequence [default]
- *               |"[x,y]"     Array of [x,y] arrays
- *               |"{x,y}">,   Array of {x:<x-val,y:<y-val>} objects
- *          itr:<function(arr,idx)>     Has priority over 'fmt'.
- *        }
+ * @param {object} [opts] Options object.
+ * @param {string} [opts.fmt=x,y] Predefined polygon point iterators: `"x,y"` (Flat Array of x,y-values sequence), `"[x,y]"` (Array of [x,y] arrays), `"{x,y}"` (Array of {x,y} objects)
+ * @param {function} [opts.itr] Iterator function getting array and point index as parameters: `function(arr,i)`. It has priority over 'fmt'.
  * @example
  * g2().ply([100,50,120,60,80,70]),
  *     .ply([150,60],[170,70],[130,80]],true,{fmt:"[x,y]"}),
@@ -706,12 +711,69 @@ g2.prototype.use.cmd = function use_c(self,g,x,y,w,scl) {
 
 // style command ..
 /**
+ * Modifies the current graphics state.
  * @method
  * @returns {object} g2
- * @todo description
- * @todo list
- * @param {string} name
- * @param {string | float | int | array | bool} val
+ * @param {object} args Modifies graphics state by any number of properties. As an property name many of the known canvas names, as well as their short form are permitted.
+ * @param {string} args.fillStyle Set fill color.
+ * @param {string} args.fs See 'fillStyle'.
+ * @param {string} args.strokeStyle Set stroke color.
+ * @param {string} args.ls See 'strokeStyle'.
+ * @param {float} args.lineWidth Set line width.
+ * @param {float} args.lw See 'lineWidth'.
+ * @param {string} args.lineCap Adds a cap to the line. Possible values: `butt`, `round` and `square`
+ * @param {string} args.lc See 'lineCap'.
+ * @param {string} args.lineJoin Set the way in which lines are joined. Possible values: `round`, `bevel` and `miter`
+ * @param {string} args.lj See 'lineJoin'.
+ * @param {float} args.miterLimit Set the mitering of the corner.
+ * @param {float} args.ml See 'miterLimit'.
+ * @param {array} args.lineDash Set the line dash.
+ * @param {array} args.ld See 'lineDash'.
+ * @param {int} args.lineDashOffset Set the offset of line dash.
+ * @param {int} args.lo See 'lineDashOffset'.
+ * @param {string} args.lineMode Set line mode. In _g2_'s basic form only `normal` supported.
+ * @param {string} args.lm See 'lineMode'.
+ * @param {float} args.shadowOffsetX Set the offset of the shadow in x.
+ * @param {float} args.shx See 'shadowOffsetX'.
+ * @param {float} args.shadowOffsetY Set the offset of the shadow in y.
+ * @param {float} args.shy See 'shadowOffsetY'.
+ * @param {float} args.shadowBlur Set the level of the blurring effect.
+ * @param {float} args.shb See 'shadowBlur'.
+ * @param {string} args.shadowColor Set the shadow color.
+ * @param {string} args.shc See 'shadowColor'.
+ * @param {string} args.textAlign Set holizontal text alignment.
+ * @param {string} args.thal See 'textAlign'.
+ * @param {string} args.textBaseline Set vertical text alignment.
+ * @param {string} args.tval See 'textBaseline'.
+ * @param {string} args.fontFamily Set font family.
+ * @param {string} args.fof See 'fontFamily'.
+ * @param {float} args.fontSize Set font size.
+ * @param {float} args.foz See 'fontSize'.
+ * @param {string} args.fontColor Set font color.
+ * @param {string} args.foc See 'fontColor'.
+ * @param {string} args.fontWeight Set font weight.
+ * @param {string} args.fow See 'fontWeight'.
+ * @param {string} args.fontStyle Set font style.
+ * @param {string} args.fos See 'fontStyle'.
+ * @param {bool} args.fontSizeNonScalable Prevent text scaling.
+ * @param {bool} args.foznosc See 'fontSizeNonScalable'.
+ * @param {bool} args.lineWidthNonScalable Prevent line scaling.
+ * @param {bool} args.lwnosc See 'lineWidthNonScalable'.
+ * @example
+ * g = g2();
+ * g.style({ fillStyle:"#58dbfa",  // Set fill style.
+ *           lw:10,                // Set line width.
+ *           ls:"#313942",         // Set line style.
+ *           lj:"round" })         // Set line join.
+ *  .rec(10,10,300,100)
+ *  .style({ lw:20,                // Set line again.
+ *           fs:"transparent",     // Set fill style.
+ *           shx:10,               // Set shadow x-translation.
+ *           shc:"black",          // Set shadow color
+ *           shb:10,               // Set shadow blur.
+ *           ld:[0.05,0.25] })     // Set line dash.
+ *  .p().m(40,40).c(150,150,200,0,280,50).drw();
+ * g.exe(ctx);
  */
 g2.prototype.style = function style() {
    if (arguments) {
