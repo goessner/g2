@@ -18,7 +18,7 @@
 var ctx1 = document.getElementById("c1").getContext("2d"),
     ctx2 = document.getElementById("c2").getContext("2d"),
     g = g2(),
-    g_sector = g2(),
+    frame = g2(),
     slider = document.getElementById("range"),
     prop = ctx1.canvas.offsetWidth/ctx2.canvas.offsetWidth,
     zoomCenterX = ctx2.canvas.offsetWidth/2,
@@ -41,19 +41,18 @@ g.clr()
  .style({ lw:1.5 })
  .p().m(285,104).l(163,104).a(0.5,156,101)
  .m(285,136).l(163,136).a(-0.5,156,139)
- .stroke()
- .exe(ctx2);
+ .stroke();
 
 // Add Event Listener to the both canvas and the slider (input type 'range').
-slider.addEventListener('input', updateRange, false);
-ctx1.canvas.addEventListener('mousemove', updatePos, false);
-ctx2.canvas.addEventListener('mousemove', updatePos, false);
+slider.addEventListener('input', updateZoomScale, false);
+ctx1.canvas.addEventListener('mousemove', updateZoomCenter, false);
+ctx2.canvas.addEventListener('mousemove', updateZoomCenter, false);
 
 createSector();
 render();
 
 // Update section when the mouse has moved.
-function updatePos(e) {
+function updateZoomCenter(e) {
     zoomCenterX = e.clientX-this.offsetLeft;
     zoomCenterY = e.clientY-this.offsetTop;
     if (this.id=="c1") { zoomCenterX /= prop; zoomCenterY /= prop; }
@@ -62,7 +61,7 @@ function updatePos(e) {
 }
 
 // Update range when the slider has adjusted.
-function updateRange(e) {
+function updateZoomScale(e) {
     zoomFactor = e.currentTarget.value/100;
     document.getElementById("rangetext").innerHTML = e.currentTarget.value + "%";
     createSector();
@@ -75,14 +74,14 @@ function createSector() {
         y = zoomCenterY-ctx1.canvas.offsetHeight/zoomFactor/2,
         w = ctx1.canvas.offsetWidth/zoomFactor,
         h = ctx1.canvas.offsetHeight/zoomFactor;
-    g_sector.del().style({ls:"red"}).rec(x,y,w,h);
+    frame.del().style({ls:"red"}).rec(x,y,w,h);
 }
 
 // Render the red box and the technical drawing in both canvas (with different viewport properties).
 function render() {
     g.trf(ctx1.canvas.offsetWidth/2-zoomCenterX*zoomFactor,ctx1.canvas.offsetHeight/2-zoomCenterY*zoomFactor,zoomFactor).exe(ctx1);
     g.trf(0,0,1).exe(ctx2);
-    g_sector.exe(ctx2);
+    frame.exe(ctx2);
 }
 	
     </script>
