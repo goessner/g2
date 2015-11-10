@@ -16,7 +16,7 @@ var ctx = document.getElementById("c").getContext("2d");
 var g = g2({cartesian:true}),
     mechanism = g2();
 
-var a = 50, b = 150, e = 50, phi = 0, phi_speed = 5, lastRefresh, A0 = {x:70,y:70}, A, B;
+var a = 50, b = 150, e = 50, phi = 0, phi_speed = 5, lastTime, A0 = {x:70,y:70}, A, B;
 
 // Static g2 object including dynamic g2 'mechanism'.
 g.clr()
@@ -30,7 +30,7 @@ window.requestAnimationFrame(render);
 
 function render(time) {
     // Calculate
-    phi = (phi - (time - lastRefresh || 0) * phi_speed / 1000) % (Math.PI*2);
+    phi = (phi - (time - lastTime || 0) * phi_speed / 1000) % (Math.PI*2);
     A = {x:a*Math.cos(phi), y:a*Math.sin(phi)};
     B = {x:a*Math.cos(phi) + b*(Math.sqrt(1-(e/b-a/b*Math.sin(phi))^2)), y:e}
 
@@ -44,7 +44,7 @@ function render(time) {
 
     // Render static g2 object
     g.exe(ctx);
-    lastRefresh = time;
+    lastTime = time;
     window.requestAnimationFrame(render);
 }
 
