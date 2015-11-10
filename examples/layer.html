@@ -22,13 +22,13 @@ for (var i = 0; i < 100; i++) {
     rects[i] = {x: Math.random()*590, y: Math.random()*430, selected: false};
 }
 
-update();  // First update for initialisation.
+onUpdateAll();  // First update for initialisation.
 
-ctx2.canvas.addEventListener('mousedown', update, false);
-ctx2.canvas.addEventListener('mouseup',   update, false);
-ctx2.canvas.addEventListener('mousemove', move,   false);
+ctx2.canvas.addEventListener('mousedown', onUpdateAll, false);
+ctx2.canvas.addEventListener('mouseup',   onUpdateAll, false);
+ctx2.canvas.addEventListener('mousemove', onMove,   false);
 
-function update(e) {
+function onUpdateAll(e) {
     layer1.del().clr().style({ fs:"#00BFFF" });
     layer2.del().clr().style({ fs:"red", shb:20, shc:"black" });
     if (e) { rects[0].selected = !rects[0].selected; }  // Select and Deselect first rectangle.
@@ -40,7 +40,7 @@ function update(e) {
 }
 
 // Drag the rectangle by panning within the viewport of the front layer.
-function move(e) { 
+function onMove(e) { 
     var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
         dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
     if (rects[0].selected) {
@@ -48,7 +48,7 @@ function move(e) {
         rects[0].y += dy;
         layer2.pan(dx,dy).exe(ctx2);
     }
- }
+}
 
     </script>
 </body>
