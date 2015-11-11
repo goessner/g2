@@ -440,7 +440,7 @@ Use g2 graphics commands from another g2 source object by reference.With this c
 
 **Example**  
 ```js
-g2.symbol.circle = g2().cir(0,0,1);  // Define symbol of unit size '1'.g2().use("circle", 100, 100, 0, 50)  // Draw circle with radius 50 at position 100|100.    .exe(ctx);                       // Render to canvas context.
+var wheel = g2().style({fs:"#DDDDDD"}).cir(0,0,30).style({fs:"black"}).cir(0,0,5);var car = g2().p().m(-60,0).l(220,0).a(-Math.PI/2,160,-55)              .l(150,-55).l(120,-100).l(20,-100).a(-Math.PI/2,-60,0).z().drw()              .use(wheel,0,0)              .use(wheel,170,0);g2().grid()    .style({fs:"#4227F2",lw:3})    .use(car,80,120)    .style({fs:"#F64385",lw:3})    .use(car,370,120,0,0.8)    .exe(ctx);
 ```
 <a name="g2+style"></a>
 ### g2.style(args) ⇒ <code>object</code>
@@ -526,11 +526,11 @@ Copy all g2 graphics commands from a g2 object. The copied commands are discrete
 
 **Example**  
 ```js
-var circle = g2().cir(100,100,50);g2().cpy(circle);  // Copy all commands from 'circle'.
+var smiley = g2().cir(60,60,50).cir(40,40,10).cir(80,40,10).arc(60,60,30,0.8,2);g2().style({lw:8,fs:"yellow"})    .cpy(smiley)  // Copy all commands from 'smiley'.    .exe(ctx);
 ```
 **Example**  
 ```js
-function circle(g) {   // do some calculations to define a circle for sorts   return g.cir(100,100,50)}var g = g2();g.cpy(circle(g));
+function smiley(g) {   // maybe do some calculations to define a smiley   return g.cir(60,60,50).cir(40,40,10).cir(80,40,10).arc(60,60,30,0.8,2)}var g = g2();g.style({lw:8,fs:"yellow"}) .cpy(smiley(g)) .exe(ctx);
 ```
 <a name="g2+del"></a>
 ### g2.del() ⇒ <code>object</code>
@@ -556,7 +556,7 @@ Namespace for symbol objects. A symbol can be used by `use("symbolname")`.
 **Kind**: static property of <code>[g2](#g2)</code>  
 **Example**  
 ```js
-g2.symbol.circle = g2().cir(0,0,1);            // Define symbol of unit size '1'g2().use("circle", 100, 100, 0, 50).exe(ctx);  // Draw circle with radius 50 at position 100|100
+g2.symbol.nodfix = g2().style({ls:"#333",fs:"#aeaeae"})                       .p().m(-8,-12).l(0,0).l(8,-12).drw()                       .style({fs:"#dedede"}).cir(0,0,5);var g = g2();                          // Create g2 object.g.grid() .use("nodfix",60,50,Math.PI,2)        // Use 'nodfix' symbol with transformation. .use("nodfix",150,30,3*Math.PI/4,3);  // ...g.exe(ctx);                            // Render graphics to 'ctx' canvas context.
 ```
 <a name="g2.version"></a>
 ### g2.version : <code>string</code>
