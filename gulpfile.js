@@ -12,12 +12,11 @@ gulp.task("doc", function(){
         .pipe(rename("README.md"))
         .pipe(gulp.dest("api"));
 });
-
 gulp.task('compress', function() {
   return gulp.src('g2.js')
     .pipe(rename({ extname: '.min.js' }))
     .pipe(uglify())
-	.pipe(gulp.dest('/'))
+	.pipe(gulp.dest(''))
 	.pipe(gzip())
-    .pipe(gulp.dest('/'));
+    .pipe(gulp.dest(''));
 });
