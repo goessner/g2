@@ -43,7 +43,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Renderers](../../wiki/renderers)
 
 ## API Reference
-See the [API Reference](api/readme.md) for details.
+See the [API Reference!](api/readme.md) for details.
 
 ## Cheat Sheet
-Check out the single page [Cheat Sheet](api/sheet.pdf).
+Check out the single page [Cheat Sheet!](api/sheet.pdf).
