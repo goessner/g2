@@ -25,8 +25,8 @@ Create a queue of 2D graphics commands.
 // How to use g2()
 var ctx = document.getElementById("c").getContext("2d");
 g2()                  // Create 'g2' instance.
- .lin(50,50,100,100)  // Append 'line' command.
- .lin(100,100,200,50) // Append more command ...
+ .lin(50,50,100,100)  // Append ...
+ .lin(100,100,200,50) // ... commands.
  .exe(ctx);           // Execute commands addressing canvas context.
 ```
 
@@ -62,9 +62,9 @@ g2()                  // Create 'g2' instance.
         * [.exe(ctx, [g])](#g2+exe) ⇒ <code>object</code>
         * [.cpy(g)](#g2+cpy) ⇒ <code>object</code>
         * [.del()](#g2+del) ⇒ <code>object</code>
-        * [.dump([space])](#g2+dump) ⇒ <code>string</code>
         * [.pntToUsr(x, y, h)](#g2+pntToUsr) ⇒ <code>object</code>
         * [.vecToUsr(x, y)](#g2+vecToUsr) ⇒ <code>object</code>
+        * [.dump([space])](#g2+dump) ⇒ <code>string</code>
     * _static_
         * [.symbol](#g2.symbol) : <code>object</code>
         * [.version](#g2.version) : <code>string</code>
@@ -498,10 +498,7 @@ Apply new style properties.
 | args.ml | <code>float</code> | Miter limit'. |
 | args.ld | <code>array</code> | Line dash array. |
 | args.lo | <code>int</code> | Line dash offset. |
-| args.shx | <code>float</code> | Shadow offset x-value. |
-| args.shy | <code>float</code> | Shadow offset y-value. |
-| args.shb | <code>float</code> | Shadow blur effect value. |
-| args.shc | <code>string</code> | Shadow color. |
+| args.sh | <code>array</code> | Shadow values array [x-offset,y-offset,blur,color]. |
 | args.thal | <code>string</code> | Text horizontal alignment. |
 | args.tval | <code>string</code> | Text vertical alignment. |
 | args.fof | <code>string</code> | Font family. |
@@ -576,18 +573,6 @@ Delete all commands.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
-<a name="g2+dump"></a>
-### g2.dump([space]) ⇒ <code>string</code>
-Debug helper method.
-Convert g2 command queue to JSON formatted string.
-
-**Kind**: instance method of <code>[g2](#g2)</code>  
-**Returns**: <code>string</code> - JSON string of command queue.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [space] | <code>string</code> | Number of spaces to use for indenting JSON output. |
-
 <a name="g2+pntToUsr"></a>
 ### g2.pntToUsr(x, y, h) ⇒ <code>object</code>
 Get user coordinates from canvas coordinates for point (with respect to initial transform).
@@ -612,6 +597,18 @@ Get user coordinates from canvas coordinates for direction vector (with respect 
 | --- | --- | --- |
 | x | <code>float</code> | x-translation. |
 | y | <code>float</code> | y-translation. |
+
+<a name="g2+dump"></a>
+### g2.dump([space]) ⇒ <code>string</code>
+Debug helper method.
+Convert g2 command queue to JSON formatted string.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>string</code> - JSON string of command queue.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [space] | <code>string</code> | Number of spaces to use for indenting JSON output. |
 
 <a name="g2.symbol"></a>
 ### g2.symbol : <code>object</code>

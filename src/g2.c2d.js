@@ -251,10 +251,7 @@ g2.State.c2d = {
                return  ld;
             },
       "ml": function() { return this.miterLimit; },
-      "shx": function() { return this.shadowOffsetX; },
-      "shy": function() { return this.shadowOffsetY; },
-      "shb": function() { return this.shadowBlur; },
-      "shc": function() { return this.shadowColor; },
+      "sh": function() { return [this.shadowOffsetX,this.shadowOffsetY,this.shadowBlurthis.shadowColor]; },
       "thal": function() { return this.textAlign; },
       "tval": function() { return this.textBaseline; },
       "font": function(state) {
@@ -295,10 +292,6 @@ g2.State.c2d = {
                   if (val[3]) this.shadowColor = val[3] || "rgba(0,0,0,0.5)";
                }
             },
-      "shx": function(val) { this.shadowOffsetX = val; },
-      "shy": function(val) { this.shadowOffsetY = val; },
-      "shb": function(val) { this.shadowBlur = val; },
-      "shc": function(val) { this.shadowColor = val === "transparent" ? g2.transparent : val; },
       "thal": function(val) { this.textAlign = val; },
       "tval": function(val) { this.textBaseline = val; },
       "foc": function(val,state) { state.setAttr("foc",val === "transparent" ? g2.transparent : val); },

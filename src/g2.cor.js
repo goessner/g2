@@ -10,22 +10,6 @@
 Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
 
 /**
- * Maintains a queue of 2D graphics commands.
- * @param {object} [args] Arguments object with one or more members of the following:
- *                 { cartesian: <boolean>,
- *                   pan: { dx:<float>, dy:<float> },
- *                   zoom: { x:<float>, y:<float> }, scl:<float> },
- *                   trf: { x:<float>, y:<float> }, scl:<float> }
- *                 }
- * @example
- * // How to use g2()
- * var ctx = document.getElementById("c").getContext("2d"); // Get your canvas context.
- * g2()                  // The first call of g2() creates a g2 object.
- *  .lin(50,50,100,100)  // Append commands.
- *  .lin(100,100,200,50)
- *  .exe(ctx);           // Execute commands.
- */
-/**
  * Create a queue of 2D graphics commands.
  * @param {object} [args] Arguments object with one or more members.
  * @param {bool} [args.cartesian] Use cartesian coordinate system.
@@ -44,8 +28,8 @@ Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
  * // How to use g2()
  * var ctx = document.getElementById("c").getContext("2d");
  * g2()                  // Create 'g2' instance.
- *  .lin(50,50,100,100)  // Append 'line' command.
- *  .lin(100,100,200,50) // Append more command ...
+ *  .lin(50,50,100,100)  // Append ...
+ *  .lin(100,100,200,50) // ... commands.
  *  .exe(ctx);           // Execute commands addressing canvas context.
  */
 function g2() {
@@ -610,10 +594,7 @@ g2.prototype.use = function use(g,args) {
  * @param {float} args.ml   Miter limit'.
  * @param {array} args.ld   Line dash array.
  * @param {int} args.lo     Line dash offset.
- * @param {float} args.shx  Shadow offset x-value.
- * @param {float} args.shy  Shadow offset y-value.
- * @param {float} args.shb  Shadow blur effect value.
- * @param {string} args.shc Shadow color.
+ * @param {array} args.sh   Shadow values array [x-offset,y-offset,blur,color].
  * @param {string} args.thal Text horizontal alignment.
  * @param {string} args.tval Text vertical alignment.
  * @param {string} args.fof  Font family.
@@ -711,41 +692,6 @@ g2.prototype.del = function del() { // see http://jsperf.com/truncating-arrays-c
    return this;
 };
 
-/**
- * Debug helper method.
- * Convert g2 command queue to JSON formatted string.
- * @param {string} [space] Number of spaces to use for indenting JSON output.
- * @return {string} JSON string of command queue.
- */
-g2.prototype.dump = function(space) {
-   function trace(obj) {
-      var out = [],o,cmd,a,c,args;
-      for (var i=0,n=obj.cmds.length; i<n; i++) {
-         args = [];
-         cmd = obj.cmds[i];
-         a = cmd.a;
-         for (var j=0,m=a && a.length || 0; j<m; j++) {
-            if (typeof a[j] === "object" && a[j] instanceof g2) {
-               if (a[j] !== obj) args.push(trace(a[j]));
-            }
-            else if (a[j] !== undefined)
-               args.push(a[j]);
-         }
-         c = /\W*function\s+([\w\$]+)\(/.exec(cmd.c.toString())[1];
-         if (args.length) {
-            o = {};
-            o[c] = args;
-         }
-         else
-            o = c;
-         out.push(o);
-      }
-      return out;
-   }
-   return JSON.stringify(trace(this), undefined, space);
-};
-
-g2.prototype.getState = function() { return this.state || (this.state = g2.State.create(this)); };
 // State stack management class.
 g2.State = {
    create: function() { var o = Object.create(this.prototype); o.constructor.apply(o,arguments); return o; },
@@ -810,6 +756,9 @@ g2.State = {
    foznosc: false,      // fontSize nonscalable
    trf: {x:0,y:0,w:0,scl:1}
 };
+g2.prototype.getState = function() { return this.state || (this.state = g2.State.create(this)); };
+
+// Helper methods .. not chainable.
 
 /**
  * Get user coordinates from canvas coordinates for point (with respect to initial transform).
@@ -838,6 +787,40 @@ g2.prototype.vecToUsr = function vecToUsr(x,y) {
    return !trf ? {x:x,y:y}
                : this.state.cartesian ? {x:x/trf.scl, y:-y/trf.scl}
                                       : {x:x/trf.scl, y: y/trf.scl};
+};
+
+/**
+ * Debug helper method.
+ * Convert g2 command queue to JSON formatted string.
+ * @param {string} [space] Number of spaces to use for indenting JSON output.
+ * @return {string} JSON string of command queue.
+ */
+g2.prototype.dump = function(space) {
+   function trace(obj) {
+      var out = [],o,cmd,a,c,args;
+      for (var i=0,n=obj.cmds.length; i<n; i++) {
+         args = [];
+         cmd = obj.cmds[i];
+         a = cmd.a;
+         for (var j=0,m=a && a.length || 0; j<m; j++) {
+            if (typeof a[j] === "object" && a[j] instanceof g2) {
+               if (a[j] !== obj) args.push(trace(a[j]));
+            }
+            else if (a[j] !== undefined)
+               args.push(a[j]);
+         }
+         c = /\W*function\s+([\w\$]+)\(/.exec(cmd.c.toString())[1];
+         if (args.length) {
+            o = {};
+            o[c] = args;
+         }
+         else
+            o = c;
+         out.push(o);
+      }
+      return out;
+   }
+   return JSON.stringify(trace(this), undefined, space);
 };
 
 // create symbol namespace ..
