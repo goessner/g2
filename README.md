@@ -32,7 +32,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 ![first](img/g2-first.png)
 
 ## Documentation
-  * [Getting started|Home.md)
+  * [[Getting started|Home.md]]
   * [Concepts](../../wiki/concepts)
   * [Paths](../../wiki/paths)
   * [Elements](../../wiki/elements)
