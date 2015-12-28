@@ -32,7 +32,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 ![first](./img/g2-first.png)
 
 ## Documentation
-  * [Getting started](../../wiki/Getting-started)
+  * [Getting started](./wiki/Getting-started)
   * [Concepts](../../wiki/concepts)
   * [Paths](../../wiki/paths)
   * [Elements](../../wiki/elements)
@@ -41,3 +41,9 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Viewport](../../wiki/viewport)
   * [Reuse](../../wiki/reuse)
   * [Renderers](../../wiki/renderers)
+
+## API Reference
+See the [API Reference](./api/readme.md) for details.
+
+## Cheat Sheet
+Check out the single page [Cheat Sheet](./api/sheet.pdf).
