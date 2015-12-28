@@ -29,10 +29,10 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
         .exe(document.getElementById("c").getContext("2d"));  // draw to canvas.
 </script>
 ```
-![first](./img/g2-first.png)
+![first](img/g2-first.png)
 
 ## Documentation
-  * [Getting started](./wiki/Getting-started)
+  * [Getting started](wiki/Home)
   * [Concepts](../../wiki/concepts)
   * [Paths](../../wiki/paths)
   * [Elements](../../wiki/elements)
@@ -43,7 +43,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Renderers](../../wiki/renderers)
 
 ## API Reference
-See the [API Reference](./api/readme.md) for details.
+See the [API Reference](api/readme.md) for details.
 
 ## Cheat Sheet
-Check out the single page [Cheat Sheet](./api/sheet.pdf).
+Check out the single page [Cheat Sheet](api/sheet.pdf).
