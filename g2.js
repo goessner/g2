@@ -259,13 +259,15 @@ g2.prototype.c = function c(x1,y1,x2,y2,x,y) {
  *     .exe(ctx);      // Render to canvas context.
  */
 g2.prototype.a = function a(dw,x,y) {
-   var p1 = this._curPnt();
-   if (p1) {
+   var p1 = this._curPnt(), pi2 = 2*Math.PI;
+   if (p1 && dw > Number.EPSILON || dw < -Number.EPSILON || dw >= pi2 || dw <= -pi2) {
       var dx = x-p1[0], dy = y-p1[1], tw2 = Math.tan(dw/2),
           rx = dx/2 - dy/tw2/2, ry = dy/2 + dx/tw2/2,
           w = Math.atan2(-ry,-rx);
       this.cmds.push({c:a,a:[p1[0]+rx,p1[1]+ry,Math.hypot(rx,ry),w,w+dw,dw<0],cp:[x,y]});
    }
+   else  // draw a straight line instead ...
+      this.cmds.push({c:g2.prototype.l,a:[x,y]});
    return this;
 };
 

@@ -10,13 +10,14 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 * Adressing HTML canvas 2D context as the default renderer.
 * Generating SVG output using an addon library.
 * Method chaining.
-* Optionally use cartesian coordinates.
-* Setting viewport by pan and zoom transformation.
+* Support of cartesian coordinates.
+* Viewport pan and zoom transformations.
 * Low level path commands with short names adopted from SVG.
 * Higher level element commands.
 * Maintaining a state stack for styling and transformations.
 * Easy way to build custom symbol libraries.
 * Tiny footprint by 5kB compressed (gzip).
+* No dependency.
 
 ## Example
 
