@@ -557,7 +557,7 @@ g2.prototype.grid.getSize = function(state,scl) {
  * @param {float} [args.w=0] Rotation angle (in radians).
  * @param {float} [args.scl=1] Scale factor.
  * @param {array} [args.matrix] Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]).
- * @param {float} [args.style] Style property. See 'g2.style' for details.
+ * @param {any} [args.style] Style property. See 'g2.style' for details.
  * @example
  * g2.symbol.cross = g2().lin(5,5,-5,-5).lin(5,-5,-5,5);  // Define symbol.
  * g2().use("cross",{x:100,y:100})  // Draw cross at position 100,100.
@@ -582,23 +582,23 @@ g2.prototype.use = function use(g,args) {
  * @method
  * @returns {object} g2
  * @param {object} args Style properties object. 
- * @param {string} [args.fs='transparent']  Fill color (fillStyle).
- * @param {string} [args.ls='black']  Line color (lineStroke).
+ * @param {string} [args.fs=transparent]  Fill color (fillStyle).
+ * @param {string} [args.ls=black]  Line color (lineStroke).
  * @param {float} [args.lw=1]   Line width.
  * @param {bool} [args.lwnosc=false] Line width nonscalable.
- * @param {string} [args.lc='butt']  Line cap [`butt`, `round`, `square`].
- * @param {string} [args.lj='miter']  Line join [`round`, `bevel` and `miter`].
+ * @param {string} [args.lc=butt]  Line cap [`butt`, `round`, `square`].
+ * @param {string} [args.lj=miter]  Line join [`round`, `bevel` and `miter`].
  * @param {float} [args.ml=10]   Miter limit'.
  * @param {array} [args.ld=[]]   Line dash array.
  * @param {int} [args.lo=0]     Line dash offset.
- * @param {array} [args.sh=[0,0,0,'transparent']]   Shadow values array [x-offset,y-offset,blur,color].
- * @param {string} [args.thal='start'] Text horizontal alignment ['start', 'end', 'left', 'right' or 'center'].
- * @param {string} [args.tval='alphabetic'] Text vertical alignment ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'].
- * @param {string} [args.fof='serif']  Font family [serif | sans-serif | monospace | cursiv | fantasy | arial | verdana | ... ] s. CSS
+ * @param {array} [args.sh=[0,0,0,"transparent""]]   Shadow values array [x-offset,y-offset,blur,color].
+ * @param {string} [args.thal=start] Text horizontal alignment ['start', 'end', 'left', 'right' or 'center'].
+ * @param {string} [args.tval=alphabetic] Text vertical alignment ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'].
+ * @param {string} [args.fof=serif]  Font family ['serif', 'sans-serif', 'monospace', 'cursiv', 'fantasy', 'arial', 'verdana', ... ] s. CSS
  * @param {float} [args.foz=12]   Font size.
- * @param {string} [args.foc='black']  Font color.
- * @param {string} [args.fow='normal']  Font weight ['normal','bold','lighter','bolder',100,200,...,900].
- * @param {string} [args.fos='normal']  Font style ['normal','italic','oblique'].
+ * @param {string} [args.foc=black]  Font color.
+ * @param {string} [args.fow=normal]  Font weight ['normal','bold','lighter','bolder',100,200,...,900].
+ * @param {string} [args.fos=normal]  Font style ['normal','italic','oblique'].
  * @param {bool} [args.foznosc=false] Font size nonscalable.
  * @example
  * g = g2();
