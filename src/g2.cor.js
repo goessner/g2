@@ -585,7 +585,6 @@ g2.prototype.use = function use(g,args) {
  * @param {string} [args.fs=transparent]  Fill color (fillStyle).
  * @param {string} [args.ls=black]  Line color (lineStroke).
  * @param {float} [args.lw=1]   Line width.
- * @param {bool} [args.lwnosc=false] Line width nonscalable.
  * @param {string} [args.lc=butt]  Line cap [`butt`, `round`, `square`].
  * @param {string} [args.lj=miter]  Line join [`round`, `bevel` and `miter`].
  * @param {float} [args.ml=10]   Miter limit'.
@@ -599,7 +598,6 @@ g2.prototype.use = function use(g,args) {
  * @param {string} [args.foc=black]  Font color.
  * @param {string} [args.fow=normal]  Font weight ['normal','bold','lighter','bolder',100,200,...,900].
  * @param {string} [args.fos=normal]  Font style ['normal','italic','oblique'].
- * @param {bool} [args.foznosc=false] Font size nonscalable.
  * @example
  * g = g2();
  * g2().style({ fs:"#58dbfa",         // Set fill style.
@@ -713,10 +711,12 @@ g2.State = {
 
       save: function() {
          this.stack.push(JSON.parse(JSON.stringify(this.stack[this.stack.length-1])));
+//         console.log("saved:"+JSON.stringify(this.stack[this.stack.length-1]));
          return this;
       },
       restore: function() {
          this.stack.pop();
+//         console.log("restored:"+JSON.stringify(this.stack[this.stack.length-1]));
          return this;
       },
       transform: function(t) {
@@ -739,7 +739,7 @@ g2.State = {
    lw: 1,               // lineWidth
    lc: "butt",          // lineCap
    lj: "miter",         // lineJoin
-   lwnosc: false,       // lineWidth nonscalable
+   lwnosc: false,       // lineWidth nonscalable .. experimental
 //   lm: "normal",        // linemode .. "normal" or 'jitter'
    ml: 10,              // miterLimit
    sh: [0,0,0,g2.transparent], // shadow
@@ -748,7 +748,7 @@ g2.State = {
    fow: "normal",       // fontWeight [normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 ... ] s. CSS
    foz: 12,             // fontSize
    fof: "serif",        // fontFamily [serif | sans-serif | monospace | cursiv | fantasy | arial | verdana | ... ] s. CSS
-   foznosc: false,      // fontSize nonscalable
+   foznosc: false,      // fontSize nonscalable ... experimental
    trf: {x:0,y:0,w:0,scl:1}
 };
 g2.prototype.getState = function() { return this.state || (this.state = g2.State.create(this)); };

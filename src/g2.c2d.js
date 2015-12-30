@@ -72,18 +72,16 @@ g2.prototype.drw.c2d = function drw_c2d(d) {
 };
 
 g2.prototype.txt.c2d = function txt_c2d(self,s,x,y,w,args) {
-   var state = self.state, foc, saved;
-
-   if (args) g2.prototype.style.c2d.call(this,self,args);
+   var state = self.state, foc;
+   state.save();
+   this.save();
+   g2.prototype.style.c2d.call(this,self,args);
    foc = state.getAttr("foc");
-   if (saved = (state.cartesian || w || foc !== g2.transparent))
-      this.save();
    if (w) {
       var sw = Math.sin(w), cw = Math.cos(w);
       this.transform(cw,sw,-sw,cw,(1-cw)*x+sw*y,-sw*x+(1-cw)*y);
    }
    if (state.cartesian) { this.scale(1,-1); y = -y; }
-
    if (foc !== g2.transparent) {
       this.fillStyle = foc;
       this.fillText(s,x,y);
@@ -92,8 +90,8 @@ g2.prototype.txt.c2d = function txt_c2d(self,s,x,y,w,args) {
       this.fillText(s,x,y);
       this.strokeText(s,x,y);
    }
-
-   if (saved) this.restore();
+   this.restore();
+   state.restore();
 };
 
 g2.prototype.img.c2d = function img_c2d(self,img,x,y,b,h,xoff,yoff,dx,dy) {
@@ -234,7 +232,7 @@ g2.State.c2d = {
       if (!(name in tnames)) 
           g2.State.c2d.set[name] 
         ? g2.State.c2d.set[name].call(this,val,state)
-        : state.setAttr(name);
+        : state.setAttr(name,val);
    },
    get: {
       "fs": function() { return this.fillStyle; },
@@ -298,14 +296,14 @@ g2.State.c2d = {
       "fow": function(val,state) { state.setAttr("fow",val); this.font = g2.State.c2d.get["font"](state); },
       "foz": function(val,state) { state.setAttr("foz",val/(state.getAttr("foznosc") ? state.currentScale : 1)); this.font = g2.State.c2d.get["font"](state); },
       "fof": function(val,state) { state.setAttr("fof",val); this.font = g2.State.c2d.get["font"](state); },
-      "lwnosc": function(val,state) {
+      "lwnosc": function(val,state) {                      // undocumented beta feature
                    if (val !== state.getAttr("lwnosc")) {  // value changing ...
                       if (val) this.lineWidth /= state.currentScale;
                       else     this.lineWidth *= state.currentScale;
                       state.setAttr("lwnosc",val);
                    }
                 },
-      "foznosc": function(val,state) {
+      "foznosc": function(val,state) {                       // undocumented beta feature
                     if (val !== state.getAttr("foznosc")) {  // value changing ...
                        var foz = state.getAttr("foz");
                        if (val) foz /= state.currentScale;

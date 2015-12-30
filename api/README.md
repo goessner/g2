@@ -489,7 +489,6 @@ Apply new style properties.
 | [args.fs] | <code>string</code> | <code>&quot;transparent&quot;</code> | Fill color (fillStyle). |
 | [args.ls] | <code>string</code> | <code>&quot;black&quot;</code> | Line color (lineStroke). |
 | [args.lw] | <code>float</code> | <code>1</code> | Line width. |
-| [args.lwnosc] | <code>bool</code> | <code>false</code> | Line width nonscalable. |
 | [args.lc] | <code>string</code> | <code>&quot;butt&quot;</code> | Line cap [`butt`, `round`, `square`]. |
 | [args.lj] | <code>string</code> | <code>&quot;miter&quot;</code> | Line join [`round`, `bevel` and `miter`]. |
 | [args.ml] | <code>float</code> | <code>10</code> | Miter limit'. |
@@ -498,12 +497,11 @@ Apply new style properties.
 | [args.sh] | <code>array</code> | <code>[0,0,0,&quot;transparent&quot;&quot;]</code> | Shadow values array [x-offset,y-offset,blur,color]. |
 | [args.thal] | <code>string</code> | <code>&quot;start&quot;</code> | Text horizontal alignment ['start', 'end', 'left', 'right' or 'center']. |
 | [args.tval] | <code>string</code> | <code>&quot;alphabetic&quot;</code> | Text vertical alignment ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom']. |
-| [args.fof] | <code>string</code> | <code>&quot;serif&quot;</code> | Font family ['serif', 'sans-serif', 'monospace', 'cursiv', 'fantasy', 'arial', 'verdana', ... ] s. CSS |
+| [args.fof] | <code>string</code> | <code>&quot;serif&quot;</code> | Font family ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'arial', 'verdana', ... ] s. CSS |
 | [args.foz] | <code>float</code> | <code>12</code> | Font size. |
 | [args.foc] | <code>string</code> | <code>&quot;black&quot;</code> | Font color. |
 | [args.fow] | <code>string</code> | <code>&quot;normal&quot;</code> | Font weight ['normal','bold','lighter','bolder',100,200,...,900]. |
 | [args.fos] | <code>string</code> | <code>&quot;normal&quot;</code> | Font style ['normal','italic','oblique']. |
-| [args.foznosc] | <code>bool</code> | <code>false</code> | Font size nonscalable. |
 
 **Example**  
 ```js
