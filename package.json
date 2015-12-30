@@ -19,6 +19,7 @@
   "devDependencies": {
     "concat": "^1.0.0",
     "jsdoc-to-markdown": "^1.3.2",
+    "jslint": "^0.9.5",
     "uglifyjs": "^2.4.10"
   }
 }

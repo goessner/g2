@@ -46,13 +46,13 @@ g2()                  // Create 'g2' instance.
         * [.stroke([d])](#g2+stroke) ⇒ <code>object</code>
         * [.fill([d])](#g2+fill) ⇒ <code>object</code>
         * [.drw([d])](#g2+drw) ⇒ <code>object</code>
-        * [.txt(s, [x], [y], [w], [args])](#g2+txt) ⇒ <code>object</code>
+        * [.txt(s, [x], [y], [w], [style])](#g2+txt) ⇒ <code>object</code>
         * [.img(uri, [x], [y], [b], [h], [xoff], [yoff], [dx], [dy])](#g2+img) ⇒ <code>object</code>
         * [.lin(x1, y1, x2, y2)](#g2+lin) ⇒ <code>object</code>
         * [.rec(x, y, b, h)](#g2+rec) ⇒ <code>object</code>
         * [.cir(x, y, r)](#g2+cir) ⇒ <code>object</code>
         * [.arc(x, y, r, [w], [dw])](#g2+arc) ⇒ <code>object</code>
-        * [.ply(parr, mode, opts)](#g2+ply) ⇒ <code>object</code>
+        * [.ply(parr, mode, [itr])](#g2+ply) ⇒ <code>object</code>
         * [.beg(args)](#g2+beg) ⇒ <code>object</code>
         * [.end()](#g2+end) ⇒ <code>object</code>
         * [.clr()](#g2+clr) ⇒ <code>object</code>
@@ -272,7 +272,7 @@ In case of shadow, only the path interior creates shadow, not also the path cont
 | [d] | <code>string</code> | SVG path definition string. |
 
 <a name="g2+txt"></a>
-### g2.txt(s, [x], [y], [w], [args]) ⇒ <code>object</code>
+### g2.txt(s, [x], [y], [w], [style]) ⇒ <code>object</code>
 Draw text string at anchor point.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -284,7 +284,7 @@ Draw text string at anchor point.
 | [x] | <code>float</code> | <code>0</code> | x coordinate of text anchor position. |
 | [y] | <code>float</code> | <code>0</code> | y coordinate of text anchor position. |
 | [w] | <code>float</code> | <code>0</code> | w Rotation angle about anchor point with respect to positive x-axis. |
-| [args] | <code>object</code> |  | args Object with styling and/or transform values. |
+| [style] | <code>object</code> |  | args Object with styling values. |
 
 <a name="g2+img"></a>
 ### g2.img(uri, [x], [y], [b], [h], [xoff], [yoff], [dx], [dy]) ⇒ <code>object</code>
@@ -384,7 +384,7 @@ g2().arc(300,400,390,-Math.PI/4,-Math.PI/2)
     .exe(ctx);
 ```
 <a name="g2+ply"></a>
-### g2.ply(parr, mode, opts) ⇒ <code>object</code>
+### g2.ply(parr, mode, [itr]) ⇒ <code>object</code>
 Draw polygon by points.
 Using iterator function for getting points from array by index.
 It must return matching point object {x:<float>,y:<float>} or object {done:true}.
@@ -393,19 +393,17 @@ Default iterator expects sequence of x/y-coordinates as a flat array ([x0,y0,x1,
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - this  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| parr | <code>array</code> |  | Array of points |
-| mode | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> |  | = false: non-closed polygon                         mode = 'split': intermittend lines                         mode = not falsy: closed polygon |
-| opts | <code>object</code> |  | Options object. |
-| [opts.fmt] | <code>string</code> | <code>&quot;\&quot;x,y\&quot;&quot;</code> | Points array format:                "x,y"    Flat Array of x,y-values [default]               |"[x,y]"  Array of [x,y] arrays               |"{x,y}"  Array of {x:<x-val,y:<y-val>} objects |
-| [opts.itr] | <code>function</code> |  | Iterator function getting array and point index as parameters: `function(arr,i)`.                               If provided it has priority over 'fmt'. |
+| Param | Type | Description |
+| --- | --- | --- |
+| parr | <code>array</code> | Array of points. Flat Array of x,y-values, Array of [x,y] arrays and Array of {x:<x-val,y:<y-val>} objects are supported. |
+| mode | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | = [true:closed, false:non-closed, 'split': intermittend lines] |
+| [itr] | <code>function</code> | Iterator function getting array and point index as parameters.<br> |
 
 **Example**  
 ```js
 g2().ply([100,50,120,60,80,70]),
-    .ply([150,60],[170,70],[130,80]],true,{fmt:"[x,y]"}),
-    .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true,{fmt:"{x,y}"}),
+    .ply([150,60],[170,70],[130,80]],true),
+    .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true),
     .exe(ctx);
 ```
 <a name="g2+beg"></a>

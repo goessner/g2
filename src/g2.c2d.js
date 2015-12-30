@@ -134,7 +134,6 @@ g2.prototype.arc.c2d = function arc_c2d(x,y,r,w,dw) {
 
 g2.prototype.ply.c2d = function ply_c2d(parr,mode,itr) {
    var p, i = 0, split = mode === "split";
-   itr = itr || g2.prototype.ply.itr;
    p = itr(parr,i++);
    if (!p.done) {      // draw polygon ..
       this.beginPath();

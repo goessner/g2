@@ -326,10 +326,10 @@ g2.prototype.drw = function drw(d) {
  * @param {float} [x=0] x coordinate of text anchor position.
  * @param {float} [y=0] y coordinate of text anchor position.
  * @param {float} [w=0] w Rotation angle about anchor point with respect to positive x-axis.
- * @param {object} [args=undefined] args Object with styling and/or transform values.
+ * @param {object} [style=undefined] args Object with styling values.
  */
-g2.prototype.txt = function txt(s,x,y,w,args) {
-   this.cmds.push({c:txt,a:args?[this,s,x||0,y||0,w||0,args]:[this,s,x||0,y||0,w||0]});
+g2.prototype.txt = function txt(s,x,y,w,style) {
+   this.cmds.push({c:txt,a:style?[this,s,x||0,y||0,w||0,style]:[this,s,x||0,y||0,w||0]});
    return this;
 };
 
@@ -434,25 +434,21 @@ g2.prototype.arc = function arc(x,y,r,w,dw) {
  * Default iterator expects sequence of x/y-coordinates as a flat array ([x0,y0,x1,y1,...])
  * @method
  * @returns {object} this
- * @param {array} parr Array of points
- * @param {bool | 'split'} mode = false: non-closed polygon
- *                         mode = 'split': intermittend lines
- *                         mode = not falsy: closed polygon
- * @param {object} opts Options object.
- * @param {string} [opts.fmt="x,y"] Points array format:
- *                "x,y"    Flat Array of x,y-values [default]
- *               |"[x,y]"  Array of [x,y] arrays
- *               |"{x,y}"  Array of {x:<x-val,y:<y-val>} objects
- * @param {function} [opts.itr=undefined] Iterator function getting array and point index as parameters: `function(arr,i)`. 
- *                              If provided it has priority over 'fmt'.
+ * @param {array} parr Array of points. Flat Array of x,y-values, Array of [x,y] arrays and Array of {x:<x-val,y:<y-val>} objects are supported.
+ * @param {bool | 'split'} mode = [true:closed, false:non-closed, 'split': intermittend lines]
+ * @param {function} [itr=undefined] Iterator function getting array and point index as parameters.<br>
  * @example
  * g2().ply([100,50,120,60,80,70]),
- *     .ply([150,60],[170,70],[130,80]],true,{fmt:"[x,y]"}),
- *     .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true,{fmt:"{x,y}"}),
+ *     .ply([150,60],[170,70],[130,80]],true),
+ *     .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true),
  *     .exe(ctx);
  */
-g2.prototype.ply = function ply(parr,mode,opts) {
-   var itr = opts && (opts.itr || opts.fmt && g2.prototype.ply.iterators[opts.fmt]) || false;
+g2.prototype.ply = function ply(parr,mode,itr) {
+   if (parr && parr.length && typeof itr !== "function")
+      itr = typeof parr[0] === "number" ? g2.prototype.ply.iterators["x,y"]
+          : Array.isArray(parr[0]) && parr[0].length >= 2 ? g2.prototype.ply.iterators["[x,y]"]
+          : typeof parr[0] === "object" && "x" in parr[0] && "y" in parr[0] ? g2.prototype.ply.iterators["{x,y}"]
+          : undefined;
    this.cmds.push({c:ply,a:[parr,mode,itr]});
    return this;
 };
