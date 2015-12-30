@@ -25,8 +25,8 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 <canvas id="c" width="200", height="100"></canvas>
 <script src="g2.js"></script>
 <script>
-    g2().style({ls:"green",fs:"orange",lw:3})  // create g2 object and add style command.
-        .rec(40,30,120,40)                     // add rectangle command.
+    g2().style({ls:"green",fs:"orange",lw:3})  // create g2 object and add style.
+        .rec(40,30,120,40)                     // add rectangle.
         .exe(document.getElementById("c").getContext("2d"));  // draw to canvas.
 </script>
 ```
