@@ -52,7 +52,7 @@ g2()                  // Create 'g2' instance.
         * [.rec(x, y, b, h)](#g2+rec) ⇒ <code>object</code>
         * [.cir(x, y, r)](#g2+cir) ⇒ <code>object</code>
         * [.arc(x, y, r, [w], [dw])](#g2+arc) ⇒ <code>object</code>
-        * [.ply(parr, mode, [itr])](#g2+ply) ⇒ <code>object</code>
+        * [.ply(parr, [mode], [itr])](#g2+ply) ⇒ <code>object</code>
         * [.beg(args)](#g2+beg) ⇒ <code>object</code>
         * [.end()](#g2+end) ⇒ <code>object</code>
         * [.clr()](#g2+clr) ⇒ <code>object</code>
@@ -280,7 +280,7 @@ Draw text string at anchor point.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| s | <code>string</code> |  | Drawing text |
+| s | <code>string</code> |  | Text string. |
 | [x] | <code>float</code> | <code>0</code> | x coordinate of text anchor position. |
 | [y] | <code>float</code> | <code>0</code> | y coordinate of text anchor position. |
 | [w] | <code>float</code> | <code>0</code> | w Rotation angle about anchor point with respect to positive x-axis. |
@@ -296,7 +296,7 @@ This also applies to images of reused g2 objects. If an image can not be loaded,
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| uri | <code>string</code> |  | Image uri or data:url. On error a broken image symboldwill be used. |
+| uri | <code>string</code> |  | Image uri or data:url. |
 | [x] | <code>float</code> | <code>0</code> | X-coordinate of image (upper left). |
 | [y] | <code>float</code> | <code>0</code> | Y-coordinate of image (upper left). |
 | [b] | <code>float</code> |  | Width. |
@@ -342,7 +342,7 @@ Draw rectangle by anchor point and dimensions.
 **Example**  
 ```js
 g2().rec(100,80,40,30)  // Draw rectangle.
-    .exe(ctx);          // Render to canvas context.
+    .exe(ctx);          // Render to context.
 ```
 <a name="g2+cir"></a>
 ### g2.cir(x, y, r) ⇒ <code>object</code>
@@ -384,46 +384,46 @@ g2().arc(300,400,390,-Math.PI/4,-Math.PI/2)
     .exe(ctx);
 ```
 <a name="g2+ply"></a>
-### g2.ply(parr, mode, [itr]) ⇒ <code>object</code>
+### g2.ply(parr, [mode], [itr]) ⇒ <code>object</code>
 Draw polygon by points.
 Using iterator function for getting points from array by index.
-It must return matching point object {x:<float>,y:<float>} or object {done:true}.
-Default iterator expects sequence of x/y-coordinates as a flat array ([x0,y0,x1,y1,...])
+It must return current point object {x,y} or object {done:true}.
+Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
+array of [[x,y],...] arrays or array of [{x,y},...] objects.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - this  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| parr | <code>array</code> | Array of points. Flat Array of x,y-values, Array of [x,y] arrays and Array of {x:<x-val,y:<y-val>} objects are supported. |
-| mode | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | = [true:closed, false:non-closed, 'split': intermittend lines] |
-| [itr] | <code>function</code> | Iterator function getting array and point index as parameters.<br> |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| parr | <code>array</code> |  | Array of points. |
+| [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed, false:non-closed, 'split:intermittend lines. |
+| [itr] | <code>function</code> |  | Iterator function getting array and point index as parameters. |
 
 **Example**  
 ```js
 g2().ply([100,50,120,60,80,70]),
     .ply([150,60],[170,70],[130,80]],true),
-    .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true),
+    .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],'split'),
     .exe(ctx);
 ```
 <a name="g2+beg"></a>
 ### g2.beg(args) ⇒ <code>object</code>
 Begin subcommands. Current state is saved. 
-Optionally apply (similarity) transformation or style properties.
+Optionally apply transformation or style properties.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| args | <code>object</code> | Arguments object. |
-| [args.x] | <code>float</code> | Translation value x. |
-| [args.y] | <code>float</code> | Translation value y. |
-| [args.w] | <code>float</code> | Rotation angle (in radians). |
-| [args.scl] | <code>float</code> | Scale factor. |
-| [args.matrix] | <code>array</code> | Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]). |
-| [args.<style_property>] | <code>float</code> | Style property. See 'g2.style' for details. |
-| [args.<style_property>] | <code>float</code> | ... |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| args | <code>object</code> |  | Arguments object. |
+| [args.x] | <code>float</code> | <code>0</code> | Translation value x. |
+| [args.y] | <code>float</code> | <code>0</code> | Translation value y. |
+| [args.w] | <code>float</code> | <code>0</code> | Rotation angle (in radians). |
+| [args.scl] | <code>float</code> | <code>1</code> | Scale factor. |
+| [args.matrix] | <code>array</code> |  | Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]). |
+| [args.style] | <code>any</code> |  | Style property. See 'g2.style' for details. |
 
 <a name="g2+end"></a>
 ### g2.end() ⇒ <code>object</code>
@@ -459,17 +459,16 @@ In fact you might want to build custom graphics libraries on top of that feature
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| g | <code>object</code> &#124; <code>string</code> | g2 source object or symbol name found in 'g2.symbol' namespace. |
-| args | <code>object</code> | Arguments object. |
-| [args.x] | <code>float</code> | Translation value x. |
-| [args.y] | <code>float</code> | Translation value y. |
-| [args.w] | <code>float</code> | Rotation angle (in radians). |
-| [args.scl] | <code>float</code> | Scale factor. |
-| [args.matrix] | <code>array</code> | Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]). |
-| [args.<style_property>] | <code>float</code> | Style property. See 'g2.style' for details. |
-| [args.<style_property>] | <code>float</code> | ... |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| g | <code>object</code> &#124; <code>string</code> |  | g2 source object or symbol name found in 'g2.symbol' namespace. |
+| args | <code>object</code> |  | Arguments object. |
+| [args.x] | <code>float</code> | <code>0</code> | Translation value x. |
+| [args.y] | <code>float</code> | <code>0</code> | Translation value y. |
+| [args.w] | <code>float</code> | <code>0</code> | Rotation angle (in radians). |
+| [args.scl] | <code>float</code> | <code>1</code> | Scale factor. |
+| [args.matrix] | <code>array</code> |  | Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]). |
+| [args.style] | <code>float</code> |  | Style property. See 'g2.style' for details. |
 
 **Example**  
 ```js
@@ -484,27 +483,27 @@ Apply new style properties.
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| args | <code>object</code> | Style properties object. |
-| args.fs | <code>string</code> | Fill color (fillStyle). |
-| args.ls | <code>string</code> | Line color (lineStroke). |
-| args.lw | <code>float</code> | Line width. |
-| args.lwnosc | <code>bool</code> | Line width nonscalable. |
-| args.lc | <code>string</code> | Line cap [`butt`, `round`, `square`]. |
-| args.lj | <code>string</code> | Line join [`round`, `bevel` and `miter`]. |
-| args.ml | <code>float</code> | Miter limit'. |
-| args.ld | <code>array</code> | Line dash array. |
-| args.lo | <code>int</code> | Line dash offset. |
-| args.sh | <code>array</code> | Shadow values array [x-offset,y-offset,blur,color]. |
-| args.thal | <code>string</code> | Text horizontal alignment. |
-| args.tval | <code>string</code> | Text vertical alignment. |
-| args.fof | <code>string</code> | Font family. |
-| args.foz | <code>float</code> | Font size. |
-| args.foc | <code>string</code> | Font color. |
-| args.fow | <code>string</code> | Font weight ['normal','bold','lighter','bolder',100,200,...,900]. |
-| args.fos | <code>string</code> | Font style ['normal','italic','oblique']. |
-| args.foznosc | <code>bool</code> | Font size nonscalable. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| args | <code>object</code> |  | Style properties object. |
+| [args.fs] | <code>string</code> | <code>&quot;&#x27;transparent&#x27;&quot;</code> | Fill color (fillStyle). |
+| [args.ls] | <code>string</code> | <code>&quot;&#x27;black&#x27;&quot;</code> | Line color (lineStroke). |
+| [args.lw] | <code>float</code> | <code>1</code> | Line width. |
+| [args.lwnosc] | <code>bool</code> | <code>false</code> | Line width nonscalable. |
+| [args.lc] | <code>string</code> | <code>&quot;&#x27;butt&#x27;&quot;</code> | Line cap [`butt`, `round`, `square`]. |
+| [args.lj] | <code>string</code> | <code>&quot;&#x27;miter&#x27;&quot;</code> | Line join [`round`, `bevel` and `miter`]. |
+| [args.ml] | <code>float</code> | <code>10</code> | Miter limit'. |
+| [args.ld] | <code>array</code> | <code>[]</code> | Line dash array. |
+| [args.lo] | <code>int</code> | <code>0</code> | Line dash offset. |
+| [args.sh] | <code>array</code> | <code>[0,0,0,&#x27;transparent&#x27;]</code> | Shadow values array [x-offset,y-offset,blur,color]. |
+| [args.thal] | <code>string</code> | <code>&quot;&#x27;start&#x27;&quot;</code> | Text horizontal alignment ['start', 'end', 'left', 'right' or 'center']. |
+| [args.tval] | <code>string</code> | <code>&quot;&#x27;alphabetic&#x27;&quot;</code> | Text vertical alignment ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom']. |
+| [args.fof] | <code>string</code> | <code>&quot;&#x27;serif&#x27;&quot;</code> | Font family [serif | sans-serif | monospace | cursiv | fantasy | arial | verdana | ... ] s. CSS |
+| [args.foz] | <code>float</code> | <code>12</code> | Font size. |
+| [args.foc] | <code>string</code> | <code>&quot;&#x27;black&#x27;&quot;</code> | Font color. |
+| [args.fow] | <code>string</code> | <code>&quot;&#x27;normal&#x27;&quot;</code> | Font weight ['normal','bold','lighter','bolder',100,200,...,900]. |
+| [args.fos] | <code>string</code> | <code>&quot;&#x27;normal&#x27;&quot;</code> | Font style ['normal','italic','oblique']. |
+| [args.foznosc] | <code>bool</code> | <code>false</code> | Font size nonscalable. |
 
 **Example**  
 ```js

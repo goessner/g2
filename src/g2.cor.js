@@ -322,7 +322,7 @@ g2.prototype.drw = function drw(d) {
  * Draw text string at anchor point.
  * @method
  * @returns {object} g2
- * @param {string} s Drawing text
+ * @param {string} s Text string.
  * @param {float} [x=0] x coordinate of text anchor position.
  * @param {float} [y=0] y coordinate of text anchor position.
  * @param {float} [w=0] w Rotation angle about anchor point with respect to positive x-axis.
@@ -338,7 +338,7 @@ g2.prototype.txt = function txt(s,x,y,w,style) {
  * This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.
  * @method
  * @returns {object} g2
- * @param {string} uri Image uri or data:url. On error a broken image symboldwill be used.
+ * @param {string} uri Image uri or data:url.
  * @param {float} [x=0] X-coordinate of image (upper left).
  * @param {float} [y=0] Y-coordinate of image (upper left).
  * @param {float} [b = undefined] Width.
@@ -385,7 +385,7 @@ g2.prototype.lin = function lin(x1,y1,x2,y2) {
  * @param {float} h Height.
  * @example
  * g2().rec(100,80,40,30)  // Draw rectangle.
- *     .exe(ctx);          // Render to canvas context.
+ *     .exe(ctx);          // Render to context.
  */
 g2.prototype.rec = function rec(x,y,b,h) {
    this.cmds.push({c:rec,a:[x,y,b,h]});
@@ -423,24 +423,25 @@ g2.prototype.cir = function cir(x,y,r) {
  *     .exe(ctx);
  */
 g2.prototype.arc = function arc(x,y,r,w,dw) {
-   this.cmds.push({c:arc,a:[x,y,r,w,dw]});
+   this.cmds.push({c:arc,a:[x,y,r,w||0,dw||2*Math.PI]});
    return this;
 };
 
 /**
  * Draw polygon by points.
  * Using iterator function for getting points from array by index.
- * It must return matching point object {x:<float>,y:<float>} or object {done:true}.
- * Default iterator expects sequence of x/y-coordinates as a flat array ([x0,y0,x1,y1,...])
+ * It must return current point object {x,y} or object {done:true}.
+ * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
+ * array of [[x,y],...] arrays or array of [{x,y},...] objects.
  * @method
  * @returns {object} this
- * @param {array} parr Array of points. Flat Array of x,y-values, Array of [x,y] arrays and Array of {x:<x-val,y:<y-val>} objects are supported.
- * @param {bool | 'split'} mode = [true:closed, false:non-closed, 'split': intermittend lines]
- * @param {function} [itr=undefined] Iterator function getting array and point index as parameters.<br>
+ * @param {array} parr Array of points.
+ * @param {bool|'split'} [mode = false] true:closed, false:non-closed, 'split:intermittend lines.
+ * @param {function} [itr] Iterator function getting array and point index as parameters.
  * @example
  * g2().ply([100,50,120,60,80,70]),
  *     .ply([150,60],[170,70],[130,80]],true),
- *     .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],true),
+ *     .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],'split'),
  *     .exe(ctx);
  */
 g2.prototype.ply = function ply(parr,mode,itr) {
@@ -464,17 +465,16 @@ g2.prototype.ply.itr = g2.prototype.ply.iterators["x,y"];
 
 /**
  * Begin subcommands. Current state is saved. 
- * Optionally apply (similarity) transformation or style properties.
+ * Optionally apply transformation or style properties.
  * @method
  * @returns {object} g2
  * @param {object} args Arguments object.
- * @param {float} [args.x] Translation value x.
- * @param {float} [args.y] Translation value y.
- * @param {float} [args.w] Rotation angle (in radians).
- * @param {float} [args.scl] Scale factor.
+ * @param {float} [args.x=0] Translation value x.
+ * @param {float} [args.y=0] Translation value y.
+ * @param {float} [args.w=0] Rotation angle (in radians).
+ * @param {float} [args.scl=1] Scale factor.
  * @param {array} [args.matrix] Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]).
- * @param {float} [args.<style_property>] Style property. See 'g2.style' for details.
- * @param {float} [args.<style_property>] ...
+ * @param {any} [args.style] Style property. See 'g2.style' for details.
  */
 g2.prototype.beg = function beg(args) {
    this.cmds.push({c:beg, a:(args ? [this,args] : [this]), open:true});
@@ -552,13 +552,12 @@ g2.prototype.grid.getSize = function(state,scl) {
  * @returns {object} g2
  * @param {object | string} g g2 source object or symbol name found in 'g2.symbol' namespace.
  * @param {object} args Arguments object.
- * @param {float} [args.x] Translation value x.
- * @param {float} [args.y] Translation value y.
- * @param {float} [args.w] Rotation angle (in radians).
- * @param {float} [args.scl] Scale factor.
+ * @param {float} [args.x=0] Translation value x.
+ * @param {float} [args.y=0] Translation value y.
+ * @param {float} [args.w=0] Rotation angle (in radians).
+ * @param {float} [args.scl=1] Scale factor.
  * @param {array} [args.matrix] Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]).
- * @param {float} [args.<style_property>] Style property. See 'g2.style' for details.
- * @param {float} [args.<style_property>] ...
+ * @param {float} [args.style] Style property. See 'g2.style' for details.
  * @example
  * g2.symbol.cross = g2().lin(5,5,-5,-5).lin(5,-5,-5,5);  // Define symbol.
  * g2().use("cross",{x:100,y:100})  // Draw cross at position 100,100.
@@ -583,24 +582,24 @@ g2.prototype.use = function use(g,args) {
  * @method
  * @returns {object} g2
  * @param {object} args Style properties object. 
- * @param {string} args.fs  Fill color (fillStyle).
- * @param {string} args.ls  Line color (lineStroke).
- * @param {float} args.lw   Line width.
- * @param {bool} args.lwnosc Line width nonscalable.
- * @param {string} args.lc  Line cap [`butt`, `round`, `square`].
- * @param {string} args.lj  Line join [`round`, `bevel` and `miter`].
- * @param {float} args.ml   Miter limit'.
- * @param {array} args.ld   Line dash array.
- * @param {int} args.lo     Line dash offset.
- * @param {array} args.sh   Shadow values array [x-offset,y-offset,blur,color].
- * @param {string} args.thal Text horizontal alignment.
- * @param {string} args.tval Text vertical alignment.
- * @param {string} args.fof  Font family.
- * @param {float} args.foz   Font size.
- * @param {string} args.foc  Font color.
- * @param {string} args.fow  Font weight ['normal','bold','lighter','bolder',100,200,...,900].
- * @param {string} args.fos  Font style ['normal','italic','oblique'].
- * @param {bool} args.foznosc Font size nonscalable.
+ * @param {string} [args.fs='transparent']  Fill color (fillStyle).
+ * @param {string} [args.ls='black']  Line color (lineStroke).
+ * @param {float} [args.lw=1]   Line width.
+ * @param {bool} [args.lwnosc=false] Line width nonscalable.
+ * @param {string} [args.lc='butt']  Line cap [`butt`, `round`, `square`].
+ * @param {string} [args.lj='miter']  Line join [`round`, `bevel` and `miter`].
+ * @param {float} [args.ml=10]   Miter limit'.
+ * @param {array} [args.ld=[]]   Line dash array.
+ * @param {int} [args.lo=0]     Line dash offset.
+ * @param {array} [args.sh=[0,0,0,'transparent']]   Shadow values array [x-offset,y-offset,blur,color].
+ * @param {string} [args.thal='start'] Text horizontal alignment ['start', 'end', 'left', 'right' or 'center'].
+ * @param {string} [args.tval='alphabetic'] Text vertical alignment ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'].
+ * @param {string} [args.fof='serif']  Font family [serif | sans-serif | monospace | cursiv | fantasy | arial | verdana | ... ] s. CSS
+ * @param {float} [args.foz=12]   Font size.
+ * @param {string} [args.foc='black']  Font color.
+ * @param {string} [args.fow='normal']  Font weight ['normal','bold','lighter','bolder',100,200,...,900].
+ * @param {string} [args.fos='normal']  Font style ['normal','italic','oblique'].
+ * @param {bool} [args.foznosc=false] Font size nonscalable.
  * @example
  * g = g2();
  * g2().style({ fs:"#58dbfa",         // Set fill style.
