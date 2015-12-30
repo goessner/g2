@@ -37,7 +37,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Concepts](../../wiki/concepts)
   * [Paths](../../wiki/paths)
   * [Elements](../../wiki/elements)
-  * [Styles](../../wiki/state-and-style)
+  * [State and Style](../../wiki/state-and-style)
   * [Viewport](../../wiki/viewport)
   * [Reuse](../../wiki/reuse)
   * [Renderers](../../wiki/renderers)
