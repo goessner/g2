@@ -11,19 +11,7 @@ Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
 
 /**
  * Create a queue of 2D graphics commands.
- * @param {object} [args] Arguments object with one or more members.
- * @param {bool} [args.cartesian] Use cartesian coordinate system.
- * @param {object} [args.pan]
- * @param {float} [args.pan.dx] Pan about dx in x direction.
- * @param {float} [args.pan.dy] Pan about dy in y direction.
- * @param {object} [args.zoom]
- * @param {float} [args.zoom.x = 0] Zoom to point with x coordinate.
- * @param {float} [args.zoom.y = 0] Zoom to point with x coordinate.
- * @param {float} [args.zoom.scl] Zoom by factor 'scl'.
- * @param {object} [args.trf]
- * @param {float} [args.trf.x] Translate to x.
- * @param {float} [args.trf.y] Translate to y.
- * @param {float} [args.trf.scl] Scale by factor 'scl'.
+ * @param {object} [args] Arguments object [depricated].
  * @example
  * // How to use g2()
  * var ctx = document.getElementById("c").getContext("2d");
@@ -65,22 +53,19 @@ g2.ifcof = function(ctx) {
  * @private
  */
 g2.prototype.constructor = function constructor(args) {
-   if (args) {  // only root g2's should have arguments ...
+   if (args) {  // only root g2's should have arguments ... [depricated]
       this.state = g2.State.create(this);
       if (args.zoom) this.zoom(args.zoom.scl,args.zoom.x,args.zoom.y);
       if (args.pan)  this.pan(args.pan.dx,args.pan.dy);
       if (args.trf)  this.trf(args.trf.x,args.trf.y,args.trf.scl);
-      if (args.cartesian) this.state.cartesian = args.cartesian;  // static property ...
+      if (args.cartesian) this.state.cartesian = args.cartesian;
    }
    this.cmds = [];
-//   this.cmds = [{c:constructor, a:[this]}];
    return this;
 };
 
 /**
- * Set the viewports cartesian mode.
- * This is an explicite alternative to setting the cartesian flag in the 
- * constructors arguments object.
+ * Set the views cartesian mode.
  * @method
  * @returns {object} g2
  */
@@ -90,9 +75,7 @@ g2.prototype.cartesian = function cartesian() {
 };
 
 /**
- * Pan the viewport about a vector.
- * This is an explicite alternative to setting the pan values in the 
- * constructors arguments object.
+ * Pan the view by a vector.
  * @method
  * @returns {object} g2
  * @param {float} dx x-value to pan.
@@ -105,9 +88,7 @@ g2.prototype.pan = function pan(dx,dy) {
 };
 
 /**
- * Zoom the viewport by a scaling factor with respect to given center.
- * This is an explicite alternative to setting the zoom values in the 
- * constructors arguments object.
+ * Zoom the view by a scaling factor with respect to given center.
  * @method
  * @returns {object} g2
  * @param {float} scl Scaling factor.
@@ -116,15 +97,13 @@ g2.prototype.pan = function pan(dx,dy) {
  */
 g2.prototype.zoom = function zoom(scl,x,y) {
    this.getState().trf0.x  = (1-scl)*(x||0) + scl*this.state.trf0.x;
-   this.state.trf0.y  = (1-scl)*(y||0) + scl*this.state.trf0.y;
+   this.state.trf0.y = (1-scl)*(y||0) + scl*this.state.trf0.y;
    this.state.trf0.scl *= scl;
    return this;
 };
 
 /**
- * Set the viewports transformation.
- * This is an explicite alternative to setting the zoom values in the 
- * constructors arguments object.
+ * Set the view transformation.
  * @method
  * @returns {object} g2
  * @param {float} x x-translation.
@@ -567,8 +546,8 @@ g2.prototype.use = function use(g,args) {
    if (typeof g === "string")  // should be a member name of the 'g2.symbol' namespace
       g = g2.symbol[g];
    if (g && g !== this) {      // avoid self reference ..
+      var state = this.getState();  // ensure state is properly initialized ...
       if (g.state && g.state.loading) { // referencing g2 object containing images ...
-         var state = this.getState();
          state.loading++;
          g.state.addListener("load",function() { state.loading--; });
       }

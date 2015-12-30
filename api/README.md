@@ -4,21 +4,9 @@ Create a queue of 2D graphics commands.
 
 **Kind**: global function  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [args] | <code>object</code> |  | Arguments object with one or more members. |
-| [args.cartesian] | <code>bool</code> |  | Use cartesian coordinate system. |
-| [args.pan] | <code>object</code> |  |  |
-| [args.pan.dx] | <code>float</code> |  | Pan about dx in x direction. |
-| [args.pan.dy] | <code>float</code> |  | Pan about dy in y direction. |
-| [args.zoom] | <code>object</code> |  |  |
-| [args.zoom.x] | <code>float</code> | <code>0</code> | Zoom to point with x coordinate. |
-| [args.zoom.y] | <code>float</code> | <code>0</code> | Zoom to point with x coordinate. |
-| [args.zoom.scl] | <code>float</code> |  | Zoom by factor 'scl'. |
-| [args.trf] | <code>object</code> |  |  |
-| [args.trf.x] | <code>float</code> |  | Translate to x. |
-| [args.trf.y] | <code>float</code> |  | Translate to y. |
-| [args.trf.scl] | <code>float</code> |  | Scale by factor 'scl'. |
+| Param | Type | Description |
+| --- | --- | --- |
+| [args] | <code>object</code> | Arguments object [depricated]. |
 
 **Example**  
 ```js
@@ -71,17 +59,13 @@ g2()                  // Create 'g2' instance.
 
 <a name="g2+cartesian"></a>
 ### g2.cartesian() ⇒ <code>object</code>
-Set the viewports cartesian mode.
-This is an explicite alternative to setting the cartesian flag in the 
-constructors arguments object.
+Set the views cartesian mode.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+pan"></a>
 ### g2.pan(dx, dy) ⇒ <code>object</code>
-Pan the viewport about a vector.
-This is an explicite alternative to setting the pan values in the 
-constructors arguments object.
+Pan the view by a vector.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -93,9 +77,7 @@ constructors arguments object.
 
 <a name="g2+zoom"></a>
 ### g2.zoom(scl, [x], [y]) ⇒ <code>object</code>
-Zoom the viewport by a scaling factor with respect to given center.
-This is an explicite alternative to setting the zoom values in the 
-constructors arguments object.
+Zoom the view by a scaling factor with respect to given center.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -108,9 +90,7 @@ constructors arguments object.
 
 <a name="g2+trf"></a>
 ### g2.trf(x, y, scl) ⇒ <code>object</code>
-Set the viewports transformation.
-This is an explicite alternative to setting the zoom values in the 
-constructors arguments object.
+Set the view transformation.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
