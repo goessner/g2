@@ -364,7 +364,7 @@ g2().cir(100,80,20)  // Draw circle.
 ```
 <a name="g2+arc"></a>
 ### g2.arc(x, y, r, [w], [dw]) ⇒ <code>object</code>
-Draw arc by center point, radius, start angle and angular range.
+Draw arc by center point, radius, start angle and angular range.<br>
 ![Example](../img/arc.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -515,9 +515,7 @@ g2().style({ fs:"#58dbfa",         // Set fill style.
     .rec(10,10,300,100)
     .style({ lw:20,                // Set line width.
              fs:"transparent",     // Set fill style.
-             shx:10,               // Set shadow x-translation.
-             shc:"black",          // Set shadow color
-             shb:10,               // Set shadow blur.
+             sh:[10,0,10,"black"], // Set shadow x-translation.
              ld:[1,2] })           // Set line dash.
     .p().m(40,40).c(150,150,200,0,280,50).drw()
     .exe(ctx);

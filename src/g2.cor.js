@@ -409,7 +409,7 @@ g2.prototype.cir = function cir(x,y,r) {
 };
 
 /**
- * Draw arc by center point, radius, start angle and angular range.
+ * Draw arc by center point, radius, start angle and angular range.<br>
  * ![Example](../img/arc.png "Example")
  * @method
  * @returns {object} g2
@@ -594,7 +594,7 @@ g2.prototype.use = function use(g,args) {
  * @param {array} [args.sh=[0,0,0,"transparent""]]   Shadow values array [x-offset,y-offset,blur,color].
  * @param {string} [args.thal=start] Text horizontal alignment ['start', 'end', 'left', 'right' or 'center'].
  * @param {string} [args.tval=alphabetic] Text vertical alignment ['top', 'hanging', 'middle', 'alphabetic', 'ideographic', 'bottom'].
- * @param {string} [args.fof=serif]  Font family ['serif', 'sans-serif', 'monospace', 'cursiv', 'fantasy', 'arial', 'verdana', ... ] s. CSS
+ * @param {string} [args.fof=serif]  Font family ['serif', 'sans-serif', 'monospace', 'cursive', 'fantasy', 'arial', 'verdana', ... ] s. CSS
  * @param {float} [args.foz=12]   Font size.
  * @param {string} [args.foc=black]  Font color.
  * @param {string} [args.fow=normal]  Font weight ['normal','bold','lighter','bolder',100,200,...,900].
@@ -609,9 +609,7 @@ g2.prototype.use = function use(g,args) {
  *     .rec(10,10,300,100)
  *     .style({ lw:20,                // Set line width.
  *              fs:"transparent",     // Set fill style.
- *              shx:10,               // Set shadow x-translation.
- *              shc:"black",          // Set shadow color
- *              shb:10,               // Set shadow blur.
+ *              sh:[10,0,10,"black"], // Set shadow x-translation.
  *              ld:[1,2] })           // Set line dash.
  *     .p().m(40,40).c(150,150,200,0,280,50).drw()
  *     .exe(ctx);
