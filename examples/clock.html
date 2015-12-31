@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+    <title>g2 - clock</title>
+    <meta charset='utf-8'>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - clock</h1>
+    <canvas id="c" width="300", height="220"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+      function clockFace(g) {
+         var pi6 = Math.PI/30, sw, cw, i;
+         g.beg()
+            .style({ ls:"#456", fs:"#def", lw:5, shx:10, shy:10, shb:5, shc:"rgba(0,0,0,0.5)" })
+            .cir(0,0,100)       // outer circle
+          .end()
+          .style("lw",3);
+         for (i=0; i<60; i++)   // minutes ticks .. no 5 minutes
+            if (i%5 !== 0)
+               g.lin(90*(cw=Math.cos((i-15)*pi6)),90*(sw=Math.sin((i-15)*pi6)),95*cw,95*sw);
+         g.style({ lw:4, foz:16, thal:"center", tval:"middle" });
+         for (i=0; i<60; i+=5)   // 5 minutes ticks .. 
+            g.lin(80*(cw=Math.cos((i-15)*pi6)),80*(sw=Math.sin((i-15)*pi6)),95*cw,95*sw)
+             .txt(((i||60)/5)+"",70*cw,70*sw);
+         return g;
+      }
+      function clockHands(g) {
+         var now = new Date(),
+             hrs = now.getHours(),
+             min = now.getMinutes(),
+             sec = now.getSeconds();
+
+         return (dirty = lastSec !== sec)
+              ? g.del()                                        // delete all commands
+                 .style({lw:4})
+                 .beg({w:Math.PI/6*(hrs + min/60 + sec/3600)}) // draw hour hand
+                   .lin(0,0,0,-55)
+                 .end()
+                 .beg({w:Math.PI/30*(min + sec/60)})           // draw minute hand
+                   .lin(0,0,0,-65)
+                 .end()
+                 .beg({w:Math.PI/30*(lastSec = sec)})          // draw second hand
+                   .lin(0,0,0,-75)
+                 .end()
+              : g;
+      }
+      function render() { clockHands(hands); if (dirty) clock.exe(ctx); requestAnimationFrame(render); }
+
+      var ctx = document.getElementById("c").getContext("2d"), 
+          clock = g2(), 
+          hands = g2(), 
+          dirty = true, 
+          lastSec;
+
+      clock.clr()                      // clear canvas
+           .beg({x:150,y:110})         // set coord.sys. origin to canvas center
+              .cpy(clockFace(clock))   // draw static clockface
+              .use(hands)              // draw moving clockhands
+              .style({ fs:"snow", ls:"black", lw:2 })
+              .cir(0,0,8) // draw center dot
+           .end();
+      render();
+    </script>
+</body>
+</html>

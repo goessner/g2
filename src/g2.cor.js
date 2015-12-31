@@ -11,7 +11,6 @@ Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
 
 /**
  * Create a queue of 2D graphics commands.
- * @param {object} [args] Arguments object [depricated].
  * @example
  * // How to use g2()
  * var ctx = document.getElementById("c").getContext("2d");
@@ -65,7 +64,7 @@ g2.prototype.constructor = function constructor(args) {
 };
 
 /**
- * Set the views cartesian mode.
+ * Set the view cartesian mode.
  * @method
  * @returns {object} g2
  */
@@ -75,11 +74,11 @@ g2.prototype.cartesian = function cartesian() {
 };
 
 /**
- * Pan the view by a vector.
+ * Pan the view by a displacement vector.
  * @method
  * @returns {object} g2
- * @param {float} dx x-value to pan.
- * @param {float} dy y-value to pan.
+ * @param {float} dx pan x-value in device units.
+ * @param {float} dy pan y-value in device units.
  */
 g2.prototype.pan = function pan(dx,dy) {
    this.getState().trf0.x += dx;
@@ -91,29 +90,14 @@ g2.prototype.pan = function pan(dx,dy) {
  * Zoom the view by a scaling factor with respect to given center.
  * @method
  * @returns {object} g2
- * @param {float} scl Scaling factor.
- * @param {float} [x=0] x-component of zoom center.
- * @param {float} [y=0] y-component of zoom center.
+ * @param {float} scl Relative scaling factor.
+ * @param {float} [x=0] x-component of zoom center in device units.
+ * @param {float} [y=0] y-component of zoom center in device units.
  */
 g2.prototype.zoom = function zoom(scl,x,y) {
    this.getState().trf0.x  = (1-scl)*(x||0) + scl*this.state.trf0.x;
    this.state.trf0.y = (1-scl)*(y||0) + scl*this.state.trf0.y;
    this.state.trf0.scl *= scl;
-   return this;
-};
-
-/**
- * Set the view transformation.
- * @method
- * @returns {object} g2
- * @param {float} x x-translation.
- * @param {float} y y-translation.
- * @param {float} scl Scaling factor.
- */
-g2.prototype.trf = function trf(x,y,scl) {
-   this.getState().trf0.x = x;
-   this.state.trf0.y = y;
-   this.state.trf0.scl = scl;
    return this;
 };
 
@@ -440,7 +424,7 @@ g2.prototype.ply.iterators = {
    "{x,y}": function(arr,i) { return i < arr.length ? arr[i] : {done:true,count:arr.length}; }
 };
 // default polygon point iterator ... flat array
-g2.prototype.ply.itr = g2.prototype.ply.iterators["x,y"];
+g2.prototype.ply.itr = g2.prototype.ply.iterators["x,y"];  // should be deprecated ...
 
 /**
  * Begin subcommands. Current state is saved. 
@@ -598,11 +582,11 @@ g2.prototype.style = function style(args) {
 
 // helper functions
 /**
- * Execute g2 commands. Do so recursively with 'use'ed commands.
+ * Execute g2 commands. It does so automatically and recursively with 'use'ed commands.
  * @method
  * @returns {object} g2
  * @param {object} ctx Context.
- * @param {object} [g=this] g2 Object to execute.
+ * @param {object} [g=this] g2 Object to execute. This argument is set by 'g2' and usually not by the user. 
  */
 g2.prototype.exe = function exe(ctx,g) {
    var ifc = g2.ifcof(ctx);
@@ -735,12 +719,12 @@ g2.prototype.getState = function() { return this.state || (this.state = g2.State
 // Helper methods .. not chainable.
 
 /**
- * Get user coordinates from canvas coordinates for point (with respect to initial transform).
+ * Get user coordinates from device coordinates for point.
  * @method
  * @returns {object} User coordinates  {x, y}
- * @param {float} x x-translation.
- * @param {float} y y-translation.
- * @param {float} h Viewport (canvas) height. Only needed in cartesian coordinate system.
+ * @param {float} x x-value in device units.
+ * @param {float} y y-value in device units.
+ * @param {float} [h] Viewport (canvas) height in device units. Only needed in cartesian coordinate system.
  */
 g2.prototype.pntToUsr = function pntToUsr(x,y,h) {
    var trf = this.state && this.state.trf0 || false;
@@ -750,11 +734,11 @@ g2.prototype.pntToUsr = function pntToUsr(x,y,h) {
 };
 
 /**
- * Get user coordinates from canvas coordinates for direction vector (with respect to initial transform).
+ * Get user coordinates from device coordinates for unbound vector.
  * @method
  * @returns {object} User coordinates {x, y}
- * @param {float} x x-translation.
- * @param {float} y y-translation.
+ * @param {float} x x-value in device units.
+ * @param {float} y y-value in device units.
  */
 g2.prototype.vecToUsr = function vecToUsr(x,y) {
    var trf = this.state && this.state.trf0 || false;

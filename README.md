@@ -38,9 +38,11 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Paths](../../wiki/paths)
   * [Elements](../../wiki/elements)
   * [State and Style](../../wiki/state-and-style)
-  * [Viewport](../../wiki/viewport)
   * [Reuse](../../wiki/reuse)
-  * [Renderers](../../wiki/renderers)
+  * [View](../../wiki/view)
+  * [Miscellaneous](../../wiki/miscellaneous)
+  * [Animation](../../wiki/animation)
+  * [Interactivity](../../wiki/interactivity)
 
 ## API Reference
 See the [API Reference](api/README.md) for details.

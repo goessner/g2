@@ -175,7 +175,7 @@ g2.prototype.clr.c2d = function clr_c2d() {
 };
 
 g2.prototype.grid.c2d = function grid_c2d(self,color,size) {
-   var state = self.state, trf = state.getAttr("trf"),  // no ctx required ...
+   var state = self.state, trf = state.trf0,  // no ctx required ...
        cartesian = state.cartesian,
        b = this.canvas.width, h = this.canvas.height,
        sz = size || g2.prototype.grid.getSize(state,trf ? trf.scl : 1),

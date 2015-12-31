@@ -1,13 +1,8 @@
 <a name="g2"></a>
-## g2([args])
+## g2()
 Create a queue of 2D graphics commands.
 
 **Kind**: global function  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [args] | <code>object</code> | Arguments object [depricated]. |
-
 **Example**  
 ```js
 // How to use g2()
@@ -18,12 +13,11 @@ g2()                  // Create 'g2' instance.
  .exe(ctx);           // Execute commands addressing canvas context.
 ```
 
-* [g2([args])](#g2)
+* [g2()](#g2)
     * _instance_
         * [.cartesian()](#g2+cartesian) ⇒ <code>object</code>
         * [.pan(dx, dy)](#g2+pan) ⇒ <code>object</code>
         * [.zoom(scl, [x], [y])](#g2+zoom) ⇒ <code>object</code>
-        * [.trf(x, y, scl)](#g2+trf) ⇒ <code>object</code>
         * [.p()](#g2+p) ⇒ <code>object</code>
         * [.m(x, y)](#g2+m) ⇒ <code>object</code>
         * [.l(x, y)](#g2+l) ⇒ <code>object</code>
@@ -50,7 +44,7 @@ g2()                  // Create 'g2' instance.
         * [.exe(ctx, [g])](#g2+exe) ⇒ <code>object</code>
         * [.cpy(g)](#g2+cpy) ⇒ <code>object</code>
         * [.del()](#g2+del) ⇒ <code>object</code>
-        * [.pntToUsr(x, y, h)](#g2+pntToUsr) ⇒ <code>object</code>
+        * [.pntToUsr(x, y, [h])](#g2+pntToUsr) ⇒ <code>object</code>
         * [.vecToUsr(x, y)](#g2+vecToUsr) ⇒ <code>object</code>
         * [.dump([space])](#g2+dump) ⇒ <code>string</code>
     * _static_
@@ -59,21 +53,21 @@ g2()                  // Create 'g2' instance.
 
 <a name="g2+cartesian"></a>
 ### g2.cartesian() ⇒ <code>object</code>
-Set the views cartesian mode.
+Set the view cartesian mode.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+pan"></a>
 ### g2.pan(dx, dy) ⇒ <code>object</code>
-Pan the view by a vector.
+Pan the view by a displacement vector.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| dx | <code>float</code> | x-value to pan. |
-| dy | <code>float</code> | y-value to pan. |
+| dx | <code>float</code> | pan x-value in device units. |
+| dy | <code>float</code> | pan y-value in device units. |
 
 <a name="g2+zoom"></a>
 ### g2.zoom(scl, [x], [y]) ⇒ <code>object</code>
@@ -84,22 +78,9 @@ Zoom the view by a scaling factor with respect to given center.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| scl | <code>float</code> |  | Scaling factor. |
-| [x] | <code>float</code> | <code>0</code> | x-component of zoom center. |
-| [y] | <code>float</code> | <code>0</code> | y-component of zoom center. |
-
-<a name="g2+trf"></a>
-### g2.trf(x, y, scl) ⇒ <code>object</code>
-Set the view transformation.
-
-**Kind**: instance method of <code>[g2](#g2)</code>  
-**Returns**: <code>object</code> - g2  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| x | <code>float</code> | x-translation. |
-| y | <code>float</code> | y-translation. |
-| scl | <code>float</code> | Scaling factor. |
+| scl | <code>float</code> |  | Relative scaling factor. |
+| [x] | <code>float</code> | <code>0</code> | x-component of zoom center in device units. |
+| [y] | <code>float</code> | <code>0</code> | y-component of zoom center in device units. |
 
 <a name="g2+p"></a>
 ### g2.p() ⇒ <code>object</code>
@@ -500,7 +481,7 @@ g2().style({ fs:"#58dbfa",         // Set fill style.
 ```
 <a name="g2+exe"></a>
 ### g2.exe(ctx, [g]) ⇒ <code>object</code>
-Execute g2 commands. Do so recursively with 'use'ed commands.
+Execute g2 commands. It does so automatically and recursively with 'use'ed commands.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -508,7 +489,7 @@ Execute g2 commands. Do so recursively with 'use'ed commands.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | ctx | <code>object</code> |  | Context. |
-| [g] | <code>object</code> | <code>this</code> | g2 Object to execute. |
+| [g] | <code>object</code> | <code>this</code> | g2 Object to execute. This argument is set by 'g2' and usually not by the user. |
 
 <a name="g2+cpy"></a>
 ### g2.cpy(g) ⇒ <code>object</code>
@@ -547,29 +528,29 @@ Delete all commands.
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+pntToUsr"></a>
-### g2.pntToUsr(x, y, h) ⇒ <code>object</code>
-Get user coordinates from canvas coordinates for point (with respect to initial transform).
+### g2.pntToUsr(x, y, [h]) ⇒ <code>object</code>
+Get user coordinates from device coordinates for point.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - User coordinates  {x, y}  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>float</code> | x-translation. |
-| y | <code>float</code> | y-translation. |
-| h | <code>float</code> | Viewport (canvas) height. Only needed in cartesian coordinate system. |
+| x | <code>float</code> | x-value in device units. |
+| y | <code>float</code> | y-value in device units. |
+| [h] | <code>float</code> | Viewport (canvas) height in device units. Only needed in cartesian coordinate system. |
 
 <a name="g2+vecToUsr"></a>
 ### g2.vecToUsr(x, y) ⇒ <code>object</code>
-Get user coordinates from canvas coordinates for direction vector (with respect to initial transform).
+Get user coordinates from device coordinates for unbound vector.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - User coordinates {x, y}  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| x | <code>float</code> | x-translation. |
-| y | <code>float</code> | y-translation. |
+| x | <code>float</code> | x-value in device units. |
+| y | <code>float</code> | y-value in device units. |
 
 <a name="g2+dump"></a>
 ### g2.dump([space]) ⇒ <code>string</code>
