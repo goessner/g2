@@ -3,12 +3,11 @@
 <head>
     <title>g2 - clock</title>
     <meta charset='utf-8'>
-    <style> canvas { border: 1px solid #000; } </style>
 </head>
 
 <body>
     <h1>g2 - clock</h1>
-    <canvas id="c" width="300", height="220"></canvas>
+    <canvas id="c" width="220", height="220"></canvas>
     <script src='../g2.js'></script>
     <script>
       function clockFace(g) {
@@ -56,7 +55,7 @@
           lastSec;
 
       clock.clr()                      // clear canvas
-           .beg({x:150,y:110})         // set coord.sys. origin to canvas center
+           .beg({x:110,y:110})         // set coord.sys. origin to canvas center
               .cpy(clockFace(clock))   // draw static clockface
               .use(hands)              // draw moving clockhands
               .style({ fs:"snow", ls:"black", lw:2 })

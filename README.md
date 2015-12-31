@@ -40,7 +40,6 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [State and Style](../../wiki/state-and-style)
   * [Reuse](../../wiki/reuse)
   * [View](../../wiki/view)
-  * [Miscellaneous](../../wiki/miscellaneous)
   * [Animation](../../wiki/animation)
   * [Interactivity](../../wiki/interactivity)
 
