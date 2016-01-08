@@ -7,7 +7,7 @@
 /* jshint -W030 */
 
 // Used polyfills
-Math.hypot = Math.hypot || function(x,y) { return Math.sqrt(x*x+y*y); };
+if (!Math.hypot) Math.hypot = function(x,y) { return Math.sqrt(x*x+y*y); };
 
 /**
  * Create a queue of 2D graphics commands.
@@ -700,34 +700,19 @@ g2.State = {
          this.stack[this.stack.length-1].trf = {
             x:cw*trf.x - sw*trf.y + (t.x || 0),
             y:sw*trf.x + cw*trf.y + (t.y || 0),
-            w: trf.w + t.w,
-            scl:trf.scl*t.scl
+            w: trf.w + w,
+            scl:trf.scl*scl
          };
       },
 
       save: function() {
          this.stack.push(JSON.parse(JSON.stringify(this.stack[this.stack.length-1])));
-//         console.log("saved:"+JSON.stringify(this.stack[this.stack.length-1]));
          return this;
       },
       restore: function() {
          this.stack.pop();
-//         console.log("restored:"+JSON.stringify(this.stack[this.stack.length-1]));
          return this;
       },
-/*
-      transform: function(t) {
-         var trf = this.stack[this.stack.length-1].trf || this.trf0,
-         sw = t.scl*(t.w?Math.sin(t.w):0), cw = t.scl*(t.w?Math.cos(t.w):1);
-         this.stack[this.stack.length-1].trf = {
-            x:cw*trf.x - sw*trf.y + t.x,
-            y:sw*trf.x + cw*trf.y + t.y,
-            w: trf.w + t.w,
-            scl:trf.scl*t.scl
-         };
-         return this;
-      },
-*/
       get currentScale() { return (this.stack[this.stack.length-1].trf || this.trf0).scl; }
    },
 
