@@ -8,7 +8,7 @@
 <body>
     <h1>g2 - clock</h1>
     <canvas id="c" width="220", height="220"></canvas>
-    <script src='../g2.js'></script>
+    <script src='../dist/g2.js'></script>
     <script>
       function clockFace(g) {
          var pi6 = Math.PI/30, sw, cw, i;
@@ -46,7 +46,6 @@
                  .end()
               : g;
       }
-      function render() { clockHands(hands); if (dirty) clock.exe(ctx); requestAnimationFrame(render); }
 
       var ctx = document.getElementById("c").getContext("2d"), 
           clock = g2(), 
@@ -54,13 +53,20 @@
           dirty = true, 
           lastSec;
 
-      clock.clr()                      // clear canvas
-           .beg({x:110,y:110})         // set coord.sys. origin to canvas center
+      clock.clr()                      // clear viewport
+           .beg({x:110,y:110})         // set coord.sys. origin to viewport center
               .cpy(clockFace(clock))   // draw static clockface
               .use(hands)              // draw moving clockhands
               .style({ fs:"snow", ls:"black", lw:2 })
               .cir(0,0,8) // draw center dot
            .end();
+
+      function render() { 
+         clockHands(hands); 
+         if (dirty) 
+            clock.exe(ctx); 
+         requestAnimationFrame(render); 
+      };
       render();
     </script>
 </body>

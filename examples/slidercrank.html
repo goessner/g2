@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - slider control</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - slider crank</h1>
+    <canvas id="c" width="400" height="300"></canvas><br>
+    <input id="range" type="range" style="min-width:375px;vertical-align:middle;margin:0;padding:0" min="0" max="360" value="0" step="1" />
+    <output id="output" for="phi" style="text-align:right;">0</output>
+    <script src='../dist/g2.min.js'></script>
+    <script>
+      function position(phi) { // currentposition of mechanism links...
+         var sp = Math.sin(phi), cp = Math.cos(phi),
+             s = a*cp + Math.sqrt(b*b - (tmp = a - a*sp)*tmp);
+         xA = a*cp; yA = a*sp;
+         xB = s; yB = e;
+         mec.del()
+            .style({lw:5,lj:"round"})
+            .ply([0,0,xA,yA,xB,yB])
+            .style({fs:"papayawhip",lw:2})
+            .cir(xA,yA,6)
+            .rec(xB-20,yB-10,40,20)
+            .cir(xB,yB,6);
+      }
+      function setPhi(e) {
+         if (dirty = (range.value !== output.value)) {
+            phi = (output.value = range.value)/180*Math.PI;
+         }
+         return true;
+      };
+      function render() { 
+         if (dirty) {
+            position(phi);
+            g.exe(ctx);
+            dirty = false;
+         }
+         requestAnimationFrame(render); 
+      }
+
+      var ctx = document.getElementById("c").getContext("2d"),
+         range = document.getElementById("range"),
+         output = document.getElementById("output"),
+         xA0 = 100, yA0 = 100, a = 80, b = 200, e = 30, xA, yA, xB, yB;
+         dirty = true,
+         phi = 0,
+         mec = g2(),
+         g = g2().clr().cartesian().grid()
+                 .style({ls:"darkslategray",lw:2})
+                 .use(mec,{x:xA0,y:yA0})
+                 .style({fs:"papayawhip",lw:2})
+                 .cir(xA0,yA0,6);
+
+      range.addEventListener("input",setPhi,false);
+      render();
+
+   </script>
+</body>
+</html>

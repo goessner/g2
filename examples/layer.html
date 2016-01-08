@@ -2,54 +2,79 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>g2 - Layer</title>
-    <style> canvas { border: 1px solid #000; } </style>
+    <title>g2 - Layers</title>
 </head>
 
 <body>
-    <h1>g2 - Layer</h1>
-    <canvas id="c1" width="640" height="480" style="position:absolute;"></canvas>
-	<canvas id="c2" width="640" height="480" style="position:absolute;"></canvas>
-    <script src='../g2.js'></script>
-    <script>
-var ctx1 = document.getElementById("c1").getContext("2d"),
-    ctx2 = document.getElementById("c2").getContext("2d"),
-    layer1 = g2(),  // Background layer.
-    layer2 = g2(),  // Front layer for interactivity.
-    rects = [];
+<h1>g2 - Layers</h1>
+<div style="position:relative; width:641px; height:481px;">
+  <canvas id="bg" width="641" height="481" style="position:absolute;left:0;top:0;"></canvas>
+  <canvas id="fg" width="641" height="481" style="position:absolute;left:0;top:0;"></canvas>
+</div>
+<p>Select square by pointer and drag.</p>
+<script src='../dist/g2.min.js'></script>
+<script>
+function onbuttondown(e) {  // select square at pointer location.
+   var x = e.clientX - Math.floor(viewport.left),
+       y = e.clientY - Math.floor(viewport.top);
 
-for (var i = 0; i < 100; i++) {
-    rects[i] = {x: Math.random()*590, y: Math.random()*430, selected: false};
+   for (var i=rects.length-1; i>=0; i--)                   // test all squares.
+      if (x - rects[i].x >= 0 && x - rects[i].x <= sz &&   // hit occured ?
+          y - rects[i].y >= 0 && y - rects[i].y <= sz) {
+         bgDirty = fgDirty = true;                         // mark layers by dirty flags.
+         selIdx = i;                                       // memoize selected square.
+         ctxfg.canvas.addEventListener('mousemove',onmove,false);  // ready to drag.
+         break;
+      }
 }
-
-onUpdateAll();  // First update for initialisation.
-
-ctx2.canvas.addEventListener('mousedown', onUpdateAll, false);
-ctx2.canvas.addEventListener('mouseup',   onUpdateAll, false);
-ctx2.canvas.addEventListener('mousemove', onMove,   false);
-
-function onUpdateAll(e) {
-    layer1.del().clr().style({ fs:"#00BFFF" });
-    layer2.del().clr().style({ fs:"red", shb:20, shc:"black" });
-    if (e) { rects[0].selected = !rects[0].selected; }  // Select and Deselect first rectangle.
-    rects[0].selected ? layer2.trf(0,0,1).rec(rects[0].x, rects[0].y, 100, 100) :  // Draw first rectangle on the front layer...
-                        layer1.style({ fs:"red" }).rec(rects[0].x, rects[0].y, 100, 100).style({ fs:"#00BFFF" });  // ... or the background layer.
-    for (var i = 1; i < 100; i++) { layer1.rec(rects[i].x, rects[i].y, 50, 50); }
-    layer1.exe(ctx1);
-    layer2.exe(ctx2);
+function onbuttonup(e) {  // deselect square.
+   if (selIdx != -1) {    // is one selected ?
+      bgDirty = fgDirty = true;   // mark layers by dirty flags.
+      ctxfg.canvas.removeEventListener('mousemove',onmove,false);  // finish dragging.
+      selIdx = -1;        // nothing selected.
+   }
 }
-
-// Drag the rectangle by panning within the viewport of the front layer.
-function onMove(e) { 
-    var dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
-        dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
-    if (rects[0].selected) {
-        rects[0].x += dx;
-        rects[0].y += dy;
-        layer2.pan(dx,dy).exe(ctx2);
-    }
+function onmove(e) {      // drag square ...
+   var rec = rects[selIdx];
+   rec.x += (e.movementX || e.mozMovementX || e.webkitMovementX || 0);  // .. by relative ..
+   rec.y += (e.movementY || e.mozMovementY || e.webkitMovementY || 0);  // .. displacement.
+   fgDirty = true;        // only mark interactive foreground layer by dirty flag.
 }
+function render() {  // render loop.
+   if (bgDirty) {    // render background ...
+      bg.del().clr().grid().style({ls:"darkslategray",lw:3,fs:"papayawhip"});
+      for (var i=0; i<rects.length-1; i++)
+         if (i !== selIdx)
+            bg.rec(rects[i].x,rects[i].y,sz,sz);
+      bg.exe(ctxbg);
+      bgDirty = false;
+   }
+   if (fgDirty) {    // render foreground ...
+      fg.del().clr();
+      if (selIdx != -1)
+         fg.style({ls:"darkslategray",lw:3,fs:"orange",sh:[0,0,10,"black"]})
+           .rec(rects[selIdx].x,rects[selIdx].y,sz,sz);
+      fg.exe(ctxfg);
+      fgDirty = false;
+   }
+   requestAnimationFrame(render); 
+};
 
+var ctxbg = document.getElementById("bg").getContext("2d"),
+    ctxfg = document.getElementById("fg").getContext("2d"),
+    viewport = ctxbg.canvas.getBoundingClientRect(),
+    bg = g2(),  // Background layer.
+    fg = g2(),  // Front layer for dragging.
+    rects = [], sz = 50, selIdx = -1, bgDirty = true, fgDirty = true;
+
+for (var i = 0; i < 300; i++)
+   rects[i] = { x: Math.random()*(viewport.width-sz), 
+                y: Math.random()*(viewport.height-sz) };
+
+ctxfg.canvas.addEventListener('mousedown', onbuttondown, false);
+ctxfg.canvas.addEventListener('mouseup',   onbuttonup, false);
+
+render();  // initial call to render loop.
     </script>
 </body>
 </html>

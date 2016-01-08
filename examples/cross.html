@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - cross</title>
+</head>
+
+<body>
+    <h1>g2 - cross</h1>
+    <canvas id="c" width="301" height="301"></canvas><br>
+    <input id="range" type="range" style="min-width:275px;vertical-align:middle;margin:0;padding:0" min="0" max="360" value="0" step="1" />
+    <output id="output" for="range" style="text-align:right;">0</output>
+    <script src='../dist/g2.min.js'></script>
+    <script>
+   function position(phi) {
+      var sp = Math.sin(phi), cp = Math.cos(phi);
+      xA = a*cp; yA = a*sp;    // calculate current position data ...
+      xB = 2*a*cp; yB = 0;
+      xC = 0; yC = 2*a*sp;
+      mec.del()                // ... and build new mechanism geometry.
+         .style({lw:2,ld:[12,4,2,4],lo:-a*phi})
+         .cir(xA,yA,a)
+         .style({lw:5,ld:[]})
+         .ply([0,0,xA,yA,xB,yB,xC,yC],"split")
+         .style({fs:"papayawhip",lw:2})
+         .cir(xA,yA,6)
+         .rec(xB-20,yB-10,40,20)
+         .cir(xB,yB,6)
+         .rec(xC-10,yC-20,20,40)
+         .cir(xC,yC,6)
+   }
+   function setPhi(e) {  // set user controlled angle.
+      if (dirty = (range.value !== output.value)) {
+         phi = (output.value = range.value)/180*Math.PI;
+      }
+      return true;
+   };
+   function render() {
+      if (dirty) {
+         position(phi);
+         world.exe(ctx);
+         dirty = false;
+      }
+      requestAnimationFrame(render); 
+   }
+
+   var ctx = document.getElementById("c").getContext("2d"),
+       range = document.getElementById("range"),
+       output = document.getElementById("output"),
+       xA0 = 150, yA0 = 150, a = 60, b = 80, e = 0, xA, yA, xB, yB;
+       dirty = true,
+       phi = 0,
+       mec = g2(),                             // dynamic mechanism.
+       world = g2().clr().cartesian().grid()   // static world.
+                   .style({ls:"darkslategray",lw:2,ld:[12,4,2,4]})
+                   .cir(xA0,yA0,2*a)
+                   .use(mec,{x:xA0,y:yA0})
+                   .style({fs:"papayawhip",lw:2,ld:[]})
+                   .cir(xA0,yA0,6);
+
+   range.addEventListener("input",setPhi,false);
+   render();
+   </script>
+</body>
+</html>

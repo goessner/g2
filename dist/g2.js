@@ -1,5 +1,5 @@
 /**
- * g2 (c) 2013-15 Stefan Goessner
+ * g2 (c) 2013-16 Stefan Goessner
  * @license
  * MIT License
  */
@@ -64,17 +64,18 @@ g2.prototype.constructor = function constructor(args) {
 };
 
 /**
- * Set the view cartesian mode.
+ * Set the view's cartesian mode flag.
  * @method
  * @returns {object} g2
+ * @param {bool} [on=true] Cartesian flag. Set it off by 'false'. Any other value is interpreted as 'true'.
  */
-g2.prototype.cartesian = function cartesian() {
-   this.getState().cartesian = true;
+g2.prototype.cartesian = function cartesian(on) {
+   this.getState().cartesian = (on !== false);
    return this;
 };
 
 /**
- * Pan the view by a displacement vector.
+ * Pan the view by a relative displacement vector.
  * @method
  * @returns {object} g2
  * @param {float} dx pan x-value in device units.
@@ -88,6 +89,7 @@ g2.prototype.pan = function pan(dx,dy) {
 
 /**
  * Zoom the view by a scaling factor with respect to given center.
+ * Scaling is performed relative to previous view.
  * @method
  * @returns {object} g2
  * @param {float} scl Relative scaling factor.
@@ -98,6 +100,32 @@ g2.prototype.zoom = function zoom(scl,x,y) {
    this.getState().trf0.x  = (1-scl)*(x||0) + scl*this.state.trf0.x;
    this.state.trf0.y = (1-scl)*(y||0) + scl*this.state.trf0.y;
    this.state.trf0.scl *= scl;
+   return this;
+};
+
+/**
+ * Set the view by absolute origin coordinates and scaling factor with respect to device units.
+ * Cartesian flag is not affected.
+ * @method
+ * @returns {object} g2
+ * @param {float} [x=0] x-origin in device units.
+ * @param {float} [y=0] y-origin in device units.
+ * @param {float} [scl=1] Absolute scaling factor.
+ */
+g2.prototype.view = function zoom(x,y,scl) {
+   this.getState().trf0.x  = x;
+   this.state.trf0.y = y;
+   this.state.trf0.scl = scl;
+   return this;
+};
+
+/**
+ * Delete all commands. Does not reset view state.
+ * @method
+ * @returns {object} g2
+ */
+g2.prototype.del = function del() { // see http://jsperf.com/truncating-arrays-correctly
+   this.cmds.length = 0;
    return this;
 };
 
@@ -638,15 +666,6 @@ g2.prototype.cpy = function cpy(g) {
    return this;
 };
 
-/**
- * Delete all commands.
- * @method
- * @returns {object} g2
- */
-g2.prototype.del = function del() { // see http://jsperf.com/truncating-arrays-correctly
-   this.cmds.length = 0;
-   return this;
-};
 
 // State stack management class.
 g2.State = {
@@ -671,6 +690,20 @@ g2.State = {
       // manage style properties ...
       getAttr: function(name) { return this.stack[this.stack.length-1][name] || g2.State[name]; },
       setAttr: function(name,val) { this.stack[this.stack.length-1][name] = val; },
+      
+      // manage current transformation
+      get trf() { return this.stack[this.stack.length-1].trf || this.trf0; },
+      set trf(t) {
+         var w = t.w || 0, scl = t.scl || 1,
+             sw = scl*(w?Math.sin(w):0), cw = scl*(w?Math.cos(w):1),
+             trf = this.stack[this.stack.length-1].trf || this.trf0;
+         this.stack[this.stack.length-1].trf = {
+            x:cw*trf.x - sw*trf.y + (t.x || 0),
+            y:sw*trf.x + cw*trf.y + (t.y || 0),
+            w: trf.w + t.w,
+            scl:trf.scl*t.scl
+         };
+      },
 
       save: function() {
          this.stack.push(JSON.parse(JSON.stringify(this.stack[this.stack.length-1])));
@@ -682,8 +715,9 @@ g2.State = {
 //         console.log("restored:"+JSON.stringify(this.stack[this.stack.length-1]));
          return this;
       },
+/*
       transform: function(t) {
-         var trf = this.stack[this.stack.length-1].trf || g2.State.trf,
+         var trf = this.stack[this.stack.length-1].trf || this.trf0,
          sw = t.scl*(t.w?Math.sin(t.w):0), cw = t.scl*(t.w?Math.cos(t.w):1);
          this.stack[this.stack.length-1].trf = {
             x:cw*trf.x - sw*trf.y + t.x,
@@ -693,7 +727,8 @@ g2.State = {
          };
          return this;
       },
-      get currentScale() { return (this.stack[this.stack.length-1].trf || g2.State.trf).scl; }
+*/
+      get currentScale() { return (this.stack[this.stack.length-1].trf || this.trf0).scl; }
    },
 
    // initial state values ... corresponding to Canvas Context ...
@@ -797,7 +832,7 @@ g2.symbol = Object.create(null); // {};
 if (typeof module === "object" && module.exports)
    module.exports = g2;/**
  * @fileoverview g2.c2d.js
- * @author Stefan Goessner (c) 2013-14
+ * @author Stefan Goessner (c) 2013-16
  * @license MIT License
  */
 /* jshint -W014 */
@@ -808,7 +843,7 @@ g2.proxy.c2d = function(ctx) { return ctx; }
 g2.prototype.exe.c2d = {
    beg: function(self) {
       if (g2.exeStack++ === 0) { // outermost g2 ...
-         var state = self.state || (self.state = g2.State.create(self)), t = state.trf0;
+         var state = self.getState(), t = state.trf;
          this.setTransform(t.scl,0,0,state.cartesian?-t.scl:t.scl,t.x+0.5,(state.cartesian?this.canvas.height-t.y:t.y)+0.5);
          this.lineWidth = 1;
          this.strokeStyle = "#000";
@@ -950,7 +985,7 @@ g2.prototype.beg.c2d = function beg_c2d(self,args) {
    this.save();
    if (args) {
       if ("x" in args || "y" in args || "w" in args || "scl" in args) {
-         state.transform(args);
+         state.trf = args;
          g2.State.c2d.set.trf.call(this,args,state);
       }
       else if ("matrix" in args)
@@ -972,7 +1007,7 @@ g2.prototype.clr.c2d = function clr_c2d() {
 };
 
 g2.prototype.grid.c2d = function grid_c2d(self,color,size) {
-   var state = self.state, trf = state.trf0,  // no ctx required ...
+   var state = self.state, trf = state.trf0,
        cartesian = state.cartesian,
        b = this.canvas.width, h = this.canvas.height,
        sz = size || g2.prototype.grid.getSize(state,trf ? trf.scl : 1),
@@ -996,7 +1031,7 @@ g2.prototype.use.c2d = function use_c2d(self,g,args) {
    this.save();
    if (args) {
       if ("x" in args || "y" in args || "w" in args || "scl" in args) {
-         state.transform(args);
+         state.trf = args;
          g2.State.c2d.set.trf.call(this,args,state);
       }
       else if ("matrix" in args)

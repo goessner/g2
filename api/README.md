@@ -15,9 +15,11 @@ g2()                  // Create 'g2' instance.
 
 * [g2()](#g2)
     * _instance_
-        * [.cartesian()](#g2+cartesian) ⇒ <code>object</code>
+        * [.cartesian([on])](#g2+cartesian) ⇒ <code>object</code>
         * [.pan(dx, dy)](#g2+pan) ⇒ <code>object</code>
         * [.zoom(scl, [x], [y])](#g2+zoom) ⇒ <code>object</code>
+        * [.view([x], [y], [scl])](#g2+view) ⇒ <code>object</code>
+        * [.del()](#g2+del) ⇒ <code>object</code>
         * [.p()](#g2+p) ⇒ <code>object</code>
         * [.m(x, y)](#g2+m) ⇒ <code>object</code>
         * [.l(x, y)](#g2+l) ⇒ <code>object</code>
@@ -43,7 +45,6 @@ g2()                  // Create 'g2' instance.
         * [.style(args)](#g2+style) ⇒ <code>object</code>
         * [.exe(ctx, [g])](#g2+exe) ⇒ <code>object</code>
         * [.cpy(g)](#g2+cpy) ⇒ <code>object</code>
-        * [.del()](#g2+del) ⇒ <code>object</code>
         * [.pntToUsr(x, y, [h])](#g2+pntToUsr) ⇒ <code>object</code>
         * [.vecToUsr(x, y)](#g2+vecToUsr) ⇒ <code>object</code>
         * [.dump([space])](#g2+dump) ⇒ <code>string</code>
@@ -52,14 +53,19 @@ g2()                  // Create 'g2' instance.
         * [.version](#g2.version) : <code>string</code>
 
 <a name="g2+cartesian"></a>
-### g2.cartesian() ⇒ <code>object</code>
-Set the view cartesian mode.
+### g2.cartesian([on]) ⇒ <code>object</code>
+Set the view's cartesian mode flag.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [on] | <code>bool</code> | <code>true</code> | Cartesian flag. Set it off by 'false'. Any other value is interpreted as 'true'. |
+
 <a name="g2+pan"></a>
 ### g2.pan(dx, dy) ⇒ <code>object</code>
-Pan the view by a displacement vector.
+Pan the view by a relative displacement vector.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -72,6 +78,7 @@ Pan the view by a displacement vector.
 <a name="g2+zoom"></a>
 ### g2.zoom(scl, [x], [y]) ⇒ <code>object</code>
 Zoom the view by a scaling factor with respect to given center.
+Scaling is performed relative to previous view.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -82,6 +89,26 @@ Zoom the view by a scaling factor with respect to given center.
 | [x] | <code>float</code> | <code>0</code> | x-component of zoom center in device units. |
 | [y] | <code>float</code> | <code>0</code> | y-component of zoom center in device units. |
 
+<a name="g2+view"></a>
+### g2.view([x], [y], [scl]) ⇒ <code>object</code>
+Set the view by absolute origin coordinates and scaling factor with respect to device units.
+Cartesian flag is not affected.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - g2  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [x] | <code>float</code> | <code>0</code> | x-origin in device units. |
+| [y] | <code>float</code> | <code>0</code> | y-origin in device units. |
+| [scl] | <code>float</code> | <code>1</code> | Absolute scaling factor. |
+
+<a name="g2+del"></a>
+### g2.del() ⇒ <code>object</code>
+Delete all commands. Does not reset view state.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - g2  
 <a name="g2+p"></a>
 ### g2.p() ⇒ <code>object</code>
 Begin new path.
@@ -521,12 +548,6 @@ g.style({lw:8,fs:"yellow"})
  .cpy(smiley(g))  // invoke smiley here in method chain.
  .exe(ctx);
 ```
-<a name="g2+del"></a>
-### g2.del() ⇒ <code>object</code>
-Delete all commands.
-
-**Kind**: instance method of <code>[g2](#g2)</code>  
-**Returns**: <code>object</code> - g2  
 <a name="g2+pntToUsr"></a>
 ### g2.pntToUsr(x, y, [h]) ⇒ <code>object</code>
 Get user coordinates from device coordinates for point.

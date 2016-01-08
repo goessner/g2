@@ -2,17 +2,17 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>g2 - Multiple graphics contexts</title>
+    <title>g2 - Extra Zoom Window</title>
     <style> canvas { border: 1px solid #000; margin:0; }</style>
 </head>
 
 <body>
-    <h1>g2 - Multiple graphics contexts</h1>
+    <h1>g2 - Extra Zoom Window</h1>
     <canvas id="c1" width="448" height="336" style="float:left;margin-right:1em;"></canvas>
-	<div style="float:left;"><canvas id="c2" width="320" height="240"></canvas>
-	<input type="range" id="range" min="100" max="800" value="300" style="display:block;width:100%;margin:0;" />
-	<div id="rangetext" style="text-align:center;">300%</span></div>
-    <script src='../g2.js'></script>
+	 <div style="float:left;"><canvas id="c2" width="320" height="240"></canvas>
+	 <input type="range" id="range" min="100" max="800" value="300" style="display:block;width:100%;margin:0;" />
+	 <div id="rangetext" style="text-align:center;">300%</span></div>
+    <script src='../dist/g2.min.js'></script>
     <script>
 
 var ctx1 = document.getElementById("c1").getContext("2d"),
@@ -43,7 +43,7 @@ g.clr()
  .m(285,136).l(163,136).a(-0.5,156,139)
  .stroke();
 
-// Add Event Listener to the both canvas and the slider (input type 'range').
+// Add Event Listener to both canvas and the slider (input type 'range').
 slider.addEventListener('input', updateZoomScale, false);
 ctx1.canvas.addEventListener('mousemove', updateZoomCenter, false);
 ctx2.canvas.addEventListener('mousemove', updateZoomCenter, false);
@@ -51,7 +51,7 @@ ctx2.canvas.addEventListener('mousemove', updateZoomCenter, false);
 createSector();
 render();
 
-// Update section when the mouse has moved.
+// Update section when mouse has moved.
 function updateZoomCenter(e) {
     zoomCenterX = e.clientX-this.offsetLeft;
     zoomCenterY = e.clientY-this.offsetTop;
@@ -60,7 +60,7 @@ function updateZoomCenter(e) {
     render();
 }
 
-// Update range when the slider has adjusted.
+// Update range when the slider is adjusted.
 function updateZoomScale(e) {
     zoomFactor = e.currentTarget.value/100;
     document.getElementById("rangetext").innerHTML = e.currentTarget.value + "%";
@@ -77,13 +77,12 @@ function createSector() {
     frame.del().style({ls:"red"}).rec(x,y,w,h);
 }
 
-// Render the red box and the technical drawing in both canvas (with different viewport properties).
+// Render the red box and the technical drawing in both canvases (with different view properties).
 function render() {
-    g.trf(ctx1.canvas.offsetWidth/2-zoomCenterX*zoomFactor,ctx1.canvas.offsetHeight/2-zoomCenterY*zoomFactor,zoomFactor).exe(ctx1);
-    g.trf(0,0,1).exe(ctx2);
+    g.view(ctx1.canvas.offsetWidth/2-zoomCenterX*zoomFactor,ctx1.canvas.offsetHeight/2-zoomCenterY*zoomFactor,zoomFactor).exe(ctx1);
+    g.view().exe(ctx2);
     frame.exe(ctx2);
 }
-	
     </script>
 </body>
 </html>
