@@ -813,6 +813,5 @@ g2.prototype.dump = function(space) {
 g2.symbol = Object.create(null); // {};
 
 // treat node.js
-
 if (typeof module === "object" && module.exports)
    module.exports = g2;
