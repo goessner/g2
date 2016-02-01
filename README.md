@@ -19,14 +19,13 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 * Tiny footprint by 5kB compressed (gzip).
 * No dependency.
 
-## Example
+## Minimal Example
 
 ```html
 <canvas id="c" width="200", height="100"></canvas>
 <script src="g2.js"></script>
 <script>
-    g2().style({ls:"green",fs:"orange",lw:3})  // create g2 object and add style.
-        .rec(40,30,120,40)                     // add rectangle.
+    g2().rec(40,30,120,40,{ls:"green",fs:"orange",lw:3})  // create g2 object and add rectangle with style.
         .exe(document.getElementById("c").getContext("2d"));  // draw to canvas.
 </script>
 ```

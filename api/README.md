@@ -1,19 +1,19 @@
 <a name="g2"></a>
-## g2()
+## g2([opts])
 Create a queue of 2D graphics commands.
 
 **Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [opts] | <code>object</code> | Custom options object. It is simply copied into the 'g2' object for later individual use. |
+
 **Example**  
 ```js
-// How to use g2()
-var ctx = document.getElementById("c").getContext("2d");
-g2()                  // Create 'g2' instance.
- .lin(50,50,100,100)  // Append ...
- .lin(100,100,200,50) // ... commands.
- .exe(ctx);           // Execute commands addressing canvas context.
+// How to use g2()var ctx = document.getElementById("c").getContext("2d");g2()                  // Create 'g2' instance. .lin(50,50,100,100)  // Append ... .lin(100,100,200,50) // ... commands. .exe(ctx);           // Execute commands addressing canvas context.
 ```
 
-* [g2()](#g2)
+* [g2([opts])](#g2)
     * _instance_
         * [.cartesian([on])](#g2+cartesian) ⇒ <code>object</code>
         * [.pan(dx, dy)](#g2+pan) ⇒ <code>object</code>
@@ -27,16 +27,16 @@ g2()                  // Create 'g2' instance.
         * [.c(x1, y1, x2, y2, x, y)](#g2+c) ⇒ <code>object</code>
         * [.a(dw, x, y)](#g2+a) ⇒ <code>object</code>
         * [.z()](#g2+z) ⇒ <code>object</code>
-        * [.stroke([d])](#g2+stroke) ⇒ <code>object</code>
-        * [.fill([d])](#g2+fill) ⇒ <code>object</code>
-        * [.drw([d])](#g2+drw) ⇒ <code>object</code>
+        * [.stroke([style], [d])](#g2+stroke) ⇒ <code>object</code>
+        * [.fill([style], [d])](#g2+fill) ⇒ <code>object</code>
+        * [.drw([style], [d])](#g2+drw) ⇒ <code>object</code>
         * [.txt(s, [x], [y], [w], [style])](#g2+txt) ⇒ <code>object</code>
         * [.img(uri, [x], [y], [b], [h], [xoff], [yoff], [dx], [dy])](#g2+img) ⇒ <code>object</code>
-        * [.lin(x1, y1, x2, y2)](#g2+lin) ⇒ <code>object</code>
-        * [.rec(x, y, b, h)](#g2+rec) ⇒ <code>object</code>
-        * [.cir(x, y, r)](#g2+cir) ⇒ <code>object</code>
-        * [.arc(x, y, r, [w], [dw])](#g2+arc) ⇒ <code>object</code>
-        * [.ply(parr, [mode], [itr])](#g2+ply) ⇒ <code>object</code>
+        * [.lin(x1, y1, x2, y2, [style])](#g2+lin) ⇒ <code>object</code>
+        * [.rec(x, y, b, h, [style])](#g2+rec) ⇒ <code>object</code>
+        * [.cir(x, y, r, [style])](#g2+cir) ⇒ <code>object</code>
+        * [.arc(x, y, r, [w], [dw], [style])](#g2+arc) ⇒ <code>object</code>
+        * [.ply(parr, [mode], args)](#g2+ply) ⇒ <code>object</code>
         * [.beg(args)](#g2+beg) ⇒ <code>object</code>
         * [.end()](#g2+end) ⇒ <code>object</code>
         * [.clr()](#g2+clr) ⇒ <code>object</code>
@@ -77,8 +77,7 @@ Pan the view by a relative displacement vector.
 
 <a name="g2+zoom"></a>
 ### g2.zoom(scl, [x], [y]) ⇒ <code>object</code>
-Zoom the view by a scaling factor with respect to given center.
-Scaling is performed relative to previous view.
+Zoom the view by a scaling factor with respect to center.Scaling is performed relative to current scale.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -91,8 +90,7 @@ Scaling is performed relative to previous view.
 
 <a name="g2+view"></a>
 ### g2.view([x], [y], [scl]) ⇒ <code>object</code>
-Set the view by absolute origin coordinates and scaling factor with respect to device units.
-Cartesian flag is not affected.
+Set the view by absolute origin coordinates and scaling factor in device units.Cartesian flag is not affected.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -105,7 +103,7 @@ Cartesian flag is not affected.
 
 <a name="g2+del"></a>
 ### g2.del() ⇒ <code>object</code>
-Delete all commands. Does not reset view state.
+Delete all commands. Does not modify view state.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -141,17 +139,11 @@ Create line segment to point.
 
 **Example**  
 ```js
-g2().p()          // Begin path.
-    .m(0,50)      // Move to point.
-    .l(300,0)     // Line segment to point.
-    .l(400,100)   // ...
-    .stroke()     // Stroke path.
-    .exe(ctx);    // Render to context.
+g2().p()          // Begin path.    .m(0,50)      // Move to point.    .l(300,0)     // Line segment to point.    .l(400,100)   // ...    .stroke()     // Stroke path.    .exe(ctx);    // Render to context.
 ```
 <a name="g2+q"></a>
 ### g2.q(x1, y1, x, y) ⇒ <code>object</code>
-Create quadratic bezier curve segment to point.  
-![Example](img/quadratic.png "Example")
+Create quadratic bezier curve segment to point.  ![Example](img/quadratic.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -165,16 +157,11 @@ Create quadratic bezier curve segment to point.
 
 **Example**  
 ```js
-g2().p()               // Begin path.
-    .m(0,0)            // Move to point.
-    .q(200,200,400,0)  // Quadratic bezier curve segment.
-    .stroke()          // Stroke path.
-    .exe(ctx);         // Render to context.
+g2().p()               // Begin path.    .m(0,0)            // Move to point.    .q(200,200,400,0)  // Quadratic bezier curve segment.    .stroke()          // Stroke path.    .exe(ctx);         // Render to context.
 ```
 <a name="g2+c"></a>
 ### g2.c(x1, y1, x2, y2, x, y) ⇒ <code>object</code>
-Create cubic bezier curve to point.  
-![Example](img/curve.png "Example")
+Create cubic bezier curve to point.  ![Example](img/curve.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -190,16 +177,11 @@ Create cubic bezier curve to point.
 
 **Example**  
 ```js
-g2().p()                        // Begin path.
-    .m(0,100)                   // Move to point.
-    .c(100,200,200,0,400,100)   // Create cubic bezier curve.
-    .stroke()                   // Stroke path.
-    .exe(ctx);                  // Render to canvas context.
+g2().p()                        // Begin path.    .m(0,100)                   // Move to point.    .c(100,200,200,0,400,100)   // Create cubic bezier curve.    .stroke()                   // Stroke path.    .exe(ctx);                  // Render to canvas context.
 ```
 <a name="g2+a"></a>
 ### g2.a(dw, x, y) ⇒ <code>object</code>
-Draw arc with angular range to target point.  
-![Example](img/a.png "Example")
+Draw arc with angular range to target point.  ![Example](img/a.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -212,21 +194,16 @@ Draw arc with angular range to target point.
 
 **Example**  
 ```js
-var g = g2();    // Create g2 object.
-g2().p()            // Begin path.
-    .m(50,50)       // Move to point.
-    .a(2,300,100)   // Create cubic bezier curve.
-    .stroke()       // Stroke path.
-    .exe(ctx);      // Render to canvas context.
+var g = g2();    // Create g2 object.g2().p()            // Begin path.    .m(50,50)       // Move to point.    .a(2,300,100)   // Create cubic bezier curve.    .stroke()       // Stroke path.    .exe(ctx);      // Render to canvas context.
 ```
 <a name="g2+z"></a>
 ### g2.z() ⇒ <code>object</code>
-Close current path by straigth line.
+Close current path by straight line.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+stroke"></a>
-### g2.stroke([d]) ⇒ <code>object</code>
+### g2.stroke([style], [d]) ⇒ <code>object</code>
 Stroke the current path or path object.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -234,10 +211,11 @@ Stroke the current path or path object.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [d] | <code>string</code> | SVG path definition string. |
+| [style] | <code>object</code> | Style properties. See 'g2.style' for details. |
+| [d] | <code>string</code> | SVG path definition string. Current path is ignored then. |
 
 <a name="g2+fill"></a>
-### g2.fill([d]) ⇒ <code>object</code>
+### g2.fill([style], [d]) ⇒ <code>object</code>
 Fill the current path or path object.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -245,19 +223,20 @@ Fill the current path or path object.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [d] | <code>string</code> | SVG path definition string. |
+| [style] | <code>object</code> | Style properties. See 'g2.style' for details. |
+| [d] | <code>string</code> | SVG path definition string. Current path is ignored then. |
 
 <a name="g2+drw"></a>
-### g2.drw([d]) ⇒ <code>object</code>
-Shortcut for stroke and fill the current path or path object.
-In case of shadow, only the path interior creates shadow, not also the path contour.
+### g2.drw([style], [d]) ⇒ <code>object</code>
+Shortcut for stroke and fill the current path or path object.In case of shadow, only the path interior creates shadow, not also the path contour.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [d] | <code>string</code> | SVG path definition string. |
+| [style] | <code>object</code> | Style properties. See 'g2.style' for details. |
+| [d] | <code>string</code> | SVG path definition string.  Current path is ignored then. |
 
 <a name="g2+txt"></a>
 ### g2.txt(s, [x], [y], [w], [style]) ⇒ <code>object</code>
@@ -276,8 +255,7 @@ Draw text string at anchor point.
 
 <a name="g2+img"></a>
 ### g2.img(uri, [x], [y], [b], [h], [xoff], [yoff], [dx], [dy]) ⇒ <code>object</code>
-Draw image. The command queue will not be executed until all images have been completely loaded.
-This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.
+Draw image. The command queue will not be executed until all images have been completely loaded.This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -295,7 +273,7 @@ This also applies to images of reused g2 objects. If an image can not be loaded,
 | [dy] | <code>float</code> |  | Region y. |
 
 <a name="g2+lin"></a>
-### g2.lin(x1, y1, x2, y2) ⇒ <code>object</code>
+### g2.lin(x1, y1, x2, y2, [style]) ⇒ <code>object</code>
 Draw line by start point and end point.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -307,14 +285,14 @@ Draw line by start point and end point.
 | y1 | <code>float</code> | Start y coordinate. |
 | x2 | <code>float</code> | End x coordinate. |
 | y2 | <code>float</code> | End y coordinate. |
+| [style] | <code>object</code> | Style properties. See 'g2.style' for details. |
 
 **Example**  
 ```js
-g2().lin(10,10,190,10)  // Draw line.
-    .exe(ctx);          // Render to context.
+g2().lin(10,10,190,10)  // Draw line.    .exe(ctx);          // Render to context.
 ```
 <a name="g2+rec"></a>
-### g2.rec(x, y, b, h) ⇒ <code>object</code>
+### g2.rec(x, y, b, h, [style]) ⇒ <code>object</code>
 Draw rectangle by anchor point and dimensions.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -326,14 +304,14 @@ Draw rectangle by anchor point and dimensions.
 | y | <code>float</code> | y-value upper left corner. |
 | b | <code>float</code> | Width. |
 | h | <code>float</code> | Height. |
+| [style] | <code>object</code> | Style properties. See 'g2.style' for details. |
 
 **Example**  
 ```js
-g2().rec(100,80,40,30)  // Draw rectangle.
-    .exe(ctx);          // Render to context.
+g2().rec(100,80,40,30)  // Draw rectangle.    .exe(ctx);          // Render to context.
 ```
 <a name="g2+cir"></a>
-### g2.cir(x, y, r) ⇒ <code>object</code>
+### g2.cir(x, y, r, [style]) ⇒ <code>object</code>
 Draw circle by center and radius.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
@@ -344,16 +322,15 @@ Draw circle by center and radius.
 | x | <code>float</code> | x-value center. |
 | y | <code>float</code> | y-value center. |
 | r | <code>float</code> | Radius. |
+| [style] | <code>object</code> | Style properties. See 'g2.style' for details. |
 
 **Example**  
 ```js
-g2().cir(100,80,20)  // Draw circle.
-    .exe(ctx);       // Render to context.
+g2().cir(100,80,20)  // Draw circle.    .exe(ctx);       // Render to context.
 ```
 <a name="g2+arc"></a>
-### g2.arc(x, y, r, [w], [dw]) ⇒ <code>object</code>
-Draw arc by center point, radius, start angle and angular range.<br>
-![Example](../img/arc.png "Example")
+### g2.arc(x, y, r, [w], [dw], [style]) ⇒ <code>object</code>
+Draw arc by center point, radius, start angle and angular range.<br>![Example](../img/arc.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -365,19 +342,15 @@ Draw arc by center point, radius, start angle and angular range.<br>
 | r | <code>float</code> |  | Radius. |
 | [w] | <code>float</code> | <code>0</code> | Start angle (in radian). |
 | [dw] | <code>float</code> | <code>2*pi</code> | Angular range in Radians. |
+| [style] | <code>object</code> |  | Style properties. See 'g2.style' for details. |
 
 **Example**  
 ```js
-g2().arc(300,400,390,-Math.PI/4,-Math.PI/2)
-    .exe(ctx);
+g2().arc(300,400,390,-Math.PI/4,-Math.PI/2)    .exe(ctx);
 ```
 <a name="g2+ply"></a>
-### g2.ply(parr, [mode], [itr]) ⇒ <code>object</code>
-Draw polygon by points.
-Using iterator function for getting points from array by index.
-It must return current point object {x,y} or object {done:true}.
-Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
-array of [[x,y],...] arrays or array of [{x,y},...] objects.
+### g2.ply(parr, [mode], args) ⇒ <code>object</code>
+Draw polygon by points.Using iterator function for getting points from array by index.It must return current point object {x,y} or object {done:true}.Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],array of [[x,y],...] arrays or array of [{x,y},...] objects.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - this  
@@ -386,19 +359,17 @@ array of [[x,y],...] arrays or array of [{x,y},...] objects.
 | --- | --- | --- | --- |
 | parr | <code>array</code> |  | Array of points. |
 | [mode] | <code>bool</code> &#124; <code>&#x27;split&#x27;</code> | <code>false</code> | true:closed, false:non-closed, 'split:intermittend lines. |
-| [itr] | <code>function</code> |  | Iterator function getting array and point index as parameters. |
+| args | <code>object</code> |  | Arguments object. |
+| [args.itr] | <code>function</code> |  | Iterator function getting array and point index as parameters. |
+| [args.style] | <code>any</code> |  | Style property. See 'g2.style' for details. |
 
 **Example**  
 ```js
-g2().ply([100,50,120,60,80,70]),
-    .ply([150,60],[170,70],[130,80]],true),
-    .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],'split'),
-    .exe(ctx);
+g2().ply([100,50,120,60,80,70]),    .ply([150,60],[170,70],[130,80]],true),    .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],'split'),    .exe(ctx);
 ```
 <a name="g2+beg"></a>
 ### g2.beg(args) ⇒ <code>object</code>
-Begin subcommands. Current state is saved. 
-Optionally apply transformation or style properties.
+Begin subcommands. Current state is saved. Optionally apply transformation or style properties.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -439,10 +410,7 @@ Draw grid.
 
 <a name="g2+use"></a>
 ### g2.use(g, args) ⇒ <code>object</code>
-Reference g2 graphics commands from another g2 object.
-With this command you can reuse instances of grouped graphics commands
-while applying a similarity transformation and style properties on them.
-In fact you might want to build custom graphics libraries on top of that feature.
+Reference g2 graphics commands from another g2 object.With this command you can reuse instances of grouped graphics commandswhile applying a similarity transformation and style properties on them.In fact you might want to build custom graphics libraries on top of that feature.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -456,13 +424,11 @@ In fact you might want to build custom graphics libraries on top of that feature
 | [args.w] | <code>float</code> | <code>0</code> | Rotation angle (in radians). |
 | [args.scl] | <code>float</code> | <code>1</code> | Scale factor. |
 | [args.matrix] | <code>array</code> |  | Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]). |
-| [args.style] | <code>any</code> |  | Style property. See 'g2.style' for details. |
+| [args.style] | <code>any</code> |  | Style property. See 'g2.prototype.style' for details. |
 
 **Example**  
 ```js
-g2.symbol.cross = g2().lin(5,5,-5,-5).lin(5,-5,-5,5);  // Define symbol.
-g2().use("cross",{x:100,y:100})  // Draw cross at position 100,100.
-    .exe(ctx);                   // Render to context.
+g2.symbol.cross = g2().lin(5,5,-5,-5).lin(5,-5,-5,5);  // Define symbol.g2().use("cross",{x:100,y:100})  // Draw cross at position 100,100.    .exe(ctx);                   // Render to context.
 ```
 <a name="g2+style"></a>
 ### g2.style(args) ⇒ <code>object</code>
@@ -493,18 +459,7 @@ Apply new style properties.
 
 **Example**  
 ```js
-g = g2();
-g2().style({ fs:"#58dbfa",         // Set fill style.
-             lw:10,                // Set line width.
-             ls:"#313942",         // Set line style.
-             lj:"round" })         // Set line join.
-    .rec(10,10,300,100)
-    .style({ lw:20,                // Set line width.
-             fs:"transparent",     // Set fill style.
-             sh:[10,0,10,"black"], // Set shadow x-translation.
-             ld:[1,2] })           // Set line dash.
-    .p().m(40,40).c(150,150,200,0,280,50).drw()
-    .exe(ctx);
+g = g2();g2().style({ fs:"#58dbfa",         // Set fill style.             lw:10,                // Set line width.             ls:"#313942",         // Set line style.             lj:"round" })         // Set line join.    .rec(10,10,300,100)    .style({ lw:20,                // Set line width.             fs:"transparent",     // Set fill style.             sh:[10,0,10,"black"], // Set shadow x-translation.             ld:[1,2] })           // Set line dash.    .p().m(40,40).c(150,150,200,0,280,50).drw()    .exe(ctx);
 ```
 <a name="g2+exe"></a>
 ### g2.exe(ctx, [g]) ⇒ <code>object</code>
@@ -520,8 +475,7 @@ Execute g2 commands. It does so automatically and recursively with 'use'ed comma
 
 <a name="g2+cpy"></a>
 ### g2.cpy(g) ⇒ <code>object</code>
-Copy all g2 graphics commands from a g2 object.
-If the source object is 'this', nothing is done.
+Copy all g2 graphics commands from a g2 object.If the source object is 'this', nothing is done.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -532,21 +486,11 @@ If the source object is 'this', nothing is done.
 
 **Example**  
 ```js
-var smiley = g2().cir(60,60,50).cir(40,40,10).cir(80,40,10).arc(60,60,30,0.8,2);
-g2().style({lw:8,fs:"yellow"})
-    .cpy(smiley)  // Copy all commands from 'smiley'.
-    .exe(ctx);
+var smiley = g2().cir(60,60,50).cir(40,40,10).cir(80,40,10).arc(60,60,30,0.8,2);g2().style({lw:8,fs:"yellow"})    .cpy(smiley)  // Copy all commands from 'smiley'.    .exe(ctx);
 ```
 **Example**  
 ```js
-function smiley(g) {
-   // do some calculations ...
-   return g.cir(60,60,50).cir(40,40,10).cir(80,40,10).arc(60,60,30,0.8,2);
-}
-var g = g2();
-g.style({lw:8,fs:"yellow"})
- .cpy(smiley(g))  // invoke smiley here in method chain.
- .exe(ctx);
+function smiley(g) {   // do some calculations ...   return g.cir(60,60,50).cir(40,40,10).cir(80,40,10).arc(60,60,30,0.8,2);}var g = g2();g.style({lw:8,fs:"yellow"}) .cpy(smiley(g))  // invoke smiley here in method chain. .exe(ctx);
 ```
 <a name="g2+pntToUsr"></a>
 ### g2.pntToUsr(x, y, [h]) ⇒ <code>object</code>
@@ -575,8 +519,7 @@ Get user coordinates from device coordinates for unbound vector.
 
 <a name="g2+dump"></a>
 ### g2.dump([space]) ⇒ <code>string</code>
-Debug helper method.
-Convert g2 command queue to JSON formatted string.
+Debug helper method.Convert g2 command queue to JSON formatted string.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>string</code> - JSON string of command queue.  
@@ -592,13 +535,10 @@ Namespace for symbol objects. A symbol can be used by `use("symbolname")`.
 **Kind**: static property of <code>[g2](#g2)</code>  
 **Example**  
 ```js
-g2.symbol.cross = g2().lin(5,5,-5,-5).lin(5,-5,-5,5);  // Define symbol.
-g2().use("cross",{x:100,y:100})  // Draw cross at position 100,100.
-    .exe(ctx);                   // Render to context.
+g2.symbol.cross = g2().lin(5,5,-5,-5).lin(5,-5,-5,5);  // Define symbol.g2().use("cross",{x:100,y:100})  // Draw cross at position 100,100.    .exe(ctx);                   // Render to context.
 ```
 <a name="g2.version"></a>
 ### g2.version : <code>string</code>
-Current version.
-Using semantic versioning 'http://semver.org/'.
+Current version.Using semantic versioning 'http://semver.org/'.
 
 **Kind**: static constant of <code>[g2](#g2)</code>  
