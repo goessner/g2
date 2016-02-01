@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - use</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - use</h1>
+    <canvas id="c" width="200" height="200"></canvas>
+    <script src='../src/g2.cor.js'></script>
+    <script src='../src/g2.c2d.js'></script>
+    <script>
+      var g = g2(),
+          circ = g2().cir(0,0,25,{lw:5}),
+          ctx = document.getElementById("c").getContext("2d");
+
+      g.use(circ,{x:100,y:100,scl:2,lwnosc:true})
+       .exe(ctx);
+   </script>
+</body>
+</html>

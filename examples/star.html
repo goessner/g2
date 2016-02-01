@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - p</title>
+</head>
+
+<body>
+    <h1>g2 - p</h1>
+    <canvas id="c" width="200" height="100"></canvas>
+    <script src='../src/g2.cor.js'></script>
+    <script src='../src/g2.c2d.js'></script>
+    <script>
+      var star = "M100,10L123.5,82.4L61,37.6L138,37.6L76.5,82.4Z";
+g2().drw({lw:4,ls:"red",fs:"orange"},star)
+    .exe(document.getElementById("c").getContext("2d"))
+   </script>
+</body>
+</html>
