@@ -268,6 +268,7 @@ g2.State.c2d = {
                 this.transform.apply(this,m);
              },
    "hatch": function hatch(val) {
+      console.log(val)
                var ctx = document.createElement('canvas').getContext('2d'), 
                    sz = +val[3] || 10, sz2 = (sz+1)*0.5;
                ctx.canvas.width = ctx.canvas.height = sz;

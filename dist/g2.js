@@ -263,8 +263,8 @@ g2.prototype.z = function z() {
 /**
  * Stroke the current path or path object.
  * @method
- * @param {object} [style=undefined] args Object with styling values.
- * @param {string} [d = undefined] SVG path definition string.
+ * @param {object} [style=undefined] Style properties. See 'g2.style' for details.
+ * @param {string} [d = undefined] SVG path definition string. Current path is ignored then.
  * @returns {object} g2
  */
 g2.prototype.stroke = function stroke(style,d) {
@@ -279,8 +279,8 @@ g2.prototype.stroke = function stroke(style,d) {
 /**
  * Fill the current path or path object.
  * @method
- * @param {object} [style=undefined] args Object with styling values.
- * @param {string} [d = undefined] SVG path definition string.
+ * @param {object} [style=undefined] Style properties. See 'g2.style' for details.
+ * @param {string} [d = undefined] SVG path definition string. Current path is ignored then.
  * @returns {object} g2
  */
 g2.prototype.fill = function fill(style,d) {
@@ -296,8 +296,8 @@ g2.prototype.fill = function fill(style,d) {
  * Shortcut for stroke and fill the current path or path object.
  * In case of shadow, only the path interior creates shadow, not also the path contour.
  * @method
- * @param {object} [style=undefined] args Object with styling values.
- * @param {string} [d = undefined] SVG path definition string.
+ * @param {object} [style=undefined] Style properties. See 'g2.style' for details.
+ * @param {string} [d = undefined] SVG path definition string.  Current path is ignored then.
  * @returns {object} g2
  */
 g2.prototype.drw = function drw(style,d) {
@@ -601,6 +601,7 @@ g2.prototype.use = function use(g,args) {
  * @param {string} [args.foc=black]  Font color.
  * @param {string} [args.fow=normal]  Font weight ['normal','bold','lighter','bolder',100,200,...,900].
  * @param {string} [args.fos=normal]  Font style ['normal','italic','oblique'].
+ * @param {array} [args.hatch=["black","white",1,10]] Hatch style 45° [color,bgcolor,linewidth,distance].
  * @example
  * g = g2();
  * g2().style({ fs:"#58dbfa",         // Set fill style.
@@ -1150,6 +1151,7 @@ g2.State.c2d = {
                 this.transform.apply(this,m);
              },
    "hatch": function hatch(val) {
+      console.log(val)
                var ctx = document.createElement('canvas').getContext('2d'), 
                    sz = +val[3] || 10, sz2 = (sz+1)*0.5;
                ctx.canvas.width = ctx.canvas.height = sz;

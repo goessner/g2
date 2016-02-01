@@ -14,11 +14,9 @@
            x0 = 50, y0 = 50, r = 40, omega = 1.5;
            pendulum = g2(),
            world = g2().clr()
-                       .style({fs:"#ccc"})
+                       .style({fs:"#ddd"})
                        .ply([44,40,56,40,x0,y0],true)
-                       .style({lw:3,fs:"#ddd"})
                        .use(pendulum)
-                       .style({lw:1})
                        .cir(x0,y0,3);
 
        function render(time) {
@@ -28,8 +26,7 @@
               x =x0 + r*Math.sin(phi), y = y0 + r*Math.cos(phi);
               
           pendulum.del()
-                  .lin(x0,y0,x,y)
-                  .style({lw:1})
+                  .lin(x0,y0,x,y,{lw:3})
                   .cir(x,y,8);
           world.exe(ctx);
           requestAnimationFrame(render);

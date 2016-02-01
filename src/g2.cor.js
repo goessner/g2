@@ -601,6 +601,7 @@ g2.prototype.use = function use(g,args) {
  * @param {string} [args.foc=black]  Font color.
  * @param {string} [args.fow=normal]  Font weight ['normal','bold','lighter','bolder',100,200,...,900].
  * @param {string} [args.fos=normal]  Font style ['normal','italic','oblique'].
+ * @param {array} [args.hatch=["black","white",1,10]] Hatch style 45° [color,bgcolor,linewidth,distance].
  * @example
  * g = g2();
  * g2().style({ fs:"#58dbfa",         // Set fill style.
