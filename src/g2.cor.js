@@ -52,6 +52,7 @@ Object.defineProperty(g2.prototype, "state",
 
 /**
  * Set the view's cartesian mode flag.
+ * ![Example](https://goessner.github.io/g2-svg/test/index.html#cartesian "Example")
  * @method
  * @returns {object} g2
  * @param {bool} [on=true] Cartesian flag. Set it off by 'false'. Any other value is interpreted as 'true'.
@@ -63,6 +64,7 @@ g2.prototype.cartesian = function cartesian(on) {
 
 /**
  * Pan the view by a relative displacement vector.
+ * ![Example](https://goessner.github.io/g2-svg/test/index.html#pan "Example")
  * @method
  * @returns {object} g2
  * @param {float} dx pan x-value in device units.
@@ -76,6 +78,7 @@ g2.prototype.pan = function pan(dx,dy) {
 
 /**
  * Zoom the view by a scaling factor with respect to center.
+ * ![Example](https://goessner.github.io/g2-svg/test/index.html#zoom "Example")
  * Scaling is performed relative to current scale.
  * @method
  * @returns {object} g2
@@ -92,6 +95,7 @@ g2.prototype.zoom = function zoom(scl,x,y) {
 
 /**
  * Set the view by absolute origin coordinates and scaling factor in device units.
+ * ![Example](https://goessner.github.io/g2-svg/test/index.html#view "Example")
  * Cartesian flag is not affected.
  * @method
  * @returns {object} g2
@@ -352,6 +356,7 @@ g2.prototype.img = function img(uri,x,y,b,h,xoff,yoff,dx,dy) {
 g2.prototype.img.broken = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7";
 /**
  * Draw line by start point and end point.
+ * ![Example](https://goessner.github.io/g2-svg/test/index.html#lin "Example")
  * @method
  * @returns {object} g2
  * @param {float} x1 Start x coordinate.
@@ -370,6 +375,7 @@ g2.prototype.lin = function lin(x1,y1,x2,y2,style) {
 
 /**
  * Draw rectangle by anchor point and dimensions.
+ * ![Example](https://goessner.github.io/g2-svg/test/index.html#rec "Example")
  * @method
  * @returns {object} g2
  * @param {float} x x-value upper left corner.
