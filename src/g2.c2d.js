@@ -214,25 +214,17 @@ g2.prototype.style.c2d = function style_c2d(args) {
 };
 
 g2.State.c2d = {
-   "fs": function(val) { 
-            this.fillStyle = val.indexOf && val.indexOf("hatch(") === 0 ? g2.State.c2d.hatch.call(this,val.substring(6,val.indexOf(")",7)).split(","))
-                           : val === "transparent" ? g2.transparent 
-                           : val; 
-         },
-   "ls": function(val) { 
-            this.strokeStyle = val.indexOf && val.indexOf("hatch(") === 0 ? g2.State.c2d.hatch.call(this,val.substring(6,val.indexOf(")",7)).split(","))
-                             : val === "transparent" ? g2.transparent 
-                             : val; 
-         },
+   "fs": function(val) { this.fillStyle = g2.State.c2d.texture.call(this,val); },
+   "ls": function(val) { this.strokeStyle = g2.State.c2d.texture.call(this,val); },
    "lw": function(val,state) { this.lineWidth = val/(state.get("lwnosc") ? state.trf.scl : 1); },
    "lc": function(val) { this.lineCap = val; },
    "lj": function(val) { this.lineJoin = val; },
-   "lo": function(val) { this.lineDashOffset = val; },  // TODO make lw dependent
+   "lo": function(val) { this.lineDashOffset = val; },
    "ld": function(val,state) {
             var scl = state.get("lwnosc") ? state.trf.scl : 1;
             if (scl !== 1) {
-               var lw = this.lineWidth*scl, ld = [];
-               for (var i=0,n=val.length; i<n; i++) ld.push(val[i]/lw);
+               var ld = [];
+               for (var i=0,n=val.length; i<n; i++) ld.push(val[i]/scl);
                this.setLineDash(ld);
             }
             else
@@ -253,36 +245,54 @@ g2.State.c2d = {
    "fow": function(val,state) { this.font = state.cssFont; },
    "foz": function(val,state) { this.font = state.cssFont; },  // evtl. use foznosc
    "fof": function(val,state) { this.font = state.cssFont; },
-   "lwnosc": function(val,state) {                      // undocumented beta feature
-                if (val !== state.get("lwnosc")) {  // value changing ...
-                   if (val) this.lineWidth /= state.trf.scl;
-                   else     this.lineWidth *= state.trf.scl;
-                }
-             },
-   "trf": function(t) {
+   "trf": function(t,state) {
              var scl = t.scl || 1,
                  sw = scl*(t.w?Math.sin(t.w):0), cw = scl*(t.w?Math.cos(t.w):1);
              this.transform(cw,sw,-sw,cw,t.x||0,t.y||0);
+             if (state.get("lwnosc") && scl !== 1) g2.State.c2d.lwscale.call(this,1/scl);
           },
    "matrix": function(m) {
                 this.transform.apply(this,m);
              },
-   "hatch": function hatch(val) {
-      console.log(val)
-               var ctx = document.createElement('canvas').getContext('2d'), 
-                   sz = +val[3] || 10, sz2 = (sz+1)*0.5;
-               ctx.canvas.width = ctx.canvas.height = sz;
-               ctx.fillStyle = val[1] || "white";
-               ctx.fillRect(0,0,sz,sz);
-               ctx.strokeStyle = val[0] || "black";
-               ctx.lineWidth = +val[2] || 1;
-               ctx.lineCap = "square";
-               ctx.beginPath();
-               ctx.moveTo(sz2,0.5);
-               ctx.lineTo(sz+0.5,sz2);
-               ctx.moveTo(0.5,sz2);
-               ctx.lineTo(sz2,sz+0.5);
-               ctx.stroke();
-               return ctx.createPattern(ctx.canvas,'repeat');
-            }
+   "lwnosc": function(val,state) {
+                var scl = state.trf.scl;
+                if (scl !== 1)
+                   g2.State.c2d.lwscale.call(this, val ? 1/scl : scl)
+             },
+   // helper functions .. no styling or transformation attributes .. !
+   // color, gradient or pattern ...
+   texture: function texture(val) {
+      return val.indexof && (   // must be string
+                val.indexOf("hatch(") === 0 ? g2.State.c2d.hatch.call(this,val.substring(6,val.indexOf(")",7)).split(","))
+              : val === "transparent" ? g2.transparent 
+              : val) || val;
+   },
+   // linewidth dependent scaling helper function ...
+   lwscale: function(scl) {
+      var ld = this.getLineDash();
+      this.lineWidth *= scl;
+      if (ld.length) {
+         for (var i=0,n=ld.length; i<n; i++) 
+            ld[i] *= scl;
+         this.lineDashOffset *= scl;
+         this.setLineDash(ld);
+      }
+   },
+   hatch: function hatch(val) {
+      var ctx = document.createElement('canvas').getContext('2d'), 
+          sz = +val[3] || 10, sz2 = (sz+1)*0.5;
+      ctx.canvas.width = ctx.canvas.height = sz;
+      ctx.fillStyle = val[1] || "white";
+      ctx.fillRect(0,0,sz,sz);
+      ctx.strokeStyle = val[0] || "black";
+      ctx.lineWidth = +val[2] || 1;
+      ctx.lineCap = "square";
+      ctx.beginPath();
+      ctx.moveTo(sz2,0.5);
+      ctx.lineTo(sz+0.5,sz2);
+      ctx.moveTo(0.5,sz2);
+      ctx.lineTo(sz2,sz+0.5);
+      ctx.stroke();
+      return ctx.createPattern(ctx.canvas,'repeat');
+   }
 };

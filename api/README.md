@@ -54,7 +54,7 @@ Create a queue of 2D graphics commands.
 
 <a name="g2+cartesian"></a>
 ### g2.cartesian([on]) ⇒ <code>object</code>
-Set the view's cartesian mode flag.
+Set the view's cartesian mode flag.[Example](https://goessner.github.io/g2-svg/test/index.html#cartesian)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -65,7 +65,7 @@ Set the view's cartesian mode flag.
 
 <a name="g2+pan"></a>
 ### g2.pan(dx, dy) ⇒ <code>object</code>
-Pan the view by a relative displacement vector.
+Pan the view by a relative displacement vector.[Example](https://goessner.github.io/g2-svg/test/index.html#pan)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -77,7 +77,7 @@ Pan the view by a relative displacement vector.
 
 <a name="g2+zoom"></a>
 ### g2.zoom(scl, [x], [y]) ⇒ <code>object</code>
-Zoom the view by a scaling factor with respect to center.Scaling is performed relative to current scale.
+Zoom the view by a scaling factor with respect to center.[Example](https://goessner.github.io/g2-svg/test/index.html#zoom)Scaling is performed relative to current scale.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -90,7 +90,7 @@ Zoom the view by a scaling factor with respect to center.Scaling is performed r
 
 <a name="g2+view"></a>
 ### g2.view([x], [y], [scl]) ⇒ <code>object</code>
-Set the view by absolute origin coordinates and scaling factor in device units.Cartesian flag is not affected.
+Set the view by absolute origin coordinates and scaling factor in device units.[Example](https://goessner.github.io/g2-svg/test/index.html#view)Cartesian flag is not affected.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -274,7 +274,7 @@ Draw image. The command queue will not be executed until all images have been co
 
 <a name="g2+lin"></a>
 ### g2.lin(x1, y1, x2, y2, [style]) ⇒ <code>object</code>
-Draw line by start point and end point.
+Draw line by start point and end point.![Example](https://goessner.github.io/g2-svg/test/index.html#lin "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -293,7 +293,7 @@ g2().lin(10,10,190,10)  // Draw line.    .exe(ctx);          // Render to conte
 ```
 <a name="g2+rec"></a>
 ### g2.rec(x, y, b, h, [style]) ⇒ <code>object</code>
-Draw rectangle by anchor point and dimensions.
+Draw rectangle by anchor point and dimensions.![Example](https://goessner.github.io/g2-svg/test/index.html#rec "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -456,6 +456,7 @@ Apply new style properties.
 | [args.foc] | <code>string</code> | <code>&quot;black&quot;</code> | Font color. |
 | [args.fow] | <code>string</code> | <code>&quot;normal&quot;</code> | Font weight ['normal','bold','lighter','bolder',100,200,...,900]. |
 | [args.fos] | <code>string</code> | <code>&quot;normal&quot;</code> | Font style ['normal','italic','oblique']. |
+| [args.hatch] | <code>array</code> | <code>[&quot;black&quot;,&quot;white&quot;,1,10]</code> | Hatch style 45° [color,bgcolor,linewidth,distance]. |
 
 **Example**  
 ```js

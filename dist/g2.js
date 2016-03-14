@@ -52,7 +52,7 @@ Object.defineProperty(g2.prototype, "state",
 
 /**
  * Set the view's cartesian mode flag.
- * ![Example](https://goessner.github.io/g2-svg/test/index.html#cartesian "Example")
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#cartesian)
  * @method
  * @returns {object} g2
  * @param {bool} [on=true] Cartesian flag. Set it off by 'false'. Any other value is interpreted as 'true'.
@@ -64,7 +64,7 @@ g2.prototype.cartesian = function cartesian(on) {
 
 /**
  * Pan the view by a relative displacement vector.
- * ![Example](https://goessner.github.io/g2-svg/test/index.html#pan "Example")
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#pan)
  * @method
  * @returns {object} g2
  * @param {float} dx pan x-value in device units.
@@ -78,7 +78,7 @@ g2.prototype.pan = function pan(dx,dy) {
 
 /**
  * Zoom the view by a scaling factor with respect to center.
- * ![Example](https://goessner.github.io/g2-svg/test/index.html#zoom "Example")
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#zoom)
  * Scaling is performed relative to current scale.
  * @method
  * @returns {object} g2
@@ -94,9 +94,9 @@ g2.prototype.zoom = function zoom(scl,x,y) {
 };
 
 /**
- * Set the view by absolute origin coordinates and scaling factor in device units.
- * ![Example](https://goessner.github.io/g2-svg/test/index.html#view "Example")
- * Cartesian flag is not affected.
+ * Set the view by absolute origin coordinates and scaling factor in device units.  
+ * Cartesian flag is not affected.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#view)  
  * @method
  * @returns {object} g2
  * @param {float} [x=0] x-origin in device units.
@@ -111,7 +111,8 @@ g2.prototype.view = function view(x,y,scl) {
 };
 
 /**
- * Delete all commands. Does not modify view state.
+ * Delete all commands. Does not modify view state.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#del)
  * @method
  * @returns {object} g2
  */
@@ -139,7 +140,8 @@ g2.prototype.findCmdIdx = function(callbk) {
 };
 
 /**
- * Begin new path.
+ * Begin new path.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @returns {object} g2
  */
@@ -149,7 +151,8 @@ g2.prototype.p = function p() {
 };
 
 /**
- * Move to point.
+ * Move to point.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @returns {object} g2
  * @param {float} x Move to x coordinate
@@ -161,7 +164,8 @@ g2.prototype.m = function m(x,y) {
 };
 
 /**
- * Create line segment to point.
+ * Create line segment to point.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @returns {object} g2
  * @param {float} x x coordinate of target point.
@@ -180,7 +184,8 @@ g2.prototype.l = function l(x,y) {
 };
 
 /**
- * Create quadratic bezier curve segment to point.  
+ * Create quadratic bezier curve segment to point.    
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * ![Example](img/quadratic.png "Example")
  * @method
  * @returns {object} g2
@@ -202,6 +207,7 @@ g2.prototype.q = function q(x1,y1,x,y) {
 
 /**
  * Create cubic bezier curve to point.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * ![Example](img/curve.png "Example")
  * @method
  * @returns {object} g2
@@ -254,7 +260,8 @@ g2.prototype.a = function a(dw,x,y) {
 };
 
 /**
- * Close current path by straight line.
+ * Close current path by straight line.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @returns {object} g2
  */
@@ -265,7 +272,8 @@ g2.prototype.z = function z() {
 
 // stroke, fill, draw
 /**
- * Stroke the current path or path object.
+ * Stroke the current path or path object.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @param {object} [style=undefined] Style properties. See 'g2.style' for details.
  * @param {string} [d = undefined] SVG path definition string. Current path is ignored then.
@@ -281,7 +289,8 @@ g2.prototype.stroke = function stroke(style,d) {
 };
 
 /**
- * Fill the current path or path object.
+ * Fill the current path or path object.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @param {object} [style=undefined] Style properties. See 'g2.style' for details.
  * @param {string} [d = undefined] SVG path definition string. Current path is ignored then.
@@ -298,7 +307,8 @@ g2.prototype.fill = function fill(style,d) {
 
 /**
  * Shortcut for stroke and fill the current path or path object.
- * In case of shadow, only the path interior creates shadow, not also the path contour.
+ * In case of shadow style, only the path interior creates shadow, not also the path contour.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @param {object} [style=undefined] Style properties. See 'g2.style' for details.
  * @param {string} [d = undefined] SVG path definition string.  Current path is ignored then.
@@ -315,7 +325,8 @@ g2.prototype.drw = function drw(style,d) {
 
 // Graphics elements
 /**
- * Draw text string at anchor point.
+ * Draw text string at anchor point.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#txt)
  * @method
  * @returns {object} g2
  * @param {string} s Text string.
@@ -331,7 +342,8 @@ g2.prototype.txt = function txt(s,x,y,w,style) {
 
 /**
  * Draw image. The command queue will not be executed until all images have been completely loaded.
- * This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.
+ * This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#img)
  * @method
  * @returns {object} g2
  * @param {string} uri Image uri or data:url.
@@ -350,13 +362,13 @@ g2.prototype.img = function img(uri,x,y,b,h,xoff,yoff,dx,dy) {
    image.onload = function load() { state.loaded(); };
    image.onerror = function() { image.src = g2.prototype.img.broken;  };
    image.src = uri;
-   this.cmds.push({c:img,a:[image,x||0,y||0,b,h,xoff,yoff,dx,dy]});
+   this.cmds.push({c:img,a:[image,(x+0.5)||0,(y+0.5)||0,b,h,xoff,yoff,dx,dy]});
    return this;
 };
 g2.prototype.img.broken = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7";
 /**
- * Draw line by start point and end point.
- * ![Example](https://goessner.github.io/g2-svg/test/index.html#lin "Example")
+ * Draw line by start point and end point.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#lin)
  * @method
  * @returns {object} g2
  * @param {float} x1 Start x coordinate.
@@ -374,8 +386,8 @@ g2.prototype.lin = function lin(x1,y1,x2,y2,style) {
 };
 
 /**
- * Draw rectangle by anchor point and dimensions.
- * ![Example](https://goessner.github.io/g2-svg/test/index.html#rec "Example")
+ * Draw rectangle by anchor point and dimensions.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#rec)
  * @method
  * @returns {object} g2
  * @param {float} x x-value upper left corner.
@@ -393,7 +405,8 @@ g2.prototype.rec = function rec(x,y,b,h,style) {
 };
 
 /**
- * Draw circle by center and radius.
+ * Draw circle by center and radius.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#cir)
  * @method
  * @returns {object} g2
  * @param {float} x x-value center.
@@ -410,7 +423,8 @@ g2.prototype.cir = function cir(x,y,r,style) {
 };
 
 /**
- * Draw arc by center point, radius, start angle and angular range.<br>
+ * Draw arc by center point, radius, start angle and angular range.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#arc)  
  * ![Example](../img/arc.png "Example")
  * @method
  * @returns {object} g2
@@ -434,7 +448,8 @@ g2.prototype.arc = function arc(x,y,r,w,dw,style) {
  * Using iterator function for getting points from array by index.
  * It must return current point object {x,y} or object {done:true}.
  * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
- * array of [[x,y],...] arrays or array of [{x,y},...] objects.
+ * array of [[x,y],...] arrays or array of [{x,y},...] objects.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#ply)
  * @method
  * @returns {object} this
  * @param {array} parr Array of points.
@@ -472,7 +487,8 @@ g2.prototype.ply.itrOf = function itrOf(pts,args) {
 
 /**
  * Begin subcommands. Current state is saved. 
- * Optionally apply transformation or style properties.
+ * Optionally apply transformation or style properties.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#beg-end)
  * @method
  * @returns {object} g2
  * @param {object} args Arguments object.
@@ -489,7 +505,8 @@ g2.prototype.beg = function beg(args) {
 };
 
 /**
- * End subcommands. Previous state is restored.
+ * End subcommands. Previous state is restored.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#beg-end)
  * @method
  * @returns {object} g2
  */
@@ -518,7 +535,8 @@ g2.prototype.clr = function clr() {
 
 // helper commands
 /**
- * Draw grid.
+ * Draw grid.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#grid)
  * @method
  * @returns {object} g2
  * @param {string} [color=#ccc] CSS grid color.
@@ -556,7 +574,8 @@ g2.prototype.grid.getSize = function(state,scl) {
  * Reference g2 graphics commands from another g2 object.
  * With this command you can reuse instances of grouped graphics commands
  * while applying a similarity transformation and style properties on them.
- * In fact you might want to build custom graphics libraries on top of that feature.
+ * In fact you might want to build custom graphics libraries on top of that feature.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#rec)
  * @method
  * @returns {object} g2
  * @param {object | string} g g2 source object or symbol name found in 'g2.symbol' namespace.
@@ -795,6 +814,7 @@ g2.State = {
       },
       add: function(args) {
          var ifcState = g2.State[this.ifc], m2, val, trf = {};
+
          for (var m in args) {
             val = args[m];
             if (typeof val === "string" && val[0] === "@")
@@ -812,7 +832,7 @@ g2.State = {
             if (ifcState["trf"])
                ifcState["trf"].call(this.ctx,trf,this);
          }
-
+         return this;
       },
 
       save: function() { this.stack.push(Object.assign({},this._current)); return this; },
@@ -1103,25 +1123,17 @@ g2.prototype.style.c2d = function style_c2d(args) {
 };
 
 g2.State.c2d = {
-   "fs": function(val) { 
-            this.fillStyle = val.indexOf && val.indexOf("hatch(") === 0 ? g2.State.c2d.hatch.call(this,val.substring(6,val.indexOf(")",7)).split(","))
-                           : val === "transparent" ? g2.transparent 
-                           : val; 
-         },
-   "ls": function(val) { 
-            this.strokeStyle = val.indexOf && val.indexOf("hatch(") === 0 ? g2.State.c2d.hatch.call(this,val.substring(6,val.indexOf(")",7)).split(","))
-                             : val === "transparent" ? g2.transparent 
-                             : val; 
-         },
+   "fs": function(val) { this.fillStyle = g2.State.c2d.texture.call(this,val); },
+   "ls": function(val) { this.strokeStyle = g2.State.c2d.texture.call(this,val); },
    "lw": function(val,state) { this.lineWidth = val/(state.get("lwnosc") ? state.trf.scl : 1); },
    "lc": function(val) { this.lineCap = val; },
    "lj": function(val) { this.lineJoin = val; },
-   "lo": function(val) { this.lineDashOffset = val; },  // TODO make lw dependent
+   "lo": function(val) { this.lineDashOffset = val; },
    "ld": function(val,state) {
             var scl = state.get("lwnosc") ? state.trf.scl : 1;
             if (scl !== 1) {
-               var lw = this.lineWidth*scl, ld = [];
-               for (var i=0,n=val.length; i<n; i++) ld.push(val[i]/lw);
+               var ld = [];
+               for (var i=0,n=val.length; i<n; i++) ld.push(val[i]/scl);
                this.setLineDash(ld);
             }
             else
@@ -1142,36 +1154,54 @@ g2.State.c2d = {
    "fow": function(val,state) { this.font = state.cssFont; },
    "foz": function(val,state) { this.font = state.cssFont; },  // evtl. use foznosc
    "fof": function(val,state) { this.font = state.cssFont; },
-   "lwnosc": function(val,state) {                      // undocumented beta feature
-                if (val !== state.get("lwnosc")) {  // value changing ...
-                   if (val) this.lineWidth /= state.trf.scl;
-                   else     this.lineWidth *= state.trf.scl;
-                }
-             },
-   "trf": function(t) {
+   "trf": function(t,state) {
              var scl = t.scl || 1,
                  sw = scl*(t.w?Math.sin(t.w):0), cw = scl*(t.w?Math.cos(t.w):1);
              this.transform(cw,sw,-sw,cw,t.x||0,t.y||0);
+             if (state.get("lwnosc") && scl !== 1) g2.State.c2d.lwscale.call(this,1/scl);
           },
    "matrix": function(m) {
                 this.transform.apply(this,m);
              },
-   "hatch": function hatch(val) {
-      console.log(val)
-               var ctx = document.createElement('canvas').getContext('2d'), 
-                   sz = +val[3] || 10, sz2 = (sz+1)*0.5;
-               ctx.canvas.width = ctx.canvas.height = sz;
-               ctx.fillStyle = val[1] || "white";
-               ctx.fillRect(0,0,sz,sz);
-               ctx.strokeStyle = val[0] || "black";
-               ctx.lineWidth = +val[2] || 1;
-               ctx.lineCap = "square";
-               ctx.beginPath();
-               ctx.moveTo(sz2,0.5);
-               ctx.lineTo(sz+0.5,sz2);
-               ctx.moveTo(0.5,sz2);
-               ctx.lineTo(sz2,sz+0.5);
-               ctx.stroke();
-               return ctx.createPattern(ctx.canvas,'repeat');
-            }
+   "lwnosc": function(val,state) {
+                var scl = state.trf.scl;
+                if (scl !== 1)
+                   g2.State.c2d.lwscale.call(this, val ? 1/scl : scl)
+             },
+   // helper functions .. no styling or transformation attributes .. !
+   // color, gradient or pattern ...
+   texture: function texture(val) {
+      return val.indexof && (   // must be string
+                val.indexOf("hatch(") === 0 ? g2.State.c2d.hatch.call(this,val.substring(6,val.indexOf(")",7)).split(","))
+              : val === "transparent" ? g2.transparent 
+              : val) || val;
+   },
+   // linewidth dependent scaling helper function ...
+   lwscale: function(scl) {
+      var ld = this.getLineDash();
+      this.lineWidth *= scl;
+      if (ld.length) {
+         for (var i=0,n=ld.length; i<n; i++) 
+            ld[i] *= scl;
+         this.lineDashOffset *= scl;
+         this.setLineDash(ld);
+      }
+   },
+   hatch: function hatch(val) {
+      var ctx = document.createElement('canvas').getContext('2d'), 
+          sz = +val[3] || 10, sz2 = (sz+1)*0.5;
+      ctx.canvas.width = ctx.canvas.height = sz;
+      ctx.fillStyle = val[1] || "white";
+      ctx.fillRect(0,0,sz,sz);
+      ctx.strokeStyle = val[0] || "black";
+      ctx.lineWidth = +val[2] || 1;
+      ctx.lineCap = "square";
+      ctx.beginPath();
+      ctx.moveTo(sz2,0.5);
+      ctx.lineTo(sz+0.5,sz2);
+      ctx.moveTo(0.5,sz2);
+      ctx.lineTo(sz2,sz+0.5);
+      ctx.stroke();
+      return ctx.createPattern(ctx.canvas,'repeat');
+   }
 };
