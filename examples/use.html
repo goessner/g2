@@ -13,10 +13,12 @@
     <script src='../src/g2.c2d.js'></script>
     <script>
       var g = g2(),
-          circ = g2().cir(0,0,25,{lw:5}),
+          circ = g2().style({}).cir(0,0,25).cir(0,0,10,{lw:2}).lin(-20,0,20,0,{ld:[5,5],lo:2.5}),
           ctx = document.getElementById("c").getContext("2d");
 
-      g.use(circ,{x:100,y:100,scl:2,lwnosc:true})
+      g.style({lw:5,lwnosc:true})
+       .use(circ,{x:50,y:100,scl:1.5})
+       .use(circ,{x:150,y:100,scl:2,lwnosc:false})
        .exe(ctx);
    </script>
 </body>
