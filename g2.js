@@ -6,9 +6,6 @@
 /* jshint -W014 */
 /* jshint -W030 */
 
-// Used polyfills
-if (!Math.hypot) Math.hypot = function(x,y) { return Math.sqrt(x*x+y*y); };
-
 /**
  * Create a queue of 2D graphics commands.
  * @param {object} [opts] Custom options object. It is simply copied into the 'g2' object for later individual use.
@@ -21,37 +18,45 @@ if (!Math.hypot) Math.hypot = function(x,y) { return Math.sqrt(x*x+y*y); };
  *  .exe(ctx);           // Execute commands addressing canvas context.
  */
 function g2() {
-   if (this instanceof g2)
-      return this.constructor.apply(this,arguments);
+   if (this instanceof g2) {
+      if (arguments) Object.assign(this,arguments);
+      this.cmds = [];
+      this.curIdx = false;
+      return this;
+   }
    else
       return g2.apply(Object.create(g2.prototype),arguments);
 }
 
 /**
- * Constructor.
- * @method
- * @returns {object} g2
+ * Add command to command queue.
  * @private
  */
-g2.prototype.constructor = function constructor(opts) {
-   if (opts) Object.assign(this,opts);
-   this.cmds = [];
+g2.prototype.addCmd = function(cmd) {
+   this.cmds.push("proto" in cmd.c ? Object.assign(Object.create(cmd.c.proto),{ g2:this },cmd) : cmd);
    return this;
 };
+/**
+ * Get current command.
+ * @private
+ */
+Object.defineProperty(g2.prototype, "curCmd",
+   { get: function () { return this.curIdx !== false ? this.cmds[this.curIdx] : null; } }
+);
 
-// 
 /**
  * State stack.
  * Lazy getter (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get)
  * @type {object}
  * @const
+ * @private
  */
 Object.defineProperty(g2.prototype, "state", 
    { get: function () { return this._state || (this._state = g2.State.create(this)); } }
 );
 
 /**
- * Set the view's cartesian mode flag.
+ * Set the view's cartesian mode flag (immediate state modifier - no command).<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#cartesian)
  * @method
  * @returns {object} g2
@@ -63,7 +68,7 @@ g2.prototype.cartesian = function cartesian(on) {
 };
 
 /**
- * Pan the view by a relative displacement vector.
+ * Pan the view by a relative displacement vector (immediate state modifier - no command).<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#pan)
  * @method
  * @returns {object} g2
@@ -77,9 +82,9 @@ g2.prototype.pan = function pan(dx,dy) {
 };
 
 /**
- * Zoom the view by a scaling factor with respect to center.
+ * Zoom the view by a scaling factor with respect to center (immediate state modifier - no command).<br>
+ * Scaling is performed relative to current scale.<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#zoom)
- * Scaling is performed relative to current scale.
  * @method
  * @returns {object} g2
  * @param {float} scl Relative scaling factor.
@@ -94,8 +99,8 @@ g2.prototype.zoom = function zoom(scl,x,y) {
 };
 
 /**
- * Set the view by absolute origin coordinates and scaling factor in device units.  
- * Cartesian flag is not affected.  
+ * Set the view by placing origin coordinates and scaling factor in device units.  
+ * Cartesian flag is not affected (immediate state modifier - no command).<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#view)  
  * @method
  * @returns {object} g2
@@ -111,7 +116,7 @@ g2.prototype.view = function view(x,y,scl) {
 };
 
 /**
- * Delete all commands. Does not modify view state.  
+ * Delete all commands. Does not modify view state. (no command)<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#del)
  * @method
  * @returns {object} g2
@@ -122,36 +127,27 @@ g2.prototype.del = function del() { // see http://jsperf.com/truncating-arrays-c
 };
 
 // Path commands
-
-// internal helper methods .. 
-// ==========================
-// get current path point from previous command object
+/**
+ * Get current path point from previous command object.
+ * @private
+ */
 g2.prototype._curPnt = function() {
    var lastcmd = this.cmds.length && this.cmds[this.cmds.length-1] || false;
    return lastcmd && (lastcmd.cp || lastcmd.a);
 };
-// get index of command resolving 'callbk' to 'true' starting from end of the queue walking back ..
-// see 'Array.prototype.findIndex'
-g2.prototype.findCmdIdx = function(callbk) { 
-   for (var i = this.cmds.length-1; i >= 0; i--)
-      if (callbk(this.cmds[i],i,this.cmds))
-         return i;
-   return false;  // command with index '0' signals 'failing' ...
-};
 
 /**
- * Begin new path.  
+ * Begin new path.<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @returns {object} g2
  */
 g2.prototype.p = function p() {
-   this.cmds.push({c:p});
-   return this;
+   return this.addCmd({c:p});
 };
 
 /**
- * Move to point.  
+ * Move to point.<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @returns {object} g2
@@ -159,12 +155,11 @@ g2.prototype.p = function p() {
  * @param {float} y Move to y coordinate
  */
 g2.prototype.m = function m(x,y) {
-   this.cmds.push({c:m,a:[x,y]});
-   return this;
+   return this.addCmd({c:m,a:[x,y]});
 };
 
 /**
- * Create line segment to point.  
+ * Create line segment to point.<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
  * @method
  * @returns {object} g2
@@ -179,14 +174,12 @@ g2.prototype.m = function m(x,y) {
  *     .exe(ctx);    // Render to context.
  */
 g2.prototype.l = function l(x,y) {
-   this.cmds.push({c:l,a:[x,y]});
-   return this;
+   return this.addCmd({c:l,a:[x,y]});
 };
 
 /**
- * Create quadratic bezier curve segment to point.    
+ * Create quadratic bezier curve segment to point.<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
- * ![Example](img/quadratic.png "Example")
  * @method
  * @returns {object} g2
  * @param {float} x1 x coordinate of control point.
@@ -201,14 +194,12 @@ g2.prototype.l = function l(x,y) {
  *     .exe(ctx);         // Render to context.
  */
 g2.prototype.q = function q(x1,y1,x,y) {
-   this.cmds.push({c:q,a:[x1,y1,x,y],cp:[x,y]});
-   return this;
+   return this.addCmd({c:q,a:[x1,y1,x,y],cp:[x,y]});
 };
 
 /**
- * Create cubic bezier curve to point.  
+ * Create cubic bezier curve to point.<br>
  * [Example](https://goessner.github.io/g2-svg/test/index.html#path)
- * ![Example](img/curve.png "Example")
  * @method
  * @returns {object} g2
  * @param {float} x1 x coordinate of first control point.
@@ -225,12 +216,11 @@ g2.prototype.q = function q(x1,y1,x,y) {
  *     .exe(ctx);                  // Render to canvas context.
  */
 g2.prototype.c = function c(x1,y1,x2,y2,x,y) {
-   this.cmds.push({c:c,a:[x1,y1,x2,y2,x,y],cp:[x,y]});
-   return this;
+   return this.addCmd({c:c,a:[x1,y1,x2,y2,x,y],cp:[x,y]});
 };
 
 /**
- * Draw arc with angular range to target point.  
+ * Draw arc with angular range to target point.<br>
  * ![Example](img/a.png "Example")
  * @method
  * @returns {object} g2
@@ -252,11 +242,10 @@ g2.prototype.a = function a(dw,x,y) {
       var dx = x-p1[0], dy = y-p1[1], tw2 = Math.tan(dw/2),
           rx = dx/2 - dy/tw2/2, ry = dy/2 + dx/tw2/2,
           w = Math.atan2(-ry,-rx);
-      this.cmds.push({c:a,a:[p1[0]+rx,p1[1]+ry,Math.hypot(rx,ry),w,w+dw,dw<0],cp:[x,y]});
+      return this.addCmd({c:a,a:[p1[0]+rx,p1[1]+ry,Math.hypot(rx,ry),w,w+dw,dw<0],cp:[x,y]});
    }
    else  // draw a straight line instead ...
-      this.cmds.push({c:g2.prototype.l,a:[x,y]});
-   return this;
+      return this.addCmd({c:g2.prototype.l,a:[x,y]});
 };
 
 /**
@@ -266,8 +255,7 @@ g2.prototype.a = function a(dw,x,y) {
  * @returns {object} g2
  */
 g2.prototype.z = function z() {
-   this.cmds.push({c:z});
-   return this;
+   return this.addCmd({c:z});
 };
 
 // stroke, fill, draw
@@ -284,8 +272,7 @@ g2.prototype.stroke = function stroke(style,d) {
             : (typeof style === "string") ? [null,style]     // svg path string as single argument
             : (typeof style === "object" && !d) ? [style]    // style object as single argument
             : [style,d];                                     // both arguments
-   this.cmds.push({c:stroke,a:args});
-   return this;
+   return this.addCmd({c:stroke,a:args});
 };
 
 /**
@@ -301,8 +288,7 @@ g2.prototype.fill = function fill(style,d) {
             : (typeof style === "string") ? [null,style]     // svg path string as single argument
             : (typeof style === "object" && !d) ? [style]    // style object as single argument
             : [style,d];                                     // both arguments
-   this.cmds.push({c:fill,a:args});
-   return this;
+   return this.addCmd({c:fill,a:args});
 };
 
 /**
@@ -319,8 +305,7 @@ g2.prototype.drw = function drw(style,d) {
             : (typeof style === "string") ? [null,style]     // svg path string as single argument
             : (typeof style === "object" && !d) ? [style]    // style object as single argument
             : [style,d];                                     // both arguments
-   this.cmds.push({c:drw,a:args});
-   return this;
+   return this.addCmd({c:drw,a:args});
 };
 
 // Graphics elements
@@ -336,8 +321,7 @@ g2.prototype.drw = function drw(style,d) {
  * @param {object} [style=undefined] args Object with styling values.
  */
 g2.prototype.txt = function txt(s,x,y,w,style) {
-   this.cmds.push({c:txt,a:[s,x||0,y||0,w||0,style]});
-   return this;
+   return this.addCmd({c:txt,a:[s,x||0,y||0,w||0,style]});
 };
 
 /**
@@ -362,8 +346,7 @@ g2.prototype.img = function img(uri,x,y,b,h,xoff,yoff,dx,dy) {
    image.onload = function load() { state.loaded(); };
    image.onerror = function() { image.src = g2.prototype.img.broken;  };
    image.src = uri;
-   this.cmds.push({c:img,a:[image,(x+0.5)||0,(y+0.5)||0,b,h,xoff,yoff,dx,dy]});
-   return this;
+   return this.addCmd({c:img,a:[image,(x+0.5)||0,(y+0.5)||0,b,h,xoff,yoff,dx,dy]});
 };
 g2.prototype.img.broken = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7";
 /**
@@ -381,8 +364,7 @@ g2.prototype.img.broken = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM///
  *     .exe(ctx);          // Render to context.
  */
 g2.prototype.lin = function lin(x1,y1,x2,y2,style) {
-   this.cmds.push({c:lin,a:[x1,y1,x2,y2,style]});
-   return this;
+   return this.addCmd({c:lin,a:[x1,y1,x2,y2,style]});
 };
 
 /**
@@ -400,8 +382,7 @@ g2.prototype.lin = function lin(x1,y1,x2,y2,style) {
  *     .exe(ctx);          // Render to context.
  */
 g2.prototype.rec = function rec(x,y,b,h,style) {
-   this.cmds.push({c:rec,a:[x,y,b,h,style]});
-   return this;
+   return this.addCmd({c:rec,a:[x,y,b,h,style]});
 };
 
 /**
@@ -418,8 +399,7 @@ g2.prototype.rec = function rec(x,y,b,h,style) {
  *     .exe(ctx);       // Render to context.
  */
 g2.prototype.cir = function cir(x,y,r,style) {
-   this.cmds.push({c:cir,a:[x,y,r,style]});
-   return this;
+   return this.addCmd({c:cir,a:[x,y,r,style]});
 };
 
 /**
@@ -439,8 +419,7 @@ g2.prototype.cir = function cir(x,y,r,style) {
  *     .exe(ctx);
  */
 g2.prototype.arc = function arc(x,y,r,w,dw,style) {
-   this.cmds.push({c:arc,a:[x,y,r,w||0,dw||2*Math.PI,style]});
-   return this;
+   return this.addCmd({c:arc,a:[x,y,r,w||0,dw||2*Math.PI,style]});
 };
 
 /**
@@ -466,7 +445,7 @@ g2.prototype.arc = function arc(x,y,r,w,dw,style) {
 g2.prototype.ply = function ply(pts,mode,args) {
    var itr = ply.itrOf(pts,args);
    if (itr)
-      this.cmds.push({c:ply,a:[pts,mode,itr,args]});
+      this.addCmd({c:ply,a:[pts,mode,itr,args]});
    return this;
 };
 
@@ -500,8 +479,7 @@ g2.prototype.ply.itrOf = function itrOf(pts,args) {
  * @param {any} [args.style] Style property. See 'g2.style' for details.
  */
 g2.prototype.beg = function beg(args) {
-   this.cmds.push(args ? {c:beg, a:[args], open:true} : {c:beg, open:true});
-   return this;
+   return this.addCmd(args ? {c:beg, a:[args], open:true} : {c:beg, open:true});
 };
 
 /**
@@ -511,8 +489,7 @@ g2.prototype.beg = function beg(args) {
  * @returns {object} g2
  */
 g2.prototype.end = function end() {
-   this.cmds.push({c:end});
-   return this;
+   return this.addCmd({c:end});
 };
 // potential helper function finding matching 'beg' command ...
 g2.prototype.end.myBeg = function(cmd) {  // test if 'cmd' is matching 'beg' command ...
@@ -524,13 +501,12 @@ g2.prototype.end.myBeg = function(cmd) {  // test if 'cmd' is matching 'beg' com
 };
 
 /**
- * Clear viewport.
+ * Clear viewport command.
  * @method
  * @returns {object} g2
  */
 g2.prototype.clr = function clr() {
-   this.cmds.push({c:clr});
-   return this;
+   return this.addCmd({c:clr});
 };
 
 // helper commands
@@ -545,8 +521,7 @@ g2.prototype.clr = function clr() {
 g2.prototype.grid = function grid(color,size) {
    this.state.gridBase = 2;
    this.state.gridExp  = 1;
-   this.cmds.push({c:grid,a:[color,size]});
-   return this;
+   return this.addCmd({c:grid,a:[color,size]});
 };
 // helper function for calculating grid size at rendering time ..
 g2.prototype.grid.getSize = function(state,scl) {
@@ -600,7 +575,7 @@ g2.prototype.use = function use(g,args) {
          state.loading++;
          g.state.onload(g2.State.prototype.loaded.bind(state));
       }
-      this.cmds.push({c:use,a:[g,args]});
+      this.addCmd({c:use,a:[g,args]});
    }
    return this;
 };
@@ -642,8 +617,7 @@ g2.prototype.use = function use(g,args) {
  *     .exe(ctx);
  */
 g2.prototype.style = function style(args) {
-   this.cmds.push({c:style,a:[args]});
-   return this;
+   return this.addCmd({c:style,a:[args]});
 };
 
 // helper functions
@@ -662,23 +636,25 @@ g2.prototype.exe = function exe(ctx,g) {
          requestAnimationFrame(exe.bind(this,ctx,g));  // .. so wait a while ..
       }
       else if (ctx && cmds) {
-         var gstate = g && g.state, proxy = g2.proxy[ifc](ctx);
-         exe[ifc].beg.call(proxy,this);
-         if (g)   // external g2 in use .. copy state
+         var context = g2.context[ifc](ctx), gstate = g && g.state;
+         exe.pre[ifc].call(context,this);
+         if (g)  // external g2 in use .. copy state
             g.state = this.state;
-         for (var i=0,n=cmds.length,cmd; i<n; i++) // invoke the command queue
-            if ((cmd=cmds[i]).c[ifc])
-               cmd.c[ifc].apply(proxy,cmd.a);
+         for (var i=0,n=cmds.length,cmd; i < n; i++) // invoke the command queue
+            if ((cmd=cmds[this.curIdx = i]).c[ifc])
+               cmd.c[ifc].apply(context,cmd.a);      // save current command index
          if (g)  // external g2 in use .. restore state
             g.state = gstate;
-         exe[ifc].end.call(proxy,this);
+         exe.post[ifc].call(context,this);
       }
    }
    return this;
 };
+g2.prototype.exe.pre  = {};   // map of interface dependent pre-processing functions
+g2.prototype.exe.post = {};   // map of interface dependent post-processing functions
 
 /**
- * Copy all g2 graphics commands from a g2 object.
+ * Copy all g2 graphics commands from a g2 object (no command).<br>
  * If the source object is 'this', nothing is done.
  * @method
  * @returns {object} g2
@@ -699,13 +675,40 @@ g2.prototype.exe = function exe(ctx,g) {
  *  .exe(ctx);
  */
 g2.prototype.cpy = function cpy(g) {
-   if (g !== this)
-      g.cmds.forEach(function(c,i) {if (i) this.cmds.push(c);},this); // do not copy first 'constructor' command ...
+   if (g && g !== this)
+      g.cmds.forEach(function(c) { this.cmds.push(c); }, this);
+   return this;
+};
+/*
+ * Proxy command for reuse of `proto` objects extending command objects.
+ * @method
+ * @returns {object} g2
+ * @param {function} method `g2.prototype` method for reusing corresponding `proto` object.
+ * @param {array} args Arguments array.
+ */
+g2.prototype.proxy = function proxy(method,args) {
+   if (typeof method === "string")  // must be a member name of the 'g2.prototype' namespace
+      method = g2.prototype[method];
+   if (method && method.proto) {
+       var f = function(){};
+       f.proto = method.proto;
+       this.addCmd({a:args,c:f});
+   }
    return this;
 };
 
-
 // Helper methods .. not chainable.
+/**
+ * Get index of command resolving 'callbk' to 'true' starting from end of the queue walking back.<br>
+ * see 'Array.prototype.findIndex'.
+ * @private
+ */
+g2.prototype.findCmdIdx = function(callbk) { 
+   for (var i = this.cmds.length-1; i >= 0; i--)
+      if (callbk(this.cmds[i],i,this.cmds))
+         return i;
+   return false;  // command with index '0' signals 'failing' ...
+};
 
 /**
  * Get user coordinates from device coordinates for point.
@@ -745,11 +748,11 @@ g2.prototype.vecToUsr = function vecToUsr(x,y) {
 g2.prototype.dump = function(space) {
    function trace(obj) {
       var out = [],o,cmd,a,c,args;
-      for (var i=0,n=obj.cmds.length; i<n; i++) {
+      for (var i=0, n=obj.cmds.length; i < n; i++) {
          args = [];
          cmd = obj.cmds[i];
          a = cmd.a;
-         for (var j=0,m=a && a.length || 0; j<m; j++) {
+         for (var j=0,m=a && a.length || 0; j < m; j++) {
             if (typeof a[j] === "object" && a[j] instanceof g2) {
                if (a[j] !== obj) args.push(trace(a[j]));
             }
@@ -777,20 +780,26 @@ g2.prototype.dump = function(space) {
  * @type {string}
  * @const
  */
-g2.version = "2.0.0";
 g2.transparent = "rgba(0, 0, 0, 0)";
 g2.exeStack = 0;
-g2.proxy = Object.create(null);  // object holding functions getting context proxy objects (if supported!)
+g2.context = Object.create(null);  // object holding functions getting context objects (if supported!)
 g2.ifc = Object.create(null);  // object holding interface strings ..
-// get interface string (i.e. 'svg') from graphics context.
+/**
+ * Get interface string (i.e. 'svg') from graphics context.
+ * @private
+ */
 g2.ifcof = function(ctx) { 
-   for (var ifc in g2.ifc)
+   for (var ifc in g2.ifc) {
       if (g2.ifc[ifc](ctx))
          return ifc;
+   }
    return false;
 }
 
-// State stack management class.
+/**
+ * State stack management class.
+ * @private
+ */
 g2.State = {
    create: function() { var o = Object.create(this.prototype); o.constructor.apply(o,arguments); return o; },
    prototype: {
@@ -801,9 +810,9 @@ g2.State = {
          this.loading = 0;                // loading images .. 
          this.loadHdl = [];               // .. or else ..
       },
-      // beg / end command execution ...
-      beg: function(ctx) { this.ifc = g2.ifcof(this.ctx = ctx); this.stack = [{}]; this._current = {}; },
-      end: function() { delete this.ctx; delete this.ifc; },
+      // pre / post command execution ...
+      pre: function(ctx) { this.ifc = g2.ifcof(ctx); this.ctx = g2.context[this.ifc](ctx); this.stack = [{}]; this._current = {}; },
+      post: function() { delete this.ctx; delete this.ifc; },
 
       // manage style properties ...
       get: function(name) {
@@ -814,7 +823,6 @@ g2.State = {
       },
       add: function(args) {
          var ifcState = g2.State[this.ifc], m2, val, trf = {};
-
          for (var m in args) {
             val = args[m];
             if (typeof val === "string" && val[0] === "@")
@@ -835,15 +843,15 @@ g2.State = {
          return this;
       },
 
-      save: function() { this.stack.push(Object.assign({},this._current)); return this; },
-      restore: function() { this._current = Object.assign({},this.stack.pop()); return this; },
+      save: function() { this.stack.push(Object.assign({}, this._current)); return this; },
+      restore: function() { this._current = Object.assign({}, this.stack.pop()); return this; },
       get current() { return this._current; },
       set current(val) { this._current = val; },
       get trf() { return this._current.trf || this.trf0; },
       set trf(t) {
          var w = t.w || 0, scl = t.scl || 1,
              sw = scl*(w?Math.sin(w):0), cw = scl*(w?Math.cos(w):1),
-             trf =this._current.trf || this.trf0;
+             trf = this._current.trf || this.trf0;
          this._current.trf = {
             x:cw*trf.x - sw*trf.y + (t.x || 0),
             y:sw*trf.x + cw*trf.y + (t.y || 0),
@@ -904,45 +912,32 @@ g2.symbolNameOf = function(g) {
    return false;
 }
 
-// treat node.js
-if (typeof module === "object" && module.exports)
-   module.exports = g2;
-/**
- * @fileoverview g2.c2d.js
- * @author Stefan Goessner (c) 2013-16
- * @license MIT License
- */
-/* jshint -W014 */
+// insert in browser environment only !!!
+if (typeof CanvasRenderingContext2D !== "undefined") { // use shortcut 'c2d'
 
 g2.ifc.c2d = function(ctx) { return ctx instanceof CanvasRenderingContext2D; }
-g2.proxy.c2d = function(ctx) { return ctx; }
+g2.context.c2d = function(ctx) { return ctx; }
 
-g2.prototype.exe.c2d = {
-   beg: function(owner) {        // owner g2 object ...
-      if (g2.exeStack++ === 0) { // outermost g2 ...
-         var state = (this.g2_owner = owner).state,
-             t = state.trf;      // initial transform (zoom, pan ...)
-         state.beg(this);
-         this.setTransform(t.scl,0,0,state.cartesian?-t.scl:t.scl,t.x+0.5,(state.cartesian?this.canvas.height-t.y:t.y)+0.5);
-         this.lineWidth = 1;
-         this.strokeStyle = "#000";
-         this.setLineDash([]);
-         this.font = state.cssFont;
-         this.fillStyle = g2.transparent;
-      }
-   },
-   end: function() {
-      if (--g2.exeStack === 0) {
-         this.fillStyle = "#000000";
-         this.g2_owner.state.end(this);
-         delete this.g2_owner;
-      }
+g2.prototype.exe.pre.c2d = function(owner) {        // owner g2 object ...
+   if (g2.exeStack++ === 0) { // outermost g2 ...
+      var state = owner.state, t = state.trf;      // initial transform (zoom, pan ...)
+      this.g2 = owner;
+      this.fillStyle = g2.transparent;
+      this.lineWidth = 1;
+      this.strokeStyle = "#000";
+      this.setLineDash([]);
+      this.font = state.cssFont;
+      this.setTransform(t.scl,0,0,state.cartesian?-t.scl:t.scl,t.x+0.5,(state.cartesian?this.canvas.height-t.y:t.y)+0.5);
+      state.pre(this);
    }
 };
-
-/**
- * canvas 2d interface
- */
+g2.prototype.exe.post.c2d = function() {
+   if (--g2.exeStack === 0) {
+      this.g2.state.post();
+      this.fillStyle = "#000000";
+      delete this.g2;
+   }
+};
 g2.prototype.p.c2d = CanvasRenderingContext2D.prototype.beginPath;
 
 g2.prototype.m.c2d = CanvasRenderingContext2D.prototype.moveTo;
@@ -958,26 +953,26 @@ g2.prototype.a.c2d = CanvasRenderingContext2D.prototype.arc;
 g2.prototype.z.c2d = CanvasRenderingContext2D.prototype.closePath;
 
 g2.prototype.stroke.c2d = function stroke_c2d(style,d) {
-   if (style) { this.save();this.g2_owner.state.save().add(style); }
+   if (style) { this.save(); this.g2.state.save().add(style); }
    if (d && typeof Path2D !== "undefined")
       this.stroke(new Path2D(d));
    else
       this.stroke();
-   if (style) { this.g2_owner.state.restore(); this.restore(); }
+   if (style) { this.g2.state.restore(); this.restore(); }
 };
 
 g2.prototype.fill.c2d = function fill_c2d(style,d) {
-   if (style) { this.save();this.g2_owner.state.save().add(style); }
+   if (style) { this.save();this.g2.state.save().add(style); }
    if (d && typeof Path2D !== "undefined")
       this.fill(new Path2D(d));
    else
       this.fill();
-   if (style) { this.g2_owner.state.restore(); this.restore(); }
+   if (style) { this.g2.state.restore(); this.restore(); }
 };
 
 g2.prototype.drw.c2d = function drw_c2d(style,d) {
    var p2d = d && typeof Path2D !== "undefined" ? new Path2D(d) : false;
-   if (style) { this.save();this.g2_owner.state.save().add(style); }
+   if (style) { this.save();this.g2.state.save().add(style); }
    p2d ? this.fill(p2d) : this.fill();
    if (this.fillStyle !== g2.transparent && this.shadowColor !== g2.transparent) {
       var tmp = this.shadowColor;        // avoid stroke shadow when filled ...
@@ -987,11 +982,11 @@ g2.prototype.drw.c2d = function drw_c2d(style,d) {
    }
    else
       p2d ? this.stroke(p2d) : this.stroke();
-   if (style) { this.g2_owner.state.restore(); this.restore(); }
+   if (style) { this.g2.state.restore(); this.restore(); }
 };
 
 g2.prototype.txt.c2d = function txt_c2d(s,x,y,w,style) {
-   var state = this.g2_owner.state;
+   var state = this.g2.state;
 
    this.save();
    if (style) state.save().add(style);
@@ -1013,7 +1008,7 @@ g2.prototype.txt.c2d = function txt_c2d(s,x,y,w,style) {
 };
 
 g2.prototype.img.c2d = function img_c2d(img,x,y,b,h,xoff,yoff,dx,dy) {
-   var cartesian = this.g2_owner.state.cartesian;
+   var cartesian = this.g2.state.cartesian;
    b = b || img && img.width;
 	h = h || img && img.height;
 	if (cartesian) { this.scale(1,-1); y = -y-h; }
@@ -1025,36 +1020,36 @@ g2.prototype.img.c2d = function img_c2d(img,x,y,b,h,xoff,yoff,dx,dy) {
 };
 
 g2.prototype.lin.c2d = function lin_c2d(x1,y1,x2,y2,style) {
-   if (style) { this.save();this.g2_owner.state.save().add(style); }
+   if (style) { this.save();this.g2.state.save().add(style); }
    this.beginPath();
    this.moveTo(x1,y1);
    this.lineTo(x2,y2);
    this.stroke();
-   if (style) { this.g2_owner.state.restore(); this.restore(); }
+   if (style) { this.g2.state.restore(); this.restore(); }
 };
 
 g2.prototype.rec.c2d = function rec_c2d(x,y,b,h,style) {
-   if (style) { this.save();this.g2_owner.state.save().add(style); }
+   if (style) { this.save();this.g2.state.save().add(style); }
    this.beginPath();
    this.rect(x,y,b,h);
    g2.prototype.drw.c2d.call(this);
-   if (style) { this.g2_owner.state.restore(); this.restore(); }
+   if (style) { this.g2.state.restore(); this.restore(); }
 };
 
 g2.prototype.cir.c2d = function cir_c2d(x,y,r,style) {
-   if (style) { this.save();this.g2_owner.state.save().add(style); }
+   if (style) { this.save();this.g2.state.save().add(style); }
    this.beginPath();
    this.arc(x,y,r,0,Math.PI*2,true);
    g2.prototype.drw.c2d.call(this);
-   if (style) { this.g2_owner.state.restore(); this.restore(); }
+   if (style) { this.g2.state.restore(); this.restore(); }
 };
 
 g2.prototype.arc.c2d = function arc_c2d(x,y,r,w,dw,style) {
-   if (style) { this.save();this.g2_owner.state.save().add(style); }
+   if (style) { this.save();this.g2.state.save().add(style); }
    this.beginPath();
    this.arc(x,y,r,w,w+dw,dw<0);
    g2.prototype.drw.c2d.call(this);
-   if (style) { this.g2_owner.state.restore(); this.restore(); }
+   if (style) { this.g2.state.restore(); this.restore(); }
 };
 
 g2.prototype.ply.c2d = function ply_c2d(parr,mode,itr,style) {
@@ -1076,11 +1071,11 @@ g2.prototype.ply.c2d = function ply_c2d(parr,mode,itr,style) {
 
 g2.prototype.beg.c2d = function beg_c2d(args) {
    this.save();
-   this.g2_owner.state.save().add(args);
+   this.g2.state.save().add(args);
 };
 
 g2.prototype.end.c2d = function end_c2d() {
-   this.g2_owner.state.restore();
+   this.g2.state.restore();
    this.restore();
 };
 
@@ -1092,7 +1087,7 @@ g2.prototype.clr.c2d = function clr_c2d() {
 };
 
 g2.prototype.grid.c2d = function grid_c2d(color,size) {
-   var state = this.g2_owner.state, trf = state.trf0,
+   var state = this.g2.state, trf = state.trf0,
        b = this.canvas.width, h = this.canvas.height,
        sz = size || g2.prototype.grid.getSize(state,trf.scl),
        xoff = trf.x ? trf.x%sz-sz : 0, yoff = trf.y ? trf.y%sz-sz : 0;
@@ -1110,7 +1105,7 @@ g2.prototype.grid.c2d = function grid_c2d(color,size) {
 };
 
 g2.prototype.use.c2d = function use_c2d(g,args) {
-   var owner = this.g2_owner;
+   var owner = this.g2;
    this.save();
    owner.state.save().add(args);
    owner.exe(this,g);
@@ -1119,7 +1114,7 @@ g2.prototype.use.c2d = function use_c2d(g,args) {
 };
 
 g2.prototype.style.c2d = function style_c2d(args) {
-   this.g2_owner.state.add(args);
+   this.g2.state.add(args);
 };
 
 g2.State.c2d = {
@@ -1205,3 +1200,10 @@ g2.State.c2d = {
       return ctx.createPattern(ctx.canvas,'repeat');
    }
 };
+
+} // end of typeof CanvasRenderingContext2D !!!
+
+
+// treat node.js
+if (typeof module === "object" && module.exports)
+   module.exports = g2;

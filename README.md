@@ -1,6 +1,6 @@
-# g2
+# g<sup>2</sup>
 
-_g2_ is a 2D graphics javascript library based on the [command pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript) 
+g<sup>2</sup> is a 2D graphics javascript library based on the [command pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript) 
 principle. Its main goal is to provide a simple API for users who want to generate 2D web graphics occasionally. 
 So the API is minimal and easy to understand. The library is tiny, fast and renderer agnostic.
 
@@ -42,8 +42,44 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Animation](../../wiki/animation)
   * [Interactivity](../../wiki/interactivity)
 
+
 ## API Reference
 See the [API Reference](api/README.md) for details.
 
+
 ## Cheat Sheet
 Check out the single page [Cheat Sheet](api/sheet.pdf).
+
+
+# License
+g<sup>2</sup> is licensed under the terms of the MIT License.
+
+
+#Change Log
+
+## 2.1.1 - 2016-05-15
+
+### Modified
+
+* `g2.cor.js` + `g2.c2d.js` => `g2.js`  (reunited).
+* `g2.context` namespace introduced.
+
+## 2.1.0 - 2016-01-17
+
+### Added
+
+* `style` argument for elements `lin`,`rec`,`cir`,`arc`,`ply`.
+* `style` as first argument for `stroke`,`fill` and `drw`, optionally followed by a svg path definition string.
+
+### Changed
+
+* State stack reimplemented.
+
+
+## 1.1.0 - 2016-01-08
+
+### Added
+
+  CHANGELOG.md @goessner.
+
+
