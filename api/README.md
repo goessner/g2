@@ -50,11 +50,11 @@ Create a queue of 2D graphics commands.
         * [.dump([space])](#g2+dump) ⇒ <code>string</code>
     * _static_
         * [.symbol](#g2.symbol) : <code>object</code>
-        * [.version](#g2.version) : <code>string</code>
+        * [.transparent](#g2.transparent) : <code>string</code>
 
 <a name="g2+cartesian"></a>
 ### g2.cartesian([on]) ⇒ <code>object</code>
-Set the view's cartesian mode flag.[Example](https://goessner.github.io/g2-svg/test/index.html#cartesian)
+Set the view's cartesian mode flag (immediate state modifier - no command).<br>[Example](https://goessner.github.io/g2-svg/test/index.html#cartesian)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -65,7 +65,7 @@ Set the view's cartesian mode flag.[Example](https://goessner.github.io/g2-svg/
 
 <a name="g2+pan"></a>
 ### g2.pan(dx, dy) ⇒ <code>object</code>
-Pan the view by a relative displacement vector.[Example](https://goessner.github.io/g2-svg/test/index.html#pan)
+Pan the view by a relative displacement vector (immediate state modifier - no command).<br>[Example](https://goessner.github.io/g2-svg/test/index.html#pan)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -77,7 +77,7 @@ Pan the view by a relative displacement vector.[Example](https://goessner.githu
 
 <a name="g2+zoom"></a>
 ### g2.zoom(scl, [x], [y]) ⇒ <code>object</code>
-Zoom the view by a scaling factor with respect to center.[Example](https://goessner.github.io/g2-svg/test/index.html#zoom)Scaling is performed relative to current scale.
+Zoom the view by a scaling factor with respect to center (immediate state modifier - no command).<br>Scaling is performed relative to current scale.<br>[Example](https://goessner.github.io/g2-svg/test/index.html#zoom)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -90,7 +90,7 @@ Zoom the view by a scaling factor with respect to center.[Example](https://goes
 
 <a name="g2+view"></a>
 ### g2.view([x], [y], [scl]) ⇒ <code>object</code>
-Set the view by absolute origin coordinates and scaling factor in device units.[Example](https://goessner.github.io/g2-svg/test/index.html#view)Cartesian flag is not affected.
+Set the view by placing origin coordinates and scaling factor in device units.  Cartesian flag is not affected (immediate state modifier - no command).<br>[Example](https://goessner.github.io/g2-svg/test/index.html#view)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -103,19 +103,19 @@ Set the view by absolute origin coordinates and scaling factor in device units.
 
 <a name="g2+del"></a>
 ### g2.del() ⇒ <code>object</code>
-Delete all commands. Does not modify view state.
+Delete all commands. Does not modify view state. (no command)<br>[Example](https://goessner.github.io/g2-svg/test/index.html#del)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+p"></a>
 ### g2.p() ⇒ <code>object</code>
-Begin new path.
+Begin new path.<br>[Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+m"></a>
 ### g2.m(x, y) ⇒ <code>object</code>
-Move to point.
+Move to point.<br>[Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -127,7 +127,7 @@ Move to point.
 
 <a name="g2+l"></a>
 ### g2.l(x, y) ⇒ <code>object</code>
-Create line segment to point.
+Create line segment to point.<br>[Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -143,7 +143,7 @@ g2().p()          // Begin path.    .m(0,50)      // Move to point.    .l(300,
 ```
 <a name="g2+q"></a>
 ### g2.q(x1, y1, x, y) ⇒ <code>object</code>
-Create quadratic bezier curve segment to point.  ![Example](img/quadratic.png "Example")
+Create quadratic bezier curve segment to point.<br>[Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -161,7 +161,7 @@ g2().p()               // Begin path.    .m(0,0)            // Move to point. 
 ```
 <a name="g2+c"></a>
 ### g2.c(x1, y1, x2, y2, x, y) ⇒ <code>object</code>
-Create cubic bezier curve to point.  ![Example](img/curve.png "Example")
+Create cubic bezier curve to point.<br>[Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -181,7 +181,7 @@ g2().p()                        // Begin path.    .m(0,100)                   /
 ```
 <a name="g2+a"></a>
 ### g2.a(dw, x, y) ⇒ <code>object</code>
-Draw arc with angular range to target point.  ![Example](img/a.png "Example")
+Draw arc with angular range to target point.<br>![Example](img/a.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -198,13 +198,13 @@ var g = g2();    // Create g2 object.g2().p()            // Begin path.    .m(
 ```
 <a name="g2+z"></a>
 ### g2.z() ⇒ <code>object</code>
-Close current path by straight line.
+Close current path by straight line.  [Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+stroke"></a>
 ### g2.stroke([style], [d]) ⇒ <code>object</code>
-Stroke the current path or path object.
+Stroke the current path or path object.  [Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -216,7 +216,7 @@ Stroke the current path or path object.
 
 <a name="g2+fill"></a>
 ### g2.fill([style], [d]) ⇒ <code>object</code>
-Fill the current path or path object.
+Fill the current path or path object.  [Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -228,7 +228,7 @@ Fill the current path or path object.
 
 <a name="g2+drw"></a>
 ### g2.drw([style], [d]) ⇒ <code>object</code>
-Shortcut for stroke and fill the current path or path object.In case of shadow, only the path interior creates shadow, not also the path contour.
+Shortcut for stroke and fill the current path or path object.In case of shadow style, only the path interior creates shadow, not also the path contour.  [Example](https://goessner.github.io/g2-svg/test/index.html#path)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -240,7 +240,7 @@ Shortcut for stroke and fill the current path or path object.In case of shadow,
 
 <a name="g2+txt"></a>
 ### g2.txt(s, [x], [y], [w], [style]) ⇒ <code>object</code>
-Draw text string at anchor point.
+Draw text string at anchor point.  [Example](https://goessner.github.io/g2-svg/test/index.html#txt)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -255,7 +255,7 @@ Draw text string at anchor point.
 
 <a name="g2+img"></a>
 ### g2.img(uri, [x], [y], [b], [h], [xoff], [yoff], [dx], [dy]) ⇒ <code>object</code>
-Draw image. The command queue will not be executed until all images have been completely loaded.This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.
+Draw image. The command queue will not be executed until all images have been completely loaded.This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.  [Example](https://goessner.github.io/g2-svg/test/index.html#img)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -274,7 +274,7 @@ Draw image. The command queue will not be executed until all images have been co
 
 <a name="g2+lin"></a>
 ### g2.lin(x1, y1, x2, y2, [style]) ⇒ <code>object</code>
-Draw line by start point and end point.![Example](https://goessner.github.io/g2-svg/test/index.html#lin "Example")
+Draw line by start point and end point.  [Example](https://goessner.github.io/g2-svg/test/index.html#lin)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -293,7 +293,7 @@ g2().lin(10,10,190,10)  // Draw line.    .exe(ctx);          // Render to conte
 ```
 <a name="g2+rec"></a>
 ### g2.rec(x, y, b, h, [style]) ⇒ <code>object</code>
-Draw rectangle by anchor point and dimensions.![Example](https://goessner.github.io/g2-svg/test/index.html#rec "Example")
+Draw rectangle by anchor point and dimensions.  [Example](https://goessner.github.io/g2-svg/test/index.html#rec)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -312,7 +312,7 @@ g2().rec(100,80,40,30)  // Draw rectangle.    .exe(ctx);          // Render to 
 ```
 <a name="g2+cir"></a>
 ### g2.cir(x, y, r, [style]) ⇒ <code>object</code>
-Draw circle by center and radius.
+Draw circle by center and radius.  [Example](https://goessner.github.io/g2-svg/test/index.html#cir)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -330,7 +330,7 @@ g2().cir(100,80,20)  // Draw circle.    .exe(ctx);       // Render to context.
 ```
 <a name="g2+arc"></a>
 ### g2.arc(x, y, r, [w], [dw], [style]) ⇒ <code>object</code>
-Draw arc by center point, radius, start angle and angular range.<br>![Example](../img/arc.png "Example")
+Draw arc by center point, radius, start angle and angular range.  [Example](https://goessner.github.io/g2-svg/test/index.html#arc)  ![Example](../img/arc.png "Example")
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -350,7 +350,7 @@ g2().arc(300,400,390,-Math.PI/4,-Math.PI/2)    .exe(ctx);
 ```
 <a name="g2+ply"></a>
 ### g2.ply(parr, [mode], args) ⇒ <code>object</code>
-Draw polygon by points.Using iterator function for getting points from array by index.It must return current point object {x,y} or object {done:true}.Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],array of [[x,y],...] arrays or array of [{x,y},...] objects.
+Draw polygon by points.Using iterator function for getting points from array by index.It must return current point object {x,y} or object {done:true}.Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],array of [[x,y],...] arrays or array of [{x,y},...] objects.  [Example](https://goessner.github.io/g2-svg/test/index.html#ply)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - this  
@@ -369,7 +369,7 @@ g2().ply([100,50,120,60,80,70]),    .ply([150,60],[170,70],[130,80]],true),   
 ```
 <a name="g2+beg"></a>
 ### g2.beg(args) ⇒ <code>object</code>
-Begin subcommands. Current state is saved. Optionally apply transformation or style properties.
+Begin subcommands. Current state is saved. Optionally apply transformation or style properties.  [Example](https://goessner.github.io/g2-svg/test/index.html#beg-end)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -386,19 +386,19 @@ Begin subcommands. Current state is saved. Optionally apply transformation or s
 
 <a name="g2+end"></a>
 ### g2.end() ⇒ <code>object</code>
-End subcommands. Previous state is restored.
+End subcommands. Previous state is restored.  [Example](https://goessner.github.io/g2-svg/test/index.html#beg-end)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+clr"></a>
 ### g2.clr() ⇒ <code>object</code>
-Clear viewport.
+Clear viewport command.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 <a name="g2+grid"></a>
 ### g2.grid([color], [size]) ⇒ <code>object</code>
-Draw grid.
+Draw grid.  [Example](https://goessner.github.io/g2-svg/test/index.html#grid)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -410,7 +410,7 @@ Draw grid.
 
 <a name="g2+use"></a>
 ### g2.use(g, args) ⇒ <code>object</code>
-Reference g2 graphics commands from another g2 object.With this command you can reuse instances of grouped graphics commandswhile applying a similarity transformation and style properties on them.In fact you might want to build custom graphics libraries on top of that feature.
+Reference g2 graphics commands from another g2 object.With this command you can reuse instances of grouped graphics commandswhile applying a similarity transformation and style properties on them.In fact you might want to build custom graphics libraries on top of that feature.  [Example](https://goessner.github.io/g2-svg/test/index.html#rec)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -476,7 +476,7 @@ Execute g2 commands. It does so automatically and recursively with 'use'ed comma
 
 <a name="g2+cpy"></a>
 ### g2.cpy(g) ⇒ <code>object</code>
-Copy all g2 graphics commands from a g2 object.If the source object is 'this', nothing is done.
+Copy all g2 graphics commands from a g2 object (no command).<br>If the source object is 'this', nothing is done.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
@@ -538,8 +538,8 @@ Namespace for symbol objects. A symbol can be used by `use("symbolname")`.
 ```js
 g2.symbol.cross = g2().lin(5,5,-5,-5).lin(5,-5,-5,5);  // Define symbol.g2().use("cross",{x:100,y:100})  // Draw cross at position 100,100.    .exe(ctx);                   // Render to context.
 ```
-<a name="g2.version"></a>
-### g2.version : <code>string</code>
+<a name="g2.transparent"></a>
+### g2.transparent : <code>string</code>
 Current version.Using semantic versioning 'http://semver.org/'.
 
 **Kind**: static constant of <code>[g2](#g2)</code>  
