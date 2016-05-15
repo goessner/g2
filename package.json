@@ -1,7 +1,7 @@
 {
   "name": "g2",
   "version": "2.1.1",
-  "description": "g2 - a 2d graphics command queue",
+  "description": "g2 - a tiny 2d graphics command library",
   "main": "g2.js",
   "scripts": {
     "build": "npm run minify && npm run jsdoc && npm run gzip ",
