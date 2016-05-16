@@ -1,7 +1,7 @@
 {
   "name": "g2",
-  "version": "2.1.1",
-  "description": "g2 - a 2d graphics command queue",
+  "version": "2.1.2",
+  "description": "g2 - a tiny 2d graphics command library",
   "main": "g2.js",
   "scripts": {
     "build": "npm run minify && npm run jsdoc && npm run gzip ",
@@ -12,7 +12,7 @@
   "author": "Stefan Goessner <fang03@web.de>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/goessner/g2.git"
+    "url": "https://github.com/goessner/g2"
   },
   "license": "MIT",
   "devDependencies": {
