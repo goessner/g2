@@ -1,6 +1,6 @@
 {
   "name": "g2",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "g2 - a tiny 2d graphics command library",
   "main": "g2.js",
   "scripts": {
