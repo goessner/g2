@@ -1,8 +1,9 @@
 <a name="g2"></a>
-## g2([opts])
+## g2([opts]) ⇒ <code>object</code>
 Create a queue of 2D graphics commands.
 
 **Kind**: global function  
+**Returns**: <code>object</code> - g2  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -13,7 +14,7 @@ Create a queue of 2D graphics commands.
 // How to use g2()var ctx = document.getElementById("c").getContext("2d");g2()                  // Create 'g2' instance. .lin(50,50,100,100)  // Append ... .lin(100,100,200,50) // ... commands. .exe(ctx);           // Execute commands addressing canvas context.
 ```
 
-* [g2([opts])](#g2)
+* [g2([opts])](#g2) ⇒ <code>object</code>
     * _instance_
         * [.cartesian([on])](#g2+cartesian) ⇒ <code>object</code>
         * [.pan(dx, dy)](#g2+pan) ⇒ <code>object</code>

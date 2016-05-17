@@ -1,7 +1,8 @@
 /**
  * g2 (c) 2013-16 Stefan Goessner
- * @license
- * MIT License
+ * @license MIT License
+ * @link https://github.com/goessner/g2
+ * 
  */
 /* jshint -W014 */
 /* jshint -W030 */
@@ -9,6 +10,7 @@
 /**
  * Create a queue of 2D graphics commands.
  * @param {object} [opts] Custom options object. It is simply copied into the 'g2' object for later individual use.
+ * @returns {object} g2
  * @example
  * // How to use g2()
  * var ctx = document.getElementById("c").getContext("2d");
