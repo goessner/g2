@@ -42,14 +42,13 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Animation](../../wiki/animation)
   * [Interactivity](../../wiki/interactivity)
 
-
 ## API Reference
 See the [API Reference](api/README.md) for details.
 
 
 ## GitCDN
 Use the link [https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js](https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js)
-for getting the latest commit as a rwa file.
+for getting the latest commit as a rqw file.
 
 In HTML use ...
 ```html
