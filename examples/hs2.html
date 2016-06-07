@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hermite-Spline</title>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body>
+     <h1>Hermite-Spline</h1>
+    <canvas id="canvas" width="500" height="400"></canvas>
+    <script src='https://cdn.jsdelivr.net/g2/2/g2.min.js'></script>
+    <script type="text/javascript">
+    // https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
+    // http://pomax.github.io/bezierinfo/
+    function hspline(p1,m1,p2,m2,u) {
+       var uu = u*u, uuu = u*u*u, 
+           hp1 = 2*uuu - 3*uu + 1, hm1 = uuu - 2*uu + u, 
+           hp2 = -2*uuu + 3*uu,    hm2 = uuu - uu;
+       return { x: hp1*p1.x + hm1*m1.x + hp2*p2.x + hm2*m2.x,
+                y: hp1*p1.y + hm1*m1.y + hp2*p2.y + hm2*m2.y };
+    }
+
+    function itr(p,closed,i) {
+       var n = p.length,
+           done = i === n-1 && !closed || i === n,
+           i0 = i === 0 ? (closed ? n-1 : 0) : i-1, // i0 - i - i2 - i3
+           i2 = i === n-1 && closed ? 0 : i + 1,
+           i3 = i === n-2 ? (closed ? 0 : n-1) : i === n-1 && closed ? 1 : i + 2,
+           dx1, dy1, dx2, dy2, d1, d2, d, m1, m2;
+/*
+       if (i === 0) {
+          if (!closed) {
+             dx1 = p[1].x-p[0].x; dy1 = p[1].y-p[0].y;
+             dx2 = p[2].x-p[1].x; dy2 = p[2].y-p[1].y;
+          }
+          else {
+             dx1 = p[1].x-p[n-1].x; dy1 = p[1].y-p[n-1].y;
+             dx2 = p[2].x-p[0].x;   dy2 = p[2].y-p[0].y;
+          }
+       }
+       else if (i === n-2) {
+          if (!closed) {
+             dx1 = p[n-1].x-p[n-3].x; dy1 = p[n-1].y-p[n-3].y;
+             dx2 = p[n-1].x-p[n-2].x; dy2 = p[n-1].y-p[n-2].y;
+          }
+          else {
+             dx1 = p[n-1].x-p[n-3].x; dy1 = p[n-1].y-p[n-3].y;
+             dx2 = p[0].x-p[n-2].x; dy2 = p[0].y-p[n-2].y;
+          }
+       }
+       else if (i === n-1) {
+          if (closed) {
+             dx1 = p[i+1].x-p[i-1].x; dy1 = p[i+1].y-p[i-1].y;
+             dx2 = p[i+2].x-p[i].x;   dy2 = p[i+2].y-p[i].y;
+          }
+          else
+             return {done:true};
+       }
+       else {
+          dx1 = p[i+1].x-p[i-1].x; dy1 = p[i+1].y-p[i-1].y;
+          dx2 = p[i+2].x-p[i].x;   dy2 = p[i+2].y-p[i].y;
+       }
+*/
+       if (!done) {
+         dx1 = p[i2].x-p[i0].x; dy1 = p[i2].y-p[i0].y;
+         dx2 = p[i3].x-p[i].x;  dy2 = p[i3].y-p[i].y;
+         d  = 3/4*Math.hypot(p[i2].x-p[i].x,p[i2].y-p[i].y);
+         d1 = Math.hypot(dx1,dy1);
+         d2 = Math.hypot(dx2,dy2);
+         return {
+            p1:p[i],
+            p2:p[i2],
+            m1:{x:dx1/d1*d, y:dy1/d1*d},
+            m2:{x:dx2/d2*d, y:dy2/d2*d}
+         };
+       }
+       else
+         return {done:true};
+    } 
+
+    var p = [{x:0,y:0}, {x:50,y:0}, {x:50,y:100}, {x:100,y:50}, {x:200,y:100}, {x:200,y:50}, {x:300,y:0}, {x:100,y:-50}],
+        dot = g2().cir(0,0,4,{ls:"#333",fs:"#ddd"}),
+        sqr = g2().rec(-3,-3,6,6,{ls:"#333",fs:"#ddd"}),
+        s, q = [], g = g2(), i=0;
+
+   function bez(p) {
+      var c = g2().p().m(p[0].x,p[0].y), i=0;
+      while (!(s = itr(p,true,i++)).done)
+         c.c(s.p1.x + s.m1.x/3,s.p1.y + s.m1.y/3,s.p2.x - s.m2.x/3,s.p2.y - s.m2.y/3,s.p2.x,s.p2.y);
+      c.drw({ls:"green",fs:"orange",lw:2});
+      return c;
+   }
+
+    g.cartesian()
+     .grid()
+     .pan(100,100)
+
+     while (!(s = itr(p,true,i++)).done) {
+        for (var u=0; u<=1; u+=0.05)
+           q.push(hspline(s.p1,s.m1,s.p2,s.m2,u));
+     }
+     g.use(bez(p));
+//     g.ply(q,false,{ls:"red",fs:"orange",lw:2});
+     for (i=0; i < p.length; i++)
+        g.use(dot,p[i]);
+      g.exe(document.getElementById("canvas").getContext("2d"))
+   </script>
+  </body>
+</html>

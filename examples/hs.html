@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hermite-Spline</title>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body>
+     <h1>Hermite-Spline</h1>
+    <canvas id="canvas" width="500" height="400"></canvas>
+    <script src='https://cdn.jsdelivr.net/g2/2/g2.min.js'></script>
+    <script type="text/javascript">
+    // https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
+    function hspline(p1,m1,p2,m2,u) {
+       var uu = u*u, uuu = u*u*u, 
+           hp1 = 2*uuu - 3*uu + 1, hm1 = uuu - 2*uu + u, 
+           hp2 = -2*uuu + 3*uu,    hm2 = uuu - uu;
+       return { x: hp1*p1.x + hm1*m1.x + hp2*p2.x + hm2*m2.x,
+                y: hp1*p1.y + hm1*m1.y + hp2*p2.y + hm2*m2.y };
+    }
+
+    function itr(p,i) {
+       var n = p.length, dx1, dy1, dx2, dy2;
+       if (i === 0) {
+          dx1 = p[1].x-p[0].x; dy1 = p[1].y-p[0].y;
+          dx2 = p[2].x-p[1].x; dy2 = p[2].y-p[1].y;
+       }
+       else if (i === n-2) {
+          dx1 = p[n-1].x-p[n-3].x; dy1 = p[n-1].y-p[n-3].y;
+          dx2 = p[n-1].x-p[n-2].x; dy2 = p[n-1].y-p[n-2].y;
+       }
+       else {
+          dx1 = p[i+1].x-p[i-1].x; dy1 = p[i+1].y-p[i-1].y;
+          dx2 = p[i+2].x-p[i].x;   dy2 = p[i+2].y-p[i].y;
+       }
+    } 
+var p = [{x:0,y:0}, {x:50,y:0}, {x:50,y:100}, {x:100,y:50}, {x:200,y:100}, {x:200,y:50}, {x:300,y:0}]
+
+
+    var p0 = {x:100,y:60},
+        p1 = {x:100,y:160},
+        p2 = {x:300,y:160},
+        p3 = {x:300,y: 60},
+        
+        d  = 0.5*Math.hypot(p2.x-p1.x,p2.y-p1.y),
+        dx1 = p2.x-p0.x, dy1 = p2.y-p0.y, d1 = Math.hypot(dx1,dy1), m1 = {x:dx1/d1*d, y:dy1/d1*d}, 
+        dx2 = p3.x-p1.x, dy2 = p3.y-p1.y, d2 = Math.hypot(dx2,dy2), m2 = {x:dx2/d2*d, y:dy2/d2*d}, 
+        dot = g2().cir(0,0,4,{ls:"#333",fs:"#ddd"}),
+        sqr = g2().rec(-3,-3,6,6,{ls:"#333",fs:"#ddd"}),
+        q = [];
+
+    for (var u=0; u<=1; u+=0.05)
+       q.push(hspline(p1,m1,p2,m2,u));
+
+  g2().cartesian()
+      .grid()
+      .use(dot,p1)
+      .use(dot,p2)
+      .use(sqr,{x:p1.x + m1.x, y:p1.y + m1.y})
+      .use(sqr,{x:p2.x + m2.x, y:p2.y + m2.y})
+      .p()
+        .m(p1.x,p1.y)
+        .c(p1.x + m1.x/3,p1.y + m1.y/3,p2.x - m2.x/3,p2.y - m2.y/3,p2.x,p2.y)
+      .stroke({ls:"green",lw:2})
+      .ply(q,false,{ls:"red",lw:2})
+      .exe(document.getElementById("canvas").getContext("2d"))
+   </script>
+  </body>
+</html>

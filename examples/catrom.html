@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - pattern</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - Catmull-Rom</h1>
+    <canvas id="c" width="400" height="400"></canvas>
+    <script src='https://cdn.jsdelivr.net/g2/2/g2.min.js'></script>
+    <script>
+function toCubic(p0,p1,p2,p3) {
+    console.log(p3)
+
+   var d0 = Math.sqrt(Math.hypot(p1.x-p0.x,p1.y-p0.y)),
+       d1 = Math.sqrt(Math.hypot(p2.x-p1.x,p2.y-p1.y)),
+       d2 = Math.sqrt(Math.hypot(p3.x-p2.x,p3.y-p2.y));
+/*
+   var d0 = Math.hypot(p1.x-p0.x,p1.y-p0.y),
+       d1 = Math.hypot(p2.x-p1.x,p2.y-p1.y),
+       d2 = Math.hypot(p3.x-p2.x,p3.y-p2.y);
+*/
+    // safety check for repeated points
+    if (d1 < 1e-4)    d1 = 1.0;
+    if (d0 < 1e-4)    d0 = d1;
+    if (d2 < 1e-4)    d2 = d1;
+
+   // s. https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
+   var tx1 = ((p1.x - p0.x) / d0 - (p2.x - p0.x) / (d0 + d1) + (p2.x - p1.x) / d1)*d1/3,
+       tx2 = ((p2.x - p1.x) / d1 - (p3.x - p1.x) / (d1 + d2) + (p3.x - p2.x) / d2)*d1/3,
+       ty1 = ((p1.y - p0.y) / d0 - (p2.y - p0.y) / (d0 + d1) + (p2.y - p1.y) / d1)*d1/3,
+       ty2 = ((p2.y - p1.y) / d1 - (p3.y - p1.y) / (d1 + d2) + (p3.y - p2.y) / d2)*d1/3;
+
+   return { x1:p1.x+tx1, y1:p1.y+ty1,
+            x2:p2.x-tx2, y2:p2.y-ty2,
+            x3:p2.x,     y3:p2.y };
+}
+
+
+function catrom(p, closed) {
+    var n = p && p.length;
+    if (n > 1) {
+       // create support points at beginning and end of list by reflection.
+       var pbeg = { x:p[0].x-(p[1].x-p[0].x), y:p[0].y-(p[1].y-p[0].y) },
+           pend = { x:p[n-1].x+(p[n-1].x-p[n-2].x), y:p[n-1].y+(p[n-1].y-p[n-2].y) },
+           q = [], cr, i;
+           
+       cr = toCubic(pbeg,p[0],p[1],p[2] || pend);
+       q.push(cr);
+       for (i=0; i<n-3; i++) {
+          cr = toCubic(p[i],p[i+1],p[i+2],p[i+3]);
+          q.push(cr);
+       }
+       if (n > 2) {
+        cr = toCubic(p[n-3],p[n-2],p[n-1],pend);
+        q.push(cr);
+       }
+       
+       return q;
+    }
+}
+var p = [{x:0,y:0}, {x:100,y:100}, {x:200,y:100}, {x:300,y:0}]
+//var p = [{x:0,y:0}, {x:50,y:0}, {x:50,y:100}, {x:100,y:50}, {x:200,y:100}, {x:200,y:50}, {x:300,y:0}]
+    q = catrom(p), g = g2();
+
+      g.cartesian()
+       .pan(50,50)
+       .p()
+         .m(p[0].x,p[0].y)
+      for (var i=0; i<q.length; i++)
+         g.c(q[i].x1,q[i].y1,q[i].x2,q[i].y2,q[i].x3,q[i].y3);
+
+      g.stroke();
+      for (var i=0; i<p.length; i++)
+         g.cir(p[i].x,p[i].y,5);
+
+       g.exe(document.getElementById("c").getContext("2d"));
+       
+     console.log(q);
+   </script>
+</body>
+</html>

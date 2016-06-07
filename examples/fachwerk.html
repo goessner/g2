@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Fachwerk</title>
+  <meta charset="utf-8"/>
+ </head>
+ <body>
+   <h1>Fachwerk</h1>
+   <canvas id="c" width="501" height="301"></canvas>
+   <script src='https://cdn.jsdelivr.net/g2/2/g2.min.js'></script>
+   <script>
+      var pi = Math.PI,
+          knoten = g2().cir(0,0,5,{ls:"#555",fs:"#ddd",lw:2}),
+          festlager = g2().ply([-10,-15,0,0,10,-15],false,{ls:"#555",fs:"#ddd",lw:2})
+                          .cir(0,0,5,{ls:"#555",fs:"#ddd",lw:2}),
+          loslager = g2().ply([-10,-15,0,0,10,-15],true,{ls:"#555",fs:"#ddd",lw:2})
+                         .cir(0,0,5,{ls:"#555",fs:"#ddd",lw:2})
+                         .lin(-12,-21,12,-21,{ls:"#888",lw:5}),
+          kraft = g2().ply([50,0,10,0,10,3,0,0,10,-3,10,0],false,{ls:"red",fs:"red",lw:2,lj:"round"}),
+          g = g2().grid()
+                  .cartesian()
+                  .pan(100,100)
+                  .ply([100,100,100,0,200,100,200,0,300,0,200,100,100,100,0,0,200,0],false,{ls:"#888",lw:7,lj:"round"})
+                  .use(kraft,{x:200,y:100,w:pi/2})
+                  .use(kraft,{x:100,y:100,w:pi/2})
+                  .use(knoten,{x:100,y:0})
+                  .use(knoten,{x:200,y:0})
+                  .use(knoten,{x:100,y:100})
+                  .use(knoten,{x:200,y:100})
+                  .use(festlager,{x:0,y:0})
+                  .use(loslager,{x:300,y:0})
+                  .txt("A",-20,0)
+                  .txt("B",310,0)
+                  .exe(document.getElementById("c").getContext("2d"));
+  </script>
+ </body>
+</html>

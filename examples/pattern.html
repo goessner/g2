@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - pattern</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - pattern</h1>
+    <canvas id="c" width="400" height="400"></canvas>
+    <script src='https://cdn.jsdelivr.net/g2/2/g2.min.js'></script>
+    <script>
+      function pattern(g,width,height,rep) {
+         var ctx = document.createElement('canvas').getContext('2d');
+         ctx.canvas.width = width;
+         ctx.canvas.height = height;
+         g.exe(ctx);
+         return ctx.createPattern(ctx.canvas,rep);
+      }
+      let pat = pattern(g2().beg({x:50,w:0}).rec(-1,-1,201,11,{ls:"transparent",fs:"#ddd"}).p().m(-1,5).l(10,2).a(-Math.PI/6,10,8).z().m(10,5).l(201,5).drw({ls:"red",fs:"red",lw:1}).end(),200,10,"repeat-y");
+      g2().clr()
+          .pan(10,10)
+          .rec(100,50,200,150,{fs:pat,ls:"transparent"})
+          .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

@@ -47,6 +47,16 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 See the [API Reference](api/README.md) for details.
 
 
+## GitCDN
+Use the link [https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js](https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js)
+for getting the latest commit as a rwa file.
+
+In HTML use ...
+```html
+<script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+```
+
+
 ## Cheat Sheet
 Check out the single page [Cheat Sheet](api/sheet.pdf).
 

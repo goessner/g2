@@ -829,7 +829,7 @@ g2.State = {
             val = args[m];
             if (typeof val === "string" && val[0] === "@")
                val = this.get(val.substr(1));
-            if (m === "x" || m === "y" || m === "scl" || m === "w")  // transform ..
+            if (m === "x" || m === "y" || m === "w" || m === "scl")  // transform ..
                trf[m] = val;
             else if (!(m in this._current) || val !== this._current[m]) {
                this._current[m] = val;
@@ -861,6 +861,7 @@ g2.State = {
             scl:trf.scl*scl
          };
       },
+      get lwOwner() { return this._current["lw"]; },
       get cssFont() {
          var fos = this.get("fos"), fow = this.get("fow");
          return (fos === "normal" ? "" : (fos+" ")) +
@@ -1054,6 +1055,22 @@ g2.prototype.arc.c2d = function arc_c2d(x,y,r,w,dw,style) {
    if (style) { this.g2.state.restore(); this.restore(); }
 };
 
+g2.prototype.ply.c2d = function ply_c2d(parr,mode,itr,style) {
+   var p, i = 0, split = mode === "split";
+   p = itr(parr,i++);
+   if (!p.done) {      // draw polygon ..
+      this.beginPath();
+      this.moveTo(p.x,p.y);
+      while (!(p = itr(parr,i++)).done) {
+         if (split && i%2) this.moveTo(p.x,p.y);  
+         else              this.lineTo(p.x,p.y);
+      }
+      if (mode && !split)  // closed then ..
+         this.closePath();
+   }
+   g2.prototype.drw.c2d.call(this,style);
+   return i-1;  // number of points ..
+};
 g2.prototype.ply.c2d = function ply_c2d(parr,mode,itr,style) {
    var p, i = 0, split = mode === "split";
    p = itr(parr,i++);

@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>Catmull-Rom</title>
+    <style type="text/css">
+      canvas { border: 1px solid black; }
+    </style>
+  </head>
+  <body>
+     <h1>Catmull-Rom</h1>
+    <canvas id="canvas" width="500" height="400"></canvas>
+    <script src='https://cdn.jsdelivr.net/g2/2/g2.min.js'></script>
+    <script type="text/javascript">
+    function toCubic(p) {
+       var tau = 1/2;
+       return [ { x: p[1].x, y: p[1].y },
+                { x:tau*(p[2].x - p[0].x), y:tau*(p[2].y - p[0].y) },
+                { x: 3*(p[2].x - p[1].x) - tau*(p[3].x - p[1].x) - 2*tau*(p[2].x - p[0].x),
+                  y: 3*(p[2].y - p[1].y) - tau*(p[3].y - p[1].y) - 2*tau*(p[2].y - p[0].y)  },
+                { x:-2*(p[2].x - p[1].x) + tau*(p[3].x - p[1].x) +   tau*(p[2].x - p[0].x),
+                  y:-2*(p[2].y - p[1].y) + tau*(p[3].y - p[1].y) +   tau*(p[2].y - p[0].y)  }
+       ];
+    }
+    function tangents(p) {
+       var tau = 1/2;
+       return [ { x: tau*(p[2].x - p[0].x), y: tau*(p[2].y - p[0].y) },
+                { x: tau*(p[3].x - p[1].x), y: tau*(p[3].y - p[1].y) }
+       ];
+    }
+    
+    function pCubic(c,u) {
+        return { x: c[0].x + c[1].x*u + c[2].x*u*u + c[3].x*u*u*u,
+                 y: c[0].y + c[1].y*u + c[2].y*u*u + c[3].y*u*u*u };
+    }
+    
+    var p = [{x:100,y:60},{x:100,y:160},{x:300,y:160},{x:300,y:60}],
+        c = toCubic(p),
+        t = tangents(p),
+        dot = g2().cir(0,0,4,{ls:"#333",fs:"#ddd"}),
+        sqr = g2().rec(-3,-3,6,6,{ls:"#333",fs:"#ddd"}),
+        q = [];
+        
+    for (var u=0; u<=1; u+=0.05)
+       q.push(pCubic(c,u));
+    
+  g2().cartesian()
+      .grid()
+      .use(dot,p[0])
+      .use(dot,p[1])
+      .use(dot,p[2])
+      .use(dot,p[3])
+      .use(sqr,{x:p[1].x+t[0].x, y:p[1].y+t[0].y})
+      .use(sqr,{x:p[2].x-t[1].x, y:p[2].y-t[1].y})
+      .p()
+        .m(p[1].x,p[1].y)
+        .c(p[1].x+t[0].x,p[1].y+t[0].y,p[2].x-t[1].x,p[2].y-t[1].y,p[2].x,p[2].y)
+      .stroke()
+      .ply(q,false,{ls:"red",lw:2})
+      .exe(document.getElementById("canvas").getContext("2d"))
+   </script>
+  </body>
+</html>
