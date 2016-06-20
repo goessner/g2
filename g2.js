@@ -270,11 +270,11 @@ g2.prototype.z = function z() {
  * @returns {object} g2
  */
 g2.prototype.stroke = function stroke(style,d) {
-   var args = (style === undefined && d === undefined) ? []  // no args
+   var args = (style === undefined && d === undefined) ? false  // no args
             : (typeof style === "string") ? [null,style]     // svg path string as single argument
             : (typeof style === "object" && !d) ? [style]    // style object as single argument
             : [style,d];                                     // both arguments
-   return this.addCmd({c:stroke,a:args});
+   return this.addCmd(args?{c:stroke,a:args}:{c:stroke});
 };
 
 /**
@@ -286,11 +286,11 @@ g2.prototype.stroke = function stroke(style,d) {
  * @returns {object} g2
  */
 g2.prototype.fill = function fill(style,d) {
-   var args = (style === undefined && d === undefined) ? []  // no args
+   var args = (style === undefined && d === undefined) ? false  // no args
             : (typeof style === "string") ? [null,style]     // svg path string as single argument
             : (typeof style === "object" && !d) ? [style]    // style object as single argument
             : [style,d];                                     // both arguments
-   return this.addCmd({c:fill,a:args});
+   return this.addCmd(args?{c:fill,a:args}:{c:fill});
 };
 
 /**
@@ -450,21 +450,79 @@ g2.prototype.ply = function ply(pts,mode,args) {
       this.addCmd({c:ply,a:[pts,mode,itr,args]});
    return this;
 };
-
-// predefined polygon point iterators
+// predefined spline point iterators
 g2.prototype.ply.iterators = {
-   "x,y":   function(arr,i) { return i < arr.length/2 ? {x:arr[2*i],y:arr[2*i+1]} : {done:true,count:arr.length/2}; },
-   "[x,y]": function(arr,i) { return i < arr.length ? {x:arr[i][0],y:arr[i][1]} : {done:true,count:arr.length}; },
-   "{x,y}": function(arr,i) { return i < arr.length ? arr[i] : {done:true,count:arr.length}; }
+   "x,y":   function(pts) { function pitr(i) { return {x:pts[2*i],y:pts[2*i+1]}; }; pitr.len = pts.length/2; return pitr; },
+   "[x,y]": function(pts) { function pitr(i) { return {x:pts[i][0],y:pts[i][1]}; }; pitr.len = pts.length;   return pitr; },
+   "{x,y}": function(pts) { function pitr(i) { return pts[i]; };                    pitr.len = pts.length;   return pitr; }
 };
-g2.prototype.ply.itrOf = function itrOf(pts,args) {
+g2.prototype.ply.itrOf = function(pts,args) {
    return !(pts && pts.length) ? undefined
-          : args && typeof args.itr === "function" ? args.itr
-          : typeof pts[0] === "number" ? g2.prototype.ply.iterators["x,y"]
-          : Array.isArray(pts[0]) && pts[0].length >= 2 ? g2.prototype.ply.iterators["[x,y]"]
-          : typeof pts[0] === "object" && "x" in pts[0] && "y" in pts[0] ? g2.prototype.ply.iterators["{x,y}"]
+          : args && typeof args.itr === "function" ? args.itr(pts)
+          : typeof pts[0] === "number" ? g2.prototype.ply.iterators["x,y"](pts)
+          : Array.isArray(pts[0]) && pts[0].length >= 2 ? g2.prototype.ply.iterators["[x,y]"](pts)
+          : typeof pts[0] === "object" && "x" in pts[0] && "y" in pts[0] ? g2.prototype.ply.iterators["{x,y}"](pts)
           : undefined;
 };
+
+/**
+ * Draw spline by points.
+ * Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).
+ * Using iterator function for getting points from array by index.
+ * It must return current point object {x,y} or object {done:true}.
+ * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
+ * array of [[x,y],...] arrays or array of [{x,y},...] objects.  
+ * @see https://pomax.github.io/bezierinfo
+ * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#ply)
+ * @method
+ * @returns {object} this
+ * @param {array} p Array of points.
+ * @param {bool} [closed = false] Closed spline.
+ * @param {object} style Style object.
+ */
+g2.prototype.spline = function spline(p,closed,style) {
+   var pi = g2.prototype.ply.itrOf(p,style);  // points iterator ...
+   if (pi) {
+      var b = [], i, n = pi.len, 
+          p1, p2, p3, p4, d1, d2, d3, d1d2, d2d3, scl2, scl3, den2, den3;
+
+      for (var i=0; i < (closed ? n : n-1); i++) {
+         if (i === 0) {
+            p1 = closed ? pi(n-1) : {x:2*pi(0).x-pi(1).x, y:2*pi(0).y-pi(1).y};
+            p2 = pi(0);
+            p3 = pi(1);
+            p4 = n === 2 ? (closed ? pi(0) : {x:2*pi(1).x-pi(0).x, y:2*pi(1).y-pi(0).y}) : pi(2);
+            d1 = Math.max(Math.hypot(p2.x-p1.x,p2.y-p1.y),Number.EPSILON);  // don't allow ..
+            d2 = Math.max(Math.hypot(p3.x-p2.x,p3.y-p2.y),Number.EPSILON);  // point distances ..
+         }
+         else {
+            p1 = p2;
+            p2 = p3;
+            p3 = p4;
+            p4 = (i === n-2) ? (closed ? pi(0) : {x:2*pi(n-1).x-pi(n-2).x, y:2*pi(n-1).y-pi(n-2).y})
+               : (i === n-1) ? pi(1)
+               : pi(i+2);
+            d1 = d2;
+            d2 = d3;
+         }
+         d3 = Math.max(Math.hypot(p4.x-p3.x,p4.y-p3.y),Number.EPSILON);
+         d1d2 = Math.sqrt(d1*d2), d2d3 = Math.sqrt(d2*d3),
+         scl2 = 2*d1 + 3*d1d2 + d2,
+         scl3 = 2*d3 + 3*d2d3 + d2,
+         den2 = 3*(d1 + d1d2),
+         den3 = 3*(d3 + d2d3);
+         b.push({ x: p2.x, y: p2.y,
+                  x1: (-d2*p1.x + scl2*p2.x + d1*p3.x)/den2,
+                  y1: (-d2*p1.y + scl2*p2.y + d1*p3.y)/den2,
+                  x2: (-d2*p4.x + scl3*p3.x + d3*p2.x)/den3,
+                  y2: (-d2*p4.y + scl3*p3.y + d3*p2.y)/den3 });
+      }
+      b.push(closed ? {x:pi(0).x,y:pi(0).y} : {x:pi(n-1).x,y:pi(n-1).y});
+      this.addCmd({c:spline,a:[b,closed,style]});
+   }
+   return this;
+}
 
 /**
  * Begin subcommands. Current state is saved. 
@@ -628,27 +686,21 @@ g2.prototype.style = function style(args) {
  * @method
  * @returns {object} g2
  * @param {object} ctx Context.
- * @param {object} [g=this] g2 Object to execute. This argument is set by 'g2' and usually not by the user. 
  */
-g2.prototype.exe = function exe(ctx,g) {
-   var ifc = g2.ifcof(ctx);
-   if (ifc) {
-      var cmds = (g || this).cmds;
-      if (this.state && this.state.loading) { // give images a chance to complete loading ..
-         requestAnimationFrame(exe.bind(this,ctx,g));  // .. so wait a while ..
-      }
-      else if (ctx && cmds) {
-         var context = g2.context[ifc](ctx), gstate = g && g.state;
-         exe.pre[ifc].call(context,this);
-         if (g)  // external g2 in use .. copy state
-            g.state = this.state;
-         for (var i=0,n=cmds.length,cmd; i < n; i++) // invoke the command queue
-            if ((cmd=cmds[this.curIdx = i]).c[ifc])
-               cmd.c[ifc].apply(context,cmd.a);      // save current command index
-         if (g)  // external g2 in use .. restore state
-            g.state = gstate;
-         exe.post[ifc].call(context,this);
-      }
+g2.prototype.exe = function exe(ctx) {
+   var state = this.state;
+   if (state.loading) // give images a chance to complete loading ..
+      requestAnimationFrame(exe.bind(this,ctx));  // .. so wait a while ..
+   else if (ctx) {
+      var context, ifc, cmds = this.cmds;
+      state.pre(ctx);
+      context = state.ctx;
+      ifc = state.ifc;
+      exe.pre[ifc].call(context,this);
+      for (var i=0,n=cmds.length,cmd; i < n; i++) // invoke the command queue
+         (cmd=cmds[this.curIdx = i]).c[ifc].apply(context,cmd.a);
+      exe.post[ifc].call(context,this);
+      state.post();
    }
    return this;
 };
@@ -741,62 +793,11 @@ g2.prototype.vecToUsr = function vecToUsr(x,y) {
                                       : {x:x/trf.scl, y: y/trf.scl};
 };
 
-/**
- * Debug helper method.
- * Convert g2 command queue to JSON formatted string.
- * @param {string} [space] Number of spaces to use for indenting JSON output.
- * @return {string} JSON string of command queue.
- */
-g2.prototype.dump = function(space) {
-   function trace(obj) {
-      var out = [],o,cmd,a,c,args;
-      for (var i=0, n=obj.cmds.length; i < n; i++) {
-         args = [];
-         cmd = obj.cmds[i];
-         a = cmd.a;
-         for (var j=0,m=a && a.length || 0; j < m; j++) {
-            if (typeof a[j] === "object" && a[j] instanceof g2) {
-               if (a[j] !== obj) args.push(trace(a[j]));
-            }
-            else if (a[j] !== undefined)
-               args.push(a[j]);
-         }
-         c = /\W*function\s+([\w\$]+)\(/.exec(cmd.c.toString())[1];
-         if (args.length) {
-            o = {};
-            o[c] = args;
-         }
-         else
-            o = c;
-         out.push(o);
-      }
-      return out;
-   }
-   return JSON.stringify(trace(this), undefined, space);
-};
-
 // === g2 statics ====
-/**
- * Current version.
- * Using semantic versioning 'http://semver.org/'.
- * @type {string}
- * @const
- */
 g2.transparent = "rgba(0, 0, 0, 0)";
 g2.exeStack = 0;
 g2.context = Object.create(null);  // object holding functions getting context objects (if supported!)
 g2.ifc = Object.create(null);  // object holding interface strings ..
-/**
- * Get interface string (i.e. 'svg') from graphics context.
- * @private
- */
-g2.ifcof = function(ctx) { 
-   for (var ifc in g2.ifc) {
-      if (g2.ifc[ifc](ctx))
-         return ifc;
-   }
-   return false;
-}
 
 /**
  * State stack management class.
@@ -813,7 +814,13 @@ g2.State = {
          this.loadHdl = [];               // .. or else ..
       },
       // pre / post command execution ...
-      pre: function(ctx) { this.ifc = g2.ifcof(ctx); this.ctx = g2.context[this.ifc](ctx); this.stack = [{}]; this._current = {}; },
+      pre: function(ctx) {
+         for (var ifc in g2.ifc)
+            if (g2.ifc[ifc](ctx))
+               this.ctx = g2.context[this.ifc = ifc](ctx);
+         this.stack = [{}];
+         this._current = {};
+      },
       post: function() { delete this.ctx; delete this.ifc; },
 
       // manage style properties ...
@@ -825,10 +832,11 @@ g2.State = {
       },
       add: function(args) {
          var ifcState = g2.State[this.ifc], m2, val, trf = {};
+//         console.log(args)
          for (var m in args) {
             val = args[m];
-            if (typeof val === "string" && val[0] === "@")
-               val = this.get(val.substr(1));
+            if (typeof val === "string" && val[0] === "@" && !(val = this.get(val.substr(1))))  // simply cancel referencing with unknown attribute name ...
+               break;
             if (m === "x" || m === "y" || m === "w" || m === "scl")  // transform ..
                trf[m] = val;
             else if (!(m in this._current) || val !== this._current[m]) {
@@ -885,7 +893,6 @@ g2.State = {
    lc: "butt",          // lineCap
    lj: "miter",         // lineJoin
    lwnosc: false,       // lineWidth nonscalable .. 
-//   lm: "normal",        // linemode .. "normal" or 'jitter'
    ml: 10,              // miterLimit
    sh: [0,0,0,g2.transparent], // shadow
    foc: "#000",         // fontColor
@@ -908,37 +915,30 @@ g2.State = {
  */
 g2.symbol = Object.create(null); // {};
 
-g2.symbolNameOf = function(g) {
-   for (var m in g2.symbol)
-      if (g2.symbol[m] === g)
-         return m;
-   return false;
-}
-
 // insert in browser environment only !!!
 if (typeof CanvasRenderingContext2D !== "undefined") { // use shortcut 'c2d'
 
 g2.ifc.c2d = function(ctx) { return ctx instanceof CanvasRenderingContext2D; }
 g2.context.c2d = function(ctx) { return ctx; }
 
-g2.prototype.exe.pre.c2d = function(owner) {        // owner g2 object ...
-   if (g2.exeStack++ === 0) { // outermost g2 ...
-      var state = owner.state, t = state.trf;      // initial transform (zoom, pan ...)
-      this.g2 = owner;
-      this.fillStyle = g2.transparent;
-      this.lineWidth = 1;
-      this.strokeStyle = "#000";
-      this.setLineDash([]);
-      this.font = state.cssFont;
+g2.prototype.exe.pre.c2d = function(g) {         // using g2 object ..
+   if (!this.g2ified) {                          // first time call using this canvas context ..
+      this.fillStyle = g2.transparent;             // style ...
+      this.font = g.state.cssFont;
+      this.save();                                 // intentionally no corrsponding restore ..
+      this.g2ified = true;
+   }
+
+   if (g2.exeStack++ === 0) {                      // outermost g2 ...
+      var state = (this.g2state = g.state), t = state.trf;      // initial transform (zoom, pan ...)
       this.setTransform(t.scl,0,0,state.cartesian?-t.scl:t.scl,t.x+0.5,(state.cartesian?this.canvas.height-t.y:t.y)+0.5);
-      state.pre(this);
+      this.save();
    }
 };
 g2.prototype.exe.post.c2d = function() {
    if (--g2.exeStack === 0) {
-      this.g2.state.post();
-      this.fillStyle = "#000000";
-      delete this.g2;
+      delete this.g2state;
+      this.restore();
    }
 };
 g2.prototype.p.c2d = CanvasRenderingContext2D.prototype.beginPath;
@@ -956,26 +956,26 @@ g2.prototype.a.c2d = CanvasRenderingContext2D.prototype.arc;
 g2.prototype.z.c2d = CanvasRenderingContext2D.prototype.closePath;
 
 g2.prototype.stroke.c2d = function stroke_c2d(style,d) {
-   if (style) { this.save(); this.g2.state.save().add(style); }
+   if (style) { this.save(); this.g2state.save().add(style); }
    if (d && typeof Path2D !== "undefined")
       this.stroke(new Path2D(d));
    else
       this.stroke();
-   if (style) { this.g2.state.restore(); this.restore(); }
+   if (style) { this.g2state.restore(); this.restore(); }
 };
 
 g2.prototype.fill.c2d = function fill_c2d(style,d) {
-   if (style) { this.save();this.g2.state.save().add(style); }
+   if (style) { this.save();this.g2state.save().add(style); }
    if (d && typeof Path2D !== "undefined")
       this.fill(new Path2D(d));
    else
       this.fill();
-   if (style) { this.g2.state.restore(); this.restore(); }
+   if (style) { this.g2state.restore(); this.restore(); }
 };
 
 g2.prototype.drw.c2d = function drw_c2d(style,d) {
    var p2d = d && typeof Path2D !== "undefined" ? new Path2D(d) : false;
-   if (style) { this.save();this.g2.state.save().add(style); }
+   if (style) { this.save();this.g2state.save().add(style); }
    p2d ? this.fill(p2d) : this.fill();
    if (this.fillStyle !== g2.transparent && this.shadowColor !== g2.transparent) {
       var tmp = this.shadowColor;        // avoid stroke shadow when filled ...
@@ -985,11 +985,11 @@ g2.prototype.drw.c2d = function drw_c2d(style,d) {
    }
    else
       p2d ? this.stroke(p2d) : this.stroke();
-   if (style) { this.g2.state.restore(); this.restore(); }
+   if (style) { this.g2state.restore(); this.restore(); }
 };
 
 g2.prototype.txt.c2d = function txt_c2d(s,x,y,w,style) {
-   var state = this.g2.state;
+   var state = this.g2state;
 
    this.save();
    if (style) state.save().add(style);
@@ -1011,7 +1011,7 @@ g2.prototype.txt.c2d = function txt_c2d(s,x,y,w,style) {
 };
 
 g2.prototype.img.c2d = function img_c2d(img,x,y,b,h,xoff,yoff,dx,dy) {
-   var cartesian = this.g2.state.cartesian;
+   var cartesian = this.g2state.cartesian;
    b = b || img && img.width;
 	h = h || img && img.height;
 	if (cartesian) { this.scale(1,-1); y = -y-h; }
@@ -1023,78 +1023,71 @@ g2.prototype.img.c2d = function img_c2d(img,x,y,b,h,xoff,yoff,dx,dy) {
 };
 
 g2.prototype.lin.c2d = function lin_c2d(x1,y1,x2,y2,style) {
-   if (style) { this.save();this.g2.state.save().add(style); }
+   if (style) { this.save();this.g2state.save().add(style); }
    this.beginPath();
    this.moveTo(x1,y1);
    this.lineTo(x2,y2);
    this.stroke();
-   if (style) { this.g2.state.restore(); this.restore(); }
+   if (style) { this.g2state.restore(); this.restore(); }
 };
 
 g2.prototype.rec.c2d = function rec_c2d(x,y,b,h,style) {
-   if (style) { this.save();this.g2.state.save().add(style); }
+   if (style) { this.save();this.g2state.save().add(style); }
    this.beginPath();
    this.rect(x,y,b,h);
    g2.prototype.drw.c2d.call(this);
-   if (style) { this.g2.state.restore(); this.restore(); }
+   if (style) { this.g2state.restore(); this.restore(); }
 };
 
 g2.prototype.cir.c2d = function cir_c2d(x,y,r,style) {
-   if (style) { this.save();this.g2.state.save().add(style); }
+   if (style) { this.save();this.g2state.save().add(style); }
    this.beginPath();
    this.arc(x,y,r,0,Math.PI*2,true);
    g2.prototype.drw.c2d.call(this);
-   if (style) { this.g2.state.restore(); this.restore(); }
+   if (style) { this.g2state.restore(); this.restore(); }
 };
 
 g2.prototype.arc.c2d = function arc_c2d(x,y,r,w,dw,style) {
-   if (style) { this.save();this.g2.state.save().add(style); }
+   if (style) { this.save();this.g2state.save().add(style); }
    this.beginPath();
    this.arc(x,y,r,w,w+dw,dw<0);
    g2.prototype.drw.c2d.call(this);
-   if (style) { this.g2.state.restore(); this.restore(); }
+   if (style) { this.g2state.restore(); this.restore(); }
 };
 
-g2.prototype.ply.c2d = function ply_c2d(parr,mode,itr,style) {
+g2.prototype.ply.c2d = function ply_c2d(pts,mode,pi,style) {
    var p, i = 0, split = mode === "split";
-   p = itr(parr,i++);
-   if (!p.done) {      // draw polygon ..
-      this.beginPath();
-      this.moveTo(p.x,p.y);
-      while (!(p = itr(parr,i++)).done) {
-         if (split && i%2) this.moveTo(p.x,p.y);  
-         else              this.lineTo(p.x,p.y);
-      }
-      if (mode && !split)  // closed then ..
-         this.closePath();
+   this.beginPath();
+   this.moveTo((p=pi(0)).x,p.y);
+   for (i=1; i < pi.len; i++) {
+      p = pi(i);
+      if (split && i%2) this.moveTo(p.x,p.y);  
+      else              this.lineTo(p.x,p.y);
    }
+   if (mode && !split)  // closed then ..
+      this.closePath();
+   
    g2.prototype.drw.c2d.call(this,style);
    return i-1;  // number of points ..
 };
-g2.prototype.ply.c2d = function ply_c2d(parr,mode,itr,style) {
-   var p, i = 0, split = mode === "split";
-   p = itr(parr,i++);
-   if (!p.done) {      // draw polygon ..
-      this.beginPath();
-      this.moveTo(p.x,p.y);
-      while (!(p = itr(parr,i++)).done) {
-         if (split && i%2) this.moveTo(p.x,p.y);  
-         else              this.lineTo(p.x,p.y);
-      }
-      if (mode && !split)  // closed then ..
-         this.closePath();
-   }
+
+g2.prototype.spline.c2d = function spline_c2d(b,closed,style) {
+   this.beginPath();
+   this.moveTo(b[0].x,b[0].y);
+   for (var i=0, n=b.length; i < n-1; i++)
+      this.bezierCurveTo(b[i].x1,b[i].y1,b[i].x2,b[i].y2,b[i+1].x,b[i+1].y);
+   if (closed)
+      this.closePath();
    g2.prototype.drw.c2d.call(this,style);
-   return i-1;  // number of points ..
 };
 
 g2.prototype.beg.c2d = function beg_c2d(args) {
    this.save();
-   this.g2.state.save().add(args);
+   this.g2state.save().add(args);
 };
 
 g2.prototype.end.c2d = function end_c2d() {
-   this.g2.state.restore();
+   this.g2state.restore();
    this.restore();
 };
 
@@ -1106,7 +1099,7 @@ g2.prototype.clr.c2d = function clr_c2d() {
 };
 
 g2.prototype.grid.c2d = function grid_c2d(color,size) {
-   var state = this.g2.state, trf = state.trf0,
+   var state = this.g2state, trf = state.trf0,
        b = this.canvas.width, h = this.canvas.height,
        sz = size || g2.prototype.grid.getSize(state,trf.scl),
        xoff = trf.x ? trf.x%sz-sz : 0, yoff = trf.y ? trf.y%sz-sz : 0;
@@ -1124,21 +1117,23 @@ g2.prototype.grid.c2d = function grid_c2d(color,size) {
 };
 
 g2.prototype.use.c2d = function use_c2d(g,args) {
-   var owner = this.g2;
+   var state = this.g2state, gstate = g.state;
    this.save();
-   owner.state.save().add(args);
-   owner.exe(this,g);
-   owner.state.restore();
+   state.save().add(args);
+   g.state = state;
+   g.exe(this);
+   g.state = gstate;
+   state.restore();
    this.restore();
 };
 
 g2.prototype.style.c2d = function style_c2d(args) {
-   this.g2.state.add(args);
+   this.g2state.add(args);
 };
 
 g2.State.c2d = {
-   "fs": function(val) { this.fillStyle = g2.State.c2d.texture.call(this,val); },
-   "ls": function(val) { this.strokeStyle = g2.State.c2d.texture.call(this,val); },
+   "fs": function(val) { this.fillStyle = val === "transparent" ? g2.transparent : val; },
+   "ls": function(val) { this.strokeStyle = val === "transparent" ? g2.transparent : val; },
    "lw": function(val,state) { this.lineWidth = val/(state.get("lwnosc") ? state.trf.scl : 1); },
    "lc": function(val) { this.lineCap = val; },
    "lj": function(val) { this.lineJoin = val; },
@@ -1182,14 +1177,6 @@ g2.State.c2d = {
                 if (scl !== 1)
                    g2.State.c2d.lwscale.call(this, val ? 1/scl : scl)
              },
-   // helper functions .. no styling or transformation attributes .. !
-   // color, gradient or pattern ...
-   texture: function texture(val) {
-      return val.indexof && (   // must be string
-                val.indexOf("hatch(") === 0 ? g2.State.c2d.hatch.call(this,val.substring(6,val.indexOf(")",7)).split(","))
-              : val === "transparent" ? g2.transparent 
-              : val) || val;
-   },
    // linewidth dependent scaling helper function ...
    lwscale: function(scl) {
       var ld = this.getLineDash();
@@ -1201,23 +1188,6 @@ g2.State.c2d = {
          this.setLineDash(ld);
       }
    },
-   hatch: function hatch(val) {
-      var ctx = document.createElement('canvas').getContext('2d'), 
-          sz = +val[3] || 10, sz2 = (sz+1)*0.5;
-      ctx.canvas.width = ctx.canvas.height = sz;
-      ctx.fillStyle = val[1] || "white";
-      ctx.fillRect(0,0,sz,sz);
-      ctx.strokeStyle = val[0] || "black";
-      ctx.lineWidth = +val[2] || 1;
-      ctx.lineCap = "square";
-      ctx.beginPath();
-      ctx.moveTo(sz2,0.5);
-      ctx.lineTo(sz+0.5,sz2);
-      ctx.moveTo(0.5,sz2);
-      ctx.lineTo(sz2,sz+0.5);
-      ctx.stroke();
-      return ctx.createPattern(ctx.canvas,'repeat');
-   }
 };
 
 } // end of typeof CanvasRenderingContext2D !!!

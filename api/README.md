@@ -38,20 +38,19 @@ Create a queue of 2D graphics commands.
         * [.cir(x, y, r, [style])](#g2+cir) ⇒ <code>object</code>
         * [.arc(x, y, r, [w], [dw], [style])](#g2+arc) ⇒ <code>object</code>
         * [.ply(parr, [mode], args)](#g2+ply) ⇒ <code>object</code>
+        * [.spline(p, [closed], style)](#g2+spline) ⇒ <code>object</code>
         * [.beg(args)](#g2+beg) ⇒ <code>object</code>
         * [.end()](#g2+end) ⇒ <code>object</code>
         * [.clr()](#g2+clr) ⇒ <code>object</code>
         * [.grid([color], [size])](#g2+grid) ⇒ <code>object</code>
         * [.use(g, args)](#g2+use) ⇒ <code>object</code>
         * [.style(args)](#g2+style) ⇒ <code>object</code>
-        * [.exe(ctx, [g])](#g2+exe) ⇒ <code>object</code>
+        * [.exe(ctx)](#g2+exe) ⇒ <code>object</code>
         * [.cpy(g)](#g2+cpy) ⇒ <code>object</code>
         * [.pntToUsr(x, y, [h])](#g2+pntToUsr) ⇒ <code>object</code>
         * [.vecToUsr(x, y)](#g2+vecToUsr) ⇒ <code>object</code>
-        * [.dump([space])](#g2+dump) ⇒ <code>string</code>
     * _static_
         * [.symbol](#g2.symbol) : <code>object</code>
-        * [.transparent](#g2.transparent) : <code>string</code>
 
 <a name="g2+cartesian"></a>
 ### g2.cartesian([on]) ⇒ <code>object</code>
@@ -368,6 +367,24 @@ Draw polygon by points.Using iterator function for getting points from array by
 ```js
 g2().ply([100,50,120,60,80,70]),    .ply([150,60],[170,70],[130,80]],true),    .ply({x:160,y:70},{x:180,y:80},{x:140,y:90}],'split'),    .exe(ctx);
 ```
+<a name="g2+spline"></a>
+### g2.spline(p, [closed], style) ⇒ <code>object</code>
+Draw spline by points.Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).Using iterator function for getting points from array by index.It must return current point object {x,y} or object {done:true}.Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],array of [[x,y],...] arrays or array of [{x,y},...] objects.
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - this  
+**See**
+
+- https://pomax.github.io/bezierinfo
+- https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline[Example](https://goessner.github.io/g2-svg/test/index.html#ply)
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| p | <code>array</code> |  | Array of points. |
+| [closed] | <code>bool</code> | <code>false</code> | Closed spline. |
+| style | <code>object</code> |  | Style object. |
+
 <a name="g2+beg"></a>
 ### g2.beg(args) ⇒ <code>object</code>
 Begin subcommands. Current state is saved. Optionally apply transformation or style properties.  [Example](https://goessner.github.io/g2-svg/test/index.html#beg-end)
@@ -464,16 +481,15 @@ Apply new style properties.
 g = g2();g2().style({ fs:"#58dbfa",         // Set fill style.             lw:10,                // Set line width.             ls:"#313942",         // Set line style.             lj:"round" })         // Set line join.    .rec(10,10,300,100)    .style({ lw:20,                // Set line width.             fs:"transparent",     // Set fill style.             sh:[10,0,10,"black"], // Set shadow x-translation.             ld:[1,2] })           // Set line dash.    .p().m(40,40).c(150,150,200,0,280,50).drw()    .exe(ctx);
 ```
 <a name="g2+exe"></a>
-### g2.exe(ctx, [g]) ⇒ <code>object</code>
+### g2.exe(ctx) ⇒ <code>object</code>
 Execute g2 commands. It does so automatically and recursively with 'use'ed commands.
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| ctx | <code>object</code> |  | Context. |
-| [g] | <code>object</code> | <code>this</code> | g2 Object to execute. This argument is set by 'g2' and usually not by the user. |
+| Param | Type | Description |
+| --- | --- | --- |
+| ctx | <code>object</code> | Context. |
 
 <a name="g2+cpy"></a>
 ### g2.cpy(g) ⇒ <code>object</code>
@@ -519,17 +535,6 @@ Get user coordinates from device coordinates for unbound vector.
 | x | <code>float</code> | x-value in device units. |
 | y | <code>float</code> | y-value in device units. |
 
-<a name="g2+dump"></a>
-### g2.dump([space]) ⇒ <code>string</code>
-Debug helper method.Convert g2 command queue to JSON formatted string.
-
-**Kind**: instance method of <code>[g2](#g2)</code>  
-**Returns**: <code>string</code> - JSON string of command queue.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| [space] | <code>string</code> | Number of spaces to use for indenting JSON output. |
-
 <a name="g2.symbol"></a>
 ### g2.symbol : <code>object</code>
 Namespace for symbol objects. A symbol can be used by `use("symbolname")`.
@@ -539,8 +544,3 @@ Namespace for symbol objects. A symbol can be used by `use("symbolname")`.
 ```js
 g2.symbol.cross = g2().lin(5,5,-5,-5).lin(5,-5,-5,5);  // Define symbol.g2().use("cross",{x:100,y:100})  // Draw cross at position 100,100.    .exe(ctx);                   // Render to context.
 ```
-<a name="g2.transparent"></a>
-### g2.transparent : <code>string</code>
-Current version.Using semantic versioning 'http://semver.org/'.
-
-**Kind**: static constant of <code>[g2](#g2)</code>  

@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>g2 - spline</title>
+    <style> canvas { border: 1px solid #000; } </style>
+</head>
+
+<body>
+    <h1>g2 - spline</h1>
+    <canvas id="c" width="200" height="200"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+      g2().clr()
+          .pan(10,10)
+          .style({fs:"orange",lw:2})
+          .spline([100,50,50,150,150,150,100,50])
+          .style({fs:"transparent",ls:"#555",lw:2,ld:[2,4]})
+          .ply([100,50,50,150,150,150,100,50])
+          .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

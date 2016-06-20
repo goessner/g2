@@ -7,64 +7,166 @@
     </style>
   </head>
   <body>
-     <h1>Hermite-Spline</h1>
-    <canvas id="canvas" width="500" height="400"></canvas>
-    <script src='https://cdn.jsdelivr.net/g2/2/g2.min.js'></script>
-    <script type="text/javascript">
+    <h1>Hermite-Spline</h1>
+    <canvas id="canvas" width="700" height="500"></canvas>
+    <script src='../g2.js'></script>
+    <script>
     // https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
-    function hspline(p1,m1,p2,m2,u) {
-       var uu = u*u, uuu = u*u*u, 
-           hp1 = 2*uuu - 3*uu + 1, hm1 = uuu - 2*uu + u, 
-           hp2 = -2*uuu + 3*uu,    hm2 = uuu - uu;
-       return { x: hp1*p1.x + hm1*m1.x + hp2*p2.x + hm2*m2.x,
-                y: hp1*p1.y + hm1*m1.y + hp2*p2.y + hm2*m2.y };
+    // http://pomax.github.io/bezierinfo/
+
+    function toBezier(p1,p2,p3,p4,tau) {
+       var d = 1/6/tau;
+       return {
+          p1: p2,
+          p2: { x: p2.x + (p3.x - p1.x)*d, y: p2.y + (p3.y - p1.y)*d },
+          p3: { x: p3.x - (p4.x - p2.x)*d, y: p3.y - (p4.y - p2.y)*d },
+          p4: p3
+       }
+    }
+    // https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
+    // http://pomax.github.io/bezierinfo/
+    function centripetalCatmullRomToBezier(p1,p2,p3,p4) {
+       var dd1 = Math.hypot(p2.x-p1.x,p2.y-p1.y), // d1 = Math.sqrt(dd1),
+           dd2 = Math.hypot(p3.x-p2.x,p3.y-p2.y), // d2 = Math.sqrt(dd2),
+           dd3 = Math.hypot(p4.x-p3.x,p4.y-p3.y), // d3 = Math.sqrt(dd3),
+           d1d2 = Math.sqrt(dd1*dd2), d2d3 = Math.sqrt(dd2*dd3),
+           scl2 = 2*dd1 + 3*d1d2 + dd2,
+           scl3 = 2*dd3 + 3*d2d3 + dd2,
+           den2 = 3*(dd1+d1d2),
+           den3 = 3*(dd3+d2d3);
+       return {
+          p1: p2,
+          p2: { x: (-dd2*p1.x + scl2*p2.x + dd1*p3.x)/den2,
+                y: (-dd2*p1.y + scl2*p2.y + dd1*p3.y)/den2 },
+          p3: { x: (-dd2*p4.x + scl3*p3.x + dd3*p2.x)/den3,
+                y: (-dd2*p4.y + scl3*p3.y + dd3*p2.y)/den3 },
+          p4: p3
+       }
     }
 
-    function itr(p,i) {
-       var n = p.length, dx1, dy1, dx2, dy2;
-       if (i === 0) {
-          dx1 = p[1].x-p[0].x; dy1 = p[1].y-p[0].y;
-          dx2 = p[2].x-p[1].x; dy2 = p[2].y-p[1].y;
-       }
-       else if (i === n-2) {
-          dx1 = p[n-1].x-p[n-3].x; dy1 = p[n-1].y-p[n-3].y;
-          dx2 = p[n-1].x-p[n-2].x; dy2 = p[n-1].y-p[n-2].y;
-       }
-       else {
-          dx1 = p[i+1].x-p[i-1].x; dy1 = p[i+1].y-p[i-1].y;
-          dx2 = p[i+2].x-p[i].x;   dy2 = p[i+2].y-p[i].y;
-       }
-    } 
-var p = [{x:0,y:0}, {x:50,y:0}, {x:50,y:100}, {x:100,y:50}, {x:200,y:100}, {x:200,y:50}, {x:300,y:0}]
+function itr(p) {
+   var pitr = function(i) { return p[i]; };
+   pitr.len = p.length;
+   return pitr;
+}
 
+function spline(p,closed) {
+   function toBezier(p1,p2,p3,p4,d1,d2,d3) {
+      var d1d2 = Math.sqrt(d1*d2), d2d3 = Math.sqrt(d2*d3),
+          scl2 = 2*d1 + 3*d1d2 + d2,
+          scl3 = 2*d3 + 3*d2d3 + d2,
+          den2 = 3*(d1 + d1d2),
+          den3 = 3*(d3 + d2d3);
+      return {
+         x: p2.x, y: p2.y,
+         x1: (-d2*p1.x + scl2*p2.x + d1*p3.x)/den2,
+         y1: (-d2*p1.y + scl2*p2.y + d1*p3.y)/den2,
+         x2: (-d2*p4.x + scl3*p3.x + d3*p2.x)/den3,
+         y2: (-d2*p4.y + scl3*p3.y + d3*p2.y)/den3
+      }
+   }
+   var b = [], pi = itr(p), n = pi.len, 
+       p1, p2, p3, p4, d1, d2, d3;
 
-    var p0 = {x:100,y:60},
-        p1 = {x:100,y:160},
-        p2 = {x:300,y:160},
-        p3 = {x:300,y: 60},
-        
-        d  = 0.5*Math.hypot(p2.x-p1.x,p2.y-p1.y),
-        dx1 = p2.x-p0.x, dy1 = p2.y-p0.y, d1 = Math.hypot(dx1,dy1), m1 = {x:dx1/d1*d, y:dy1/d1*d}, 
-        dx2 = p3.x-p1.x, dy2 = p3.y-p1.y, d2 = Math.hypot(dx2,dy2), m2 = {x:dx2/d2*d, y:dy2/d2*d}, 
-        dot = g2().cir(0,0,4,{ls:"#333",fs:"#ddd"}),
-        sqr = g2().rec(-3,-3,6,6,{ls:"#333",fs:"#ddd"}),
-        q = [];
+   for (var i=0; i < (closed ? n : n-1); i++) {
+      if (i === 0) {
+         p1 = closed ? pi(n-1) : {x:2*pi(0).x-pi(1).x, y:2*pi(0).y-pi(1).y};
+         p2 = pi(0);
+         p3 = pi(1);
+         p4 = n === 2 ? (closed ? pi(0) : {x:2*pi(1).x-pi(0).x, y:2*pi(1).y-pi(0).y}) : pi(2);
+         d1 = Math.max(Math.hypot(p2.x-p1.x,p2.y-p1.y),Number.EPSILON);
+         d2 = Math.max(Math.hypot(p3.x-p2.x,p3.y-p2.y),Number.EPSILON);
+         d3 = Math.max(Math.hypot(p4.x-p3.x,p4.y-p3.y),Number.EPSILON);
+      }
+      else if (i === n-2) {
+         p1 = p2;
+         p2 = p3;
+         p3 = p4;
+         p4 = closed ? pi(0) : {x:2*pi(n-1).x-pi(n-2).x, y:2*pi(n-1).y-pi(n-2).y};
+         d1 = d2;
+         d2 = d3;
+         d3 = Math.max(Math.hypot(p4.x-p3.x,p4.y-p3.y),Number.EPSILON);
+      }
+      else if (i === n-1) {  // must be closed ... !
+         p1 = p2;
+         p2 = p3;
+         p3 = p4;
+         p4 = pi(1);
+         d1 = d2;
+         d2 = d3;
+         d3 = Math.max(Math.hypot(p4.x-p3.x,p4.y-p3.y),Number.EPSILON);
+      }
+      else {
+         p1 = p2;
+         p2 = p3;
+         p3 = p4;
+         p4 = pi(i+2);
+         d1 = d2;
+         d2 = d3;
+         d3 = Math.max(Math.hypot(p4.x-p3.x,p4.y-p3.y),Number.EPSILON);
+      }
+      b.push(toBezier(p1,p2,p3,p4,d1,d2,d3));
+   }
+   b.push(closed ? {x:pi(0).x,y:pi(0).y} : {x:pi(n-1).x,y:pi(n-1).y});
+   return b;
+}
+/*
+var p = [
+  {x:133.5, y:424.0},
+  {x: 56.5, y:352.0},
+  {x:344.0, y: 73.0},
+  {x:360.5, y: 88.0},
+  {x:593.0, y:412.5},
+  {x:621.5, y:386.0},
+  {x:662.5, y:129.0}
+];
+*/
+var p = [
+  {x:150, y:100},
+  {x:100, y:200},
+  {x:200, y:200},
+//  {x:200, y:200},
+  {x:150, y:100}
+];
+//    var p = [{x:0,y:0}, {x:50,y:0}, {x:50,y:100}, {x:100,y:50}, {x:200,y:100}, {x:200,y:50}, {x:300,y:0}, {x:100,y:-50}],
+    var dot = g2().cir(0,0,4,{ls:"#333",fs:"#ddd"}),
+        g = g2(),
+        b = spline(p,false);
+console.log(b)
+    g.grid()
+//     .pan(100,100)
+     .p()
+     .m(p[0].x,p[0].y)
 
-    for (var u=0; u<=1; u+=0.05)
-       q.push(hspline(p1,m1,p2,m2,u));
+    for (var i=0, n=b.length; i < n-1; i++) {
+       g.c(b[i].x1,b[i].y1,b[i].x2,b[i].y2,b[i+1].x,b[i+1].y);
+    }
+/*
+    c = toBezier(p[0],p[0],p[1],p[2],tau);
+    g.c(c.p2.x,c.p2.y,c.p3.x,c.p3.y,c.p4.x,c.p4.y);
 
-  g2().cartesian()
-      .grid()
-      .use(dot,p1)
-      .use(dot,p2)
-      .use(sqr,{x:p1.x + m1.x, y:p1.y + m1.y})
-      .use(sqr,{x:p2.x + m2.x, y:p2.y + m2.y})
-      .p()
-        .m(p1.x,p1.y)
-        .c(p1.x + m1.x/3,p1.y + m1.y/3,p2.x - m2.x/3,p2.y - m2.y/3,p2.x,p2.y)
-      .stroke({ls:"green",lw:2})
-      .ply(q,false,{ls:"red",lw:2})
-      .exe(document.getElementById("canvas").getContext("2d"))
+    c = toBezier(p[0],p[1],p[2],p[3],tau);
+    g.c(c.p2.x,c.p2.y,c.p3.x,c.p3.y,c.p4.x,c.p4.y);
+
+    c = toBezier(p[1],p[2],p[3],p[4],tau);
+    g.c(c.p2.x,c.p2.y,c.p3.x,c.p3.y,c.p4.x,c.p4.y);
+
+    c = toBezier(p[2],p[3],p[4],p[5],tau);
+    g.c(c.p2.x,c.p2.y,c.p3.x,c.p3.y,c.p4.x,c.p4.y);
+
+    c = toBezier(p[3],p[4],p[5],p[6],tau);
+    g.c(c.p2.x,c.p2.y,c.p3.x,c.p3.y,c.p4.x,c.p4.y);
+
+    c = toBezier(p[4],p[5],p[6],p[7],tau);
+    g.c(c.p2.x,c.p2.y,c.p3.x,c.p3.y,c.p4.x,c.p4.y);
+
+    c = toBezier(p[5],p[6],p[7],p[7],tau);
+    g.c(c.p2.x,c.p2.y,c.p3.x,c.p3.y,c.p4.x,c.p4.y);
+*/
+    g.stroke({lw:12,ls:"#666"});
+    for (var i=0, n=b.length; i < n; i++)
+       g.use(dot,b[i]);
+    g.exe(document.getElementById("canvas").getContext("2d"));
    </script>
   </body>
 </html>

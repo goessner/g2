@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - use</title>
+</head>
+
+<body>
+    <h1>wiki - use</h1>
+    <canvas id="c" width="400" height="120"></canvas>
+    <script src='../g2.js'></script>
+    <script>
+      var pi = Math.PI,
+          wheel = g2().cir(0,0,15)
+                      .cir(0,0,7,{fs:"@fs2"});
+          g2().cartesian()
+              .use(wheel,{x:100,y:25,ls:"#900",lw:4,fs:"blue"})
+              .use(wheel,{x:300,y:25,ls:"green",fs:"orange",lw:4,fs2:"yellow"})
+              .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

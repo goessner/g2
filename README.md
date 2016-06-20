@@ -48,7 +48,7 @@ See the [API Reference](api/README.md) for details.
 
 ## GitCDN
 Use the link [https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js](https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js)
-for getting the latest commit as a rqw file.
+for getting the latest commit as a raw file.
 
 In HTML use ...
 ```html
@@ -65,6 +65,17 @@ g<sup>2</sup> is licensed under the terms of the MIT License.
 
 
 #Change Log
+
+## 2.2.0 - 2016-06-20
+### Added
+
+* `g2.spline` performing 'centripetal Catmull-Rom' interpolation.
+
+### Modified
+
+* experimental `g2.State.hatch` removed.
+* 
+* `g2.prototype.ply.iterator`default iterators modified for improved efficiency and working also with splines.
 
 ## 2.1.1 - 2016-05-15
 
