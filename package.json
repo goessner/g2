@@ -13,7 +13,7 @@
   ],
   "main": "g2.js",
   "scripts": {
-    "build": "npm run minify && npm run jsdoc && npm run gzip ",
+    "build": "npm run minify && npm run jsdoc && npm run gzip",
     "minify": "uglifyjs ./g2.js -o ./g2.min.js --comments -m",
     "jsdoc": "jsdoc2md ./g2.js > ./api/readme.md",
     "gzip": "7z -tgzip a ./g2.min.js.gz ./g2.min.js"
