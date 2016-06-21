@@ -1,5 +1,5 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/license.txt)
-[![npm](https://img.shields.io/npm/v/@goessner/g2.svg)](https://github.com/goessner/g2/license.txt)
+[![npm](https://img.shields.io/npm/v/@goessner/g2.svg)](https://www.npmjs.com/package/@goessner/g2)
 [![Gemnasium](https://img.shields.io/gemnasium/mathiasbynens/he.svg)](https://github.com/goessner/g2)
 
 # g<sup>2</sup>

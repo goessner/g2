@@ -493,7 +493,7 @@ Execute g2 commands. It does so automatically and recursively with 'use'ed comma
 
 <a name="g2+cpy"></a>
 ### g2.cpy(g) ⇒ <code>object</code>
-Copy all g2 graphics commands from a g2 object (no command).<br>If the source object is 'this', nothing is done.
+Copy all g2 graphics commands from a source g2 object.<br>If the source object is 'this', nothing is done.<br>(no command)
 
 **Kind**: instance method of <code>[g2](#g2)</code>  
 **Returns**: <code>object</code> - g2  
