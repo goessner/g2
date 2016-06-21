@@ -1,5 +1,7 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/license.txt)
 [![npm](https://img.shields.io/npm/v/@goessner/g2.svg)](https://github.com/goessner/g2/license.txt)
+[![Gemnasium](https://img.shields.io/gemnasium/mathiasbynens/he.svg)](https://github.com/goessner/g2)
+[![GitHub issues](https://img.shields.io/github/issues/goessner/g2/shields.svg?maxAge=2592000)](https://github.com/goessner/g2)
 
 # g<sup>2</sup>
 
