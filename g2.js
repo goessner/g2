@@ -494,7 +494,7 @@ g2.prototype.spline = function spline(p,closed,style) {
             p3 = pi(1);
             p4 = n === 2 ? (closed ? pi(0) : {x:2*pi(1).x-pi(0).x, y:2*pi(1).y-pi(0).y}) : pi(2);
             d1 = Math.max(Math.hypot(p2.x-p1.x,p2.y-p1.y),Number.EPSILON);  // don't allow ..
-            d2 = Math.max(Math.hypot(p3.x-p2.x,p3.y-p2.y),Number.EPSILON);  // point distances ..
+            d2 = Math.max(Math.hypot(p3.x-p2.x,p3.y-p2.y),Number.EPSILON);  // zero point distances ..
          }
          else {
             p1 = p2;
@@ -778,7 +778,7 @@ g2.prototype.pntToUsr = function pntToUsr(x,y,h) {
    var trf = this.state && this.state.trf0 || false;
    return !trf ? {x:x,y:y}
                : this.state.cartesian ? {x:(x - trf.x)/trf.scl, y:-(y - (h - trf.y))/trf.scl}
-                                      : {x:(x - trf.x)/trf.scl, y:(y - trf.y)/trf.scl};
+                                      : {x:(x - trf.x)/trf.scl, y: (y - trf.y)/trf.scl};
 };
 
 /**
@@ -920,8 +920,8 @@ g2.symbol = Object.create(null); // {};
 // insert in browser environment only !!!
 if (typeof CanvasRenderingContext2D !== "undefined") { // use shortcut 'c2d'
 
-g2.ifc.c2d = function(ctx) { return ctx instanceof CanvasRenderingContext2D; }
 g2.context.c2d = function(ctx) { return ctx; }
+g2.ifc.c2d = function(ctx) { return ctx instanceof CanvasRenderingContext2D; }
 
 g2.prototype.exe.pre.c2d = function(g) {         // using g2 object ..
    if (!this.g2ified) {                          // first time call using this canvas context ..
@@ -1015,17 +1015,17 @@ g2.prototype.txt.c2d = function txt_c2d(s,x,y,w,style) {
 g2.prototype.img.c2d = function img_c2d(img,x,y,b,h,xoff,yoff,dx,dy) {
    var cartesian = this.g2state.cartesian;
    b = b || img && img.width;
-	h = h || img && img.height;
-	if (cartesian) { this.scale(1,-1); y = -y-h; }
-	if (xoff || yoff || dx || dy)  // non-zero anyone .. ?
-	   this.drawImage(img,xoff,yoff,dx,dy,x,y,b,h);
-	else
-	   this.drawImage(img,x,y,b,h);
-	if (cartesian) { this.scale(1,-1); }  // inverse scaling ..
+   h = h || img && img.height;
+   if (cartesian) { this.scale(1,-1); y = -y-h; }
+   if (xoff || yoff || dx || dy)  // non-zero anyone .. ?
+	  this.drawImage(img,xoff,yoff,dx,dy,x,y,b,h);
+   else
+      this.drawImage(img,x,y,b,h);
+   if (cartesian) { this.scale(1,-1); }  // inverse scaling ..
 };
 
 g2.prototype.lin.c2d = function lin_c2d(x1,y1,x2,y2,style) {
-   if (style) { this.save();this.g2state.save().add(style); }
+   if (style) { this.save(); this.g2state.save().add(style); }
    this.beginPath();
    this.moveTo(x1,y1);
    this.lineTo(x2,y2);
@@ -1034,7 +1034,7 @@ g2.prototype.lin.c2d = function lin_c2d(x1,y1,x2,y2,style) {
 };
 
 g2.prototype.rec.c2d = function rec_c2d(x,y,b,h,style) {
-   if (style) { this.save();this.g2state.save().add(style); }
+   if (style) { this.save(); this.g2state.save().add(style); }
    this.beginPath();
    this.rect(x,y,b,h);
    g2.prototype.drw.c2d.call(this);
@@ -1042,7 +1042,7 @@ g2.prototype.rec.c2d = function rec_c2d(x,y,b,h,style) {
 };
 
 g2.prototype.cir.c2d = function cir_c2d(x,y,r,style) {
-   if (style) { this.save();this.g2state.save().add(style); }
+   if (style) { this.save(); this.g2state.save().add(style); }
    this.beginPath();
    this.arc(x,y,r,0,Math.PI*2,true);
    g2.prototype.drw.c2d.call(this);
@@ -1050,7 +1050,7 @@ g2.prototype.cir.c2d = function cir_c2d(x,y,r,style) {
 };
 
 g2.prototype.arc.c2d = function arc_c2d(x,y,r,w,dw,style) {
-   if (style) { this.save();this.g2state.save().add(style); }
+   if (style) { this.save(); this.g2state.save().add(style); }
    this.beginPath();
    this.arc(x,y,r,w,w+dw,dw<0);
    g2.prototype.drw.c2d.call(this);
