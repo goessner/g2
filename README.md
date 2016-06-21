@@ -73,8 +73,7 @@ g<sup>2</sup> is licensed under the terms of the MIT License.
 
 ### Modified
 
-* experimental `g2.State.hatch` removed.
-* 
+* experimental `g2.State.hatch` fill style removed.
 * `g2.prototype.ply.iterator`default iterators modified for improved efficiency and working also with splines.
 
 ## 2.1.1 - 2016-05-15

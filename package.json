@@ -1,7 +1,16 @@
 {
-  "name": "g2",
-  "version": "2.1.2",
+  "name": "@goessner/g2",
+  "version": "2.2.0",
   "description": "g2 - a tiny 2d graphics command library",
+  "keywords": [
+    "vector",
+    "graphics",
+    "2d",
+    "command queue",
+    "canvas",
+    "svg",
+    "javascript"
+  ],
   "main": "g2.js",
   "scripts": {
     "build": "npm run minify && npm run jsdoc && npm run gzip ",

@@ -698,7 +698,8 @@ g2.prototype.exe = function exe(ctx) {
       ifc = state.ifc;
       exe.pre[ifc].call(context,this);
       for (var i=0,n=cmds.length,cmd; i < n; i++) // invoke the command queue
-         (cmd=cmds[this.curIdx = i]).c[ifc].apply(context,cmd.a);
+         if (ifc in cmds[i].c)
+            (cmd=cmds[this.curIdx = i]).c[ifc].apply(context,cmd.a);
       exe.post[ifc].call(context,this);
       state.post();
    }
@@ -708,8 +709,9 @@ g2.prototype.exe.pre  = {};   // map of interface dependent pre-processing funct
 g2.prototype.exe.post = {};   // map of interface dependent post-processing functions
 
 /**
- * Copy all g2 graphics commands from a g2 object (no command).<br>
- * If the source object is 'this', nothing is done.
+ * Copy all g2 graphics commands from a source g2 object.<br>
+ * If the source object is 'this', nothing is done.<br>
+ * (no command)
  * @method
  * @returns {object} g2
  * @param {object} g g2 source object to copy commands from.
