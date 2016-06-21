@@ -1,3 +1,7 @@
+[![npm](https://img.shields.io/npm/l//@goessner/g2.svg?maxAge=2592000)](https://www.npmjs.com/package/@goessner/g2/)
+[![npm](https://img.shields.io/npm/v/@goessner/g2.svg?maxAge=2592000)](https://www.npmjs.com/package/@goessner/g2/)
+
+
 # g<sup>2</sup>
 
 g<sup>2</sup> is a 2D graphics javascript library based on the [command pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript) 
