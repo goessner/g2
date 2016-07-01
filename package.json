@@ -1,6 +1,6 @@
 {
   "name": "g2d",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "g2 - a tiny 2d graphics command library",
   "keywords": [
     "vector",
@@ -17,7 +17,7 @@
     "minify": "uglifyjs ./g2.js -o ./g2.min.js --comments -m",
     "jsdoc": "jsdoc2md ./g2.js > ./api/readme.md",
     "gzip": "7z -tgzip a ./g2.min.js.gz ./g2.min.js",
-    "cpsamp": "copyfiles -f ./g2/examples/*.html ./goessner.github.io/g2/examples"
+    "cpsamp": "copyfiles -f ./examples/*.html ../goessner.github.io/g2/examples"
   },
   "author": "Stefan Goessner <fang03@web.de>",
   "repository": {
