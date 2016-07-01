@@ -21,7 +21,7 @@
  */
 function g2() {
    if (this instanceof g2) {
-      if (arguments) Object.assign(this,arguments);
+      if (arguments) Object.assign(this,arguments[0]);
       this.cmds = [];
       this.curIdx = false;
       return this;
@@ -34,16 +34,14 @@ function g2() {
  * Add command to command queue.
  * @private
  */
-g2.prototype.addCmd = function(cmd) {
-   this.cmds.push("proto" in cmd.c ? Object.assign(Object.create(cmd.c.proto),{ g2:this },cmd) : cmd);
-   return this;
-};
+g2.prototype.addCmd = function addCmd(cmd) { this.cmds.push(cmd); return this; };
+
 /**
  * Get current command.
  * @private
  */
-Object.defineProperty(g2.prototype, "curCmd",
-   { get: function () { return this.curIdx !== false ? this.cmds[this.curIdx] : null; } }
+Object.defineProperty(g2.prototype, "curCmd", {
+    get: function () { return this.curIdx !== false ? this.cmds[this.curIdx] : null; } }
 );
 
 /**
@@ -53,9 +51,10 @@ Object.defineProperty(g2.prototype, "curCmd",
  * @const
  * @private
  */
-Object.defineProperty(g2.prototype, "state", 
-   { get: function () { return this._state || (this._state = g2.State.create(this)); } }
-);
+Object.defineProperty(g2.prototype, "state", {
+   get: function () { return this._state || (this._state = g2.State.create(this)); },
+   set: function (val) { this._state = val; }
+});
 
 /**
  * Set the view's cartesian mode flag (immediate state modifier - no command).<br>
@@ -474,7 +473,7 @@ g2.prototype.ply.itrOf = function(pts,args) {
  * array of [[x,y],...] arrays or array of [{x,y},...] objects.  
  * @see https://pomax.github.io/bezierinfo
  * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
- * [Example](https://goessner.github.io/g2-svg/test/index.html#ply)
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#spline)
  * @method
  * @returns {object} this
  * @param {array} p Array of points.
@@ -689,7 +688,7 @@ g2.prototype.style = function style(args) {
  */
 g2.prototype.exe = function exe(ctx) {
    var state = this.state;
-   if (state.loading) // give images a chance to complete loading ..
+   if (state.loading) // give images a chance to complete loading .. 
       requestAnimationFrame(exe.bind(this,ctx));  // .. so wait a while ..
    else if (ctx) {
       var context, ifc, cmds = this.cmds;
@@ -705,6 +704,14 @@ g2.prototype.exe = function exe(ctx) {
    }
    return this;
 };
+g2.prototype.exe.use = function exe_use(ctx,ifc) {
+   var cmds = this.cmds, n = cmds.length, cmd;
+   g2.prototype.exe.pre[ifc].call(ctx,this);
+   for (var i=0; i < n; i++)     // invoke the command queue
+      if (ifc in cmds[i].c)
+         (cmd=cmds[this.curIdx = i]).c[ifc].apply(ctx,cmd.a);
+   g2.prototype.exe.post[ifc].call(ctx,this);
+}
 g2.prototype.exe.pre  = {};   // map of interface dependent pre-processing functions
 g2.prototype.exe.post = {};   // map of interface dependent post-processing functions
 
@@ -743,11 +750,10 @@ g2.prototype.cpy = function cpy(g) {
  * @param {array} args Arguments array.
  */
 g2.prototype.proxy = function proxy(method,args) {
-   if (typeof method === "string")  // must be a member name of the 'g2.prototype' namespace
-      method = g2.prototype[method];
-   if (method && method.proto) {
+   if (method && method.prototype) {
        var f = function(){};
-       f.proto = method.proto;
+       f.create = method.create;
+       f.prototype = method.prototype;
        this.addCmd({a:args,c:f});
    }
    return this;
@@ -823,7 +829,7 @@ g2.State = {
          this.stack = [{}];
          this._current = {};
       },
-      post: function() { delete this.ctx; delete this.ifc; },
+      post: function() { delete this.ctx; delete this.ifc; },  // buggy with use command ...
 
       // manage style properties ...
       get: function(name) {
@@ -834,7 +840,6 @@ g2.State = {
       },
       add: function(args) {
          var ifcState = g2.State[this.ifc], m2, val, trf = {};
-//         console.log(args)
          for (var m in args) {
             val = args[m];
             if (typeof val === "string" && val[0] === "@" && !(val = this.get(val.substr(1))))  // simply cancel referencing with unknown attribute name ...
@@ -871,7 +876,7 @@ g2.State = {
             scl:trf.scl*scl
          };
       },
-      get lwOwner() { return this._current["lw"]; },
+      get lwOwner() { return this._current["lw"] || 1; },
       get cssFont() {
          var fos = this.get("fos"), fow = this.get("fow");
          return (fos === "normal" ? "" : (fos+" ")) +
@@ -1063,8 +1068,8 @@ g2.prototype.ply.c2d = function ply_c2d(pts,mode,pi,style) {
    this.moveTo((p=pi(0)).x,p.y);
    for (i=1; i < pi.len; i++) {
       p = pi(i);
-      if (split && i%2) this.moveTo(p.x,p.y);  
-      else              this.lineTo(p.x,p.y);
+      if (split && i%2 === 0) this.moveTo(p.x,p.y);  
+      else                    this.lineTo(p.x,p.y);
    }
    if (mode && !split)  // closed then ..
       this.closePath();
@@ -1123,10 +1128,10 @@ g2.prototype.use.c2d = function use_c2d(g,args) {
    this.save();
    state.save().add(args);
    g.state = state;
-   g.exe(this);
-   g.state = gstate;
+   g2.prototype.exe.use.call(g,this,"c2d");
    state.restore();
    this.restore();
+   g.state = gstate;
 };
 
 g2.prototype.style.c2d = function style_c2d(args) {

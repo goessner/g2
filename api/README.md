@@ -376,7 +376,7 @@ Draw spline by points.Implementing a centripetal Catmull-Rom spline (thus avoid
 **See**
 
 - https://pomax.github.io/bezierinfo
-- https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline[Example](https://goessner.github.io/g2-svg/test/index.html#ply)
+- https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline[Example](https://goessner.github.io/g2-svg/test/index.html#spline)
 
 
 | Param | Type | Default | Description |
