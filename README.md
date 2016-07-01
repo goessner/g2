@@ -73,7 +73,9 @@ g<sup>2</sup> is licensed under the terms of the MIT License.
 ## 2.2.4 - 2016-07-01
 ### Modified
 
-* internal `g2.prototype.addCmd` simplyfied.
+* `use` command execution simplified.
+* styling bug with `g2.prototype.use` removed. 
+* internal `g2.prototype.addCmd` simplified.
 
 ## 2.2.0 - 2016-06-20
 ### Added
