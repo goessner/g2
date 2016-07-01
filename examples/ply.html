@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - ply</title>
+</head>
+
+<body>
+    <h1>wiki - ply</h1>
+    <canvas id="c" width="400" height="100"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+        g2().style({ls:"red",lw:3,fs:"#ddd",thal:"center"})
+            .ply([10,10,40,70,60,30,90,80]).txt("mode = false",50,95)
+            .ply([[110,10],[140,70],[160,30],[190,80]],true).txt("mode = true",150,95)
+            .ply([{x:210,y:10},{x:240,y:70},{x:260,y:30},{x:290,y:80}],'split').txt("mode = 'split'",250,95)
+            .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - element styles</title>
+</head>
+
+<body>
+    <h1>wiki - element styles</h1>
+    <canvas id="c" width="100" height="100"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+      g2().rec(20,10,60,30,{ls:'maroon',fs:'khaki'})
+          .cir(50,75,20,{lw:2,ld:[6,3],fs:'orange'})
+          .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

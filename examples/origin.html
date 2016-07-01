@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - origin</title>
+</head>
+
+<body>
+    <h1>wiki - origin</h1>
+    <canvas id="c" width="201" height="101"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+var origin = g2().style({lwnosc:true,lw:4})
+                 .ply([20,0,0,0,0,20])
+                 .cir(0,0,4);
+g2().grid().use(origin)
+    .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - txt</title>
+</head>
+
+<body>
+    <h1>wiki - txt</h1>
+    <canvas id="c" width="300" height="50"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+        g2().txt("Hello world",20,40,0,{fof:'cursive',foz:32,foc:'rebeccapurple'})
+            .txt("default style again",210,40)
+            .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

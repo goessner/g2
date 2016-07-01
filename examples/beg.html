@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - beg</title>
+</head>
+
+<body>
+    <h1>wiki - beg</h1>
+    <canvas id="c" width="410" height="100"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+var ctx = document.getElementById("c").getContext("2d");
+
+    g2().style({fs:"gainsboro",ls:"firebrick",lw:3,lj:"round",
+                foc:"darkolivegreen",foz:24,thal:"center",tval:"middle"})
+        .rec(20,20,80,50).txt("one",60,45).txt("outer",60,90,0,{foc:"black",foz:14})
+        .beg({y:-10,fs:"darkseagreen",ls:"cadetblue",lw:5,foc:"steelblue",foz:30})
+          .rec(120,20,80,50).txt("two",160,45).txt("inner",160,100,0,{foc:"black",foz:14})
+          .style({tmp:"@ls",ls:"@fs",fs:"@tmp",foc:"midnightblue"})
+          .rec(220,20,80,50).txt("three",260,45).txt("inner",260,100,0,{foc:"black",foz:14})
+        .end()
+        .rec(320,20,80,50).txt("four",360,45).txt("outer again",360,90,0,{foc:"black",foz:14})
+        .exe(ctx);
+   </script>
+</body>
+</html>

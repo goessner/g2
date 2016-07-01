@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - triangle-2</title>
+</head>
+
+<body>
+    <h1>wiki - triangle-2</h1>
+    <canvas id="c1" width="100" height="100"></canvas>
+    <canvas id="c2" width="100" height="100"></canvas>
+    <canvas id="c3" width="100" height="100"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+    var triangle = function(g) {
+                      return g.style({ls:"green",lw:3,fs:"orange"})
+                              .p().m(10, 10).l(90, 10).l(50, 90).z();
+                   },
+        g = g2();
+        g.cpy(triangle(g))
+         .stroke()
+         .exe(document.getElementById("c1").getContext("2d"));
+        g.del()
+         .cpy(triangle(g))
+         .fill()
+         .exe(document.getElementById("c2").getContext("2d"));
+        g.del()
+         .cpy(triangle(g))
+         .drw()
+         .exe(document.getElementById("c3").getContext("2d"));
+   </script>
+</body>
+</html>

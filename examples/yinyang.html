@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - yinyang</title>
+</head>
+
+<body>
+    <h1>wiki - yinyang</h1>
+    <canvas id="c" width="100" height="100"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+        var pi = Math.PI, dark = "#444", light = "#eee";
+        g2().beg({x:50,y:50,scl:2,fs:light,ls:dark,lw:2})
+              .cir(0,0,20)
+              .style({fs:dark})
+              .p()
+                .m(0,-20)
+                .a(pi,0,0)
+                .a(-pi,0,20)
+                .a(-pi,0,-20)
+                .z()
+              .fill()
+              .cir(0,-10,3)
+            .style({ls:light,fs:light})
+            .cir(0,10,3)
+            .end()
+            .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

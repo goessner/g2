@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - lwnosc</title>
+</head>
+
+<body>
+    <h1>wiki - lwnosc</h1>
+    <canvas id="c" width="101" height="101"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+var origin = g2().style({lw:3,lwnosc:true})
+                 .ply([20,0,0,0,0,20])
+                 .cir(0,0,3),
+    g = g2();
+g.cartesian().pan(35,45).zoom(1.5,35,45).grid().use(origin).exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

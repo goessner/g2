@@ -3,12 +3,13 @@
 <head>
     <meta charset='utf-8'>
     <title>g2 - p</title>
+    <style> canvas { border: 1px solid #000; } </style>
 </head>
 
 <body>
     <h1>g2 - p</h1>
-    <canvas id="c" width="200" height="100"></canvas>
-    <script src='../g2.js'></script>
+    <canvas id="c" width="200" height="200"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
     <script>
       var star = "M100,10L123.5,82.4L61,37.6L138,37.6L76.5,82.4Z";
 g2().drw({lw:4,ls:"red",fs:"orange"},star)

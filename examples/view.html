@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - view</title>
+</head>
+
+<body>
+    <h1>wiki - view</h1>
+    <canvas id="c1" width="101" height="101"></canvas>
+    <canvas id="c2" width="101" height="101"></canvas>
+    <canvas id="c3" width="101" height="101"></canvas>
+    <canvas id="c4" width="101" height="101"></canvas>
+    <canvas id="c5" width="101" height="101"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+var ctx1 = document.getElementById("c1").getContext("2d"),
+    ctx2 = document.getElementById("c2").getContext("2d"),
+    ctx3 = document.getElementById("c3").getContext("2d"),
+    ctx4 = document.getElementById("c4").getContext("2d"),
+    ctx5 = document.getElementById("c5").getContext("2d"),
+    txtstyle = {thal:"center",foz:14};
+var origin = g2().style({lw:3})
+                 .ply([20,0,0,0,0,20])
+                 .cir(0,0,3);
+g2().grid().use(origin).exe(ctx1)
+    .cartesian().exe(ctx2)
+    .pan(35,45).exe(ctx3)
+    .zoom(1.5,35,45).exe(ctx4)
+    .cartesian(false).view(0,0,1).exe(ctx5);
+/*
+g2().grid().use(origin).txt("initial",50,90,0,txtstyle).exe(ctx1)
+    .del().grid().use(origin).cartesian().txt("cartesian",50,10,0,txtstyle).exe(ctx2)
+    .del().grid().use(origin).cartesian().pan(35,45).txt("pan",15,-35,0,txtstyle).exe(ctx3)
+    .del().grid().use(origin).cartesian().zoom(1.5,35,45).txt("zoom",10,-23,0,{thal:"center",foz:10}).exe(ctx4)
+    .del().grid().use(origin).cartesian().pan(35,45).zoom(1.5,35,45).cartesian(false).view(0,0,1).txt("reset",50,90,0,txtstyle).exe(ctx5);
+*/
+   </script>
+</body>
+</html>

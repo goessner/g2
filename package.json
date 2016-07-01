@@ -13,10 +13,11 @@
   ],
   "main": "g2.js",
   "scripts": {
-    "build": "npm run minify && npm run jsdoc && npm run gzip",
+    "build": "npm run minify && npm run jsdoc && npm run gzip && npm run cpsamp",
     "minify": "uglifyjs ./g2.js -o ./g2.min.js --comments -m",
     "jsdoc": "jsdoc2md ./g2.js > ./api/readme.md",
-    "gzip": "7z -tgzip a ./g2.min.js.gz ./g2.min.js"
+    "gzip": "7z -tgzip a ./g2.min.js.gz ./g2.min.js",
+    "cpsamp": "copyfiles -f ./g2/examples/*.html ./goessner.github.io/g2/examples"
   },
   "author": "Stefan Goessner <fang03@web.de>",
   "repository": {

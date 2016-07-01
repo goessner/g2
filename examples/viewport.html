@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - viewport</title>
+</head>
+
+<body>
+    <h1>wiki - viewport</h1>
+    <canvas id="c1" width="200" height="100"></canvas>
+    <canvas id="c2" width="200" height="100"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+       var d = "M100,10L123.5,82.4L61,37.6L138,37.6L76.5,82.4Z";
+       g2().style({lw:4,ls:"#080",fs:"#0f0",sh:[8,8,8,"black"]})
+           .drw(d)
+           .exe(document.getElementById("c1").getContext("2d"))
+           .zoom(2.5,150,50)
+           .exe(document.getElementById("c2").getContext("2d"))
+   </script>
+</body>
+</html>

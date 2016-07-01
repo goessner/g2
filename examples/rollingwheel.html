@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - rollingwheel</title>
+</head>
+
+<body>
+    <h1>wiki - rollingwheel</h1>
+    <canvas id="c" width="601" height="101"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+function rollingWheel() {
+   var r = 40, dphi = 11/20*Math.PI,
+       wheel = g2().style({fs:"transparent",lw:8})
+                   .cir(0,0,r)
+                   .lin(-32,0,32,0)
+                   .style({lw:2,fs:"snow"})
+                   .cir(0,0,4),
+       rolling = g2();
+   
+   for (var alpha=0.3,phi=0; alpha<=1; alpha+=0.1,phi+=dphi)
+      rolling.use(wheel,{x:r*phi,y:54,w:phi, ls:'rgba(0,0,0,'+alpha*alpha*alpha+')'});
+   return rolling;
+}
+
+g2().grid()
+    .cpy(rollingWheel())
+    .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

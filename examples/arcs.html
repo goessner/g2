@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - arcs</title>
+</head>
+
+<body>
+    <h1>wiki - arcs</h1>
+    <canvas id="c" width="400" height="100"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+        var pi = Math.PI,
+            dot = g2().style({lwnosc:true}).cir(0,0,3),
+            arrow = g2().p().m(0,0).l(-7,-2).a(Math.PI/3,-7,2).z().style({lwnosc:true,lj:"round"}).drw();
+        g2().style({ls:"#555",lw:3,foz:14,thal:"center"}).p()
+            .m( 10,50).a(-2/3*pi,90,50).txt("φ = -2/3π",50,95)
+            .m(110,50).a(0,190,50).txt("φ = 0",150,95)
+            .m(210,50).a( 2/3*pi,290,50).txt("φ = 2/3π",250,95)
+            .drw()
+            .style({lw:1,fs:"#ddd"})
+            .use(dot,{x:10,y:50}).use(arrow,{x:90,y:50,scl:2,w:-0.9})
+            .use(dot,{x:110,y:50}).use(arrow,{x:190,y:50,scl:2})
+            .use(dot,{x:210,y:50}).use(arrow,{x:290,y:50,scl:2,w:0.9})
+            .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - car</title>
+</head>
+
+<body>
+    <h1>wiki - car</h1>
+    <canvas id="c" width="400" height="120"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+      var pi = Math.PI, 
+          wheel = g2().cir(0,0,15)
+                      .cir(0,0,3,{fs:"@ls"}),
+          car   = g2().p()
+                        .m(-75,20)
+                        .a(-5*pi/6,35,50)
+                        .a(-pi/2,75,20)
+                        .z()
+                      .drw()
+                      .use(wheel,{x:-40,y:20,fs:"snow",lw:3})
+                      .use(wheel,{x: 40,y:20,fs:"#9c9",lw:3});
+
+          g2().cartesian()
+              .use(car,{x:100,y:25,ls:"#900",fs:"#f4a460",lw:4})
+              .use(car,{x:300,y:25,scl:0.75,ls:"green",fs:"orange",lw:4})
+              .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

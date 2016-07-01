@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - umbrella</title>
+</head>
+
+<body>
+    <h1>wiki - umbrella</h1>
+    <canvas id="c" width="200" height="200"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script>
+      var pi = Math.PI, umbrella = g2();
+      umbrella.style({fs:"#690",ls:"#050",lw:8, lj:"round"})
+              .p()             // make stick
+                .m(100,10)         // top of shaft
+                .l(100,150)        // shaft
+                .a(-pi,130,150)    // handle
+              .stroke()        // stroke stick.
+              .p()             // make covering
+                .m(10,80)          // leftmost point
+                .a(pi/3,70,80)     // three ...
+                .a(pi/3,130,80)    // ... small ...
+                .a(pi/3,190,80)    // ... arcs
+                .a(-2*pi/3,10,80)  // big arc back to leftmost point.
+                .z()               // close gap
+              .drw()           // fill and stroke covering.
+              .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

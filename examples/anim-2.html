@@ -2,28 +2,29 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>wiki - anim-1</title>
+    <title>wiki - anim-2</title>
 </head>
 
 <body>
-    <h1>wiki - anim-1</h1>
+    <h1>wiki - anim-2</h1>
     <canvas id="c" width="100" height="100"></canvas>
     <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
     <script>
        var ctx = document.getElementById("c").getContext("2d"),
            x0 = 50, y0 = 50, r = 40, phi = 0, dphi = 0.02,
-           g = g2();
+           pendulum = g2(),
+           world = g2().clr()
+                       .style({fs:"#ddd"})
+                       .ply([44,40,56,40,x0,y0],true)
+                       .use(pendulum)
+                       .cir(x0,y0,3);
 
        function render() {
-          var x = x0 + r*Math.sin(phi), y = y0 + r*Math.cos(phi);
-          g.del()
-           .clr()
-           .style({fs:"#ddd"})
-           .ply([44,40,56,40,x0,y0],true)
-           .lin(x0,y0,x,y,{lw:3})
-           .cir(x0,y0,3)
-           .cir(x,y,8)
-           .exe(ctx);
+          var x =x0 + r*Math.sin(phi), y = y0 + r*Math.cos(phi);
+          pendulum.del()
+                  .lin(x0,y0,x,y,{lw:3})
+                  .cir(x,y,8);
+          world.exe(ctx);
           phi += dphi;
           requestAnimationFrame(render);
        }
