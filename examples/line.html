@@ -2,19 +2,39 @@
 <html>
 <head>
     <meta charset='utf-8'>
-    <title>g2 - line</title>
+    <title>v2.cases - fourbar</title>
     <style> canvas { border: 1px solid #000; } </style>
 </head>
 
 <body>
-    <h1>g2 - line</h1>
-    <canvas id="c" width="200" height="200"></canvas>
+    <h1>v2.cases - fourbar</h1>
+    <canvas id="c" width="400" height="300"></canvas>
+    <script src="https://gitcdn.xyz/repo/goessner/v2/master/v2.min.js"></script>
     <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+    <script src="../v2.cases.js"></script>
     <script>
+
+      var A0 = v2.zero, A, B, B0, a, b, c, 
+          a$ = {r:20,w:0}, b$ = {r:100,w:0}, c$ = {r:120,w:0}, d = {x:100,y:0};
+
+      a = v2.cartesian(a$);
+      v2.case4(b$,c$,v.dif(d,a);
+      b = v2.cartesian(b$);
+      c = v2.cartesian(c$);
+      A = a;
+      B = v2.sum(a,b);
+      B0 = d;
+    
       g2().clr()
-          .pan(10,10)
+          .pan(100,100)
           .style({fs:"red",lw:2})
-          .lin(50,50,150,150)
+          .lin(A0.x,A0.y,A.x,A.y)
+          .lin(A.x,A.y,B.x,B.y)
+          .lin(B0.x,B0.y,B.x,B.y)
+          .cir(A0.x,A0.y,5)
+          .cir(B0.x,B0.y,5)
+          .cir(A.x,A.y,5)
+          .cir(B.x,B.y,5)
           .exe(document.getElementById("c").getContext("2d"));
    </script>
 </body>

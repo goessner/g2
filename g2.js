@@ -416,11 +416,31 @@ g2.prototype.cir = function cir(x,y,r,style) {
  * @param {float} [dw=2*pi] Angular range in Radians.
  * @param {object} [style] Style properties. See 'g2.style' for details.
  * @example
- * g2().arc(300,400,390,-Math.PI/4,-Math.PI/2)
- *     .exe(ctx);
+ * g2().arc(300,400,50,-Math.PI/4,-Math.PI/2)
  */
 g2.prototype.arc = function arc(x,y,r,w,dw,style) {
    return this.addCmd({c:arc,a:[x,y,r,w||0,dw||2*Math.PI,style]});
+};
+/**
+ * Draw elliptical arc by center, radius-x, radius-y, start angle and angular range.  
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#earc)
+ * @method
+ * @returns {object} g2
+ * @param {float} x x-value center.
+ * @param {float} y y-value center.
+ * @param {float} rx x-radius.
+ * @param {float} ry y-radius.
+ * @param {float} [w=0] Start angle (in radian).
+ * @param {float} [dw=2*pi] Angular range in Radians.
+ * @param {object} args Arguments object.
+ * @param {float} [args.rot] Ellipse axis rotation angle in radians.
+ * @param {any} [args.style] Style property. See 'g2.style' for details.
+ * @example
+ * g2().arc(200,200,75,50,-Math.PI/4,2/3*Math.PI/2,{rot:Math.PI/6,fs:"red"})
+ *     .exe(ctx);       // Render to context.
+ */
+g2.prototype.earc = function earc(x,y,rx,ry,w,dw,args) {
+   return this.addCmd({c:earc,a:[x,y,rx,ry,w||0,dw||2*Math.PI,args]});
 };
 
 /**
@@ -449,7 +469,7 @@ g2.prototype.ply = function ply(pts,mode,args) {
       this.addCmd({c:ply,a:[pts,mode,itr,args]});
    return this;
 };
-// predefined spline point iterators
+// predefined polyline/spline point iterators
 g2.prototype.ply.iterators = {
    "x,y":   function(pts) { function pitr(i) { return {x:pts[2*i],y:pts[2*i+1]}; }; pitr.len = pts.length/2; return pitr; },
    "[x,y]": function(pts) { function pitr(i) { return {x:pts[i][0],y:pts[i][1]}; }; pitr.len = pts.length;   return pitr; },
@@ -1060,6 +1080,13 @@ g2.prototype.arc.c2d = function arc_c2d(x,y,r,w,dw,style) {
    this.arc(x,y,r,w,w+dw,dw<0);
    g2.prototype.drw.c2d.call(this);
    if (style) { this.g2state.restore(); this.restore(); }
+};
+g2.prototype.earc.c2d = function arc_c2d(x,y,rx,ry,w,dw,args) {
+   if (args) { this.save(); this.g2state.save().add(args); }
+   this.beginPath();
+   this.ellipse(x,y,rx,ry,args && args.rot || 0,w,w+dw,dw<0);
+   g2.prototype.drw.c2d.call(this);
+   if (args) { this.g2state.restore(); this.restore(); }
 };
 
 g2.prototype.ply.c2d = function ply_c2d(pts,mode,pi,style) {

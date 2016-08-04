@@ -7,11 +7,13 @@
 
 <body>
     <h1>wiki - txt</h1>
-    <canvas id="c" width="300" height="50"></canvas>
+    <canvas id="c" width="400" height="200"></canvas>
     <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
     <script>
-        g2().txt("Hello world",20,40,0,{fof:'cursive',foz:32,foc:'rebeccapurple'})
+        g2().style({fof:'cursive',foz:32,foc:'rebeccapurple',thal:"center"})
+            .txt("Hello world",150,100,30/180*Math.PI)
             .txt("default style again",210,40)
+            .cir(150,100,3)
             .exe(document.getElementById("c").getContext("2d"));
    </script>
 </body>

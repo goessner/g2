@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>wiki - elliptical arcs</title>
+</head>
+
+<body>
+    <h1>wiki - elliptical arcs</h1>
+    <canvas id="c" width="400" height="100"></canvas>
+    <script src="../g2.js"></script>
+    <script>
+        g2().style({ls:"#555",lw:3,foz:14,thal:"center"})
+            .earc(200,50,40,25,-Math.PI/6, 2*Math.PI/3,{rot:Math.PI/2})
+            .exe(document.getElementById("c").getContext("2d"));
+   </script>
+</body>
+</html>

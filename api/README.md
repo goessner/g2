@@ -15,42 +15,43 @@ Create a queue of 2D graphics commands.
 ```
 
 * [g2([opts])](#g2) ⇒ <code>object</code>
-    * _instance_
-        * [.cartesian([on])](#g2+cartesian) ⇒ <code>object</code>
-        * [.pan(dx, dy)](#g2+pan) ⇒ <code>object</code>
-        * [.zoom(scl, [x], [y])](#g2+zoom) ⇒ <code>object</code>
-        * [.view([x], [y], [scl])](#g2+view) ⇒ <code>object</code>
-        * [.del()](#g2+del) ⇒ <code>object</code>
-        * [.p()](#g2+p) ⇒ <code>object</code>
-        * [.m(x, y)](#g2+m) ⇒ <code>object</code>
-        * [.l(x, y)](#g2+l) ⇒ <code>object</code>
-        * [.q(x1, y1, x, y)](#g2+q) ⇒ <code>object</code>
-        * [.c(x1, y1, x2, y2, x, y)](#g2+c) ⇒ <code>object</code>
-        * [.a(dw, x, y)](#g2+a) ⇒ <code>object</code>
-        * [.z()](#g2+z) ⇒ <code>object</code>
-        * [.stroke([style], [d])](#g2+stroke) ⇒ <code>object</code>
-        * [.fill([style], [d])](#g2+fill) ⇒ <code>object</code>
-        * [.drw([style], [d])](#g2+drw) ⇒ <code>object</code>
-        * [.txt(s, [x], [y], [w], [style])](#g2+txt) ⇒ <code>object</code>
-        * [.img(uri, [x], [y], [b], [h], [xoff], [yoff], [dx], [dy])](#g2+img) ⇒ <code>object</code>
-        * [.lin(x1, y1, x2, y2, [style])](#g2+lin) ⇒ <code>object</code>
-        * [.rec(x, y, b, h, [style])](#g2+rec) ⇒ <code>object</code>
-        * [.cir(x, y, r, [style])](#g2+cir) ⇒ <code>object</code>
-        * [.arc(x, y, r, [w], [dw], [style])](#g2+arc) ⇒ <code>object</code>
-        * [.ply(parr, [mode], args)](#g2+ply) ⇒ <code>object</code>
-        * [.spline(p, [closed], style)](#g2+spline) ⇒ <code>object</code>
-        * [.beg(args)](#g2+beg) ⇒ <code>object</code>
-        * [.end()](#g2+end) ⇒ <code>object</code>
-        * [.clr()](#g2+clr) ⇒ <code>object</code>
-        * [.grid([color], [size])](#g2+grid) ⇒ <code>object</code>
-        * [.use(g, args)](#g2+use) ⇒ <code>object</code>
-        * [.style(args)](#g2+style) ⇒ <code>object</code>
-        * [.exe(ctx)](#g2+exe) ⇒ <code>object</code>
-        * [.cpy(g)](#g2+cpy) ⇒ <code>object</code>
-        * [.pntToUsr(x, y, [h])](#g2+pntToUsr) ⇒ <code>object</code>
-        * [.vecToUsr(x, y)](#g2+vecToUsr) ⇒ <code>object</code>
-    * _static_
-        * [.symbol](#g2.symbol) : <code>object</code>
+  * _instance_
+    * [.cartesian([on])](#g2+cartesian) ⇒ <code>object</code>
+    * [.pan(dx, dy)](#g2+pan) ⇒ <code>object</code>
+    * [.zoom(scl, [x], [y])](#g2+zoom) ⇒ <code>object</code>
+    * [.view([x], [y], [scl])](#g2+view) ⇒ <code>object</code>
+    * [.del()](#g2+del) ⇒ <code>object</code>
+    * [.p()](#g2+p) ⇒ <code>object</code>
+    * [.m(x, y)](#g2+m) ⇒ <code>object</code>
+    * [.l(x, y)](#g2+l) ⇒ <code>object</code>
+    * [.q(x1, y1, x, y)](#g2+q) ⇒ <code>object</code>
+    * [.c(x1, y1, x2, y2, x, y)](#g2+c) ⇒ <code>object</code>
+    * [.a(dw, x, y)](#g2+a) ⇒ <code>object</code>
+    * [.z()](#g2+z) ⇒ <code>object</code>
+    * [.stroke([style], [d])](#g2+stroke) ⇒ <code>object</code>
+    * [.fill([style], [d])](#g2+fill) ⇒ <code>object</code>
+    * [.drw([style], [d])](#g2+drw) ⇒ <code>object</code>
+    * [.txt(s, [x], [y], [w], [style])](#g2+txt) ⇒ <code>object</code>
+    * [.img(uri, [x], [y], [b], [h], [xoff], [yoff], [dx], [dy])](#g2+img) ⇒ <code>object</code>
+    * [.lin(x1, y1, x2, y2, [style])](#g2+lin) ⇒ <code>object</code>
+    * [.rec(x, y, b, h, [style])](#g2+rec) ⇒ <code>object</code>
+    * [.cir(x, y, r, [style])](#g2+cir) ⇒ <code>object</code>
+    * [.arc(x, y, r, [w], [dw], [style])](#g2+arc) ⇒ <code>object</code>
+    * [.earc(x, y, rx, ry, [w], [dw], args)](#g2+earc) ⇒ <code>object</code>
+    * [.ply(parr, [mode], args)](#g2+ply) ⇒ <code>object</code>
+    * [.spline(p, [closed], style)](#g2+spline) ⇒ <code>object</code>
+    * [.beg(args)](#g2+beg) ⇒ <code>object</code>
+    * [.end()](#g2+end) ⇒ <code>object</code>
+    * [.clr()](#g2+clr) ⇒ <code>object</code>
+    * [.grid([color], [size])](#g2+grid) ⇒ <code>object</code>
+    * [.use(g, args)](#g2+use) ⇒ <code>object</code>
+    * [.style(args)](#g2+style) ⇒ <code>object</code>
+    * [.exe(ctx)](#g2+exe) ⇒ <code>object</code>
+    * [.cpy(g)](#g2+cpy) ⇒ <code>object</code>
+    * [.pntToUsr(x, y, [h])](#g2+pntToUsr) ⇒ <code>object</code>
+    * [.vecToUsr(x, y)](#g2+vecToUsr) ⇒ <code>object</code>
+  * _static_
+    * [.symbol](#g2.symbol) : <code>object</code>
 
 <a name="g2+cartesian"></a>
 ### g2.cartesian([on]) ⇒ <code>object</code>
@@ -346,7 +347,30 @@ Draw arc by center point, radius, start angle and angular range.  [Example](htt
 
 **Example**  
 ```js
-g2().arc(300,400,390,-Math.PI/4,-Math.PI/2)    .exe(ctx);
+g2().arc(300,400,50,-Math.PI/4,-Math.PI/2)
+```
+<a name="g2+earc"></a>
+### g2.earc(x, y, rx, ry, [w], [dw], args) ⇒ <code>object</code>
+Draw elliptical arc by center, radius-x, radius-y, start angle and angular range.  [Example](https://goessner.github.io/g2-svg/test/index.html#earc)
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - g2  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| x | <code>float</code> |  | x-value center. |
+| y | <code>float</code> |  | y-value center. |
+| rx | <code>float</code> |  | x-radius. |
+| ry | <code>float</code> |  | y-radius. |
+| [w] | <code>float</code> | <code>0</code> | Start angle (in radian). |
+| [dw] | <code>float</code> | <code>2*pi</code> | Angular range in Radians. |
+| args | <code>object</code> |  | Arguments object. |
+| [args.rot] | <code>float</code> |  | Ellipse axis rotation angle in radians. |
+| [args.style] | <code>any</code> |  | Style property. See 'g2.style' for details. |
+
+**Example**  
+```js
+g2().arc(200,200,75,50,-Math.PI/4,2/3*Math.PI/2,{rot:Math.PI/6,fs:"red"})    .exe(ctx);       // Render to context.
 ```
 <a name="g2+ply"></a>
 ### g2.ply(parr, [mode], args) ⇒ <code>object</code>

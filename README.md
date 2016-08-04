@@ -1,6 +1,6 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/license.txt)
 [![npm](https://img.shields.io/npm/v/g2d.svg)](https://www.npmjs.com/package/g2d)
-[![Gemnasium](https://img.shields.io/gemnasium/mathiasbynens/he.svg)](https://github.com/goessner/g2)
+[![no dependencies](https://img.shields.io/gemnasium/mathiasbynens/he.svg)](https://github.com/goessner/g2)
 
 # g<sup>2</sup>
 
@@ -59,7 +59,6 @@ In HTML use ...
 <script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
 ```
 
-
 ## Cheat Sheet
 Check out the single page [Cheat Sheet](api/sheet.pdf).
 
@@ -69,6 +68,11 @@ g<sup>2</sup> is licensed under the terms of the MIT License.
 
 
 #Change Log
+
+## 2.2.5 - 2016-08-04
+### Added
+
+* `earc` elliptical arc command added.
 
 ## 2.2.4 - 2016-07-01
 ### Modified
