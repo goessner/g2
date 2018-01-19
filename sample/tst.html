@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>g2-view</title>
+</head>
+
+<body style="width:100vw; height:100vh; max-height:100vh; overflow:hidden;">
+    <g2-view width="601" height="401" cartesian="true" grid="true" selectable="true"></g2-view><br>
+    <span id='coords'></span>
+<script src="../g2.js"></script>
+<script src="../g2.view.js"></script>
+<script>
+    const view = document.getElementsByTagName('g2-view')[0],
+          coords = document.getElementById('coords');
+    let   radius = 50;
+
+    function init() {
+        let grp = g2().cir({x:0,y:0,r:75,ls:"gray"});
+        view.g2.cir({x:100,y:100,r:()=>radius,ls:"gray",fs:"orange"})
+               .ply({pts:[20,0,0,0,0,20],lw:2})
+               .lin({x1:100,y1:100,x2:400,y2:100,ls:"blue",lw:3})
+               .use({grp:grp,x:300,y:200,fs:"pink"})
+        view.dirty = true;
+        view.observe('mouse',(e) => { let {x,y} = view.pntToUsr(e.x,e.y), frac = Math.max(Math.floor(2*Math.log10(view.viewport.scl)),0); coords.innerHTML = `${x.toFixed(frac)}|${y.toFixed(frac)}`})
+        view.observe('drag',(e) => { view.pan(e.dx,e.dy); view.dirty = true; })
+        view.observe('wheel', ({x,y,delta})=>{view.zoom(x,y,delta>0?9/10:10/9); view.dirty = true;})
+    }
+document.onreadystatechange = function() {
+    if (document.readyState === 'complete')
+        init();
+}
+
+</script>
+</body>
+</html>

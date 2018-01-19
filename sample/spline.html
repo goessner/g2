@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>g2-spline</title>
+</head>
+
+<body style="width:100vw; height:100vh; max-height:100vh; overflow:hidden;">
+    <canvas id="c" width="601" height="401"></canvas>
+<script src="../g2.js"></script>
+<script src="../g2.ext.js"></script>
+<script src="../g2.io.js"></script>
+<script src="../g2.squiggle.js"></script>
+<script>
+    const ctx = document.getElementById('c').getContext('2d'),
+          squiggle = g2.squiggle(ctx),
+          g = g2()
+                  .grid()
+                  .spline({pts:[100,150,500,150,500,300],closed:false,w:0,lw:3,fs:"#bcd",ls:"blue"})
+                  .exe(squiggle)
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>io - output</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="canvas" width="601" height="401"></canvas>
+<div id="svg" data-width="401" data-height="301"></div>
+<script src="../g2.js"></script>
+<script src="../g2.io.js"></script>
+<script src="../g2.svg.js"></script>
+<script>
+const ctx = document.getElementById('canvas').getContext('2d'),
+      svg = document.getElementById('svg'),
+      store = g2.io(),
+//      pole = g2({id:'pole'}).cir({r:20}).cir({r:5,fs:'@ls'}),
+      g = g2()
+            .cartesian()
+            .cir({x:300,y:200,r:100,ls:'navy',fs:'#def'})
+//            .use({grp:pole,x:300,y:50,ls:'red'})
+            .exe(ctx)
+            .exe(store)
+            .exe(svg);
+</script>
+</body>
+</html>

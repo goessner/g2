@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>g2 io test</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="canvas" width="601" height="401"></canvas>
+<script src="../g2.js"></script>
+<script src="../g2.io.js"></script>
+<script>
+const ctx = document.getElementById('canvas').getContext('2d'),
+      store = `{"main":[{"c":"cartesian"},{"c":"grid"},{"c":"lin","a":{"x1":100,"y1":100,"x2":500,"y2":100,"lw":1,"ls":"green"}},{"c":"spline","a":{"pts":[100,150,500,150,500,300],"closed":true,"lw":3,"fs":"#bcd","ls":"blue"}},{"c":"use","a":{"grp":"$grp1","x":200,"y":300}},{"c":"vec","a":{"x1":50,"y1":300,"x2":320,"y2":300,"lw":3,"ls":"red"}}],"$grp1":[{"c":"cir","a":{"x":0,"y":0,"r":100,"lw":3,"ls":"#333","fs":"orange"}}]}`,
+      g = g2.io.parse(store);
+
+g.exe(ctx);
+
+</script>
+</body>
+</html>

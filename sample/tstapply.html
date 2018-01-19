@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>g2-apply</title>
+</head>
+
+<body style="width:100vw; height:100vh; max-height:100vh; overflow:hidden;">
+    <canvas id="c" width="601" height="401"></canvas>
+<script src="../g2.js"></script>
+<script src="../g2.ext.js"></script>
+<script src="../g2.io.js"></script>
+<script>
+//    g2.squiggle.deviation=7;
+    const ctx = g2.canvasHdl(document.getElementById('c').getContext('2d')),
+          io  = g2.ioHdl(),
+          p = {x:100,y:100},
+          cir = g2({id:'cirgrp'}).cir({x:0,y:0,r:100,lw:3,ls:"#333",fs:"orange"}),
+          g = g2()
+                  .clr()
+                  .cartesian()
+                  .grid()
+                  .lin({x1:()=>p.x,y1:100,x2:500,y2:100,lw:1,ls:"green"})
+                  .ply({pts:[100,150,500,150,500,300],closed:true,w:0.2,lw:3,fs:"#bcd",ls:"blue"})
+                  .p()
+                  .m({x:100,y:150})
+                  .l({x:500,y:150})
+                  .l({x:500,y:300})
+                  .stroke({lw:3,fs:"#bcd",ls:"blue"})
+                  .spline({pts:[100,150,500,150,500,300],closed:true,lw:3,fs:"#bcd",ls:"blue"})
+                  .use({grp:cir,x:200,y:300})
+                  .vec({x1:50,y1:300,x2:320,y2:300,lw:2,ls:"red"})
+                  .exe(ctx)
+                  .exe(io)
+</script>
+</body>
+</html>

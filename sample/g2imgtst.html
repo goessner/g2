@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>g2 img test</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<img id="source" src="https://mdn.mozillademos.org/files/5397/rhino.jpg" width="300" height="227">
+<canvas id="canvas" width="601" height="401"></canvas>
+<script src="../g2.js"></script>
+<script src="../g2.io.js"></script>
+<script>
+const ctx = document.getElementById('canvas').getContext('2d'), g = g2();
+
+
+g.cartesian()
+ .lin({x1:0,y1:0,x2:601,y2:401})
+// .beg({x:100,y:100,w:60/180*Math.PI})
+   .img({uri:'https://goessner.gallerycdn.vsassets.io/extensions/goessnar/mdmath/2.0.7/1506957853107/Microsoft.VisualStudio.Services.Icons.Default',x:100,y:100,w:00/180*Math.PI,xoff:15,yoff:15})
+//   .img({uri:'g2-yinyung.png'})
+   .rec({x:100,y:100,b:100,h:100})
+ .exe(ctx)
+ .exe(ctx)
+
+
+</script>
+</body>
+</html>

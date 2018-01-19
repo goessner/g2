@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>class test</title>
+</head>
+
+<body style="width:100vw; height:100vh; max-height:100vh; overflow:hidden;">
+<script>
+    class Point {
+        constructor(x,y) {
+            this.x = x;
+            this.y = y;
+        }
+        dist() { return Math.hypot(this.x,this.y); }
+    }
+
+    console.log(Point.prototype)
+    console.log(new Point(3,4))
+</script>
+</body>
+</html>

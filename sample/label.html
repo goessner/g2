@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>g2-label</title>
+</head>
+
+<body style="width:100vw; height:100vh; max-height:100vh; overflow:hidden;">
+    <canvas id="c" width="601" height="401"></canvas>
+<script src="../g2.js"></script>
+<script src="../g2.ext.js"></script>
+<script src="../g2.io.js"></script>
+<script src="../g2.squiggle.js"></script>
+<script>
+    const ctx = document.getElementById('c').getContext('2d'),
+          pi = Math.PI, x2 = 550,
+          store = g2.ioHdl(),
+          squiggle = g2.squiggleHdl(ctx),
+          g = g2().cartesian()
+                  .grid()
+                  .vec({x1:100,y1:200,x2:()=>x2,y2:200,lw:3,fs:"red",ls:"blue"})
+                  .label({str:'b'}).label({str:'beg',loc:'beg'}).label({str:'end',loc:'end',font:'20px cursive'})
+                  .dim({x1:100,y1:300,x2:510,y2:300,lw:2,ls:"@dimcolor"}).label({str:'@len'})
+                  .lin({x1:100,y1:100,x2:()=>x2,y2:50,lw:2,ls:"green"}).label({str:'@len'})
+                  .adim({x:80,y:350,r:30,w:pi/6,dw:3/2*pi,lw:2,ls:'red'}).label({str:'@angle'})
+                  .exe(squiggle)
+                  .exe(store)
+</script>
+</body>
+</html>

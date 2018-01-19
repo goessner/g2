@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>g2 test</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="canvas" width="600" height="400" style="border:1px solid black"></canvas>
+<script src="../g2.js"></script>
+<script src="../g2.ext.js"></script>
+<script src="../g2.io.js"></script>
+<script src="../g2.squiggle.js"></script>
+<script>
+const pi = Math.PI, ctx = document.getElementById('canvas').getContext('2d'), g = g2('mec'),
+      squiggler = g2.squiggle(ctx),
+      out = g2.io(),
+      A = {x:350,y:250}
+
+let  bb = 250
+
+  g.clr()
+   .cartesian()
+   .cir({x:200,y:150,r:75,lw:2,fs:"orange"})
+   .lin({x1:100,y1:100,x2:300,y2:200,lw:3})
+//   .ply({pts:[100,200,300,100]})
+   .rec({x:100,y:100,b:()=>bb,h:100,ls:"red",lw:2})
+//   .arc({x:200,y:150,r:75,w:0,dw:2*pi,lw:2,fs:"orange"})
+   .p().m({x:20,y:20}).l({x:20,y:80})
+       .c({x1:50,y1:20,x2:90,y2:140,x:120,y:80})
+       .a({x:120,y:20,dw:-pi}).z().drw({ls:'green',fs:'yellow',lw:2})
+   .spline({pts:[20,220,20,280,120,280,120,220],closed:true,ls:'green',fs:'yellow',lw:2})
+   .cir({...A,r:5,lw:1,fs:"orange"})
+   .vec({x1:150,y1:250,x2:400,y2:350,lw:3,ls:"red"}).label({str:'vec'})
+//   .exe(ctx)
+   .exe(out)
+   .exe(squiggler)
+console.log(out)
+//console.log(JSON.stringify(out))
+</script>
+</body>
+</html>
