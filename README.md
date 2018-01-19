@@ -70,7 +70,7 @@ Check out the single page [Cheat Sheet](api/sheet.pdf).
 g<sup>2</sup> is licensed under the terms of the MIT License.
 
 
-#Change Log
+# Change Log
 
 ## 2.2.5 - 2016-08-04
 ### Added
