@@ -5,33 +5,27 @@
  */
 
  /**
- * Create a 2D graphics command queue object. Call without using 'new'.
- * @typedef {g2}
- * @param {object} [opts] Custom options object. It is simply copied into the 'g2' object, but not used from the g2 kernel.
- * @returns {g2}
- * @example
- * var ctx = document.getElementById("c").getContext("2d");
- * g2()                  // Create 'g2' instance.
- *  .lin(50,50,100,100)  // Append ...
- *  .lin(100,100,200,50) // ... commands.
- *  .exe(ctx);           // Execute commands addressing canvas context.
- */
+  * Create a 2D graphics command queue object. Call without using 'new'.
+  * @typedef {g2}
+  * @param {object} [opts] Custom options object. It is simply copied into the 'g2' instance, but not used from the g2 kernel.
+  * @returns {g2}
+  * @example
+  * var ctx = document.getElementById("c").getContext("2d");
+  * g2()                  // Create 'g2' instance.
+  *  .lin(50,50,100,100)  // Append ...
+  *  .lin(100,100,200,50) // ... commands.
+  *  .exe(ctx);           // Execute commands addressing canvas context.
+  */
 function g2(opts) {
-   if (this instanceof g2) {
-      if (opts) Object.assign(this,opts);
-      this.commands = [];
-      return this;
-   }
-   return g2.apply(Object.create(g2.prototype),[opts]);
+    if (this instanceof g2) {
+        if (opts) Object.assign(this,opts);
+        this.commands = [];
+        return this;
+    }
+    return g2.apply(Object.create(g2.prototype),[opts]);
 }
 
 g2.prototype = {
-/**
- * Delete all commands.<br>
- * @method
- * @returns {g2} this
- */
-    del: function del() { this.commands.length = 0; return this; },
 /**
  * Clear viewport region.<br>
  * @method
@@ -42,7 +36,7 @@ g2.prototype = {
  * @returns {g2} this
  */
     clr: function clr({b,h}={}) { return this.addCommand({c:'clr',a:arguments[0]}); },
-    cartesian: function cartesian() { return this.addCommand({c:'cartesian'}); },
+    cartesian: function cartesian({off}={}) { return this.addCommand({c:'cartesian',a:arguments[0]}); },
     pan: function pan({dx,dy}) { return this.addCommand({c:'pan',a:arguments[0]}); },
     zoom: function zoom({scl,x,y}) { return this.addCommand({c:'zoom',a:arguments[0]}); },
     view: function view({scl,x,y}) { return this.addCommand({c:'view',a:arguments[0]}); },
@@ -81,18 +75,19 @@ g2.prototype = {
     },
     stroke: function stroke({d}={}) { return this.addCommand({c:'stroke',a:arguments[0]}); },
     fill: function fill({d}={}) { return this.addCommand({c:'fill',a:arguments[0]}); },
-    drw: function drw({d}={}) {
-        // if (d && typeof d === "string") arguments[0].d = new Path2D(d); // maybe better add svg path string to command in future ... ?
-        return this.addCommand({c:'drw',a:arguments[0]}); 
-    },
+    drw: function drw({d}={}) { return this.addCommand({c:'drw',a:arguments[0]}); },
+/**
+ * Delete all commands beginning from `idx` to end of command queue.<br>
+ * @method
+ * @returns {g2} this
+ */
+    del: function del(idx) { this.commands.length = idx || 0; return this; },
+    ins: function(fn) { return fn && fn(this) || this; },
     exe: function(ctx) {
         let handler = g2.handler(ctx);
         if (handler && handler.init(this))
            handler.exe(this.commands);
         return this;
-    },
-    when: function(cond,then,or) {
-        return cond ? then(this) : or && or(this) || this;
     },
     // helpers ...
     addCommand: function({c,a}) {
@@ -146,6 +141,21 @@ g2.getCmdIdx = function(cmds,callbk) {
             return i;
     return false;  // command with index '0' signals 'failing' ...
 };
+
+/**
+ * Replacement for Object.assign, as it does not assign getters and setter properly ...
+ * See https://medium.com/@benastontweet/mixins-in-javascript-700ec81f5e5c
+ */
+g2.mixin = function mixin(obj, ...protos) {
+    protos.forEach(p => {
+        Object.keys(p).forEach(k => {
+            Object.defineProperty(obj, k, Object.getOwnPropertyDescriptor(p, k));
+        })
+    })
+    return obj;
+}
+
+
 /**
  * Copy properties, even as getters
  * @private
@@ -182,13 +192,13 @@ g2.canvasHdl.prototype = {
     exe: function(commands) {
         for (let cmd of commands) {
             if (this[cmd.c])
-                cmd.a ? this[cmd.c](cmd.a) : this[cmd.c]();
-            else if (cmd.a && 'macro' in cmd.a)
-                this.exe(cmd.a.macro().commands);
+                this[cmd.c](cmd.a);
+            else if (cmd.a && 'g2' in cmd.a)
+                this.exe(cmd.a.g2().commands);
         }
     },
-    cartesian: function() {
-        this.pushTrf([1,0,0,-1,0,this.ctx.canvas.height-1]);  // magic .. !
+    cartesian: function({off}={}) {
+        this.pushTrf(off ? [1,0,0,1,0,0] : [1,0,0,-1,0,this.ctx.canvas.height-1]);  // magic .. !
     },
     pan: function({dx,dy}) {
         this.pushTrf([1,0,0,1,dx,dy]);
@@ -271,79 +281,54 @@ g2.canvasHdl.prototype = {
         if (istrf) this.resetTrf();
         return i-1;  // number of points ..
     },
-    txt: function({str,x,y,w}) {
+    txt: function({str,x,y,w,unsizable}) {
+        x = x || 0; y = y || 0;
         let tmp = this.setStyle(arguments[0]), 
             sw = w ? Math.sin(w) : 0, 
-            cw = w ? Math.cos(w) : 1;
-        this.setTrf(this.isCartesian ? [cw,sw,sw,-cw,x||0,y||0]
-                                     : [cw,sw,-sw,cw,x||0,y||0]);
+            cw = w ? Math.cos(w) : 1,
+            trf = this.isCartesian ? [cw,sw,sw,-cw,x,y]
+                                   : [cw,sw,-sw,cw,x,y];
+        this.setTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
         if (this.ctx.fillStyle === 'rgba(0, 0, 0, 0)') {
-            this.ctx.fillStyle = ctx.strokeStyle;
+            this.ctx.fillStyle = this.ctx.strokeStyle;
             tmp.fs = 'transparent';
         }
         this.ctx.fillText(str,0,0);
         this.resetTrf();
         this.resetStyle(tmp);
     },
-    img: async function({uri,x,y,w,scl,xoff,yoff}) {
-        function getImage(uri) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = () => resolve(getImage("data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7"));
-                img.src = uri;
-            })
+    img: function({uri,x,y,w,scl,xoff,yoff}) {
+        const getImg = (uri) => {
+            let img = new Image();
+            img.src = uri;
+            return img;
         }
 
-        let image = arguments[0].image || await getImage(uri).then((img) => arguments[0].image = img),
+        let args = arguments[0], 
+            img = args._image || (args._image = getImg(uri,false)),
             sw = w ? Math.sin(w) : 0, 
             cw = w ? Math.cos(w) : 1,
-            h =  image && image.height;
+            b =  img && img.width || 20,
+            h =  img && img.height || 20;
 
-        x = x || 0; y = y || 0; xoff = xoff || 0, yoff = yoff || 0;
+        x = x || 0; y = y || 0; xoff = xoff || 0; yoff = yoff || 0;
         this.setTrf(this.isCartesian ? [cw,sw,sw,-cw,x-sw*(h-yoff),y+cw*(h-yoff)]
                                      : [cw,sw,-sw,cw,x-xoff,y-yoff]);
-        this.ctx.drawImage(image,0,0);
+        if (img.complete)
+           this.ctx.drawImage(img,0,0);
+        else // broken image ..
+           this.ctx.drawImage(getImg("data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7"),0,0);
+
         this.resetTrf();
     },
-/*
-    img: function({uri,x,y,w,b,h}) {
-        let image = arguments[0].image,
-            sw = w ? Math.sin(w) : 0, 
-            cw = w ? Math.cos(w) : 1,
-            b, h;
-        if (!image) {
-            let prm = new Promise((resolve, reject) => {
-                    let img = new Image();
-                    img.onload = () => resolve(img);
-                    img.onerror = () => reject(img);
-                    img.src = uri;
-                });
-            prm.then(img => {
-                let sw = w ? Math.sin(w) : 0, 
-                    cw = w ? Math.cos(w) : 1;
-                h = h || img && img.height;
-                arguments[0].image = img;
-            })
-            image = arguments[0].image = new Image();
-            image.onerror = () => { image.src = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7";  };
-            image.src = uri;
-        }
-        h = h || image && image.height;
-        this.setTrf(this.isCartesian ? [cw,sw,sw,-cw,(x||0)-sw*h,(y||0)+cw*h]
-                                     : [cw,sw,-sw,cw,x||0,y||0]);
-        this.ctx.drawImage(image,0,0);
-        this.resetTrf();
-    },
-*/
     use: function({grp}) {
         this.beg(arguments[0]);
         this.exe(grp.commands);
         this.end();
     },
-    beg: function({x,y,w,scl,matrix}) {
+    beg: function({x,y,w,scl,matrix,unsizable}) {
         let trf = matrix;
-        if (!matrix) {
+        if (!trf) {
             let ssw, scw;
             w = w || 0;
             scl = scl || 1;
@@ -352,7 +337,7 @@ g2.canvasHdl.prototype = {
             trf = [scw,ssw,-ssw,scw,x||0,y||0];
         }
         this.pushStyle(arguments[0]);
-        this.pushTrf(trf);
+        this.pushTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
     },
     end: function() {
         this.popTrf();
@@ -514,6 +499,11 @@ g2.canvasHdl.prototype = {
         let m = this.matrix[this.matrix.length-1];
         return {x:m[4],y:m[5],scl:Math.hypot(m[0],m[1]),cartesian:m[0]*m[3] - m[1]*m[2] < 0};
     },
+    unscaleTrf({x,y}) {  // remove scaling effect (make unzoomable with respect to (x,y))
+        let m = this.matrix[this.matrix.length-1],
+            invscl = 1/Math.hypot(m[0],m[1]);
+        return [invscl,0,0,invscl,(1-invscl)*x,(1-invscl)*y];
+    },
     gridSize: function(scl) {
         let base = this.gridBase, exp = this.gridExp, sz;
         while ((sz = scl*base*Math.pow(10,exp)) < 14 || sz > 35) {
@@ -536,9 +526,9 @@ g2.canvasHdl.prototype = {
 
 // utils
 
-// fn argument must be a function with timestamp 't' as single argument
+// fn argument must be a function with (optional) timestamp 't' as single argument
 // returning true to continue or false to stop RAF.
-function render(fn) {
+g2.render = function render(fn) {
     function animate(t) {
         if (fn(t))
             requestAnimationFrame(animate);
