@@ -1,0 +1,9 @@
+<canvas id="c" width="350" height="50"></canvas>
+<script src='g2.js'></script>
+<script>
+const ctx=document.getElementById("c").getContext("2d"),
+      style={ls:"red",lw:3,fs:"ddd"};
+      g2().txt({str:"Hello world",x:30,y:50,w:-0.15,font:"32px cursive",fs:'rebeccapurple'})
+          .txt({str:"default style",x:210,y:40})
+          .exe(ctx);
+</script>

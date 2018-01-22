@@ -1,0 +1,23 @@
+<canvas id="c" width="100" height="100"></canvas>
+<script src='g2.js'></script>
+<script>
+    const ctx = document.getElementById("c").getContext("2d"),
+          pendulum = g2(), x0 = 50, y0 = 50, r = 40, dphi = 0.02;
+    let phi = 0;
+
+    world = g2().clr()                              // clear and then define static world
+                .ply({pts:[44,40,56,40,x0,y0],closed:true,fs:"#ddd"})
+                .use({grp:pendulum})                // reference pendulum here...
+                .cir({x:x0,y:y0,r:3})
+    function render() {
+        const x=x0+r*Math.sin(phi),y=y0+r*Math.cos(phi);
+        
+        pendulum.del()                              // rebuild pendulum...
+                .lin({x1:x0,y1:y0,x2:x,y2:y,lw:3})  // pendulum begins ..
+                .cir({x:x,y:y,r:8,fs:"#ddd"})
+        world.exe(ctx);
+        phi += dphi;   
+        requestAnimationFrame(render); 
+    }
+    render(); 
+</script>

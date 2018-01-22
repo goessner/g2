@@ -1,0 +1,79 @@
+<div style="position:relative; width:641px; height:481px;">
+    <canvas id="bg" width="641" height="481" style="position:absolute;"></canvas>
+    <canvas id="fg" width="641" height="481" style="position:absolute;"></canvas>
+</div>
+<p>Select square by pointer and drag it.</p>
+<script src='g2.js'></script>
+<script>
+    function onbuttondown(e) {                                      // select square at pointer location.
+        const x = e.clientX - Math.floor(viewport.left),
+              y = e.clientY - Math.floor(viewport.top);
+  
+        for (let i=rects.length-1; i>=0; i--) {                     // test all squares.
+            if (x - rects[i].x >= 0 && x - rects[i].x <= sz &&      // hit occured?
+                y - rects[i].y >= 0 && y - rects[i].y <= sz) {
+                bgDirty = fgDirty = true;                           // mark layers by dirty flags.
+                selIdx = i;                                         // memoize selected square.
+                ctxfg.canvas.addEventListener('mousemove',onmove,false);    // ready to drag.
+                break;
+            }
+        }
+    }
+    function onbuttonup(e) {                                        // deselect square
+        if (selIdx != -1) {                                         // is one selected 
+            bgDirty = fgDirty = true;                               // mark layers by dirty flags.
+            ctxfg.canvas.removeEventListener('mousemove',onmove,false);     // finish dragging.
+            selIdx = -1;                                                    // nothing selected.
+        }
+    }
+    function onmove(e) {                                            // drag square ...
+        const rec = rects[selIdx];
+        rec.x += (e.movementX || e.mozMovementX || e.webkitMovementX || 0); // by relative ...
+        rec.y += (e.movementY || e.mozMovementY || e.webkitMovementY || 0); // displacement..
+        fgDirty = true;               // only mark interactive foreground layer by dirty flag.
+    }
+    function render() {                                             // render loop.
+        if (bgDirty) {                                              // render background ...
+            bg.del().clr().grid();
+            for (let i=0; i<rects.length-1; i++) {
+                if (i !== selIdx) {
+                    bg.rec({x:rects[i].x,y:rects[i].y,b:sz,h:sz,
+                            ls:"darkslategray",lw:3,fs:"papayawhip"});
+                }
+            }
+            bg.exe(ctxbg);
+            bgDirty = false;
+        }
+        if (fgDirty) {                                              // render foreground ...
+            fg.del().clr();
+            if (selIdx != -1) {
+                fg.rec({x:rects[selIdx].x,y:rects[selIdx].y,b:sz,h:sz,
+                        lw:3,sh:[0,0,10,"black"]})
+                   .rec({x:rects[selIdx].x,y:rects[selIdx].y,b:sz,h:sz,
+                        lw:3,ls:"darkslategray",fs:"orange"});
+            }
+            fg.exe(ctxfg);
+            fgDirty = false;
+        }
+        requestAnimationFrame(render); 
+    }
+  
+    let bgDirty = true, fgDirty = true,
+        selIdx = -1;
+    const ctxbg = document.getElementById("bg").getContext("2d"),
+          ctxfg = document.getElementById("fg").getContext("2d"),
+          viewport = ctxbg.canvas.getBoundingClientRect(),
+          bg = g2(),                                                // Background layer command queue.
+          fg = g2(),                                                // Foreground layer command queue for dragging.
+          rects = [], sz = 50;
+  
+    for (let i = 0; i < 300; i++) {
+        rects[i] = { x: Math.random()*(viewport.width-sz), 
+                     y: Math.random()*(viewport.height-sz) };
+    }
+  
+    ctxfg.canvas.addEventListener('mousedown', onbuttondown, false);
+    ctxfg.canvas.addEventListener('mouseup',   onbuttonup, false);
+  
+    render();                                                       // initial call to render loop.
+</script>

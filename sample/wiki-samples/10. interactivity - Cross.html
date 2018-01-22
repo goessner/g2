@@ -1,0 +1,53 @@
+<canvas id="c" width="300" height="200"></canvas>
+<br>
+<input id="range" type="range" style="min-width:275px;vertical-align:middle;margin:0;padding:0" 
+       min="0" max="360" value="0" step="1" />
+<output id="output" for="range" style="text-align:right;">0</output>
+<script src='g2.js'></script>
+<script>
+    function position(phi) {
+        const sp = Math.sin(phi), cp = Math.cos(phi),
+              xA = a*cp, yA = a*sp,             // calculate current position data ...
+              xB = 2*a*cp, yB = 0,
+              xC = 0, yC = 2*a*sp;
+
+        mec.del()                               // ... and build new mechanism geometry.
+           .ell({x:xA,y:yA,rx:a,ry:this.rx,rot:-phi,lw:2,ld:[12,4,2,4]})
+           .ply({pts:[0,0,xA,yA,xB,yB,xC,yC],lw:5})
+           .beg({...el})
+           .cir({x:xA,y:yA,r:6})
+           .rec({x:xB-20,y:yB-10,b:40,h:20})
+           .cir({x:xB,y:yB,r:6})
+           .rec({x:xC-10,y:yC-20,b:20,h:40})
+           .cir({x:xC,y:yC,r:6})
+           .end();
+    }
+    function setPhi(e) {                        // set user controlled angle.
+        if (dirty = (range.value !== output.value)) {
+            phi = (output.value = range.value)/180*Math.PI;
+        }
+        return true;
+    }
+    function render() {
+        if (dirty) {
+            position(phi);
+            world.exe(ctx);
+            dirty = false;
+        }
+        requestAnimationFrame(render); 
+    }
+    let dirty = true,
+        phi = 0, xA, yA, xB, yB;
+    const ctx = document.getElementById("c").getContext("2d"),
+          range = document.getElementById("range"),
+          output = document.getElementById("output"),
+          el = {fs:"papayawhip",lw:2},          
+          xA0 = 150, yA0 = 150, a = 60, b = 80, e = 0;
+          mec = g2(),                           // dynamic mechanism.
+          world = g2().clr().cartesian().grid() // static world.
+                      .cir({x:xA0, y:yA0, r:2*a, ls:"darkslategray", lw:2, ld:[12,4,2,4]})
+                      .use({grp:mec, x:xA0, y:yA0})
+                      .cir({x:xA0, y:yA0, r:6,...el});
+    range.addEventListener("input",setPhi,false);
+    render();
+</script>

@@ -1,0 +1,8 @@
+<canvas id="c" width="200", height="100"></canvas>
+<script src="g2.js"></script>
+<script>
+    const ctx = document.getElementById("c").getContext("2d"); // define context
+    g2().rec({x:40,y:30,b:120,h:40, // create g2 object, add rectangle
+              ls:"green",fs:"orange",lw:3}) // with style properties.
+        .exe(ctx);  // draw to canvas.
+</script>

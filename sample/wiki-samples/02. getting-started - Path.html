@@ -1,0 +1,21 @@
+<canvas id="c" width="200" height="200"></canvas>
+<script src="g2.js"></script>
+<script>
+    const ctx = document.getElementById("c").getContext("2d"),
+        pi = Math.PI;
+    let umbrella = g2();
+    umbrella.p()                           // make stick
+                .m({x:100,y:10})            // top of shaft
+                .l({x:100,y:150})           // shaft
+                .a({dw:-pi,x:130,y:150})    // handle
+            .stroke({fs:"#690",ls:"#050",lw:8, lj:"round"}) // style stick.
+            .p()                           // make covering
+                .m({x:10,y:80})             // leftmost point
+                .a({dw:pi/3,x:70,y:80})     // three ...
+                .a({dw:pi/3,x:130,y:80})    // ... small ...
+                .a({dw:pi/3,x:190,y:80})    // ... arcs
+                .a({dw:-2*pi/3,x:10,y:80})  // big arc back to leftmost point.
+                .z()                        // close gap
+            .drw({fs:"#690",ls:"#050",lw:8, lj:"round"}) // style covering.
+            .exe(ctx);                      // draw to canvas
+</script>

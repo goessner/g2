@@ -1,0 +1,23 @@
+<canvas id="c1" width="100" height="100"></canvas>
+<canvas id="c2" width="100" height="100"></canvas>
+<script src='g2.js'></script>
+<script>
+    class Circle {
+        constructor(x,y,r) {this.x=x;this.y=y;this.r=r}
+        render(g) {g.cir(this.x,this.y,this.r)}
+    }
+    class Rect {
+        constructor(x,y,b,h) {this.x=x;this.y=y;this.b=b;this.h=h}
+        render(g) {g.rec(this.x,this.y,this.w,this.h)}
+    }
+    const model = [new Circle({x:40,y:60,r:20}),new Rect({x:45,y:25,b:40,h:40})],
+          g = g2().grid(),
+          ctx1 = document.getElementById('c1').getContext('2d'), // view 1
+          ctx2 = document.getElementById('c2').getContext('2d'); // view 2
+
+    for (let i of model) {  // build command queue of ...
+        i.render(g);        // ... model's shapes drawing commands.
+    }
+    g.exe(ctx1);            // render to view 1
+    g.exe(ctx2);            // render to view 2
+</script>

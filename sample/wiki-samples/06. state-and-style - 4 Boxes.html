@@ -1,0 +1,24 @@
+<canvas id="c" width="450" height="100"></canvas>
+<script src='g2.js'></script>
+<script>
+    const ctx=document.getElementById("c").getContext("2d"),
+        fs1={fs:"darkolivegreen",font:"24px serif"},
+        fs2={fs:"steelblue",font:"30px serif"},
+        fs3={...fs2,fs:"midnightblue"};
+    g2().beg({fs:"gainsboro",ls:"firebrick",lw:3,
+            thal:"center",tval:"middle"})
+            .rec({x:20,y:20,b:80,h:50})
+            .txt({str:"one",x:60,y:45,...fs1})
+            .beg({y:-10,fs:"darkseagreen",ls:"cadetblue",lw:5})
+                .rec({x:120,y:20,b:80,h:50})
+                .txt({str:"two",x:160,y:45,...fs2})
+                .beg({ls:"@fs",fs:"cadetblue"})
+                    .rec({x:220,y:20,b:80,h:50})
+                    .txt({str:"three",x:260,y:45,...fs3})
+                .end()
+            .end()
+            .rec({x:320,y:20,b:80,h:50})
+            .txt({str:"four",x:360,y:45,...fs1})
+        .end()    
+        .exe(ctx);
+</script>

@@ -1,0 +1,23 @@
+<canvas id="c" width="100" height="100"></canvas>
+<script src='g2.js'></script>
+<script>
+    const ctx=document.getElementById("c").getContext("2d"),
+          pi = Math.PI, dark = "#444", light = "#eee";
+    g2().beg({x:50,y:50,scl:2,fs:light,ls:dark,lw:2})
+            .cir({x:0,y:0,r:20})
+            .beg({fs:"@ls"})
+                .p()
+                .m({x:0,y:-20})
+                .a({dw:pi,x:0,y:0})
+                .a({dw:-pi,x:0,y:20})
+                .a({dw:-pi,x:0,y:-20})
+                .z()
+                .fill()
+                .cir({x:0,y:-10,r:3})
+                .beg({ls:light,fs:"@ls"})
+                    .cir({x:0,y:10,r:3})
+                .end()
+            .end()
+        .end()
+        .exe(ctx);
+</script>

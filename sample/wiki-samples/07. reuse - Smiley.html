@@ -1,0 +1,14 @@
+<canvas id="c" width="200" height="100"></canvas>
+<script src='g2.js'></script>
+<script>
+    const ctx=document.getElementById("c").getContext("2d");
+    let smiley = g2().cir({x:0,y:0,r:5})  // set smiley origin in its center !
+                     .arc({x:0,y:0,r:3,w:0.8,dw:2})
+                     .beg({fs:"snow"})    // snow colored eyes.
+                        .cir({x:-2,y:-1,r:1})
+                        .cir({x:2,y:-1,r:1})
+                     .end();
+    g2().use({grp:smiley,x:50,y:50,scl:4,lw:0.75,fs:"yellow"})
+        .use({grp:smiley,x:150,y:50,scl:5,lw:0.4,fs:"orange",ls:"green"})
+        .exe(ctx);
+</script>
