@@ -82,7 +82,11 @@ g2.prototype = {
  * @returns {g2} this
  */
     del: function del(idx) { this.commands.length = idx || 0; return this; },
-    ins: function(fn) { return fn && fn(this) || this; },
+    ins: function(fn) {
+        return typeof fn === 'function' ? (fn(this) || this)
+             : typeof fn === 'object'   ? ( this.commands.push({c:'ins',a:fn}), this )
+             : this;
+    },
     exe: function(ctx) {
         let handler = g2.handler(ctx);
         if (handler && handler.init(this))
@@ -100,7 +104,7 @@ g2.prototype = {
                 }
             if (this[c].prototype) a.__proto__ = this[c].prototype;
         }
-        this.commands.push(arguments[0]);
+        this.commands.push(a ? {c,a} : {c});
         return this;
     }
 };
@@ -155,7 +159,6 @@ g2.mixin = function mixin(obj, ...protos) {
     return obj;
 }
 
-
 /**
  * Copy properties, even as getters
  * @private
@@ -191,7 +194,7 @@ g2.canvasHdl.prototype = {
     },
     exe: function(commands) {
         for (let cmd of commands) {
-            if (this[cmd.c])
+            if (cmd.c && this[cmd.c])
                 this[cmd.c](cmd.a);
             else if (cmd.a && 'g2' in cmd.a)
                 this.exe(cmd.a.g2().commands);
@@ -328,13 +331,15 @@ g2.canvasHdl.prototype = {
     },
     beg: function({x,y,w,scl,matrix,unsizable}) {
         let trf = matrix;
+        x = x || 0;
+        y = y || 0;
         if (!trf) {
             let ssw, scw;
             w = w || 0;
             scl = scl || 1;
             ssw = w ? Math.sin(w)*scl : 0;
             scw = w ? Math.cos(w)*scl : scl; 
-            trf = [scw,ssw,-ssw,scw,x||0,y||0];
+            trf = [scw,ssw,-ssw,scw,x,y];
         }
         this.pushStyle(arguments[0]);
         this.pushTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
