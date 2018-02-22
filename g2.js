@@ -35,11 +35,8 @@ g2.prototype = {
  * @param {param} [param] parameter object (optional).
  * @returns {g2} this
  */
-    clr: function clr({b,h}={}) { return this.addCommand({c:'clr',a:arguments[0]}); },
-    cartesian: function cartesian({off}={}) { return this.addCommand({c:'cartesian',a:arguments[0]}); },
-    pan: function pan({dx,dy}) { return this.addCommand({c:'pan',a:arguments[0]}); },
-    zoom: function zoom({scl,x,y}) { return this.addCommand({c:'zoom',a:arguments[0]}); },
-    view: function view({scl,x,y}) { return this.addCommand({c:'view',a:arguments[0]}); },
+    clr: function clr() { return this.addCommand({c:'clr'}); },
+    view: function view({scl,x,y,cartesian}) { return this.addCommand({c:'view',a:arguments[0]}); },
     grid: function grid({color,size}={}) { return this.addCommand({c:'grid',a:arguments[0]}); },
     cir: function cir({x,y,r}) { return this.addCommand({c:'cir',a:arguments[0]}); },
     ell: function ell({x,y,rx,ry,w,dw,rot}) { return this.addCommand({c:'ell',a:arguments[0]}); },
@@ -60,7 +57,15 @@ g2.prototype = {
     },
     img: function img({uri,x,y,w,b,h,xoff,yoff,dx,dy}) { return this.addCommand({c:'img',a:arguments[0]}); },
     beg: function beg({x,y,w,scl,matrix}={}) { return this.addCommand({c:'beg',a:arguments[0]}); },
-    end: function end() { return this.addCommand({c:'end',a:{}}); },
+    end: function end() { // ignore 'end' commands without matching 'beg'
+        let myBeg = 1, 
+            findMyBeg = (cmd) => { 
+                if      (cmd.c === 'beg') myBeg--;
+                else if (cmd.c === 'end') myBeg++;
+                return myBeg === 0;
+            }
+        return g2.getCmdIdx(this.commands,findMyBeg) !== false ? this.addCommand({c:'end'}) : this;
+    },
     p: function p() { return this.addCommand({c:'p'}); },
     z: function z() { return this.addCommand({c:'z'}); },
     m: function m({x,y}) { return this.addCommand({c:'m',a:arguments[0]}); },
@@ -82,7 +87,11 @@ g2.prototype = {
  * @returns {g2} this
  */
     del: function del(idx) { this.commands.length = idx || 0; return this; },
-    ins: function(fn) { return fn && fn(this) || this; },
+    ins: function(fn) {
+        return typeof fn === 'function' ? (fn(this) || this)
+             : typeof fn === 'object'   ? ( this.commands.push({c:'ins',a:fn}), this )
+             : this;
+    },
     exe: function(ctx) {
         let handler = g2.handler(ctx);
         if (handler && handler.init(this))
@@ -100,7 +109,7 @@ g2.prototype = {
                 }
             if (this[c].prototype) a.__proto__ = this[c].prototype;
         }
-        this.commands.push(arguments[0]);
+        this.commands.push(a ? {c,a} : {c});
         return this;
     }
 };
@@ -155,7 +164,6 @@ g2.mixin = function mixin(obj, ...protos) {
     return obj;
 }
 
-
 /**
  * Copy properties, even as getters
  * @private
@@ -191,23 +199,15 @@ g2.canvasHdl.prototype = {
     },
     exe: function(commands) {
         for (let cmd of commands) {
-            if (this[cmd.c])
+            if (cmd.c && this[cmd.c])
                 this[cmd.c](cmd.a);
             else if (cmd.a && 'g2' in cmd.a)
                 this.exe(cmd.a.g2().commands);
         }
     },
-    cartesian: function({off}={}) {
-        this.pushTrf(off ? [1,0,0,1,0,0] : [1,0,0,-1,0,this.ctx.canvas.height-1]);  // magic .. !
-    },
-    pan: function({dx,dy}) {
-        this.pushTrf([1,0,0,1,dx,dy]);
-    },
-    zoom: function({x,y,scl}) {
-        this.pushTrf([scl,0,0,scl,(1-scl)*x,(1-scl)*y]);
-    },
-    view: function({x,y,scl}) {
-        this.pushTrf([scl,0,0,scl,x,y]);
+    view: function({x=0,y=0,scl=1,cartesian=false}) {
+        this.pushTrf(cartesian ? [scl,0,0,-scl,x,this.ctx.canvas.height-1-y]
+                               : [scl,0,0,scl,x,y] );
     },
     grid: function({color,size}={}) {
         let ctx = this.ctx, b = ctx.canvas.width, h = ctx.canvas.height,
@@ -328,13 +328,15 @@ g2.canvasHdl.prototype = {
     },
     beg: function({x,y,w,scl,matrix,unsizable}) {
         let trf = matrix;
+        x = x || 0;
+        y = y || 0;
         if (!trf) {
             let ssw, scw;
             w = w || 0;
             scl = scl || 1;
             ssw = w ? Math.sin(w)*scl : 0;
             scw = w ? Math.cos(w)*scl : scl; 
-            trf = [scw,ssw,-ssw,scw,x||0,y||0];
+            trf = [scw,ssw,-ssw,scw,x,y];
         }
         this.pushStyle(arguments[0]);
         this.pushTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
@@ -526,7 +528,8 @@ g2.canvasHdl.prototype = {
 
 // utils
 
-// fn argument must be a function with (optional) timestamp 't' as single argument
+g2.zoomView = function({scl,x,y}) { return { scl, x:(1-scl)*x, y:(1-scl)*y } }
+    // fn argument must be a function with (optional) timestamp 't' as single argument
 // returning true to continue or false to stop RAF.
 g2.render = function render(fn) {
     function animate(t) {
