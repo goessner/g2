@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Insert</title>
+</head>
+
+<body>
+<script src="../g2.js"></script>
+<script>
+const pi = Math.PI, 
+      wheel = g2().cir({x:0,y:0,r:15})
+                    .cir({x:0,y:0,r:3,fs:"@ls"}),
+      car   = g2().p()
+                    .m({x:-75,y:20})
+                    .a({dw:-5*pi/6,x:35,y:50})
+                    .a({dw:-pi/2,x:75,y:20})
+                    .z()
+                  .drw()
+                  .use({grp:wheel,x:-40,y:20,fs:"snow",lw:3})
+                  .use({grp:wheel,x: 40,y:20,fs:"#9c9",lw:3}),
+     cs = [];        
+function createCanvas() {
+    cs.push({}), cur = cs.length-1
+    cs[cur].c = document.createElement("canvas");
+    cs[cur].ctx = cs[cur].c.getContext("2d");
+    cs[cur].c.style.border = "solid";
+    document.body.appendChild(cs[cur].c);
+}
+
+g2().view({cartesian: true})
+    .ins(createCanvas())    // g2 can create it's own canvas!
+    .use({grp:car,x:100,y:25,ls:"#900",fs:"#f4a460",lw:4})
+    .exe(cs[0].ctx)         // draw to that canvas
+    .ins(document.body.appendChild(document.createElement("br")))
+    .ins(createCanvas())    // create a new canvas after embedded linebreak
+    .ins(cs[1].c.width = 400)
+    .use({grp:car,x:300,y:25,scl:0.75,ls:"green",fs:"orange",lw:4})
+    .exe(cs[1].ctx)    
+    
+</script>
+</body>
+</html>
