@@ -1,0 +1,12 @@
+<canvas id="c1" width="200" height="100"></canvas>
+<canvas id="c2" width="200" height="100"></canvas>
+<script src='g2.js'></script>
+<script>
+   const star = "M100,10L123.5,82.4L61,37.6L138,37.6L76.5,82.4Z",
+         ctx1 = document.getElementById("c1").getContext("2d"),
+         ctx2 = document.getElementById("c2").getContext("2d");
+    g2().zoom({scl:2.5,x:150,y:50}).exe(ctx2);
+    g2().drw({d:star,lw:4,ls:"#080",fs:"#0f0",sh:[8,8,8,"black"]})
+        .exe(ctx1)
+        .exe(ctx2)  
+</script>

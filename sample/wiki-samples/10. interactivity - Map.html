@@ -1,0 +1,36 @@
+<canvas id="c" width="200" height="200"></canvas>
+<script src='g2.js'></script>
+<script>
+    // Pan the view when user moves the pointer with any button pressed.
+    function onmove(e) {
+        if (e.buttons !== undefined ? e.buttons : (e.which || e.button)) {
+            const dx = e.movementX || e.mozMovementX || e.webkitMovementX || 0,
+                  dy = e.movementY || e.mozMovementY || e.webkitMovementY || 0;
+                  g.pan({dx,dy});                             // g2.pan uses device coordinates
+        dirty = true;
+        }
+    }
+    // Zoom the view when user uses the mouse wheel.
+    function onwheel(e) { 
+        const delta = Math.max(-1,Math.min(1,e.deltaY||e.wheelDelta)),
+              x = e.clientX - Math.floor(viewport.left),
+              y = e.clientY - Math.floor(viewport.top);
+        g.zoom({scl:delta>0?9/10:10/9,x:x,y:y});              // g2.zoom again uses device coordinates
+        dirty = true;
+    }
+    // Render the view on user action ..
+    function render() {
+        dirty = dirty && !g.exe(ctx);
+        requestAnimationFrame(render); 
+    }                                           
+    let dirty = true;                                         // render only on user action ...
+    const ctx = document.getElementById("c").getContext("2d"),
+          viewport = ctx.canvas.getBoundingClientRect(),      // viewport size ..
+          map = "M 163 1 C 162.6 1.6 162.3 ...",              // map as SVG path data string ..
+    g = g2().clr().grid()
+            .drw({d:map, ls:"#666", fs:"orange", lw:2, lc:"round", lj:"round"});
+ 
+    ctx.canvas.addEventListener("mousemove", onmove, false);  // listen to pan event ..
+    ctx.canvas.addEventListener("wheel", onwheel, false);     // listen to zoom event ..
+    render();
+</script>

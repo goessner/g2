@@ -1,0 +1,20 @@
+<canvas id="c" width="400" height="120"></canvas>
+<script src="g2.js"></script>
+<script>
+    const ctx = document.getElementById("c").getContext("2d"),
+        pi = Math.PI, 
+        wheel = g2().cir({x:0,y:0,r:15})
+                    .cir({x:0,y:0,r:3,fs:"@ls"}),
+        car   = g2().p()
+                        .m({x:-75,y:20})
+                        .a({dw:-5*pi/6,x:35,y:50})
+                        .a({dw:-pi/2,x:75,y:20})
+                        .z()
+                    .drw()
+                    .use({grp:wheel,x:-40,y:20,fs:"snow",lw:3})
+                    .use({grp:wheel,x: 40,y:20,fs:"#9c9",lw:3});
+    g2().cartesian()
+        .use({grp:car,x:100,y:25,ls:"#900",fs:"#f4a460",lw:4})
+        .use({grp:car,x:300,y:25,scl:0.75,ls:"green",fs:"orange",lw:4})
+        .exe(ctx);
+</script>

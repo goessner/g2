@@ -1,0 +1,9 @@
+<canvas id="c" width="100" height="100"></canvas>
+<script src='g2.js'></script>
+<script>
+const ctx=document.getElementById("c").getContext("2d"),
+      style={ls:"red",lw:3,fs:"ddd"};
+      g2().rec({x:20,y:10,b:60,h:30,ls:'maroon',fs:'khaki'})
+          .cir({x:50,y:75,r:20,lw:2,ld:[6,3],fs:'orange'})
+          .exe(ctx)
+</script>
