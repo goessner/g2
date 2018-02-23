@@ -1,0 +1,14 @@
+<canvas id="c" width=200, height=100 style="border:1px solid black"></canvas>
+<script src="./g2.js"></script>
+<script>
+const ctx = document.getElementById("c").getContext("2d"),
+      node = { fill:'lime', g2() { return g2().cir({x:160,y:50,r:15,fs:this.fill,lw:4,sh:[8,8,8,"gray"]})} };
+let   color = 'red';
+   
+g2().cir({x:40,y:50,r:15,fs:color,lw:4,sh:[8,8,8,"gray"]})
+  .ins(()=>{color='green'})
+  .cir({x:80,y:50,r:15,fs:color,lw:4,sh:[8,8,8,"gray"]})
+  .ins((g)=>g.cir({x:120,y:50,r:15,fs:'orange',lw:4,sh:[8,8,8,"gray"]}))
+  .ins(node)
+  .exe(ctx)
+</script>

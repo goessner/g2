@@ -1,0 +1,37 @@
+<canvas id="c1" width=200, height=200 style="border:1px solid black"></canvas>
+<canvas id="c2" width=200, height=200 style="border:1px solid black"></canvas>
+<script src="./g2.js"></script>
+<script>
+    const pi = Math.PI,
+          ctx1 = document.getElementById('c1').getContext('2d'),
+          ctx2 = document.getElementById('c2').getContext('2d'),
+          world = g2().rec({x:0,y:0,b:200,h:200,fs:"skyblue"})
+                      .ply({pts:[0,100,40,80,50,70,60,75,70,75,80,60,90,50,100,50,105,75,120,90,130,95,140,90,150,95,160,85,170,95,190,70,200,75,200,150,0,150],fs:"burlywood"})
+                      .rec({x:0,y:0,b:200,y:150,fs:"limegreen"}),
+          tree = g2().rec({x:-5,y:0,b:10,h:40,fs:"brown"})
+                     .beg({fs:"forestgreen"})
+                        .cir({x:15,y:-20,r:10})    // right
+                        .cir({x:10,y:-10,r:10})    // bottom-right
+                        .cir({x:0,y:-5,r:10})      // bottom
+                        .cir({x:-10,y:-10,r:10})   // bottom-left
+                        .cir({x:-15,y:-20,r:10})   // left
+                        .cir({x:-10,y:-32.5,r:10}) // top-left
+                        .cir({x:0,y:-35,r:10})     // top
+                        .cir({x:10,y:-32.5,r:10})  // top-right
+                        .cir({x:0,y:-20,r:20,ls:"transparent"})
+                     .end();
+
+    g2().use({grp:world,x:0,y:0})
+        .use({grp:tree,x:100,y:150})
+        .exe(ctx1)
+        .use({grp:tree,x:170,y:140})   
+        .use({grp:tree,x:10,y:150})
+        .use({grp:tree,x:150,y:150})             
+        .use({grp:tree,x:60,y:160})
+        .use({grp:tree,x:30,y:175})
+        .use({grp:tree,x:130,y:175})
+        .use({grp:tree,x:80,y:190})
+        .use({grp:tree,x:50,y:200})
+        .use({grp:tree,x:190,y:170})        
+        .exe(ctx2)
+</script>
