@@ -65,26 +65,13 @@ g2.symbol.origin = function() {
               .end();
 }();
 
-/**
- * Replacement for Object.assign, as it does not assign getters and setter properly ...
- * See https://medium.com/@benastontweet/mixins-in-javascript-700ec81f5e5c
- */
-g2.mixin = function mixin(obj, ...protos) {
-    protos.forEach(p => {
-        Object.keys(p).forEach(k => {
-            Object.defineProperty(obj, k, Object.getOwnPropertyDescriptor(p, k));
-        })
-    })
-    return obj;
-}
-
 // prototypes for extending argument objects
 
 g2.prototype.lin.prototype = {
     get dx() { return this.x2 - this.x1; },
     get dy() { return this.y2 - this.y1; },
     get len() { return Math.hypot(this.dx,this.dy); },
-    pointAt: function(loc) {
+    pointAt(loc) {
        let t = loc==="beg" ? 0 
              : loc==="end" ? 1 
              : (loc+0 === loc) ? loc 
@@ -95,18 +82,13 @@ g2.prototype.lin.prototype = {
                 dx: len ? this.dx/len : 1,
                 dy: len ? this.dy/len : 0
        };
-    },
-    hit: function({x,y,eps}) {
-        let dx = this.dx, dy = this.dy, dx2 = x - this.x1, dy2 = y - this.y2,
-            dot = dx*dx2 + dy*dy2, perp = dx*dy2 - dy*dx2;
-        return -eps < perp && perp < eps && -eps < dot && dot < this.len;
     }
- };
+};
 
- g2.prototype.rec.prototype = {
+g2.prototype.rec.prototype = {
     dir: { c:[0,0,1],e:[1,0,1],ne:[1,1,Math.SQRT2],n:[0,1,1],nw:[-1,1,Math.SQRT2],w:[-1,0,1],sw:[-1,-1,Math.SQRT2],s:[0,-1,1],se:[1,-1,Math.SQRT2] },
     get len() { return 2*(this.b+this.h); },
-    pointAt: function(loc) {
+    pointAt(loc) {
        var q = this.dir[loc || "c"] || this.dir['c'], nx = q[0], ny = q[1];
        return { x: this.x + (1 + nx)*this.b/2,
                 y: this.y + (1 + ny)*this.h/2,
@@ -114,11 +96,11 @@ g2.prototype.lin.prototype = {
                 dy:  nx/q[2]
        };
     }
- };
- g2.prototype.cir.prototype = {
+};
+g2.prototype.cir.prototype = {
     dir: { c:[0,0],e:[1,0],ne:[Math.SQRT2/2,Math.SQRT2/2],n:[0,1],nw:[-Math.SQRT2/2,Math.SQRT2/2],w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
     get len() { return 2*Math.PI*this.r; },
-    pointAt: function(loc) {
+    pointAt(loc) {
        var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)] 
                                : this.dir[loc || "c"],
            nx = q[0], ny = q[1];
@@ -127,11 +109,11 @@ g2.prototype.lin.prototype = {
                        dx: -ny, 
                        dy:  nx });
     }
- };
- g2.prototype.arc.prototype = {
+};
+g2.prototype.arc.prototype = {
     get len() { return Math.abs(this.r*this.dw); },
     get angle() { return this.dw/Math.PI*180; },
-    pointAt: function(loc) {
+    pointAt(loc) {
        var t = loc==="beg" ? 0 
              : loc==="end" ? 1 
              : loc==="mid" ? 0.5 
@@ -144,19 +126,19 @@ g2.prototype.lin.prototype = {
                 dy:  cang
        };
     }
- };
- g2.prototype.use.prototype = {
+};
+g2.prototype.use.prototype = {
     dir: g2.prototype.cir.prototype.dir,
     get r() { return 5; },
     pointAt: g2.prototype.cir.prototype.pointAt
- };
- 
+};
+
 
 // complex macros / add prototypes to argument objects
 
 g2.prototype.vec = function vec({}) { return this.addCommand({c:'vec',a:arguments[0]}); }
 g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
-    macro: function() {
+    g2() {
         let {x1,y1,x2,y2,lw} = this;
         let z = 2+(lw||1), dx = x2-x1, dy = y2-y1, r = Math.hypot(dx,dy),
         args = Object.assign({},{x:x1,y:y1,w:Math.atan2(dy,dx),lc:"round",lj:"round"},this);
@@ -189,7 +171,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
  */
 g2.prototype.dim = function dim({}) { return this.addCommand({c:'dim',a:arguments[0]}); }
 g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
-    macro: function() {
+    g2() {
         let {x1,y1,x2,y2,lw,ls} = this, sz = Math.round((lw||1)/2)+4,
             dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy),
             args = Object.assign({lc:"round",lj:"round"},{x:x1,y:y1,w:Math.atan2(dy,dx)},this);
@@ -219,7 +201,7 @@ g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
  */
 g2.prototype.adim = function adim({}) { return this.addCommand({c:'adim',a:arguments[0]}); }
 g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
-    macro: function() {
+    g2: function() {
         let {x,y,r,w,dw,lw,ls} = this, sz = Math.round((lw||1)/2)+4,
             ri = r - sz, ra = r + sz,
             args = Object.assign({lc:"round",lj:"round"},this,{w:0,fs:'transparent'});
@@ -235,7 +217,7 @@ g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
  
 g2.prototype.spline = function spline({}) { return this.addCommand({c:'spline',a:arguments[0]}); }
 g2.prototype.spline.prototype = {
-    macro: function() {
+    g2: function() {
         let args = Object.assign({},this), {pts,closed,x,y,w} = args, itr = g2.pntItrOf(pts), gbez;
         if (itr) {
             let b = [], i, n = itr.len,
@@ -302,7 +284,7 @@ g2.prototype.label = function label({}) {
     return this;
 }
 g2.prototype.label.prototype = {
-    macro: function() {
+    g2() {
         let {_refelem,str,loc,off,fs,font} = this,
             p = _refelem.a.pointAt(loc),
             xoff, yoff,

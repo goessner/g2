@@ -6,7 +6,7 @@
  * create a g2object
  * https://github.com/goessner/g2/wiki
  */
-function g2():g2;
+declare function g2():g2;
 
 interface coordinate {
     x: number;
@@ -54,10 +54,10 @@ interface text {        str: string;}
 interface g2object {    grp: g2;}
 interface uri {         uri: string;}
 interface matrix {      matrix: number[]}
-interface svg {    
+interface svg {
     /*
      * Draw a SVG Path.
-     */ 
+     */
    d: string;}
 
 interface view extends  coordinate, scale, cartesian {}

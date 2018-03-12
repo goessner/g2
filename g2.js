@@ -35,29 +35,29 @@ g2.prototype = {
  * @param {param} [param] parameter object (optional).
  * @returns {g2} this
  */
-    clr: function clr() { return this.addCommand({c:'clr'}); },
-    view: function view({scl,x,y,cartesian}) { return this.addCommand({c:'view',a:arguments[0]}); },
-    grid: function grid({color,size}={}) { return this.addCommand({c:'grid',a:arguments[0]}); },
-    cir: function cir({x,y,r}) { return this.addCommand({c:'cir',a:arguments[0]}); },
-    ell: function ell({x,y,rx,ry,w,dw,rot}) { return this.addCommand({c:'ell',a:arguments[0]}); },
-    arc: function arc({x,y,r,w,dw}) { return this.addCommand({c:'arc',a:arguments[0]}); },
-    rec: function rec({x,y,b,h}) { return this.addCommand({c:'rec',a:arguments[0]}); },
-    lin: function lin({x1,y1,x2,y2}) { return this.addCommand({c:'lin',a:arguments[0]}); },
-    ply: function ply({pts,closed,x,y,w}) {
+    clr() { return this.addCommand({c:'clr'}); },
+    view({scl,x,y,cartesian}) { return this.addCommand({c:'view',a:arguments[0]}); },
+    grid({color,size}={}) { return this.addCommand({c:'grid',a:arguments[0]}); },
+    cir({x,y,r,w}) { return this.addCommand({c:'cir',a:arguments[0]}); },
+    ell({x,y,rx,ry,w,dw,rot}) { return this.addCommand({c:'ell',a:arguments[0]}); },
+    arc({x,y,r,w,dw}) { return this.addCommand({c:'arc',a:arguments[0]}); },
+    rec({x,y,b,h}) { return this.addCommand({c:'rec',a:arguments[0]}); },
+    lin({x1,y1,x2,y2}) { return this.addCommand({c:'lin',a:arguments[0]}); },
+    ply({pts,closed,x,y,w}) {
         arguments[0]._itr = g2.pntItrOf(pts);
         return this.addCommand({c:'ply',a:arguments[0]});
     },
-    txt: function txt({str,x,y,w}) { return this.addCommand({c:'txt',a:arguments[0]}); },
-    use: function use({grp,x,y,w,scl}) {
+    txt({str,x,y,w}) { return this.addCommand({c:'txt',a:arguments[0]}); },
+    use({grp,x,y,w,scl}) {
         if (typeof grp === "string")  // must be a member name of the 'g2.symbol' namespace
             arguments[0].grp = grp = g2.symbol[grp];
         if (grp && grp !== this)      // avoid self reference ..
             this.addCommand({c:'use',a:arguments[0]});
         return this;
     },
-    img: function img({uri,x,y,w,b,h,xoff,yoff,dx,dy}) { return this.addCommand({c:'img',a:arguments[0]}); },
-    beg: function beg({x,y,w,scl,matrix}={}) { return this.addCommand({c:'beg',a:arguments[0]}); },
-    end: function end() { // ignore 'end' commands without matching 'beg'
+    img({uri,x,y,w,b,h,xoff,yoff,dx,dy}) { return this.addCommand({c:'img',a:arguments[0]}); },
+    beg({x,y,w,scl,matrix}={}) { return this.addCommand({c:'beg',a:arguments[0]}); },
+    end() { // ignore 'end' commands without matching 'beg'
         let myBeg = 1, 
             findMyBeg = (cmd) => { 
                 if      (cmd.c === 'beg') myBeg--;
@@ -66,50 +66,41 @@ g2.prototype = {
             }
         return g2.getCmdIdx(this.commands,findMyBeg) !== false ? this.addCommand({c:'end'}) : this;
     },
-    p: function p() { return this.addCommand({c:'p'}); },
-    z: function z() { return this.addCommand({c:'z'}); },
-    m: function m({x,y}) { return this.addCommand({c:'m',a:arguments[0]}); },
-    l: function l({x,y}) { return this.addCommand({c:'l',a:arguments[0]}); },
-    q: function q({x1,y1,x,y}) { return this.addCommand({c:'q',a:arguments[0]});},
-    c: function c({x1,y1,x2,y2,x,y}) { return this.addCommand({c:'c',a:arguments[0]}); },
-    a: function a({dw,x,y}) {
+    p() { return this.addCommand({c:'p'}); },
+    z() { return this.addCommand({c:'z'}); },
+    m({x,y}) { return this.addCommand({c:'m',a:arguments[0]}); },
+    l({x,y}) { return this.addCommand({c:'l',a:arguments[0]}); },
+    q({x1,y1,x,y}) { return this.addCommand({c:'q',a:arguments[0]});},
+    c({x1,y1,x2,y2,x,y}) { return this.addCommand({c:'c',a:arguments[0]}); },
+    a({dw,x,y}) {
         let prvcmd = this.commands[this.commands.length-1];
         g2.cpyProp(prvcmd.a,'x',arguments[0],'_xp');
         g2.cpyProp(prvcmd.a,'y',arguments[0],'_yp');
         return this.addCommand({c:'a',a:arguments[0]});
     },
-    stroke: function stroke({d}={}) { return this.addCommand({c:'stroke',a:arguments[0]}); },
-    fill: function fill({d}={}) { return this.addCommand({c:'fill',a:arguments[0]}); },
-    drw: function drw({d}={}) { return this.addCommand({c:'drw',a:arguments[0]}); },
+    stroke({d}={}) { return this.addCommand({c:'stroke',a:arguments[0]}); },
+    fill({d}={}) { return this.addCommand({c:'fill',a:arguments[0]}); },
+    drw({d}={}) { return this.addCommand({c:'drw',a:arguments[0]}); },
 /**
  * Delete all commands beginning from `idx` to end of command queue.<br>
  * @method
  * @returns {g2} this
  */
-    del: function del(idx) { this.commands.length = idx || 0; return this; },
-    ins: function(fn) {
+    del(idx) { this.commands.length = idx || 0; return this; },
+    ins(fn) {
         return typeof fn === 'function' ? (fn(this) || this)
-             : typeof fn === 'object'   ? ( this.commands.push({c:'ins',a:fn}), this )
+             : typeof fn === 'object'   ? ( this.commands.push({c:'ins',a:fn}), this ) // no 'addCommand' .. !
              : this;
     },
-    exe: function(ctx) {
+    exe(ctx) {
         let handler = g2.handler(ctx);
         if (handler && handler.init(this))
            handler.exe(this.commands);
         return this;
     },
     // helpers ...
-    addCommand: function({c,a}) {
-        if (a) {
-            for (let key in a)
-                if (!Object.getOwnPropertyDescriptor(a,key).get &&  // if no getter ... and
-                    key[0] !== '_' &&                               // no private property ... and
-                    typeof a[key] === 'function') {                 // a function
-                    Object.defineProperty(a, key, { get:a[key], enumerable:true, configurable:true, writabel:false });
-                }
-            if (this[c].prototype) a.__proto__ = this[c].prototype;
-        }
-        this.commands.push(a ? {c,a} : {c});
+    addCommand({c,a}) {
+        this.commands.push(a ? g2.refineCmdArgs(arguments[0]) : {c});
         return this;
     }
 };
@@ -150,6 +141,20 @@ g2.getCmdIdx = function(cmds,callbk) {
             return i;
     return false;  // command with index '0' signals 'failing' ...
 };
+/**
+ * refine command arguments object.
+ * @private
+ */
+g2.refineCmdArgs = function({c,a}) {
+    for (let key in a)
+        if (!Object.getOwnPropertyDescriptor(a,key).get &&  // if no getter ... and
+            key[0] !== '_' &&                               // no private property ... and
+            typeof a[key] === 'function') {                 // a function
+            Object.defineProperty(a, key, { get:a[key], enumerable:true, configurable:true, writabel:false });
+        }
+    if (g2.prototype[c].prototype) a.__proto__ = g2.prototype[c].prototype;
+    return arguments[0];
+}
 
 /**
  * Replacement for Object.assign, as it does not assign getters and setter properly ...
@@ -191,13 +196,13 @@ g2.handler.factory.push((ctx) => ctx instanceof g2.canvasHdl ? ctx
                                : ctx instanceof CanvasRenderingContext2D ? g2.canvasHdl(ctx) : false);
 
 g2.canvasHdl.prototype = {
-    init: function(grp,style) {
+    init(grp,style) {
         this.stack.length = 1;
         this.matrix.length = 1;
         this.initStyle(style ? Object.assign({},this.cur,style) : this.cur);
         return true;
     },
-    exe: function(commands) {
+    exe(commands) {
         for (let cmd of commands) {
             if (cmd.c && this[cmd.c])
                 this[cmd.c](cmd.a);
@@ -205,11 +210,11 @@ g2.canvasHdl.prototype = {
                 this.exe(cmd.a.g2().commands);
         }
     },
-    view: function({x=0,y=0,scl=1,cartesian=false}) {
+    view({x=0,y=0,scl=1,cartesian=false}) {
         this.pushTrf(cartesian ? [scl,0,0,-scl,x,this.ctx.canvas.height-1-y]
                                : [scl,0,0,scl,x,y] );
     },
-    grid: function({color,size}={}) {
+    grid({color,size}={}) {
         let ctx = this.ctx, b = ctx.canvas.width, h = ctx.canvas.height,
             {x,y,scl} = this.uniTrf,
             sz = size || this.gridSize(scl),
@@ -224,26 +229,26 @@ g2.canvasHdl.prototype = {
         ctx.stroke();
         ctx.restore();
     },
-    clr: function({b,h}={}) { 
+    clr({b,h}={}) { 
         let ctx = this.ctx;
         ctx.save();
         ctx.setTransform(1,0,0,1,0,0);
         ctx.clearRect(0,0,b||ctx.canvas.width,h||ctx.canvas.height);
         ctx.restore();
     },
-    cir: function({x,y,r}) {
+    cir({x,y,r}) {
         this.ctx.beginPath();
         this.ctx.arc(x||0,y||0,Math.abs(r),0,2*Math.PI,true);
         this.drw(arguments[0]);
     },
-    arc: function({x,y,r,w,dw}) {
+    arc({x,y,r,w,dw}) {
         w = w||0;
         dw = dw||2*Math.PI;
         this.ctx.beginPath();
         this.ctx.arc(x||0,y||0,Math.abs(r),w,w+dw,dw<0);
         this.drw(arguments[0]);
     },
-    ell: function({x,y,rx,ry,w,dw,rot}) {
+    ell({x,y,rx,ry,w,dw,rot}) {
         ry = ry||rx;
         w = w||0;
         dw = dw||2*Math.PI;
@@ -252,7 +257,7 @@ g2.canvasHdl.prototype = {
         this.ctx.ellipse(x||0,y||0,Math.abs(rx),Math.abs(ry),rot,w,w+dw,dw<0);
         this.drw(arguments[0]);
     },
-    rec: function({x,y,b,h}) { 
+    rec({x,y,b,h}) { 
         let tmp = this.setStyle(arguments[0]);
         h = h || b;
         x = x || 0;
@@ -261,7 +266,7 @@ g2.canvasHdl.prototype = {
         this.ctx.strokeRect(x,y,b,h);
         this.resetStyle(tmp);
     },
-    lin: function({x1,y1,x2,y2}) {
+    lin({x1,y1,x2,y2}) {
         let ctx = this.ctx;
         ctx.beginPath()
         ctx.moveTo(x1,y1);
@@ -281,7 +286,7 @@ g2.canvasHdl.prototype = {
         if (istrf) this.resetTrf();
         return i-1;  // number of points ..
     },
-    txt: function({str,x,y,w,unsizable}) {
+    txt({str,x,y,w,unsizable}) {
         x = x || 0; y = y || 0;
         let tmp = this.setStyle(arguments[0]), 
             sw = w ? Math.sin(w) : 0, 
@@ -297,7 +302,7 @@ g2.canvasHdl.prototype = {
         this.resetTrf();
         this.resetStyle(tmp);
     },
-    img: function({uri,x,y,w,scl,xoff,yoff}) {
+    img({uri,x,y,w,scl,xoff,yoff}) {
         const getImg = (uri) => {
             let img = new Image();
             img.src = uri;
@@ -321,12 +326,12 @@ g2.canvasHdl.prototype = {
 
         this.resetTrf();
     },
-    use: function({grp}) {
+    use({grp}) {
         this.beg(arguments[0]);
         this.exe(grp.commands);
         this.end();
     },
-    beg: function({x,y,w,scl,matrix,unsizable}) {
+    beg({x,y,w,scl,matrix,unsizable}) {
         let trf = matrix;
         x = x || 0;
         y = y || 0;
@@ -341,17 +346,17 @@ g2.canvasHdl.prototype = {
         this.pushStyle(arguments[0]);
         this.pushTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
     },
-    end: function() {
+    end() {
         this.popTrf();
         this.popStyle();
     },
-    p: function() { this.ctx.beginPath(); },
-    z: function() { this.ctx.closePath(); },
-    m: function({x,y}) { this.ctx.moveTo(x,y); },
-    l: function({x,y}) { this.ctx.lineTo(x,y); },
-    q: function({x,y,x1,y1}) { this.ctx.quadraticCurveTo(x1,y1,x,y); },
-    c: function({x,y,x1,y1,x2,y2}) { this.ctx.bezierCurveTo(x1,y1,x2,y2,x,y); },
-    a: function({dw,x,y,_xp,_yp}) {
+    p() { this.ctx.beginPath(); },
+    z() { this.ctx.closePath(); },
+    m({x,y}) { this.ctx.moveTo(x,y); },
+    l({x,y}) { this.ctx.lineTo(x,y); },
+    q({x,y,x1,y1}) { this.ctx.quadraticCurveTo(x1,y1,x,y); },
+    c({x,y,x1,y1,x2,y2}) { this.ctx.bezierCurveTo(x1,y1,x2,y2,x,y); },
+    a({dw,x,y,_xp,_yp}) {
         if (dw > Number.EPSILON && dw < 2*Math.PI || dw < -Number.EPSILON && dw > -2*Math.PI) {
             let dx = x - _xp, dy = y - _yp, tdw_2 = Math.tan(dw/2),
                 rx = (dx - dy/tdw_2)/2, ry = (dy + dx/tdw_2)/2,
@@ -361,17 +366,17 @@ g2.canvasHdl.prototype = {
         else
             this.ctx.lineTo(x,y);
     },
-    stroke: function({d}={}) {
+    stroke({d}={}) {
         let tmp = this.setStyle(arguments[0]);
         d ? this.ctx.stroke(new Path2D(d)) : this.ctx.stroke();  // SVG path syntax 
         this.resetStyle(tmp);
     },
-    fill: function({d}={}) {
+    fill({d}={}) {
         let tmp = this.setStyle(arguments[0]);
         d ? this.ctx.fill(new Path2D(d)) : this.ctx.fill();  // SVG path syntax 
         this.resetStyle(tmp);
     },
-    drw: function({d}={}) {
+    drw({d}={}) {
         let ctx = this.ctx,
             tmp = this.setStyle(arguments[0]),
             p = d && new Path2D(d);   // SVG path syntax 
@@ -420,12 +425,12 @@ g2.canvasHdl.prototype = {
         thal: (ctx,q) => { ctx.textAlign=q; },
         tval: (ctx,q) => { ctx.textBaseline=q; }
     },
-    initStyle: function(style) {
+    initStyle(style) {
         for (key in style)
             if (this.get[key] && this.get[key](this.ctx) !== style[key])
                 this.set[key](this.ctx, style[key]);
     },
-    setStyle: function(style) {  // short circuit style setting 
+    setStyle(style) {  // short circuit style setting 
         let q, prv = {};
         for (key in style) {
             if (this.get[key]) {  // style keys only ...
@@ -441,11 +446,11 @@ g2.canvasHdl.prototype = {
         }
         return prv;
     },
-    resetStyle: function(style) {   // short circuit style reset
+    resetStyle(style) {   // short circuit style reset
         for (key in style)
             this.set[key](this.ctx, style[key]);
     },
-    pushStyle: function(style) {
+    pushStyle(style) {
         let cur = {};  // hold changed properties ...
         for (key in style) 
             if (this.get[key]) {  // style keys only ...
@@ -458,14 +463,14 @@ g2.canvasHdl.prototype = {
             }
         this.stack.push(this.cur = Object.assign({},this.cur,cur));
     },
-    popStyle: function() {
+    popStyle() {
         let cur = this.stack.pop();
         this.cur = this.stack[this.stack.length-1];
         for (key in this.cur)
             if (this.get[key] && this.cur[key] !== cur[key])
                this.set[key](this.ctx, this.cur[key]);
     },
-    concatTrf: function(q,t) {
+    concatTrf(q,t) {
         return [
             q[0]*t[0]+q[2]*t[1],
             q[1]*t[0]+q[3]*t[1],
@@ -475,21 +480,21 @@ g2.canvasHdl.prototype = {
             q[1]*t[4]+q[3]*t[5]+q[5]
         ];
     },
-    initTrf: function() {
+    initTrf() {
         this.ctx.setTransform(...this.matrix[0]);
     },
-    setTrf: function(t) {
+    setTrf(t) {
         this.ctx.setTransform(...this.concatTrf(this.matrix[this.matrix.length-1],t));
     },
-    resetTrf: function() {
+    resetTrf() {
         this.ctx.setTransform(...this.matrix[this.matrix.length-1]);
     },
-    pushTrf: function(t) {
+    pushTrf(t) {
         let q_t = this.concatTrf(this.matrix[this.matrix.length-1],t);
         this.matrix.push(q_t);
         this.ctx.setTransform(...q_t);
     },
-    popTrf: function() {
+    popTrf() {
         this.matrix.pop();
         this.ctx.setTransform(...this.matrix[this.matrix.length-1]);
     },
@@ -506,7 +511,7 @@ g2.canvasHdl.prototype = {
             invscl = 1/Math.hypot(m[0],m[1]);
         return [invscl,0,0,invscl,(1-invscl)*x,(1-invscl)*y];
     },
-    gridSize: function(scl) {
+    gridSize(scl) {
         let base = this.gridBase, exp = this.gridExp, sz;
         while ((sz = scl*base*Math.pow(10,exp)) < 14 || sz > 35) {
             if (sz < 14) {
@@ -529,7 +534,7 @@ g2.canvasHdl.prototype = {
 // utils
 
 g2.zoomView = function({scl,x,y}) { return { scl, x:(1-scl)*x, y:(1-scl)*y } }
-    // fn argument must be a function with (optional) timestamp 't' as single argument
+// fn argument must be a function with (optional) timestamp 't' as single argument
 // returning true to continue or false to stop RAF.
 g2.render = function render(fn) {
     function animate(t) {
