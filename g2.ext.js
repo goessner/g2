@@ -104,10 +104,10 @@ g2.prototype.cir.prototype = {
        var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)] 
                                : this.dir[loc || "c"],
            nx = q[0], ny = q[1];
-       return getify({ x: ()=>this.x + nx*this.r,
+       return { x: ()=>this.x + nx*this.r,
                        y: ()=>this.y + ny*this.r,
                        dx: -ny, 
-                       dy:  nx });
+                       dy:  nx };
     }
 };
 g2.prototype.arc.prototype = {
