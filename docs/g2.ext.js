@@ -101,12 +101,12 @@ g2.prototype.cir.prototype = {
     dir: { c:[0,0],e:[1,0],ne:[Math.SQRT2/2,Math.SQRT2/2],n:[0,1],nw:[-Math.SQRT2/2,Math.SQRT2/2],w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
     get len() { return 2*Math.PI*this.r; },
     pointAt(loc) {
-       var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)] 
+       var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)]
                                : this.dir[loc || "c"],
            nx = q[0], ny = q[1];
        return { x: ()=>this.x + nx*this.r,
                        y: ()=>this.y + ny*this.r,
-                       dx: -ny, 
+                       dx: -ny,
                        dy:  nx };
     }
 };
@@ -114,15 +114,15 @@ g2.prototype.arc.prototype = {
     get len() { return Math.abs(this.r*this.dw); },
     get angle() { return this.dw/Math.PI*180; },
     pointAt(loc) {
-       var t = loc==="beg" ? 0 
-             : loc==="end" ? 1 
-             : loc==="mid" ? 0.5 
-             : loc+0 === loc ? loc 
+       var t = loc==="beg" ? 0
+             : loc==="end" ? 1
+             : loc==="mid" ? 0.5
+             : loc+0 === loc ? loc
              : 0.5,
            ang = this.w+t*this.dw, cang = Math.cos(ang), sang = Math.sin(ang), r = loc === "c" ? 0 : this.r;
        return { x: this.x + r*cang,
                 y: this.y + r*sang,
-                dx: -sang, 
+                dx: -sang,
                 dy:  cang
        };
     }

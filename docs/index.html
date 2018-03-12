@@ -61,7 +61,6 @@ g2().view({cartesian:true})
         const ctx = [];
         function render() {
             g2().del().exe()
-            console.count()
             for(let i = 1; i <= issues; i++) {
                 try {
                     ctx[i] = document.getElementById('cv1').getContext('2d');
@@ -78,10 +77,9 @@ g2().view({cartesian:true})
                     document.getElementById("row" + i).classList.add("table-danger")
                 }
             }
-        };
+        }
+        render();
         document.addEventListener("keyup", () => render());
     </script>
-
-
     </body>
 </html>
