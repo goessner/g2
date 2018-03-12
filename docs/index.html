@@ -27,7 +27,7 @@
                   </tr>
             </thead>
             <tbody>
-                <tr class="table-danger">
+                <tr id="row1">
                     <th scope="row">1</th>
                     <td id="code1">
                         ctx1 = document.getElementById("cv1").getContext("2d");<br>
@@ -61,12 +61,14 @@
         for(let i = 1; i <= issues; i++) {
             try {
                 eval(document.getElementById("code" + i).innerHTML.replace(/<br>/g,""));
+                document.getElementById("row" + i).classList.add("table-success")
             }
             catch(e) {
                 document.getElementById("e" + i).innerHTML = e;
+                document.getElementById("row" + i).classList.add("table-danger")
             }
         }
-        </script>
+    </script>
 
 
     </body>
