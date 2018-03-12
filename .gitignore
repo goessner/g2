@@ -2,10 +2,6 @@
 ################################
 g2.html
 master-README.md
-<<<<<<< HEAD
-# workspaces # 
-*.workspace
-=======
+**/test*
 /sample/wiki-samples/g2.js
 *.code-workspace
->>>>>>> a4068b3ba1f8b72aa992b074386bc06fb9069f76
