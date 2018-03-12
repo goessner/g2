@@ -22,48 +22,42 @@
                     <th scope="col">#</th>
                     <th scope="col">code</th>
                     <th scope="col">canvas</th>
-                    <th scope="col">error:</th>
+                    <th scope="col">error</th>
                     <th scope="col">comment</th>
                   </tr>
             </thead>
-            <tbody>
-                <tr id="row1">
-                    <th>1</th>
-                    <td>
-                        <textarea class="container-fluid" rows="10" id="code1">
-g2().view({cartesian:true})
-    .use({grp:'origin',x:20,y:80})     .label({str:'origin',loc:'s',off:25})
-    .use({grp:'nod',x:100,y:80})       .label({str:'nod',loc:'s',off:25})
-    .use({grp:'dblnod',x:180,y:80})    .label({str:'dblnod',loc:'s',off:25})
-    .use({grp:'nodfix',x:260,y:80})    .label({str:'nodfix',loc:'s',off:25})
-    .use({grp:'dblnodfix',x:340,y:80}) .label({str:'dblnodfix',loc:'s',off:25})
-    .use({grp:'nodflt',x:420,y:80})    .label({str:'nodflt',loc:'s',off:25})
-    .use({grp:'pol',x:500,y:80})       .label({str:'pol',loc:'s',off:25})
-    .use({grp:'gnd',x:580,y:80})       .label({str:'gnd',loc:'s',off:25})
-                        </textarea>
-                    </td>
-                    <td width="600">
-                        <canvas width="600" class="container-fluid" id="cv1">
-                        </canvas>
-                    </td>
-                    <td width="100" id="e1">
-                    </td>
-                    <td id="comment1">
-
-                    </td>
-                </tr>
-
+            <tbody id="tbody">
             </tbody>
     </table>
 
     <script>
-        const issues = 1;
-        const ctx = [];
+        const codes = [
+// each element here will be evaluated as code. no exe call needed.
+`g2().view({cartesian:true})
+.use({grp:'origin',x:20,y:80})     .label({str:'origin',loc:'s',off:25})
+.use({grp:'nod',x:100,y:80})       .label({str:'nod',loc:'s',off:25})
+.use({grp:'dblnod',x:180,y:80})    .label({str:'dblnod',loc:'s',off:25})
+.use({grp:'nodfix',x:260,y:80})    .label({str:'nodfix',loc:'s',off:25})
+.use({grp:'dblnodfix',x:340,y:80}) .label({str:'dblnodfix',loc:'s',off:25})
+.use({grp:'nodflt',x:420,y:80})    .label({str:'nodflt',loc:'s',off:25})
+.use({grp:'pol',x:500,y:80})       .label({str:'pol',loc:'s',off:25})
+.use({grp:'gnd',x:580,y:80})       .label({str:'gnd',loc:'s',off:25})`,
+
+`g2().view({cartesian:true})
+.grid()
+.cir({x:300,y:50,r:50,fs:'orange'}).label({str:"hello",loc:'n'})`,
+
+        ];
+        const comments = [
+            "labels are not working as intended",
+            "label is not even rendered?"
+        ]
+        // render code to canvas and check for errors
         function render() {
             g2().del().exe()
-            for(let i = 1; i <= issues; i++) {
+            for(let i = 1; i <= codes.length; i++) {
                 try {
-                    ctx[i] = document.getElementById('cv1').getContext('2d');
+                    ctx[i] = document.getElementById('cv' + i).getContext('2d');
                     g2().del().clr().exe(ctx[i])
                     eval('g = '.concat(document.getElementById("code" + i).value));
                     g.exe(ctx[i])
@@ -78,6 +72,49 @@ g2().view({cartesian:true})
                 }
             }
         }
+
+        // create elements
+        const ctx = [];
+        const tbody = document.getElementById("tbody");
+        for(let i = 1; i <= codes.length; i++) {
+            let tr = document.createElement("tr");
+            tr.id = "row" + i;
+            let number = document.createElement("td");
+
+            let code = document.createElement("td");
+            code.width = 600;
+            let codearea = document.createElement("textarea");
+            codearea.id = "code" + i;
+            codearea.value = codes[i-1];
+            codearea.rows = 10;
+            codearea.classList.add("container-fluid");
+
+            let canvas = document.createElement("td");
+            canvas.width = 600;
+            let canvasarea = document.createElement("canvas");
+            canvasarea.id = "cv" + i;
+            canvasarea.classList.add("container-fluid");
+            canvasarea.width = 600;
+
+            let error = document.createElement("td");
+            error.id = "e" + i;
+            error.width = 100;
+
+            let comment = document.createElement("td");
+            comment.innerHTML = comments[i-1];
+
+            tr.appendChild(number);
+            code.appendChild(codearea);
+            tr.appendChild(code);
+            tr.appendChild(canvas);
+            canvas.appendChild(canvasarea);
+            tr.appendChild(error);
+            tr.appendChild(comment);
+            tbody.appendChild(tr);
+
+            number.innerHTML = i;
+        }
+        // initial render call + eventlistener
         render();
         document.addEventListener("keyup", () => render());
     </script>
