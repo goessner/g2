@@ -38,6 +38,7 @@ g2()                  // Create 'g2' instance.
     * [.lin({x1, y1, x2, y2})](#g2+lin) ⇒ <code>object</code>
     * [.rec({x, y, b, h})](#g2+rec) ⇒ <code>object</code>
     * [.cir({x, y, r})](#g2+cir) ⇒ <code>object</code>
+    * [.ell({x, y, rx, ry, w, dw, rot})](#g2+ell)  ⇒ <code>object</code>
     * [.arc({x, y, r, w, dw})](#g2+arc) ⇒ <code>object</code>
     * [.ply({pts, closed, x, y, w})](#g2+ply) ⇒ <code>object</code>
     * [.beg({x, y, w, scl, matrix})](#g2+beg) ⇒ <code>object</code>
@@ -325,6 +326,25 @@ Draw circle by center and radius.
 g2().cir({x:100,y:80,r:20})  // Draw circle.
     .exe(ctx);       // Render to context.
 ```
+<a name="g2+ell"></a>
+### g2.ell({x, y, rx, ry, w, dw, rot}) ⇒ <code>object</code>
+Draw ell by center point, radius in x and y, angle, angular range and rotation.
+[Example](https://goessner.github.io/g2-svg/test/index.html#ell)
+![Exampe](../img/arc.png "Example")
+
+**Kind**: instance method of <code>[g2](#g2)</code>  
+**Returns**: <code>object</code> - g2  
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| x | <code>number</code> |  | x-value center. |
+| y | <code>number</code> |  | y-value center. |
+| rx | <code>number</code> |  | Radius in x. |
+| ry | <code>number</code> |  | Radius in y. |
+| w | <code>number</code> | <code>0</code> | Start angle (in radian). |
+| dw | <code>number</code> | <code>2*pi</code> | Angular range in Radians. |
+| rot | <code>number</code> | <code>0</code> | Rotation in Radians. |
+
 <a name="g2+arc"></a>
 ### g2.arc({x, y, r, w, dw}) ⇒ <code>object</code>
 Draw arc by center point, radius, start angle and angular range.  
