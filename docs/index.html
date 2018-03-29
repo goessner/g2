@@ -1,122 +1,108 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
+        <meta charset='UTF-8'>
         <title>g2 Tests</title>
         <!-- use bootstrap for styling -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm' crossorigin='anonymous'>
         <style>
-            canvas {
-                border: "1px";
+            canvas, img, td {
                 border-style: solid;
             }
         </style>
     </head>
     <body>
-        <script src="./g2.js"></script>
-        <script src="./g2.ext.js"></script>
-        <h1>g2 Tests</h1><h6>g2.js and g2.ext.js are referenced</h6>
-        <table class="table table-striped table-bordered table-sm">
-            <thead class="thead-dark" scope="row">
+        <!-- Import g2 -->
+        <script src='./g2.js'></script>
+        <script src='./g2.ext.js'></script>
+        <!-- Import tests -->
+        <script src='./index.js'></script>
+
+        <h1>g2 Tests</h1><h6>g2.js and g2.ext.js are referenced. canvas and image should look alike.</h6>
+        <table class='table table-sm'>
+            <thead class='thead-dark' scope='row'>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">code</th>
-                    <th scope="col">canvas</th>
-                    <th scope="col">error</th>
-                    <th scope="col">comment</th>
+                    <th scope='col'>#</th>
+                    <th scope='col'>name</th>
+                    <th scope='col'>src</th>
+                    <th scope='col'>canvas</th>
+                    <th scope='col'>image</th>
+                    <th scope='col'>error</th>
                   </tr>
             </thead>
-            <tbody id="tbody">
+            <tbody id='tbody'>
             </tbody>
-    </table>
+        </table>
 
-    <script>
-        const codes = [
-// each element here will be evaluated as code. no exe call needed.
-`g2().view({cartesian:true})
-.use({grp:'origin',x:20,y:80})     .label({str:'origin',loc:'s',off:25})
-.use({grp:'nod',x:100,y:80})       .label({str:'nod',loc:'s',off:25})
-.use({grp:'dblnod',x:180,y:80})    .label({str:'dblnod',loc:'s',off:25})
-.use({grp:'nodfix',x:260,y:80})    .label({str:'nodfix',loc:'s',off:25})
-.use({grp:'dblnodfix',x:340,y:80}) .label({str:'dblnodfix',loc:'s',off:25})
-.use({grp:'nodflt',x:420,y:80})    .label({str:'nodflt',loc:'s',off:25})
-.use({grp:'pol',x:500,y:80})       .label({str:'pol',loc:'s',off:25})
-.use({grp:'gnd',x:580,y:80})       .label({str:'gnd',loc:'s',off:25})`,
+        <script>
+            // render code to canvas and check for errors
+            function render() {
+                for(let idx in tests) {
+                    const row = document.getElementById('row' + idx);
+                    const src = document.getElementById('src' + idx);
+                    const ctx = document.getElementById('cv' + idx).getContext('2d');
+                    const error = document.getElementById('e' + idx);
 
-`g2().view({cartesian:true})
-.grid()
-.cir({x:300,y:50,r:50,fs:'orange'}).label({str:"hello",loc:'n'})`,
+                    src.innerHTML = tests[idx].src;
+                    error.innerHTML = '';
 
-        ];
-        const comments = [
-            "labels are not working as intended",
-            "label is not even rendered?"
-        ]
-        // render code to canvas and check for errors
-        function render() {
-            g2().del().exe()
-            for(let i = 1; i <= codes.length; i++) {
-                try {
-                    ctx[i] = document.getElementById('cv' + i).getContext('2d');
-                    g2().del().clr().exe(ctx[i])
-                    eval('g = '.concat(document.getElementById("code" + i).value));
-                    g.exe(ctx[i])
-                    document.getElementById("row" + i).classList.remove("table-danger")
-                    document.getElementById("row" + i).classList.add("table-success")
-                    document.getElementById("e" + i).innerHTML = "";
-                }
-                catch(e) {
-                    document.getElementById("e" + i).innerHTML = e;
-                    document.getElementById("row" + i).classList.remove("table-success")
-                    document.getElementById("row" + i).classList.add("table-danger")
+                    try {
+                        g2().del().clr().exe(ctx);
+                        tests[idx].run.exe(ctx);
+                    }
+                    catch(e) {
+                        error.innerHTML = e;
+                        row.classList.add('table-danger')
+                    }
                 }
             }
-        }
 
-        // create elements
-        const ctx = [];
-        const tbody = document.getElementById("tbody");
-        for(let i = 1; i <= codes.length; i++) {
-            let tr = document.createElement("tr");
-            tr.id = "row" + i;
-            let number = document.createElement("td");
+            // create elements
+            const ctx = [];
+            const tbody = document.getElementById('tbody');
+            for(let idx in tests) {
+                const tr = document.createElement('tr');
+                tr.id = 'row' + idx;
 
-            let code = document.createElement("td");
-            code.width = 600;
-            let codearea = document.createElement("textarea");
-            codearea.id = "code" + i;
-            codearea.value = codes[i-1];
-            codearea.rows = 10;
-            codearea.classList.add("container-fluid");
+                const number = document.createElement('td');
+                number.innerHTML = idx;
+                tr.appendChild(number);
 
-            let canvas = document.createElement("td");
-            canvas.width = 600;
-            let canvasarea = document.createElement("canvas");
-            canvasarea.id = "cv" + i;
-            canvasarea.classList.add("container-fluid");
-            canvasarea.width = 600;
+                const name = document.createElement('td');
+                name.innerHTML = tests[idx].name;
+                tr.appendChild(name);
 
-            let error = document.createElement("td");
-            error.id = "e" + i;
-            error.width = 100;
+                const src = document.createElement('td');
+                src.id = 'src' + idx;
+                src.classList.add('container-fluid');
+                tr.appendChild(src);
 
-            let comment = document.createElement("td");
-            comment.innerHTML = comments[i-1];
+                const canvas = document.createElement('td');
+                tr.appendChild(canvas);
+                const canvasarea = document.createElement('canvas');
+                canvasarea.id = 'cv' + idx;
+                canvasarea.width = 300;
+                canvasarea.height = 150;
+                canvas.appendChild(canvasarea);
 
-            tr.appendChild(number);
-            code.appendChild(codearea);
-            tr.appendChild(code);
-            tr.appendChild(canvas);
-            canvas.appendChild(canvasarea);
-            tr.appendChild(error);
-            tr.appendChild(comment);
-            tbody.appendChild(tr);
+                const image = document.createElement('td');
+                tr.appendChild(image);
+                const imagearea = document.createElement('img');
+                imagearea.width = 300;
+                imagearea.height = 150;
+                imagearea.src = './' + name.innerHTML + '.png';
+                image.appendChild(imagearea);
+                tr.appendChild(image);
 
-            number.innerHTML = i;
-        }
-        // initial render call + eventlistener
-        render();
-        document.addEventListener("keyup", () => render());
-    </script>
+                const error = document.createElement('td');
+                error.id = 'e' + idx;
+                tr.appendChild(error);
+
+                tbody.appendChild(tr);
+            }
+            // initial render call + eventlistener
+            render();
+            document.addEventListener('keyup', () => render());
+        </script>
     </body>
 </html>

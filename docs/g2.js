@@ -16,6 +16,7 @@
   *  .lin(100,100,200,50) // ... commands.
   *  .exe(ctx);           // Execute commands addressing canvas context.
   */
+/*
 function g2(opts) {
     if (this instanceof g2) {
         if (opts) Object.assign(this,opts);
@@ -23,6 +24,13 @@ function g2(opts) {
         return this;
     }
     return g2.apply(Object.create(g2.prototype),[opts]);
+}
+*/
+function g2(opts) {
+    let o = Object.create(g2.prototype);
+    o.commands = [];
+    if (opts) Object.assign(o,opts);
+    return o;
 }
 
 g2.prototype = {
@@ -152,7 +160,8 @@ g2.refineCmdArgs = function({c,a}) {
             typeof a[key] === 'function') {                 // a function
             Object.defineProperty(a, key, { get:a[key], enumerable:true, configurable:true, writabel:false });
         }
-    if (g2.prototype[c].prototype) a.__proto__ = g2.prototype[c].prototype;
+    if (g2.prototype[c].prototype) Object.setPrototypeOf(a, g2.prototype[c].prototype);
+//    if (g2.prototype[c].prototype) a.__proto__ = g2.prototype[c].prototype;
     return arguments[0];
 }
 
@@ -170,7 +179,7 @@ g2.mixin = function mixin(obj, ...protos) {
 }
 
 /**
- * Copy properties, even as getters
+ * Copy properties, even as getters .. a useful fraction of the above ..
  * @private
  */
 g2.cpyProp = function(from,fromKey,to,toKey) { Object.defineProperty(to, toKey, Object.getOwnPropertyDescriptor(from, fromKey)); }
@@ -416,10 +425,12 @@ g2.canvasHdl.prototype = {
         ld: (ctx,q) => { ctx.setLineDash(q); },
         ml: (ctx,q) => { ctx.miterLimit=q; },
         sh: (ctx,q) => { 
-            ctx.shadowOffsetX = q[0]||0;
-            ctx.shadowOffsetY = q[1]||0;
-            ctx.shadowBlur = q[2]||0;
-            ctx.shadowColor = q[3]||'black';
+            if (q) {
+                ctx.shadowOffsetX = q[0]||0;
+                ctx.shadowOffsetY = q[1]||0;
+                ctx.shadowBlur = q[2]||0;
+                ctx.shadowColor = q[3]||'black';
+            }
         },
         font: (ctx,q) => { ctx.font=q; },
         thal: (ctx,q) => { ctx.textAlign=q; },

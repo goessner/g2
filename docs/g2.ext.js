@@ -1,5 +1,5 @@
 /**
- * g2.ext (c) 2013-17 Stefan Goessner
+ * g2 element prototypes (c) 2015-18 Stefan Goessner
  * @file extensions to `g2`.
  * @author Stefan Goessner
  * @license MIT License
@@ -65,83 +65,170 @@ g2.symbol.origin = function() {
               .end();
 }();
 
-// prototypes for extending argument objects
-
-g2.prototype.lin.prototype = {
-    get dx() { return this.x2 - this.x1; },
-    get dy() { return this.y2 - this.y1; },
-    get len() { return Math.hypot(this.dx,this.dy); },
+ // prototypes for extending argument objects
+ g2.prototype.lin.prototype = {
+    isSolid: false,
+    get len() { return Math.hypot(this.x2 - this.x1, this.y2 - this.y1); },
+    get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     pointAt(loc) {
        let t = loc==="beg" ? 0 
              : loc==="end" ? 1 
-             : (loc+0 === loc) ? loc 
+             : (loc+0 === loc) ? loc // numerical arg ..
              : 0.5,   // 'mid' ..
-           len = this.len;
-       return { x: this.x1 + this.dx*t,
-                y: this.y1 + this.dy*t,
-                dx: len ? this.dx/len : 1,
-                dy: len ? this.dy/len : 0
+           dx = this.x2 - this.x1,
+           dy = this.y2 - this.y1,
+           len = Math.hypot(dx,dy);
+       return { x: this.x1 + dx*t,
+                y: this.y1 + dy*t,
+                dx: len ? dx/len : 1,
+                dy: len ? dy/len : 0
        };
+    },
+    hitContour({x,y,eps}) { return g2.isPntOnLin({x,y},{x:this.x1,y:this.y1},{x:this.x2,y:this.y2},eps) },
+    drag({dx,dy}) {
+        this.x1 += dx; this.x2 += dx;
+        this.y1 += dy; this.y2 += dy;
+    },
+    handles(grp) {
+        grp.handle({x:this.x1,y:this.y1,_update:({dx,dy})=>{this.x1+=dx;this.y1+=dy}})
+           .handle({x:this.x2,y:this.y2,_update:({dx,dy})=>{this.x2+=dx;this.y2+=dy}})
     }
 };
 
 g2.prototype.rec.prototype = {
-    dir: { c:[0,0,1],e:[1,0,1],ne:[1,1,Math.SQRT2],n:[0,1,1],nw:[-1,1,Math.SQRT2],w:[-1,0,1],sw:[-1,-1,Math.SQRT2],s:[0,-1,1],se:[1,-1,Math.SQRT2] },
+    _dir: { c:[0,1],e:[1,0],ne:[Math.SQRT2/2,Math.SQRT2/2],n:[0,1],nw:[-Math.SQRT2/2,Math.SQRT2/2],
+            w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
     get len() { return 2*(this.b+this.h); },
     pointAt(loc) {
-       var q = this.dir[loc || "c"] || this.dir['c'], nx = q[0], ny = q[1];
+       var q = this._dir[loc || "c"] || this._dir['c'], nx = q[0], ny = q[1];
        return { x: this.x + (1 + nx)*this.b/2,
                 y: this.y + (1 + ny)*this.h/2,
-                dx: -ny/q[2],
-                dy:  nx/q[2]
+                dx: -ny,
+                dy:  nx
        };
     }
 };
+
 g2.prototype.cir.prototype = {
-    dir: { c:[0,0],e:[1,0],ne:[Math.SQRT2/2,Math.SQRT2/2],n:[0,1],nw:[-Math.SQRT2/2,Math.SQRT2/2],w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
+    w: 0,    // default start angle (used for dash-dot orgin and editing)
+    _dir: { c:[0,0],e:[1,0],ne:[Math.SQRT2/2,Math.SQRT2/2],n:[0,1],nw:[-Math.SQRT2/2,Math.SQRT2/2],
+            w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
+    get isSolid() { return this.fs && this.fs !== 'transparent' },
     get len() { return 2*Math.PI*this.r; },
+    get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     pointAt(loc) {
-       var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)]
-                               : this.dir[loc || "c"],
+       var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)] 
+                               : (this._dir[loc || "c"] || [0,0]),
            nx = q[0], ny = q[1];
-       return { x: ()=>this.x + nx*this.r,
-                       y: ()=>this.y + ny*this.r,
-                       dx: -ny,
-                       dy:  nx };
+       return { x: this.x + nx*this.r,
+                y: this.y + ny*this.r,
+                dx: -ny, 
+                dy:  nx };
+    },
+    hitContour({x,y,eps}) { return g2.isPntOnCir({x,y},this,eps) },
+    hitInner({x,y,eps}) {return g2.isPntInCir({x,y},this,eps) },
+    drag({dx,dy}) { this.x += dx; this.y += dy },
+    handles(grp) {
+        const p0 = { 
+                x:this.x, y:this.y,
+                _update:({dx,dy})=>{this.x+=dx;this.y+=dy;p1.x+=dx;p1.y+=dy;} 
+              },
+              p1 = { 
+                x:this.x+this.r*Math.cos(this.w||0), 
+                y:this.y+this.r*Math.sin(this.w||0),
+                _info:()=>`r:${this.r.toFixed(1)}<br>w:${(this.w/Math.PI*180).toFixed(1)}°`,
+                _update:({x,y})=>{ 
+                            this.r = Math.hypot(y-this.y,x-this.x); 
+                            this.w = Math.atan2(y-this.y,x-this.x);}
+              };
+        grp.lin({x1:()=>this.x,y1:()=>this.y,x2:()=>p1.x,y2:()=>p1.y,ld:[4,3],ls:'#666'})
+           .handle(p0)
+           .handle(p1)
     }
 };
+
 g2.prototype.arc.prototype = {
     get len() { return Math.abs(this.r*this.dw); },
     get angle() { return this.dw/Math.PI*180; },
     pointAt(loc) {
-       var t = loc==="beg" ? 0
-             : loc==="end" ? 1
-             : loc==="mid" ? 0.5
-             : loc+0 === loc ? loc
+       var t = loc==="beg" ? 0 
+             : loc==="end" ? 1 
+             : loc==="mid" ? 0.5 
+             : loc+0 === loc ? loc 
              : 0.5,
            ang = this.w+t*this.dw, cang = Math.cos(ang), sang = Math.sin(ang), r = loc === "c" ? 0 : this.r;
        return { x: this.x + r*cang,
                 y: this.y + r*sang,
-                dx: -sang,
+                dx: -sang, 
                 dy:  cang
        };
+    },
+    isSolid: false,
+    get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
+    hitContour({x,y,eps}) { return g2.isPntOnArc({x,y},this,eps) },
+    drag({dx,dy}) { this.x += dx; this.y += dy; },
+    handles(grp) {
+        const p0 = {
+                x:this.x, y:this.y, 
+                _update:({dx,dy})=>{this.x+=dx;this.y+=dy;p1.x+=dx;p1.y+=dy;p2.x+=dx;p2.y+=dy;} 
+            },
+            p1 = { 
+                x:this.x+this.r*Math.cos(this.w), 
+                y:this.y+this.r*Math.sin(this.w),
+                _info:()=>`r:${this.r.toFixed(1)}<br>w:${(this.w/Math.PI*180).toFixed(1)}°`,
+                _update:({x,y})=>{ 
+                            this.r = Math.hypot(y-this.y,x-this.x); 
+                            this.w = Math.atan2(y-this.y,x-this.x);
+                            p2.x = this.x+this.r*Math.cos(this.w+this.dw);
+                            p2.y = this.y+this.r*Math.sin(this.w+this.dw); }
+            },
+            dw = this.dw,
+            p2 = {
+                x:this.x+this.r*Math.cos(this.w+this.dw),
+                y:this.y+this.r*Math.sin(this.w+this.dw),
+                _info:()=>`dw:${(this.dw/Math.PI*180).toFixed(1)}°`,
+                _update:({x,y})=>{  // bug with negative 'this.w' ...
+                            let lam = g2.toArc(g2.toPi2(Math.atan2(y-this.y,x-this.x)),g2.toPi2(this.w),dw);
+                            this.dw = lam*dw;}
+            };
+        if (this.w === undefined) this.w = 0;
+        grp.lin({x1:()=>this.x,y1:()=>this.y,x2:()=>p1.x,y2:()=>p1.y,ld:[4,3],ls:'#666'})
+           .lin({x1:()=>this.x,y1:()=>this.y,x2:()=>p2.x,y2:()=>p2.y,ld:[4,3],ls:'#666'})
+           .handle(p0)
+           .handle(p1)
+           .handle(p2)
     }
 };
+
+g2.prototype.ply.prototype = {
+    get isSolid() { return this.closed && this.fs && this.fs !== 'transparent'; },
+    get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
+    x: 0, y: 0,
+    hitContour({x,y,eps}) { let p={x:x-this.x,y:y-this.y}; return g2.isPntOnPly(p,this,eps) }, // translational only .. at current .. !
+    hitInner({x,y,eps}) { let p={x:x-this.x,y:y-this.y}; return g2.isPntInPly(p,this,eps) }, // translational only .. at current .. !
+    drag({dx,dy}) { this.x += dx; this.y += dy; },
+    handles(grp) {
+        let p, slf=this;
+        for (let n = this._itr.len, i=0; i<n; i++)
+            grp.handle({ x:(p=this._itr(i)).x+this.x,y:p.y+this.y,i:i,
+                         _update({dx,dy}){let p=slf._itr(this.i);p.x+=dx;p.y+=dy} });
+    }
+}
+
 g2.prototype.use.prototype = {
     dir: g2.prototype.cir.prototype.dir,
-    get r() { return 5; },
+    r: 5,
     pointAt: g2.prototype.cir.prototype.pointAt
 };
-
 
 // complex macros / add prototypes to argument objects
 
 g2.prototype.vec = function vec({}) { return this.addCommand({c:'vec',a:arguments[0]}); }
 g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     g2() {
-        let {x1,y1,x2,y2,lw} = this;
+        let {x1,y1,x2,y2,lw,sh} = this;
         let z = 2+(lw||1), dx = x2-x1, dy = y2-y1, r = Math.hypot(dx,dy),
-        args = Object.assign({},{x:x1,y:y1,w:Math.atan2(dy,dx),lc:"round",lj:"round"},this);
+        args = Object.assign({},{x:x1,y:y1,w:Math.atan2(dy,dx),lc:"round",lj:"round",sh},this);
         return g2().beg(args)
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
@@ -155,26 +242,12 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     }
 })
 
-/**
- * Linear dimension
- * @method
- * @returns {object} g2
- * @param {object} [p={x:0,y:0}] Start point.
- * @param {object} [r={dx:10,dy:0}] Dimension end point / direction vector in:<br>
- *                                  {x,y} absolute coordinates<br> 
- *                                  {dx,dy} relative coordinates<br>
- *                                  {r,w} polar coordinates
- * @param {object} args Arguments object holding style properties. See 'g2.prototype.style' for details.
- * @param {string} [args.pos=in] Draw dimension arrows:<br>
- *                                 'in':  between ticks<br>
- *                                 'out': outside of ticks
- */
 g2.prototype.dim = function dim({}) { return this.addCommand({c:'dim',a:arguments[0]}); }
 g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     g2() {
-        let {x1,y1,x2,y2,lw,ls} = this, sz = Math.round((lw||1)/2)+4,
+        let {x1,y1,x2,y2,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
             dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy),
-            args = Object.assign({lc:"round",lj:"round"},{x:x1,y:y1,w:Math.atan2(dy,dx)},this);
+            args = Object.assign({lc:"round",lj:"round",sh},{x:x1,y:y1,w:Math.atan2(dy,dx)},this);
 
         return g2().beg(args)
                      .p().m({x:0,y:0}).l({x:len,y:0})
@@ -202,28 +275,49 @@ g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
 g2.prototype.adim = function adim({}) { return this.addCommand({c:'adim',a:arguments[0]}); }
 g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
     g2: function() {
-        let {x,y,r,w,dw,lw,ls} = this, sz = Math.round((lw||1)/2)+4,
+        let {x,y,r,w,dw,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
             ri = r - sz, ra = r + sz,
-            args = Object.assign({lc:"round",lj:"round"},this,{w:0,fs:'transparent'});
+            args = Object.assign({lc:"round",lj:"round",sh},this,{w:0,fs:'transparent'});
             c1  = Math.cos(w), s1 = Math.sin(w),
             c2  = Math.cos(w+dw), s2 = Math.sin(w+dw);
         return g2().beg(args)
-                 .arc({x:0,y:0,r,w,dw})
-                 .lin({x1:ri*c1,y1:ri*s1,x2:ra*c1,y2:ra*s1})
-                 .lin({x1:ri*c2,y1:ri*s2,x2:ra*c2,y2:ra*s2})
-               .end()
+                    .arc({x:0,y:0,r,w,dw})
+                    .lin({x1:ri*c1,y1:ri*s1,x2:ra*c1,y2:ra*s1})
+                    .lin({x1:ri*c2,y1:ri*s2,x2:ra*c2,y2:ra*s2})
+                   .end()
     }
 });
- 
-g2.prototype.spline = function spline({}) { return this.addCommand({c:'spline',a:arguments[0]}); }
-g2.prototype.spline.prototype = {
+
+/**
+ * Draw spline by points.
+ * Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).
+ * Using iterator function for getting points from array by index.
+ * It must return current point object {x,y} or object {done:true}.
+ * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
+ * array of [[x,y],...] arrays or array of [{x,y},...] objects.  
+ * @see https://pomax.github.io/bezierinfo
+ * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
+ * [Example](https://goessner.github.io/g2-svg/test/index.html#spline)
+ * @method
+ * @returns {object} this
+ * @param {array} p Array of points.
+ * @param {bool} [closed = false] Closed spline.
+ * @param {object} style Style object.
+ */
+g2.prototype.spline = function spline({pts,closed,x,y,w}) { 
+    arguments[0]._itr = g2.pntItrOf(pts);
+    return this.addCommand({c:'spline',a:arguments[0]}); 
+}
+g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
     g2: function() {
-        let args = Object.assign({},this), {pts,closed,x,y,w} = args, itr = g2.pntItrOf(pts), gbez;
+        let {pts,closed,x,y,w,ls,lw,fs,sh} = this, itr = this._itr, gbez;
         if (itr) {
             let b = [], i, n = itr.len,
                 p1, p2, p3, p4, d1, d2, d3, d1d2, d2d3, scl2, scl3, den2, den3, istrf = x || y || w;
 
-            gbez = g2().when(istrf,(g)=>g.beg(args)).p().m(itr(0));
+            gbez = g2();
+            if (istrf) gbez.beg({x,y,w});
+            gbez.p().m(itr(0));
             for (let i=0; i < (closed ? n : n-1); i++) {
                 if (i === 0) {
                     p1 = closed ? itr(n-1) : {x:2*itr(0).x-itr(1).x, y:2*itr(0).y-itr(1).y};
@@ -255,12 +349,14 @@ g2.prototype.spline.prototype = {
                         x2: (-d2*p4.x + scl3*p3.x + d3*p2.x)/den3,
                         y2: (-d2*p4.y + scl3*p3.y + d3*p2.y)/den3 });
             }
-            gbez.when(closed,(g)=>g.z())
-                .when(istrf,(g)=>g.drw().end(),(g)=>g.drw(args));
+            gbez.c(closed ? {x:itr(0).x,y:itr(0).y} : {x:itr(n-1).x,y:itr(n-1).y})
+            if (closed) gbez.z();
+            gbez.drw({ls,lw,fs,sh});
+            if (istrf) gbez.end();
         }
         return gbez;
     }
-}
+})
 
 /**
  * Add label to certain elements. 
@@ -277,21 +373,56 @@ g2.prototype.spline.prototype = {
  *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
  * @param {float} off  Offset distance [optional].
  */
-g2.prototype.label = function label({}) {
+g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     let idx = g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding label to ...
-    if (idx)
-        return this.addCommand({c:'label', a:Object.assign({_refelem:this.commands[idx]},arguments[0])}); 
+    if (idx) {
+        arguments[0]['_refelem'] = this.commands[idx];
+        this.addCommand({c:'label', a: arguments[0]});
+    } 
     return this;
 }
 g2.prototype.label.prototype = {
     g2() {
+        let label = g2();
+        if (this._refelem) {
+            let {str,loc,off,fs,font,border,fs2} = this,
+                p = this._refelem.a.pointAt(loc),          // 'loc'ation in coordinates ..
+                tanlen = p.dx*p.dx + p.dy*p.dy,            // tangent length .. (0 || 1) .. !
+                h = parseInt(font||g2.defaultStyle.font),  // char height
+                diag, phi, n;                              // n .. str length
+
+            if (str[0] === "@" && (s=this._refelem.a[str.substr(1)]) !== undefined)   // expect 's' as string convertable to a number ...
+                str = "" + (Number.isInteger(+s) ? +s : Number(s).toFixed(Math.max(g2.symbol.labelSignificantDigits-Math.log10(s),0)))  // use at least 3 significant digits after decimal point.
+                         + (str.substr(1) === "angle" ? "°" : "");
+            n = str.length;
+            if (tanlen > Number.EPSILON) {
+                diag = Math.hypot(p.dx,n*p.dy);
+                off = off === undefined ? 1 : off;
+                p.x += tanlen*p.dy*( off + n*n*0.8*h/2/diag*Math.sign(off));
+                p.y += tanlen*p.dx*(-off -         h/2/diag*Math.sign(off));
+            }
+            fs = fs||'black';
+            if (border)
+                label.ell({x:p.x,y:p.y,rx:n*0.8*h/2+2,ry:h/2+2,ls:fs||'black',fs:fs2||'#ffc'})
+//                 .rec({x:p.x-n*0.8*h/2/Math.SQRT2,y:p.y-h/2/Math.SQRT2,b:n*0.8*h/Math.SQRT2,h:h/Math.SQRT2})
+            label.txt({str, x:p.x,y:p.y,
+                       thal: "center",
+                       tval: "middle",
+                       fs: fs||'black',
+                       font })
+        }
+        return label;
+    }
+}
+/*
+g2.prototype.label.prototype = {
+    g2() {
         let {_refelem,str,loc,off,fs,font} = this,
             p = _refelem.a.pointAt(loc),
-            xoff, yoff,
+            xoff, yoff, sz = parseInt(font||g2.defaultStyle.font), b = str.length*sz,
             offset = (off+0 === off) ? (off || 1) // amount of offset ...
                    : (loc === "c") ? 0
-                   : 6;                          // use constant ..
-
+                   : 1;                          // use constant ..
         if (off !== "left") offset = -offset;  // 'right of' dir ... turn dir vector negative ... default
         xoff = -p.dy*offset; yoff = p.dx*offset;
 
@@ -302,10 +433,11 @@ g2.prototype.label.prototype = {
                          thal: ()=>xoff > 0 ? "left"   : xoff < 0 ? "right"  : "center", 
                          tval: ()=>yoff > 0 ? "bottom" : yoff < 0 ? "top"  : "middle",
                          fs:fs||'black',
-                         font});
+                         font})
+                   .rec({x:()=>p.x+xoff-p.dy*b,y:()=>p.y+yoff-p.dx*h,b,h:sz})
     }
 }
-
+*/
 /**
  * Draw marker on line element.
  * @method
