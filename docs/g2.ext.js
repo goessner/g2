@@ -71,8 +71,8 @@ g2.symbol.origin = function() {
     get len() { return Math.hypot(this.x2 - this.x1, this.y2 - this.y1); },
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     pointAt(loc) {
-       let t = loc==="beg" ? 0 
-             : loc==="end" ? 1 
+       let t = loc==="beg" ? 0
+             : loc==="end" ? 1
              : (loc+0 === loc) ? loc // numerical arg ..
              : 0.5,   // 'mid' ..
            dx = this.x2 - this.x1,
@@ -117,28 +117,28 @@ g2.prototype.cir.prototype = {
     get len() { return 2*Math.PI*this.r; },
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     pointAt(loc) {
-       var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)] 
+       var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)]
                                : (this._dir[loc || "c"] || [0,0]),
            nx = q[0], ny = q[1];
        return { x: this.x + nx*this.r,
                 y: this.y + ny*this.r,
-                dx: -ny, 
+                dx: -ny,
                 dy:  nx };
     },
     hitContour({x,y,eps}) { return g2.isPntOnCir({x,y},this,eps) },
     hitInner({x,y,eps}) {return g2.isPntInCir({x,y},this,eps) },
     drag({dx,dy}) { this.x += dx; this.y += dy },
     handles(grp) {
-        const p0 = { 
+        const p0 = {
                 x:this.x, y:this.y,
-                _update:({dx,dy})=>{this.x+=dx;this.y+=dy;p1.x+=dx;p1.y+=dy;} 
+                _update:({dx,dy})=>{this.x+=dx;this.y+=dy;p1.x+=dx;p1.y+=dy;}
               },
-              p1 = { 
-                x:this.x+this.r*Math.cos(this.w||0), 
+              p1 = {
+                x:this.x+this.r*Math.cos(this.w||0),
                 y:this.y+this.r*Math.sin(this.w||0),
                 _info:()=>`r:${this.r.toFixed(1)}<br>w:${(this.w/Math.PI*180).toFixed(1)}°`,
-                _update:({x,y})=>{ 
-                            this.r = Math.hypot(y-this.y,x-this.x); 
+                _update:({x,y})=>{
+                            this.r = Math.hypot(y-this.y,x-this.x);
                             this.w = Math.atan2(y-this.y,x-this.x);}
               };
         grp.lin({x1:()=>this.x,y1:()=>this.y,x2:()=>p1.x,y2:()=>p1.y,ld:[4,3],ls:'#666'})
@@ -151,15 +151,15 @@ g2.prototype.arc.prototype = {
     get len() { return Math.abs(this.r*this.dw); },
     get angle() { return this.dw/Math.PI*180; },
     pointAt(loc) {
-       var t = loc==="beg" ? 0 
-             : loc==="end" ? 1 
-             : loc==="mid" ? 0.5 
-             : loc+0 === loc ? loc 
+       var t = loc==="beg" ? 0
+             : loc==="end" ? 1
+             : loc==="mid" ? 0.5
+             : loc+0 === loc ? loc
              : 0.5,
            ang = this.w+t*this.dw, cang = Math.cos(ang), sang = Math.sin(ang), r = loc === "c" ? 0 : this.r;
        return { x: this.x + r*cang,
                 y: this.y + r*sang,
-                dx: -sang, 
+                dx: -sang,
                 dy:  cang
        };
     },
@@ -169,15 +169,15 @@ g2.prototype.arc.prototype = {
     drag({dx,dy}) { this.x += dx; this.y += dy; },
     handles(grp) {
         const p0 = {
-                x:this.x, y:this.y, 
-                _update:({dx,dy})=>{this.x+=dx;this.y+=dy;p1.x+=dx;p1.y+=dy;p2.x+=dx;p2.y+=dy;} 
+                x:this.x, y:this.y,
+                _update:({dx,dy})=>{this.x+=dx;this.y+=dy;p1.x+=dx;p1.y+=dy;p2.x+=dx;p2.y+=dy;}
             },
-            p1 = { 
-                x:this.x+this.r*Math.cos(this.w), 
+            p1 = {
+                x:this.x+this.r*Math.cos(this.w),
                 y:this.y+this.r*Math.sin(this.w),
                 _info:()=>`r:${this.r.toFixed(1)}<br>w:${(this.w/Math.PI*180).toFixed(1)}°`,
-                _update:({x,y})=>{ 
-                            this.r = Math.hypot(y-this.y,x-this.x); 
+                _update:({x,y})=>{
+                            this.r = Math.hypot(y-this.y,x-this.x);
                             this.w = Math.atan2(y-this.y,x-this.x);
                             p2.x = this.x+this.r*Math.cos(this.w+this.dw);
                             p2.y = this.y+this.r*Math.sin(this.w+this.dw); }
@@ -216,7 +216,7 @@ g2.prototype.ply.prototype = {
 }
 
 g2.prototype.use.prototype = {
-    dir: g2.prototype.cir.prototype.dir,
+    _dir: g2.prototype.cir.prototype._dir,
     r: 5,
     pointAt: g2.prototype.cir.prototype.pointAt
 };
@@ -294,7 +294,7 @@ g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
  * Using iterator function for getting points from array by index.
  * It must return current point object {x,y} or object {done:true}.
  * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
- * array of [[x,y],...] arrays or array of [{x,y},...] objects.  
+ * array of [[x,y],...] arrays or array of [{x,y},...] objects.
  * @see https://pomax.github.io/bezierinfo
  * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
  * [Example](https://goessner.github.io/g2-svg/test/index.html#spline)
@@ -304,9 +304,9 @@ g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
  * @param {bool} [closed = false] Closed spline.
  * @param {object} style Style object.
  */
-g2.prototype.spline = function spline({pts,closed,x,y,w}) { 
+g2.prototype.spline = function spline({pts,closed,x,y,w}) {
     arguments[0]._itr = g2.pntItrOf(pts);
-    return this.addCommand({c:'spline',a:arguments[0]}); 
+    return this.addCommand({c:'spline',a:arguments[0]});
 }
 g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
     g2: function() {
@@ -359,11 +359,11 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
 })
 
 /**
- * Add label to certain elements. 
+ * Add label to certain elements.
  * See element for support and meaning of arguments.
  * *Please note:* any use of the `label` element requires previous setting of the `cartesian` flag, as it
- * highly depends on definition of a right handed coordinate system (which is required 
- * exclusively here).  
+ * highly depends on definition of a right handed coordinate system (which is required
+ * exclusively here).
  * @method
  * @returns {object} g2
  * @param {string} str Label text
@@ -378,7 +378,7 @@ g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     if (idx) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({c:'label', a: arguments[0]});
-    } 
+    }
     return this;
 }
 g2.prototype.label.prototype = {
@@ -430,7 +430,7 @@ g2.prototype.label.prototype = {
             str = "" + (Number.isInteger(+s) ? +s : Number(s).toFixed(Math.max(g2.symbol.labelSignificantDigits-Math.log10(s),0)))  // use at least 3 significant digits after decimal point.
                      + (str.substr(1) === "angle" ? "°" : "");
         return g2().txt({str,x:()=>p.x+xoff,y:()=>p.y+yoff,
-                         thal: ()=>xoff > 0 ? "left"   : xoff < 0 ? "right"  : "center", 
+                         thal: ()=>xoff > 0 ? "left"   : xoff < 0 ? "right"  : "center",
                          tval: ()=>yoff > 0 ? "bottom" : yoff < 0 ? "top"  : "middle",
                          fs:fs||'black',
                          font})
@@ -442,7 +442,7 @@ g2.prototype.label.prototype = {
  * Draw marker on line element.
  * @method
  * @returns {object} g2
- * @param {object | string} mrk  `g2` object or Marker name. 
+ * @param {object | string} mrk  `g2` object or Marker name.
  * @param {number | string} loc
  *                    line parameter [0..1]<br>
  *                    line location ['beg','end','mid',..].
@@ -454,15 +454,15 @@ g2.prototype.label.prototype = {
  * g2().lin(10,10,100,10).mark("tick",0.75,1)
  *     .arc(100,100,50,3.14).mark("sqr",1);<br>
  * [Example](https://goessner.github.io/g2-mec/test/index.html#mark)
- * 
+ *
  */
 g2.prototype.mark = function mark({mrk,loc,dir,fs,ls}) {
     let idx = mrk && g2.getCmdIdx(this.commands,(cmd) => "pointAt" in this[cmd.c]);
     if (idx) {
         let ownerArgs = this.commands[idx].a,
             p = g2.prototype[this.commands[idx].c].pointAt(Object.assign({loc:loc!==undefined?loc:0.5},ownerArgs));
-            w = dir < 0 ? Math.atan2(-p.dy,-p.dx) 
-            : dir > 0 ? Math.atan2( p.dy, p.dx) 
+            w = dir < 0 ? Math.atan2(-p.dy,-p.dx)
+            : dir > 0 ? Math.atan2( p.dy, p.dx)
             : 0;
 //        console.log('fs='+fs);
         this.use({grp:mrk,x:p.x,y:p.y,w:w,scl:ownerArgs.lw || 1,
