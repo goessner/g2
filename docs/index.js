@@ -211,11 +211,40 @@ g2().beg({x:70,y:30,w:0.2,scl:2,ls:"#666",fs:"orange",lw:3,lc:"round",lj:"round"
    .rec({x:0,y:0,b:30,h:20}).end()),
 
 new Test('use',
-`let symbol = g2().rec({x:-25,y:-25,b:50,h:50,ls:"gray",lw:3,fs:"@fs2"}).cir({x:0,y:0,r:20});
-g2().use({grp:symbol,x:65,y:50,fs:"red",fs2:"green"})
-.use({grp:symbol,x:135,y:50,fs:"blue",fs2:"yellow"})}`,
+`g2()
+.ins(() =>{ symbol = g2().rec({x:-25,y:-25,b:50,h:50,ls:"gray",lw:3,fs:"@fs2"}).cir({x:0,y:0,r:20})})
+.use({grp:symbol,x:65,y:50,fs:"red",fs2:"green"})
+.use({grp:symbol,x:135,y:50,fs:"blue",fs2:"yellow"})`,
 g2()
 .ins(() =>{ symbol = g2().rec({x:-25,y:-25,b:50,h:50,ls:"gray",lw:3,fs:"@fs2"}).cir({x:0,y:0,r:20})})
 .use({grp:symbol,x:65,y:50,fs:"red",fs2:"green"})
-.use({grp:symbol,x:135,y:50,fs:"blue",fs2:"yellow"}))
+.use({grp:symbol,x:135,y:50,fs:"blue",fs2:"yellow"})),
+
+new Test('use2',
+`g2().ins(() => {smiley = g2()
+  .cir({x:0,y:0,r:5})
+  .arc({x:0,y:0,r:3,w:0.5,dw:2})
+  .cir({x:-2,y:-1,r:1,fs:"snow"})
+  .cir({x:2,y:-1,r:1,fs:"snow"})})
+  .use({grp:smiley,x:50,y:50,fs:"yellow",scl:4,lw:1})
+  .use({grp:smiley,x:150,y:50,fs:"orange",scl:5,lw:1});`,
+g2().ins(() => {smiley = g2()
+                .cir({x:0,y:0,r:5})
+                .arc({x:0,y:0,r:3,w:0.5,dw:2})
+                .cir({x:-2,y:-1,r:1,fs:"snow"})
+                .cir({x:2,y:-1,r:1,fs:"snow"})})
+                .use({grp:smiley,x:50,y:50,fs:"yellow",scl:4,lw:1})
+                .use({grp:smiley,x:150,y:50,fs:"orange",scl:5,lw:1})),
+
+new Test('shadow',
+`g2().beg({lw:3,ls:"#456",fs:"yellow",ld:[8, 4, 2, 4], sh:[5,5,5,"rgba(0,0,0,0.7)"]})
+.rec({x:30,y:40,b:50,h:20})
+.cir({x:140,y:50,r:40})`,
+g2().beg({lw:3,ls:"#456",fs:"yellow",ld:[8, 4, 2, 4], sh:[5,5,5,"rgba(0,0,0,0.7)"]})
+    .rec({x:30,y:40,b:50,h:20})
+    .cir({x:140,y:50,r:40})),
+
+new Test('grid',
+`g2().grid()`,
+g2().grid())
 ]
