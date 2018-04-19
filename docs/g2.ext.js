@@ -23,6 +23,7 @@ g2.symbol.dimcolor = "darkslategray";
 g2.symbol.solid = [];
 g2.symbol.dash = [15,10];
 g2.symbol.dot = [4,4];
+g2.symbol.tick = g2().p().m({x:0,y:-2}).l({x:0,y:2}).stroke({lc:"round",lwnosc:true});
 g2.symbol.dashdot = [25,6.5,2,6.5];
 g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
 
@@ -457,16 +458,19 @@ g2.prototype.label.prototype = {
  *
  */
 g2.prototype.mark = function mark({mrk,loc,dir,fs,ls}) {
-    let idx = mrk && g2.getCmdIdx(this.commands,(cmd) => "pointAt" in this[cmd.c]);
+    test = this.commands;
+    let idx = mrk && g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a});
     if (idx) {
-        let ownerArgs = this.commands[idx].a,
-            p = g2.prototype[this.commands[idx].c].pointAt(Object.assign({loc:loc!==undefined?loc:0.5},ownerArgs));
+        let ownerArgs = this.commands[idx].a;
+        for (let itr in loc) {
+            p = this.commands[idx].a.pointAt(loc[itr]);
             w = dir < 0 ? Math.atan2(-p.dy,-p.dx)
             : dir > 0 ? Math.atan2( p.dy, p.dx)
             : 0;
-//        console.log('fs='+fs);
         this.use({grp:mrk,x:p.x,y:p.y,w:w,scl:ownerArgs.lw || 1,
-                  ls:ls || ownerArgs.ls || 'black',fs:fs || ls || ownerArgs.ls || 'black'});
+            ls:ownerArgs.ls || 'black', fs:ownerArgs.ls || 'black'});
+        }
+//        console.log('fs='+fs);
     }
     return this;
 }
