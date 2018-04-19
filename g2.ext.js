@@ -458,7 +458,6 @@ g2.prototype.label.prototype = {
  *
  */
 g2.prototype.mark = function mark({mrk,loc,dir,fs,ls}) {
-    test = this.commands;
     let idx = mrk && g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a});
     if (idx) {
         let ownerArgs = this.commands[idx].a;
