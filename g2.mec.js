@@ -324,6 +324,14 @@ g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
                    .cir({x:this.x,y:this.y,r:this.r-10,ls:"#cecece",fs:"transparent",lw:2})
     }
 })
+
+/**
+ * Draw alternate pulley.
+ * @method
+ * @returns {object} this
+ * @param {object} [pos={x:0,y:0,w:0}] Center point position and rotation angle.
+ * @param {float} [r=25] Radius.
+ */
 g2.prototype.pulley2 = function () { return this.addCommand({c:'pulley2',a:arguments[0]}); }
 g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
@@ -336,24 +344,6 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     }
 })
 
-/**
- * Draw alternate pulley.
- * @method
- * @returns {object} this
- * @param {object} [pos={x:0,y:0,w:0}] Center point position and rotation angle.
- * @param {float} [r=25] Radius.
- */
-// g2.prototype.pulley2 = function pulley2(pos,r) {
-//    r = r || 25;
-//    return this.beg(pos)
-//                 .bar2({x:0,y:r-4},{x:0,y:-r+4})
-//                 .bar2({x:r-4,y:0},{x:-r+4,y:0})
-//                 .cir(0,0,r-2.5,{ls:"#e6e6e6",fs:"transparent",lw:5})
-//                 .cir(0,0,r,{ls:"@nodcolor",fs:"transparent",lw:1})
-//                 .cir(0,0,r-5,{ls:"@nodcolor",fs:"transparent",lw:1})
-//               .end()
-//               .proxy(g2.prototype.cir,[pos.x,pos.y,r]);
-// }
 /**
  * Draw rope. Amount of pulley radii must be greater than 10 units. They are forced to zero otherwise.
  * @method
