@@ -224,7 +224,40 @@ g2.prototype.use.prototype = {
 
 // complex macros / add prototypes to argument objects
 
-// vec,dim used to be here, it is in g2.mec.js now
+g2.prototype.vec = function vec({}) { return this.addCommand({c:'vec',a:arguments[0]}); }
+g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
+    g2() {
+        let {x1,y1,x2,y2,lw,sh} = this;
+        let z = 2+(lw||1), dx = x2-x1, dy = y2-y1, r = Math.hypot(dx,dy),
+        args = Object.assign({},{x:x1,y:y1,w:Math.atan2(dy,dx),lc:"round",lj:"round",sh},this);
+        return g2().beg(args)
+                     .p().m({x:0,y:0})
+                     .l({x:r,y:0})
+                     .stroke({fs:'transparent'})
+                     .p().m({x:r,y:0})
+                     .l({x:r-5*z,y:z})
+                     .a({dw:-Math.PI/3,x:r-5*z,y:-z})
+                     .z()
+                     .drw({fs:"@ls"})
+                   .end();
+    }
+})
+
+g2.prototype.dim = function dim({}) { return this.addCommand({c:'dim',a:arguments[0]}); }
+g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
+    g2() {
+        let {x1,y1,x2,y2,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
+            dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy),
+            args = Object.assign({lc:"round",lj:"round",sh},{x:x1,y:y1,w:Math.atan2(dy,dx)},this);
+
+        return g2().beg(args)
+                     .p().m({x:0,y:0}).l({x:len,y:0})
+                         .m({x:0,y:sz}).l({x:0,y:-sz})
+                         .m({x:len,y:sz}).l({x:len,y:-sz})
+                     .stroke({fs:'transparent'})
+                   .end();
+   }
+})
 
 /**
  * Angular dimension

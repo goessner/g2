@@ -1,5 +1,5 @@
 class Test {
-    constructor(name,src,run) {
+    constructor(name,src) {
         this.name = name;
         this.src = src;
     }

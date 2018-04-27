@@ -135,7 +135,7 @@ g2.pntItrOf = function(pts) {
  * Similar to 'Array.prototype.findIndex', only working reverse.
  * @private
  */
-g2.getCmdIdx = function(cmds,callbk) {
+g2.getCmdIdx = function(cmds,callbk) { 
     for (let i = cmds.length-1; i >= 0; i--)
         if (callbk(cmds[i],i,cmds))
             return i;
@@ -531,6 +531,15 @@ g2.canvasHdl.prototype = {
     }
 }
 
+// EXPERIMENTAL:
+g2.prototype.ply.itrOf = function(pts,args) {
+    return !(pts && pts.length) ? undefined
+           : args && typeof args.itr === "function" ? args.itr(pts)
+           : typeof pts[0] === "number" ? g2.prototype.ply.iterators["x,y"](pts)
+           : Array.isArray(pts[0]) && pts[0].length >= 2 ? g2.prototype.ply.iterators["[x,y]"](pts)
+           : typeof pts[0] === "object" && "x" in pts[0] && "y" in pts[0] ? g2.prototype.ply.iterators["{x,y}"](pts)
+           : undefined;
+}
 // utils
 
 g2.zoomView = function({scl,x,y}) { return { scl, x:(1-scl)*x, y:(1-scl)*y } }
@@ -542,7 +551,7 @@ g2.render = function render(fn) {
             requestAnimationFrame(animate);
     }
     animate(performance.now());
-} 
+}
 
 // use it with node.js ... ?
-if (typeof module !== 'undefined') module.exports = g2;
+if (typeof module !== 'undefined')  module.exports = g2;
