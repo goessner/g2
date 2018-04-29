@@ -51,6 +51,11 @@ new Test('pulley',
 
 new Test('pulley2',
 `g2().view({cartesian:true})
-     .pulley2({x:150,y:80,r:50})`)
+     .pulley2({x:150,y:80,r:50})`),
+
+new Test('rope',
+`let A = {x:50,y:30}, B = {x:200,y:75};
+g2().view({cartesian:true})
+    .pulley({...A,r:20}).pulley2({...B,r:40}).rope({p1:A,r1:20,p2:B,r2:40})`)
 
 )

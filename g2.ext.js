@@ -29,42 +29,6 @@ g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 
 
 g2.symbol.dot = g2().cir({x:0,y:0,r:1.5,ls:"transparent"});
 g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
-g2.symbol.pol = g2().cir({x:0,y:0,r:6,fs:"@nodfill"})
-                    .cir({x:0,y:0,r:2.5,fs:"@ls",ls:"transparent"});
-g2.symbol.gnd = g2().cir({x:0,y:0,r:6,ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
-                    .p().m({x:0,y:6}).a({dw:Math.PI/2,x:-6,y:0}).l({x:6,y:0}).a({dw:-Math.PI/2,x:0,y:-6}).z().fill({fs:"@nodcolor"});
-g2.symbol.nod = g2().cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill",lwnosc:true});
-g2.symbol.dblnod = g2().cir({x:0,y:0,r:6,ls:"@nodcolor",fs:"@nodfill"}).cir({x:0,y:0,r:3,ls:"@nodcolor",fs:"@nodfill2",lwnosc:true});
-g2.symbol.nodfix = g2().p()
-                         .m({x:-8,y:-12})
-                         .l({x:0,y:0})
-                         .l({x:8,y:-12})
-                       .drw({ls:"@nodcolor",fs:"@nodfill2"})
-                       .cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill"});
-g2.symbol.dblnodfix = g2().p()
-                            .m({x:-8,y:-12})
-                            .l({x:0,y:0})
-                            .l({x:8,y:-12})
-                          .drw({ls:"@nodcolor",fs:"@nodfill2"})
-                          .cir({x:0,y:0,r:6,ls:"@nodcolor",fs:"@nodfill"})
-                          .cir({x:0,y:0,r:3,ls:"@nodcolor",fs:"@nodfill2"});
-g2.symbol.nodflt = g2().p()
-                         .m({x:-8,y:-12})
-                         .l({x:0,y:0})
-                         .l({x:8,y:-12})
-                       .drw({ls:"@nodcolor",fs:"@nodfill2"})
-                       .cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill"})
-                       .lin({x1:-9,y1:-19,x2:9,y2:-19,ls:"@nodfill2",lw:5,lwnosc:false})
-                       .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:"@nodcolor",lw:2,lwnosc:false});
-g2.symbol.origin = function() {
-   let z = 3.5;
-   return g2().beg({lc:"round",lj:"round",fs:"@ls"})
-              .p().m({x:6*z,y:0}).l({x:0,y:0}).l({x:0,y:6*z}).stroke()
-              .p().m({x:10*z,y:0}).l({x:6*z,y:3/4*z}).a({dw:-Math.PI/3,x:6*z,y:-3/4*z}).z()
-              .m({x:0,y:10*z}).l({x:3/4*z,y:6*z}).a({dw: Math.PI/3,x:-3/4*z,y:6*z}).z().drw()
-              .cir({x:0,y:0,r:2.5})
-              .end();
-}();
 
  // prototypes for extending argument objects
  g2.prototype.lin.prototype = {
@@ -224,40 +188,7 @@ g2.prototype.use.prototype = {
 
 // complex macros / add prototypes to argument objects
 
-g2.prototype.vec = function vec({}) { return this.addCommand({c:'vec',a:arguments[0]}); }
-g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
-    g2() {
-        let {x1,y1,x2,y2,lw,sh} = this;
-        let z = 2+(lw||1), dx = x2-x1, dy = y2-y1, r = Math.hypot(dx,dy),
-        args = Object.assign({},{x:x1,y:y1,w:Math.atan2(dy,dx),lc:"round",lj:"round",sh},this);
-        return g2().beg(args)
-                     .p().m({x:0,y:0})
-                     .l({x:r,y:0})
-                     .stroke({fs:'transparent'})
-                     .p().m({x:r,y:0})
-                     .l({x:r-5*z,y:z})
-                     .a({dw:-Math.PI/3,x:r-5*z,y:-z})
-                     .z()
-                     .drw({fs:"@ls"})
-                   .end();
-    }
-})
-
-g2.prototype.dim = function dim({}) { return this.addCommand({c:'dim',a:arguments[0]}); }
-g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
-    g2() {
-        let {x1,y1,x2,y2,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
-            dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy),
-            args = Object.assign({lc:"round",lj:"round",sh},{x:x1,y:y1,w:Math.atan2(dy,dx)},this);
-
-        return g2().beg(args)
-                     .p().m({x:0,y:0}).l({x:len,y:0})
-                         .m({x:0,y:sz}).l({x:0,y:-sz})
-                         .m({x:len,y:sz}).l({x:len,y:-sz})
-                     .stroke({fs:'transparent'})
-                   .end();
-   }
-})
+// vec,dim used to be here, it is in g2.mec.js now
 
 /**
  * Angular dimension
