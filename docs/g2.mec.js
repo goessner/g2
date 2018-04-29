@@ -324,6 +324,15 @@ g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
                    .cir({x:this.x,y:this.y,r:this.r-10,ls:"#cecece",fs:"transparent",lw:2})
     }
 })
+
+
+/**
+ * Draw alternate pulley.
+ * @method
+ * @returns {object} this
+ * @param {object} [pos={x:0,y:0,w:0}] Center point position and rotation angle.
+ * @param {float} [r=25] Radius.
+ */
 g2.prototype.pulley2 = function () { return this.addCommand({c:'pulley2',a:arguments[0]}); }
 g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
@@ -335,25 +344,6 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
                    .cir({x:this.x,y:this.y,r:this.r-5,ls:"@nodcolor",fs:"transparent",lw:1})
     }
 })
-
-/**
- * Draw alternate pulley.
- * @method
- * @returns {object} this
- * @param {object} [pos={x:0,y:0,w:0}] Center point position and rotation angle.
- * @param {float} [r=25] Radius.
- */
-// g2.prototype.pulley2 = function pulley2(pos,r) {
-//    r = r || 25;
-//    return this.beg(pos)
-//                 .bar2({x:0,y:r-4},{x:0,y:-r+4})
-//                 .bar2({x:r-4,y:0},{x:-r+4,y:0})
-//                 .cir(0,0,r-2.5,{ls:"#e6e6e6",fs:"transparent",lw:5})
-//                 .cir(0,0,r,{ls:"@nodcolor",fs:"transparent",lw:1})
-//                 .cir(0,0,r-5,{ls:"@nodcolor",fs:"transparent",lw:1})
-//               .end()
-//               .proxy(g2.prototype.cir,[pos.x,pos.y,r]);
-// }
 /**
  * Draw rope. Amount of pulley radii must be greater than 10 units. They are forced to zero otherwise.
  * @method
@@ -367,6 +357,28 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  *                        pulley in counterclockwise direction. Negative radius
  *                        forces the rope to leave in clockwise direction (cartesian rule).
  */
+g2.prototype.rope = function () { return this.addCommand({c:'rope',a:arguments[0]}); }
+g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
+    g2() {
+        let args = this;
+        let Rmin = 10;
+        let R1 = this.r1 > Rmin ? this.r1 - 2.5
+               : this.r1 < Rmin ? this.r1 + 2.5
+               : 0;
+        let R2 = this.r2 > Rmin ? this.r1 - 2.5
+               : this.r2 < Rmin ? this.r1 + 2.5
+               : 0;
+        // THINK ABOUT A WAY TO IMPLEMENT 2 POINTS WITHOUT x1, x2, y1, y2
+        return g2().bar2({x1:this.x,y1:this.y-this.r+4,x2:this.x,y2:this.y+this.r-4})
+                   .bar2({x1:this.x-this.r+4,y1:this.y,x2:this.x+this.r-4,y2:this.y})
+                //   .cir({x:this.x,y:this.y,r:this.r,ls:"@nodcolor",fs:"#e6e6e6",lw:1})
+                   .cir({x:this.x,y:this.y,r:this.r-2.5,ls:"#e6e6e6",fs:"transparent",lw:5})
+                   .cir({x:this.x,y:this.y,r:this.r,ls:"@nodcolor",fs:"transparent",lw:1})
+                   .cir({x:this.x,y:this.y,r:this.r-5,ls:"@nodcolor",fs:"transparent",lw:1})
+    }
+})
+
+
 g2.prototype.rope = function rope(p1,r1,p2,r2,style) {
    var Rmin = 10,
        R1 = r1 >  Rmin ? r1 - 2.5

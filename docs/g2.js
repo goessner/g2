@@ -318,9 +318,9 @@ g2.canvasHdl.prototype = {
             return img;
         }
 
-        let args = arguments[0], 
+        let args = arguments[0],
             img = args._image || (args._image = getImg(uri,false)),
-            sw = w ? Math.sin(w) : 0, 
+            sw = w ? Math.sin(w) : 0,
             cw = w ? Math.cos(w) : 1,
             b =  img && img.width || 20,
             h =  img && img.height || 20;
