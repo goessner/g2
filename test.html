@@ -1,0 +1,15 @@
+<canvas id='c' width='500' height='500'></canvas>
+<script src='./g2.js'></script>
+<script src='./g2.ext.js'></script>
+<script src=./docs/g2.ext.js></script>
+<script src='./docs/g2.mec.js'></script>
+
+<script>
+    ctx = document.getElementById('c').getContext('2d');
+    g2().view({cartesian: true,x:200,y:300})
+        .grid()
+        .use({grp:'sqr',x:100,y:0})
+        .bar2({x1:50,x2:250,y1:50,y2:50})
+        .load({pts:[{x:50,y:50},{x:100,y:100},{x:250,y:100},{x:250,y:50}],spacing:5})
+        .exe(ctx)
+</script>

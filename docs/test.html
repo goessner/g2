@@ -1,0 +1,9 @@
+<canvas id="c" width="601" height="401" style="border:solid 1px black"></canvas>
+<script src="./g2.js"></script>
+<script src="./g2.ext.js"></script>
+<script>
+    g2().view({cartesian:true})
+        .grid()
+        .cir({x:300,y:250,r:50,fs:'orange'}).label({str:"hello",loc:'n'})
+        .exe(document.getElementById('c').getContext('2d'))
+</script>
