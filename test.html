@@ -1,15 +1,18 @@
-<canvas id='c' width='500' height='500'></canvas>
+<canvas id='c' width='600' height='200'></canvas>
 <script src='./g2.js'></script>
 <script src='./g2.ext.js'></script>
-<script src=./docs/g2.ext.js></script>
-<script src='./docs/g2.mec.js'></script>
+<script src='./g2.mec.js'></script>
 
 <script>
     ctx = document.getElementById('c').getContext('2d');
-    g2().view({cartesian: true,x:200,y:300})
+    g2().view({cartesian:true})
         .grid()
-        .use({grp:'sqr',x:100,y:0})
-        .bar2({x1:50,x2:250,y1:50,y2:50})
-        .load({pts:[{x:50,y:50},{x:100,y:100},{x:250,y:100},{x:250,y:50}],spacing:5})
+        .origin({x:20,y:80}).label({str:"origin",loc:"s",off:25})
+        // .nod({x:100,y:80})       .label({str:"nod",loc:"s",off:25})
+        // .dblnod({x:180,y:80})    .label({str:"dblnod",loc:"s",off:25})
+        // .nodfix({x:260,y:80})    .label({str:"nodfix",loc:"s",off:25})
+        // .nodflt({x:340,y:80})    .label({str:"nodflt",loc:"s",off:25})
+        // .pol({x:420,y:80})       .label({str:"pol",loc:"s",off:25})
+        // .gnd({x:500,y:80})       .label({str:"gnd",loc:"s",off:25})
         .exe(ctx)
 </script>

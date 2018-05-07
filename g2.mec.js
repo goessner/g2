@@ -73,19 +73,21 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
  * Draw slider.
  * @method
  * @returns {object} g2
- * @param {object} [p={x:0,y:0,w:0}] Center point.
+ * @param {number} x x-value center.
+ * @param {number} y y-value center.
  * @param {angle} w Rotation angle [rad]
- * @param {object} args Arguments object holding style properties. See 'g2.prototype.style' for details.
- * @param {float} [args.b=32] Slider breadth.
- * @param {float} [args.h=16] Slider height.
+ * @param {number} [args.b=32] Slider breadth.
+ * @param {number} [args.h=16] Slider height.
  */
 g2.prototype.slider = function () { return this.addCommand({c:'slider',a:arguments[0]}); }
 g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
     g2() {
-        let {x,y,w,b,h,lw,sh} = this;
+        let args = this;
+        args.b = args.b || 32;
+        args.h = args.h || 16;
         args = Object.assign({},{x:x,y:y,w:w,b:b,h:h},this);
-        return g2().beg(args)
-                   .rec({x:-b/2,y:-h/2,b:b,h:h})
+        return g2().beg({x:args.x,y:args.y,w:args.w})
+                   .rec({x:-args.b/2,y:-args.h/2,b:args.b,h:args.h})
                    .end()
     }
 })
@@ -100,7 +102,7 @@ g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
  *                                  {dx,dy} relative coordinates<br>
  *                                  {r,w} polar coordinates
  * @param {object} args Arguments object holding style properties. See 'g2.prototype.style' for details.
- * @param {float} [args.h=16] Spring height.
+ * @param {number} [args.h=16] Spring height.
  */
 g2.prototype.spring = function () { return this.addCommand({c:'spring',a:arguments[0]}); }
 g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
@@ -147,7 +149,7 @@ g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  *                                  {dx,dy} relative coordinates<br>
  *                                  {r,w} polar coordinates
  * @param {object} args Arguments object.
- * @param {float} [args.h=16] Spring height.
+ * @param {number} [args.h=16] Spring height.
  * @param {any} [args.style] Style property. See 'g2.prototype.style' for details.
  */
 g2.prototype.damper = function () { return this.addCommand({c:'damper',a:arguments[0]}); }
@@ -312,7 +314,7 @@ g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * @method
  * @returns {object} this
  * @param {v2} [p={x:0,y:0}] Center point.
- * @param {float} [r=25] Radius.
+ * @param {number} [r=25] Radius.
  */
 g2.prototype.pulley = function () { return this.addCommand({c:'pulley',a:arguments[0]}); }
 g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
@@ -331,7 +333,7 @@ g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * @method
  * @returns {object} this
  * @param {object} [pos={x:0,y:0,w:0}] Center point position and rotation angle.
- * @param {float} [r=25] Radius.
+ * @param {number} [r=25] Radius.
  */
 g2.prototype.pulley2 = function () { return this.addCommand({c:'pulley2',a:arguments[0]}); }
 g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
@@ -348,11 +350,11 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * @method
  * @returns {object} this
  * @param {v2} [p1={x:0,y:0}] Start pulley center.
- * @param {float} [r1=20] Start pulley radius. With positive radius the rope leaves the
+ * @param {number} [r1=20] Start pulley radius. With positive radius the rope leaves the
  *                        pulley in counterclockwise direction. Negative radius
  *                        forces the rope to leave in clockwise direction (cartesian rule).
  * @param {v2} [p2={x:0,y:0}] End pulley center.
- * @param {float} [r2=20] End pulley radius. With positive radius the rope leaves the
+ * @param {number} [r2=20] End pulley radius. With positive radius the rope leaves the
  *                        pulley in counterclockwise direction. Negative radius
  *                        forces the rope to leave in clockwise direction (cartesian rule).
  */
@@ -405,7 +407,7 @@ g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * @param {array} pts Array of points
  * @param {bool} [closed=false] Closed polygon.
  * @param {object} [args] Arguments object.
- * @param {float} [args.h=4] Ground shade line width.
+ * @param {number} [args.h=4] Ground shade line width.
  * @param {string} [args.pos=right] Ground shade position ["left","right"].
  */
 g2.prototype.ground = function () { return this.addCommand({c:'ground',a:arguments[0]}); }
@@ -514,6 +516,107 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 //    return this;
 // }
 
+g2.prototype.pol = function () { return this.addCommand({c:'pol',a:arguments[0]}); }
+g2.prototype.pol.prototype = g2.mixin({}, {
+    g2() {
+        let args = this;
+        return g2().cir({x:args.x,y:args.y,r:6,fs:"@nodfill"})
+                   .cir({x:args.x,y:args.y,r:2.5,fs:"@ls",ls:"transparent"});
+    }
+ });
+
+ g2.prototype.gnd = function () { return this.addCommand({c:'gnd',a:arguments[0]}); }
+ g2.prototype.gnd.prototype = g2.mixin({}, {
+     g2() {
+         let args = this;
+         return g2().beg({x:args.x,y:args.y})
+                    .cir({x:0,y:0,r:6,ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
+                    .p()
+                    .m({x:0,y:6})
+                    .a({dw:Math.PI/2,x:-6,y:0})
+                    .l({x:6,y:0})
+                    .a({dw:-Math.PI/2,x:0,y:-6})
+                    .z()
+                    .fill({fs:"@nodcolor"})
+                    .end();
+    }
+});
+
+g2.prototype.nod = function () { return this.addCommand({c:'nod',a:arguments[0]}); }
+g2.prototype.nod.prototype = g2.mixin({}, {
+    g2() {
+        let args = this;
+        return g2().cir({x:args.x,y:args.y,r:4,ls:"@nodcolor",fs:"@nodfill",lwnosc:true});
+    }
+});
+
+g2.prototype.dblnod = function () { return this.addCommand({c:'dblnod',a:arguments[0]}); }
+g2.prototype.dblnod.prototype = g2.mixin({}, {
+    g2() {
+        let args = this;
+        return g2().cir({x:args.x,y:args.y,r:6,ls:"@nodcolor",fs:"@nodfill"})
+                   .cir({x:args.x,y:args.y,r:3,ls:"@nodcolor",fs:"@nodfill2",lwnosc:true});
+    }
+});
+
+g2.prototype.nodfix = function () { return this.addCommand({c:'nodfix',a:arguments[0]}); }
+g2.prototype.nodfix.prototype = g2.mixin({}, {
+    g2() {
+        let args = this;
+        return g2().beg({x:args.x,y:args.y})
+                   .p()
+                   .m({x:-8,y:-12})
+                   .l({x:0,y:0})
+                   .l({x:8,y:-12})
+                   .drw({ls:"@nodcolor",fs:"@nodfill2"})
+                   .cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill"})
+                   .end();
+    }
+});
+
+g2.prototype.nodflt = function () { return this.addCommand({c:'nodflt',a:arguments[0]}); }
+g2.prototype.nodflt.prototype = g2.mixin({}, {
+    g2() {
+        let args = this;
+        return g2().beg({x:args.x,y:args.y})
+                   .p()
+                   .m({x:-8,y:-12})
+                   .l({x:0,y:0})
+                   .l({x:8,y:-12})
+                   .drw({ls:"@nodcolor",fs:"@nodfill2"})
+                   .cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill"})
+                   .lin({x1:-9,y1:-19,x2:9,y2:-19,ls:"@nodfill2",lw:5,lwnosc:false})
+                   .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:"@nodcolor",lw:2,lwnosc:false})
+                   .end();
+    }
+});
+
+g2.prototype.origin = function () { return this.addCommand({c:'origin',a:arguments[0]}); }
+g2.prototype.origin.prototype = g2.mixin({}, {
+    g2() {
+        args = this;
+        let z = 3.5;
+        return g2().beg({x:args.x,y:args.y,lc:"round",lj:"round",fs:"@ls"})
+                   .p()
+                   .m({x:6*z,y:0})
+                   .l({x:0,y:0})
+                   .l({x:0,y:6*z})
+                   .stroke()
+                   .p()
+                   .m({x:10*z,y:0})
+                   .l({x:6*z,y:3/4*z})
+                   .a({dw:-Math.PI/3,x:6*z,y:-3/4*z})
+                   .z()
+                   .m({x:0,y:10*z})
+                   .l({x:3/4*z,y:6*z})
+                   .a({dw: Math.PI/3,x:-3/4*z,y:6*z})
+                   .z()
+                   .drw()
+                   .cir({x:0,y:0,r:2.5})
+                   .end();
+    }
+});
+
 /**
  * Mechanical style values.
  * Not really meant to get overwritten. But if you actually want, proceed.<br>
@@ -531,7 +634,7 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * @property {array} [State.dot=[4,4]]   dotted line style.
  * @property {array} [State.dashdot=[25,6.5,2,6.5]]   dashdotted line style.
  * @property {number} [State.labelOffset=5]    default label offset distance.
- * @property {number} [State.labelSignificantDigits=3]   default label's significant digits after floating point.
+ * @property {number} [State.labelSignificantDigits=3]   default label's significant digits after numbering point.
  */
 g2.State = g2.State || {};
 g2.State.nodcolor = "#333";
@@ -546,62 +649,3 @@ g2.State.dot = [4,4];
 g2.State.dashdot = [25,6.5,2,6.5];
 g2.State.labelOffset = 5;
 g2.State.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
-
-/**
- * Mechanical symbols and line markers as individual `g2` instances. Use them via `use` command.<br>
- * @namespace
- * @property {object} symbol    `g2` symbol namespace.
- * @property {object} symbol.origin   origin symbol.
- * @property {object} symbol.nod   node symbol.
- * @property {object} symbol.dblnod   double-node symbol.
- * @property {object} symbol.nodfix  fixed node / bearing symbol.
- * @property {object} symbol.dblnodfix  fixed double-node / bearing symbol.
- * @property {object} symbol.nodflt  floating node / bearing symbol.
- * @property {object} symbol.dblnodfix  floating double-node / bearing symbol.
- * @property {object} symbol.gnd  ground node symbol.
- * @property {object} symbol.pol  pole symbol.
- * @property {object} symbol.dot  dot marker symbol.
- * @property {object} symbol.sqr  square marker symbol.
- * @property {object} symbol.tilde  tilde marker symbol.
- * @property {object} symbol.arrow  arrow marker symbol.
- * @property {object} symbol.tick  tick marker symbol.
- * @property {object} symbol.arrowtick  arrow-tick marker symbol.
- */
-g2.symbol = g2.symbol || {};
-
-g2.symbol.pol = g2().cir({x:0,y:0,r:6,fs:"@nodfill"})
-                    .cir({x:0,y:0,r:2.5,fs:"@ls",ls:"transparent"});
-g2.symbol.gnd = g2().cir({x:0,y:0,r:6,ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
-                    .p().m({x:0,y:6}).a({dw:Math.PI/2,x:-6,y:0}).l({x:6,y:0}).a({dw:-Math.PI/2,x:0,y:-6}).z().fill({fs:"@nodcolor"});
-g2.symbol.nod = g2().cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill",lwnosc:true});
-g2.symbol.dblnod = g2().cir({x:0,y:0,r:6,ls:"@nodcolor",fs:"@nodfill"}).cir({x:0,y:0,r:3,ls:"@nodcolor",fs:"@nodfill2",lwnosc:true});
-g2.symbol.nodfix = g2().p()
-                         .m({x:-8,y:-12})
-                         .l({x:0,y:0})
-                         .l({x:8,y:-12})
-                       .drw({ls:"@nodcolor",fs:"@nodfill2"})
-                       .cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill"});
-g2.symbol.dblnodfix = g2().p()
-                            .m({x:-8,y:-12})
-                            .l({x:0,y:0})
-                            .l({x:8,y:-12})
-                          .drw({ls:"@nodcolor",fs:"@nodfill2"})
-                          .cir({x:0,y:0,r:6,ls:"@nodcolor",fs:"@nodfill"})
-                          .cir({x:0,y:0,r:3,ls:"@nodcolor",fs:"@nodfill2"});
-g2.symbol.nodflt = g2().p()
-                         .m({x:-8,y:-12})
-                         .l({x:0,y:0})
-                         .l({x:8,y:-12})
-                       .drw({ls:"@nodcolor",fs:"@nodfill2"})
-                       .cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill"})
-                       .lin({x1:-9,y1:-19,x2:9,y2:-19,ls:"@nodfill2",lw:5,lwnosc:false})
-                       .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:"@nodcolor",lw:2,lwnosc:false});
-g2.symbol.origin = function() {
-   let z = 3.5;
-   return g2().beg({lc:"round",lj:"round",fs:"@ls"})
-              .p().m({x:6*z,y:0}).l({x:0,y:0}).l({x:0,y:6*z}).stroke()
-              .p().m({x:10*z,y:0}).l({x:6*z,y:3/4*z}).a({dw:-Math.PI/3,x:6*z,y:-3/4*z}).z()
-              .m({x:0,y:10*z}).l({x:3/4*z,y:6*z}).a({dw: Math.PI/3,x:-3/4*z,y:6*z}).z().drw()
-              .cir({x:0,y:0,r:2.5})
-              .end();
-}();

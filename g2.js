@@ -11,10 +11,10 @@
   * @returns {g2}
   * @example
   * var ctx = document.getElementById("c").getContext("2d");
-  * g2()                  // Create 'g2' instance.
-  *  .lin(50,50,100,100)  // Append ...
-  *  .lin(100,100,200,50) // ... commands.
-  *  .exe(ctx);           // Execute commands addressing canvas context.
+  * g2()                                // Create 'g2' instance.
+  *  .lin({x1:50,x2:50,y1:100,y2:100})  // Append ...
+  *  .lin({x1:100,x2:100,y1:200,y2:50}) // ... commands.
+  *  .exe(ctx);                         // Execute commands addressing canvas context.
   */
 function g2(opts) {
     if (this instanceof g2) {
@@ -30,24 +30,156 @@ g2.prototype = {
  * Clear viewport region.<br>
  * @method
  * @typedef {param}
- * @prop {number} [b] - viewport width (optional)
- * @prop {number} [h] - viewport height (optional)
- * @param {param} [param] parameter object (optional).
  * @returns {g2} this
  */
     clr() { return this.addCommand({c:'clr'}); },
+/**
+ * Set the view by placing origin coordinates and scaling factor in device units
+ * and make viewport cartesian.
+ * @method
+ * @returns {object} g2
+ * @param {number} [scl=1] Absolute scaling factor.
+ * @param {number} [x=0] x-origin in device units.
+ * @param {number} [y=0] y-origin in device units.
+ * @param {booean} [cartesian=false] Set cartesian flag.
+ */
     view({scl,x,y,cartesian}) { return this.addCommand({c:'view',a:arguments[0]}); },
+
+/**
+ * Draw grid.
+ * @method
+ * @param {string} [color='#ccc'] Change color.
+ * @param {number} [size=20] Change space between lines.
+ */
     grid({color,size}={}) { return this.addCommand({c:'grid',a:arguments[0]}); },
+
+/**
+ * Draw circle by center and radius.
+ * @method
+ * @returns {object} g2
+ * @param {number} x x-value center.
+ * @param {number} y y-value center.
+ * @param {number} r Radius.
+ * @param {number} w Angle.
+ * @example
+ * g2().cir({x:100,y:80,r:20})  // Draw circle.
+ *     .exe(ctx);               // Render to context.
+ */
     cir({x,y,r,w}) { return this.addCommand({c:'cir',a:arguments[0]}); },
+
+/**
+ * Draw ellipse by center and radius for x and y.
+ * @method
+ * @returns {object} g2
+ * @param {number} x x-value center.
+ * @param {number} y y-value center.
+ * @param {number} rx Radius x-axys.
+ * @param {number} ry Radius y-axys.
+ * @param {number} w Start angle.
+ * @param {number} dw Angular range.
+ * @param {number} rot Rotation.
+ * @example
+ * g2().ell({x:100,y:80,rx:20,ry:30,w:0,dw:2*Math.PI/4,rot:1})  // Draw circle.
+ *     .exe(ctx);               // Render to context.
+ */
     ell({x,y,rx,ry,w,dw,rot}) { return this.addCommand({c:'ell',a:arguments[0]}); },
+
+/**
+ * Draw arc by center point, radius, start angle and angular range.
+ * @method
+ * @returns {object} g2
+ * @param {number} x x-value center.
+ * @param {number} y y-value center.
+ * @param {number} r Radius.
+ * @param {number} [w=0] Start angle (in radian).
+ * @param {number} [dw=2*pi] Angular range in Radians.
+ * @example
+ * g2().arc({x:300,y:400,r:390,w:-Math.PI/4,dw:-Math.PI/2})
+ *     .exe(ctx);
+ */
     arc({x,y,r,w,dw}) { return this.addCommand({c:'arc',a:arguments[0]}); },
+
+/**
+ * Draw rectangle by anchor point and dimensions.
+ * @method
+ * @returns {object} g2
+ * @param {number} x x-value upper left corner.
+ * @param {number} y y-value upper left corner.
+ * @param {number} b Width.
+ * @param {number} h Height.
+ * @example
+ * g2().rec({x:100,y:80,b:40,h:30}) // Draw rectangle.
+ *     .exe(ctx);                   // Render to context.
+ */
     rec({x,y,b,h}) { return this.addCommand({c:'rec',a:arguments[0]}); },
+
+/**
+ * Draw line by start point and end point.
+ * @method
+ * @returns {object} g2
+ * @param {number} x1 Start x coordinate.
+ * @param {number} y1 Start y coordinate.
+ * @param {number} x2 End x coordinate.
+ * @param {number} y2 End y coordinate.
+ * @param {object} [style] Style properties. See 'g2.style' for details.
+ * @example
+ * g2().lin({x1:10,x2:10,y1:190,y2:10}) // Draw line.
+ *     .exe(ctx);                       // Render to context.
+ */
     lin({x1,y1,x2,y2}) { return this.addCommand({c:'lin',a:arguments[0]}); },
+
+/**
+ * Draw polygon by points.
+ * Using iterator function for getting points from array by index.
+ * It must return current point object {x,y} or object {done:true}.
+ * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
+ * array of [[x,y],...] arrays or array of [{x,y},...] objects.
+ * @method
+ * @returns {object} this
+ * @param {array} pts Array of points.
+ * @param {bool|'split'} [closed = false]
+ * @param {number} x Start x coordinate.
+ * @param {number} y Start y coordinate.
+ * @param {number} w Angle.
+ * @example
+ * g2().ply({pts:[100,50,120,60,80,70]}),
+ *     .ply({pts:[150,60],[170,70],[130,80]],closed:true}),
+ *     .ply({pts:[{x:160,y:70},{x:180,y:80},{x:140,y:90}]}),
+ *     .exe(ctx);
+ */
     ply({pts,closed,x,y,w}) {
         arguments[0]._itr = g2.pntItrOf(pts);
         return this.addCommand({c:'ply',a:arguments[0]});
     },
+
+/**
+ * Draw text string at anchor point.
+ * @method
+ * @returns {object} g2
+ * @param {string} s Text string.
+ * @param {number} [x=0] x coordinate of text anchor position.
+ * @param {number} [y=0] y coordinate of text anchor position.
+ * @param {number} [w=0] w Rotation angle about anchor point with respect to positive x-axis.
+ */
     txt({str,x,y,w}) { return this.addCommand({c:'txt',a:arguments[0]}); },
+
+/**
+ * Reference g2 graphics commands from another g2 object.
+ * With this command you can reuse instances of grouped graphics commands
+ * while applying a similarity transformation and style properties on them.
+ * In fact you might want to build custom graphics libraries on top of that feature.
+ * @method
+ * @returns {object} g2
+ * @param {object | string} grp g2 source object or symbol name found in 'g2.symbol' namespace.
+ * @param {number} [x=0] Translation value x.
+ * @param {number} [y=0] Translation value y.
+ * @param {number} [w=0] Rotation angle (in radians).
+ * @param {number} [scl=1] Scale factor.
+ * @example
+ * g2.symbol.cross = g2().lin({x1:5,y1:5,x2:-5,y2:-5}).lin({x1:5,y1:-5,x2:-5,y2:5});  // Define symbol.
+ * g2().use({grp:"cross",x:100,y:100})  // Draw cross at position 100,100.
+ *     .exe(ctx);                   // Render to context.
+ */
     use({grp,x,y,w,scl}) {
         if (typeof grp === "string")  // must be a member name of the 'g2.symbol' namespace
             arguments[0].grp = grp = g2.symbol[grp];
@@ -55,43 +187,206 @@ g2.prototype = {
             this.addCommand({c:'use',a:arguments[0]});
         return this;
     },
+
+/**
+ * Draw image.
+ * This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.
+ * @method
+ * @returns {object} g2
+ * @param {string} uri Image uri or data:url.
+ * @param {number} [x=0] X-coordinate of image (upper left).
+ * @param {number} [y=0] Y-coordinate of image (upper left).
+ * @param {number} [b = undefined] Width.
+ * @param {number} [h = undefined] Height.
+ * @param {number} [xoff = undefined] X-offset.
+ * @param {number} [yoff = undefined] Y-offset.
+ * @param {number} [dx = undefined] Region x.
+ * @param {number} [dy = undefined] Region y.
+ */
     img({uri,x,y,w,b,h,xoff,yoff,dx,dy}) { return this.addCommand({c:'img',a:arguments[0]}); },
+
+/**
+ * Begin subcommands. Current state is saved.
+ * Optionally apply transformation or style properties.
+ * @method
+ * @returns {object} g2
+ * @param {number} [x=0] Translation value x.
+ * @param {number} [y=0] Translation value y.
+ * @param {number} [w=0] Rotation angle (in radians).
+ * @param {number} [scl=1] Scale factor.
+ * @param {array} [matrix] Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]).
+ */
     beg({x,y,w,scl,matrix}={}) { return this.addCommand({c:'beg',a:arguments[0]}); },
+
+/**
+ * End subcommands. Previous state is restored.
+ * @method
+ * @returns {object} g2
+ */
     end() { // ignore 'end' commands without matching 'beg'
-        let myBeg = 1, 
-            findMyBeg = (cmd) => { 
+        let myBeg = 1,
+            findMyBeg = (cmd) => {
                 if      (cmd.c === 'beg') myBeg--;
                 else if (cmd.c === 'end') myBeg++;
                 return myBeg === 0;
             }
         return g2.getCmdIdx(this.commands,findMyBeg) !== false ? this.addCommand({c:'end'}) : this;
     },
+
+/**
+ * Begin new path.
+ * @method
+ * @returns {object} g2
+ */
     p() { return this.addCommand({c:'p'}); },
+
+/**
+ * Close current path by straight line.
+ * @method
+ * @returns {object} g2
+ */
     z() { return this.addCommand({c:'z'}); },
+
+/**
+ * Move to point.
+ * @method
+ * @returns {object} g2
+ * @param {number} x Move to x coordinate
+ * @param {number} y Move to y coordinate
+ */
     m({x,y}) { return this.addCommand({c:'m',a:arguments[0]}); },
+
+/**
+ * Create line segment to point.
+ * @method
+ * @returns {object} g2
+ * @param {number} x x coordinate of target point.
+ * @param {number} y y coordinate of target point.
+ * @example
+ * g2().p()             // Begin path.
+ *     .m({x:0,y:50})   // Move to point.
+ *     .l({x:300,y:0})  // Line segment to point.
+ *     .l(x:400,y:100}) // ...
+ *     .stroke()        // Stroke path.
+ *     .exe(ctx);       // Render to context.
+ */
     l({x,y}) { return this.addCommand({c:'l',a:arguments[0]}); },
+
+/**
+ * Create quadratic bezier curve segment to point.
+ * @method
+ * @returns {object} g2
+ * @param {number} x1 x coordinate of control point.
+ * @param {number} y1 y coordinate of control point.
+ * @param {number} x x coordinate of target point.
+ * @param {number} y y coordinate of target point.
+ * @example
+ * g2().p()               // Begin path.
+ *     .m({x:0,y:0})            // Move to point.
+ *     .q({x1:200,y1:200,x:400,y:0})  // Quadratic bezier curve segment.
+ *     .stroke()          // Stroke path.
+ *     .exe(ctx);         // Render to context.
+ */
     q({x1,y1,x,y}) { return this.addCommand({c:'q',a:arguments[0]});},
+
+/**
+ * Create cubic bezier curve to point.
+ * @method
+ * @returns {object} g2
+ * @param {number} x1 x coordinate of first control point.
+ * @param {number} y1 y coordinate of first control point.
+ * @param {number} x2 x coordinate of second control point.
+ * @param {number} y2 y coordinate of second control point.
+ * @param {number} x x coordinate of target point.
+ * @param {number} y y coordinate of target point.
+ * @example
+ * g2().p()                        // Begin path.
+ *     .m({x:0,y:100})             // Move to point.
+ *     .c({x1:100,y1:200,x2:200,y2:0,x:400,y:100}) // Create cubic bezier curve.
+ *     .stroke()                   // Stroke path.
+ *     .exe(ctx);                  // Render to canvas context.
+ */
     c({x1,y1,x2,y2,x,y}) { return this.addCommand({c:'c',a:arguments[0]}); },
+
+/**
+ * Draw arc with angular range to target point.
+ * @method
+ * @returns {object} g2
+ * @param {number} dw Angular range in radians.
+ * @param {number} x x coordinate of target point.
+ * @param {number} y y coordinate of target point.
+ * @example
+ * g2().p()            // Begin path.
+ *     .m({x:50,y:50})       // Move to point.
+ *     .a({dw:2,x:300,y:100})   // Create cubic bezier curve.
+ *     .stroke()       // Stroke path.
+ *     .exe(ctx);      // Render to canvas context.
+ */
     a({dw,x,y}) {
         let prvcmd = this.commands[this.commands.length-1];
         g2.cpyProp(prvcmd.a,'x',arguments[0],'_xp');
         g2.cpyProp(prvcmd.a,'y',arguments[0],'_yp');
         return this.addCommand({c:'a',a:arguments[0]});
     },
-    stroke({d}={}) { return this.addCommand({c:'stroke',a:arguments[0]}); },
-    fill({d}={}) { return this.addCommand({c:'fill',a:arguments[0]}); },
-    drw({d}={}) { return this.addCommand({c:'drw',a:arguments[0]}); },
+
 /**
- * Delete all commands beginning from `idx` to end of command queue.<br>
+ * Stroke the current path or path object.
+ * @method
+ * @param {string} [d = undefined] SVG path definition string. Current path is ignored then.
+ * @returns {object} g2
+ */
+    stroke({d}={}) { return this.addCommand({c:'stroke',a:arguments[0]}); },
+
+/**
+ * Fill the current path or path object.
+ * @method
+ * @param {string} [d = undefined] SVG path definition string. Current path is ignored then.
+ * @returns {object} g2
+ */
+    fill({d}={}) { return this.addCommand({c:'fill',a:arguments[0]}); },
+
+/**
+ * Shortcut for stroke and fill the current path or path object.
+ * In case of shadow style, only the path interior creates shadow, not also the path contour.
+ * @method
+ * @param {string} [d = undefined] SVG path definition string.  Current path is ignored then.
+ * @returns {object} g2
+ */
+    drw({d}={}) { return this.addCommand({c:'drw',a:arguments[0]}); },
+
+/**
+ * Delete all commands beginning from `idx` to end of command queue.
  * @method
  * @returns {g2} this
  */
     del(idx) { this.commands.length = idx || 0; return this; },
+
+/**
+ * Call function between commands of the command queue.
+ * @method
+ * @param {function} [fn] Function.
+ * @returns {g2} this
+ * @example
+ * const node = { fill:'lime', g2() { return g2().cir({x:160,y:50,r:15,fs:this.fill,lw:4,sh:[8,8,8,"gray"]})} };
+ * let   color = 'red';
+ * g2().cir({x:40,y:50,r:15,fs:color,lw:4,sh:[8,8,8,"gray"]})   // draw red circle.
+ * .ins(()=>{color='green'})                                    // color is now green.
+ * .cir({x:80,y:50,r:15,fs:color,lw:4,sh:[8,8,8,"gray"]})       // draw green circle.
+ * .ins((g)=>g.cir({x:120,y:50,r:15,fs:'orange',lw:4,sh:[8,8,8,"gray"]})) // draw orange circle
+ * .ins(node)       // draw node.
+ * .exe(ctx)        // Render to canvas context.
+ */
     ins(fn) {
         return typeof fn === 'function' ? (fn(this) || this)
              : typeof fn === 'object'   ? ( this.commands.push({c:'ins',a:fn}), this ) // no 'addCommand' .. !
              : this;
     },
+/**
+ * Execute g2 commands. It does so automatically and recursively with 'use'ed commands.
+ * @method
+ * @returns {object} g2
+ * @param {object} ctx Context.
+ */
     exe(ctx) {
         let handler = g2.handler(ctx);
         if (handler && handler.init(this))
@@ -192,7 +487,7 @@ g2.canvasHdl = function(ctx) {
     }
     return g2.canvasHdl.apply(Object.create(g2.canvasHdl.prototype),arguments);
 };
-g2.handler.factory.push((ctx) => ctx instanceof g2.canvasHdl ? ctx 
+g2.handler.factory.push((ctx) => ctx instanceof g2.canvasHdl ? ctx
                                : ctx instanceof CanvasRenderingContext2D ? g2.canvasHdl(ctx) : false);
 
 g2.canvasHdl.prototype = {
@@ -229,7 +524,7 @@ g2.canvasHdl.prototype = {
         ctx.stroke();
         ctx.restore();
     },
-    clr({b,h}={}) { 
+    clr({b,h}={}) {
         let ctx = this.ctx;
         ctx.save();
         ctx.setTransform(1,0,0,1,0,0);
@@ -257,7 +552,7 @@ g2.canvasHdl.prototype = {
         this.ctx.ellipse(x||0,y||0,Math.abs(rx),Math.abs(ry),rot,w,w+dw,dw<0);
         this.drw(arguments[0]);
     },
-    rec({x,y,b,h}) { 
+    rec({x,y,b,h}) {
         let tmp = this.setStyle(arguments[0]);
         h = h || b;
         x = x || 0;
@@ -288,8 +583,8 @@ g2.canvasHdl.prototype = {
     },
     txt({str,x,y,w,unsizable}) {
         x = x || 0; y = y || 0;
-        let tmp = this.setStyle(arguments[0]), 
-            sw = w ? Math.sin(w) : 0, 
+        let tmp = this.setStyle(arguments[0]),
+            sw = w ? Math.sin(w) : 0,
             cw = w ? Math.cos(w) : 1,
             trf = this.isCartesian ? [cw,sw,sw,-cw,x,y]
                                    : [cw,sw,-sw,cw,x,y];
@@ -309,9 +604,9 @@ g2.canvasHdl.prototype = {
             return img;
         }
 
-        let args = arguments[0], 
+        let args = arguments[0],
             img = args._image || (args._image = getImg(uri,false)),
-            sw = w ? Math.sin(w) : 0, 
+            sw = w ? Math.sin(w) : 0,
             cw = w ? Math.cos(w) : 1,
             b =  img && img.width || 20,
             h =  img && img.height || 20;
@@ -340,7 +635,7 @@ g2.canvasHdl.prototype = {
             w = w || 0;
             scl = scl || 1;
             ssw = w ? Math.sin(w)*scl : 0;
-            scw = w ? Math.cos(w)*scl : scl; 
+            scw = w ? Math.cos(w)*scl : scl;
             trf = [scw,ssw,-ssw,scw,x,y];
         }
         this.pushStyle(arguments[0]);
@@ -368,18 +663,18 @@ g2.canvasHdl.prototype = {
     },
     stroke({d}={}) {
         let tmp = this.setStyle(arguments[0]);
-        d ? this.ctx.stroke(new Path2D(d)) : this.ctx.stroke();  // SVG path syntax 
+        d ? this.ctx.stroke(new Path2D(d)) : this.ctx.stroke();  // SVG path syntax
         this.resetStyle(tmp);
     },
     fill({d}={}) {
         let tmp = this.setStyle(arguments[0]);
-        d ? this.ctx.fill(new Path2D(d)) : this.ctx.fill();  // SVG path syntax 
+        d ? this.ctx.fill(new Path2D(d)) : this.ctx.fill();  // SVG path syntax
         this.resetStyle(tmp);
     },
     drw({d}={}) {
         let ctx = this.ctx,
             tmp = this.setStyle(arguments[0]),
-            p = d && new Path2D(d);   // SVG path syntax 
+            p = d && new Path2D(d);   // SVG path syntax
         d ? ctx.fill(p) : ctx.fill();
         if (ctx.shadowColor !== 'rgba(0, 0, 0, 0)' && ctx.fillStyle !== 'rgba(0, 0, 0, 0)') {
            let shc = ctx.shadowColor;        // avoid stroke shadow when filled ...
@@ -415,7 +710,7 @@ g2.canvasHdl.prototype = {
         lj: (ctx,q) => { ctx.lineJoin=q; },
         ld: (ctx,q) => { ctx.setLineDash(q); },
         ml: (ctx,q) => { ctx.miterLimit=q; },
-        sh: (ctx,q) => { 
+        sh: (ctx,q) => {
             ctx.shadowOffsetX = q[0]||0;
             ctx.shadowOffsetY = q[1]||0;
             ctx.shadowBlur = q[2]||0;
@@ -430,7 +725,7 @@ g2.canvasHdl.prototype = {
             if (this.get[key] && this.get[key](this.ctx) !== style[key])
                 this.set[key](this.ctx, style[key]);
     },
-    setStyle(style) {  // short circuit style setting 
+    setStyle(style) {  // short circuit style setting
         let q, prv = {};
         for (key in style) {
             if (this.get[key]) {  // style keys only ...
@@ -452,7 +747,7 @@ g2.canvasHdl.prototype = {
     },
     pushStyle(style) {
         let cur = {};  // hold changed properties ...
-        for (key in style) 
+        for (key in style)
             if (this.get[key]) {  // style keys only ...
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
                     let ref = style[key].substr(1);
@@ -542,7 +837,7 @@ g2.render = function render(fn) {
             requestAnimationFrame(animate);
     }
     animate(performance.now());
-} 
+}
 
 // use it with node.js ... ?
 if (typeof module !== 'undefined') module.exports = g2;
