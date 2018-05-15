@@ -41,6 +41,7 @@ g2.prototype = {
      * @returns {g2} this
      */
         clr() { return this.addCommand({c:'clr'}); },
+
     /**
      * Set the view by placing origin coordinates and scaling factor in device units
      * and make viewport cartesian.
@@ -129,7 +130,6 @@ g2.prototype = {
      * @param {number} y1 Start y coordinate.
      * @param {number} x2 End x coordinate.
      * @param {number} y2 End y coordinate.
-     * @param {object} [style] Style properties. See 'g2.style' for details.
      * @example
      * g2().lin({x1:10,x2:10,y1:190,y2:10}) // Draw line.
      *     .exe(ctx);                       // Render to context.

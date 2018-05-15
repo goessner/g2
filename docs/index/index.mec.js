@@ -7,10 +7,15 @@ new Test('symbols',
 `g2().view({cartesian:true}).pol({x:20,y:75}).gnd({x:60,y:75}).nod({x:100,y:75}).dblnod({x:140,y:75}).nodfix({x:180,y:75}).nodflt({x:220,y:75}).origin({x:260,y:75})`),
 
 new Test('vec',
-`g2().vec({x1: 50, y1: 50, x2:250, y2:100})`),
+`g2().vec({x1:50,y1:20,x2:250,y2:120})`),
 
 new Test('dim',
-`g2().dim({x1:20,y1:75,x2:200,y2:75})`),
+`g2().dim({x1:20,y1:75,x2:200,y2:75})
+     .dim({x1:20,y1:125,x2:200,y2:125,inside:false})`),
+
+new Test('adim',
+`g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
+     .adim({x:200,y:70,r:50,w:pi/3,dw:-4*pi/3,inside:false})`),
 
 new Test('slider',
 `g2().slider({x:150, y:75, w:Math.PI/4, b:64, h:32, fs:"@linkfill"})`),

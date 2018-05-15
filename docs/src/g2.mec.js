@@ -24,47 +24,86 @@ g2.prototype.skip = function skip(tag) {
    return this;
 }
 
-g2.prototype.dim = function dim({}) { return this.addCommand({c:'dim',a:arguments[0]}); }
-g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
+/**
+ * Dimension
+ * @returns {object} g2
+ * @param {number} x1 Start x coordinate.
+ * @param {number} y1 Start y coordinate.
+ * @param {number} x2 End x coordinate.
+ * @param {number} y2 End y coordinate.
+ * @param {boolean} [inside=true] Draw dimension arrows between or outside of ticks.
+ * @example
+ *  g2().dim({x1:60,y1:40,x2:190,y2:120}) // Draw dimension.
+ *      .exe(ctx);                        // Render to context.
+ */
+g2.prototype.dim = function dim({}) { return this.addCommand({c:'dim', a:arguments[0]}); }
+g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
     g2() {
-        let {x1,y1,x2,y2,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
-            dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy),
-            args = Object.assign({lc:'round',lj:'round',sh},{x:x1,y:y1,w:Math.atan2(dy,dx)},this);
-
-        return g2().beg(args)
+        const args = {...this,lc:'round',lj:'round',w:0};
+        const sz = Math.round((args.lw||1)/2)+2;
+        const dx = args.x2-args.x1, dy = args.y2-args.y1, len = Math.hypot(dx,dy);
+        const inside = 'inside' in args && !args.inside ? -1 : 1;
+        return g2().beg({x:args.x1,y:args.y1,w:dy/dx})
                     .p().m({x:0,y:0}).l({x:len,y:0})
                         .m({x:0,y:sz}).l({x:0,y:-sz})
                         .m({x:len,y:sz}).l({x:len,y:-sz})
                     .stroke({fs:'transparent'})
+                    .p().m({x:len,y:0})
+                            .l({x:len-inside*5*sz,y:sz})
+                            .a({dw:-inside*Math.PI/3,x:len-inside*5*sz,y:-sz})
+                            .z()
+                        .m({x:0,y:0})
+                            .l({x:inside*5*sz,y:sz})
+                            .a({dw:inside*Math.PI/3,x:inside*5*sz,y:-sz})
+                            .z()
+                        .drw({fs:'@ls'})
                    .end();
-   }
+    }
 });
 
 /**
  * Angular dimension
  * @method
  * @returns {object} g2
- * @param {object} [p={x:0,y:0}] Center point.
+ * @param {number} x Start x coordinate.
+ * @param {number} y Start y coordinate.
  * @param {number} r Radius
  * @param {number} [w=0] Start angle (in radian).
  * @param {number} [dw=Math.PI/2] Angular range in radian. In case of positive values it is running counterclockwise with
  *                right handed (cartesian) coordinate system.
- * @param {string} [args.pos=in] Draw dimension arrows:<br>
- *                                 'in':  between ticks<br>
- *                                 'out': outside of ticks
+ * @param {boolean} [inside=true] Draw dimension arrows between or outside of ticks.
+ * @example
+ * g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3}) // Draw angular dimension.
+ *      .exe(ctx);                               // Render to context.
  */
 g2.prototype.adim = function adim({}) { return this.addCommand({c:'adim',a:arguments[0]}); }
-g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
-    g2: function() {
-        let {x,y,r,w,dw,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
-            ri = r - sz, ra = r + sz,
-            args = Object.assign({lc:"round",lj:"round",sh},this,{w:0,fs:'transparent'});
-            c1  = Math.cos(w), s1 = Math.sin(w),
-            c2  = Math.cos(w+dw), s2 = Math.sin(w+dw);
-        return g2().beg(args)
-                    .arc({x:0,y:0,r,w,dw})
-                    .lin({x1:ri*c1,y1:ri*s1,x2:ra*c1,y2:ra*s1})
-                    .lin({x1:ri*c2,y1:ri*s2,x2:ra*c2,y2:ra*s2})
+g2.prototype.adim.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
+    g2() {
+        const args = {...this,lc:'round',lj:'round',w:0};
+        const inside = 'inside' in args && !args.inside ? -1 : 1;
+        const wm = inside*(args.dw >= 0 ? 12/args.r : -12/args.r);
+        const sz = Math.round((args.lw||1)/2)+2;
+        const ri = args.r - sz, ra = args.r + sz;
+        const c1  = Math.cos(args.w), s1 = Math.sin(args.w);
+        const c2  = Math.cos(args.w+args.dw), s2 = Math.sin(args.w+args.dw);
+        const c1m = Math.cos(args.w+wm), s1m = Math.sin(args.w+wm);
+        const c2m = Math.cos(args.w+args.dw-wm), s2m = Math.sin(args.w+args.dw-wm);
+        return g2().beg({x:args.x,y:args.y,w:c1})
+                    .arc({x:0,y:0,r:args.r,w:args.w,dw:args.dw})
+                    .p()
+                    .m({x:args.r*c1,y:args.r*s1})
+                    .l({x:ri*c1m,y:ri*s1m})
+                    .a({w:Math.PI/3,x:ra*c1m,y:ra*s1m})
+                    .z()
+                    .m({x:ri*c1,y:ri*s1})
+                    .l({x:ra*c1,y:ra*s1})
+                    .m({x:args.r*c2,y:args.r*s2})
+                    .l({x:ri*c2m,y:ri*s2m})
+                    .a({w:-Math.PI/3,x:ra*c2m,y:ra*s2m})
+                    .z()
+                    .m({x:ri*c2,y:ri*s2})
+                    .l({x:ra*c2,y:ra*s2})
+                    .drw({fs:'@ls'})
                    .end()
     }
 });
@@ -82,10 +121,10 @@ g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
 g2.prototype.vec = function vec({}) { return this.addCommand({c:'vec',a:arguments[0]}); }
 g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     g2() {
-        let {x1,y1,x2,y2,lw,sh} = this;
-        let z = 2+(lw||1), dx = x2-x1, dy = y2-y1, r = Math.hypot(dx,dy),
-        args = Object.assign({},{x:x1,y:y1,w:Math.atan2(dy,dx),lc:'round',lj:'round',sh},this);
-        return g2().beg(args)
+        const args = {...this,lc:'round',lj:'round'};
+        const z = 2+(args.lw||1);
+        const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
+        return g2().beg({x:args.x1,y:args.y1,w:dy/dx})
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
                      .stroke({fs:'transparent'})

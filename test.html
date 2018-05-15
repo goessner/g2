@@ -1,19 +1,10 @@
-<canvas id='c' width='600' height='200'></canvas>
-<script src='./docs/g2.js'></script>
-<script src='./docs/g2.ext.js'></script>
-<script src='./docs/g2.mec.js'></script>
-
+<canvas id='c' width='601' height='401' style='border:solid 1px black'></canvas>
+<script src='./src/g2.js'></script>
+<script src='./src/g2.ext.js'></script>
+<script src='./src/g2.mec.js'></script>
 <script>
     ctx = document.getElementById('c').getContext('2d');
-    g = g2().rec({x:0,y:0,b:20,h:20});
-    g2().view({cartesian:true})
-        .grid()
-        .origin({x:20,y:80}).label({str:"origin",loc:"s",off:25})
-        .nod({x:100,y:80})       .label({str:"nod",loc:"s",off:25})
-        .dblnod({x:180,y:80})    .label({str:"dblnod",loc:"s",off:25})
-        .nodfix({x:260,y:80})    .label({str:"nodfix",loc:"s",off:25})
-        .nodflt({x:340,y:80})    .label({str:"nodflt",loc:"s",off:25})
-        .pol({x:420,y:80})       .label({str:"pol",loc:"s",off:25})
-        .gnd({x:500,y:80})       .label({str:"gnd",loc:"s",off:25})
-        .exe(ctx)
+
+    g2().vec({x1:50,y1:50,x2:250,y2:100}) // Draw dimension.
+        .exe(ctx);                        // Render to context.
 </script>
