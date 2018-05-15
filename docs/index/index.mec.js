@@ -1,4 +1,11 @@
 tests.push(
+new Test ('g2.mec.js',
+`//the following tests are for g2.mec.js from
+g2()`),
+
+new Test('symbols',
+`g2().view({cartesian:true}).pol({x:20,y:75}).gnd({x:60,y:75}).nod({x:100,y:75}).dblnod({x:140,y:75}).nodfix({x:180,y:75}).nodflt({x:220,y:75}).origin({x:260,y:75})`),
+
 new Test('vec',
 `g2().vec({x1: 50, y1: 50, x2:250, y2:100})`),
 
@@ -27,11 +34,11 @@ new Test('link2',
     E = {x:50,y:125};
 g2().view({cartesian:true})
     .link2({pts:[A,B,E,A,D,C]})
-    .use({grp:"nodfix",...A,scl:1.5})
-    .use({grp:"nod",...B,scl:1.5})
-    .use({grp:"nod",...C,scl:1.5})
-    .use({grp:"nod",...D,scl:1.5})
-    .use({grp:"nodflt",...E,w:-Math.PI/2,scl:1.5})`),
+    .nodfix({...A,scl:1.5})
+    .nod({...B,scl:1.5})
+    .nod({...C,scl:1.5})
+    .nod({...D,scl:1.5})
+    .nodflt({...E,w:-Math.PI/2,scl:1.5})`),
 
 new Test('beam',
 `NO EXAMPLE PROVIDED`),

@@ -10,7 +10,7 @@ declare function g2():g2;
 
 interface coordinate {
     x: number;
-    y: number;  
+    y: number;
 }
 interface radii {
     rx: number;
@@ -159,7 +159,7 @@ interface g2 {
      * https://github.com/goessner/g2/wiki
      */
     beg:(obj:beg)=>g2;
-    
+
     /**
      * pops the "top-matrix"
      * https://github.com/goessner/g2/wiki

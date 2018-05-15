@@ -2,7 +2,7 @@
  * g2.io (c) 2013-17 Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
- * 
+ *
  */
 
 g2.io = function() {
@@ -43,7 +43,7 @@ g2.io.prototype = {
         this.model = {'main':[]};
         this.curgrp = this.model.main;
         this.grpidx = 0;
-        return true; 
+        return true;
     },
     exe: function(commands) {
         for (let cmd of commands) {

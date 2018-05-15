@@ -188,38 +188,6 @@ g2.prototype.use.prototype = {
 
 // complex macros / add prototypes to argument objects
 
-// vec,dim used to be here, it is in g2.mec.js now
-
-/**
- * Angular dimension
- * @method
- * @returns {object} g2
- * @param {object} [p={x:0,y:0}] Center point.
- * @param {float} r Radius
- * @param {float} [w=0] Start angle (in radian).
- * @param {float} [dw=Math.PI/2] Angular range in radian. In case of positive values it is running counterclockwise with
- *                right handed (cartesian) coordinate system.
- * @param {object} args Arguments object holding style properties. See 'g2.prototype.style' for details.
- * @param {string} [args.pos=in] Draw dimension arrows:<br>
- *                                 'in':  between ticks<br>
- *                                 'out': outside of ticks
- */
-g2.prototype.adim = function adim({}) { return this.addCommand({c:'adim',a:arguments[0]}); }
-g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
-    g2: function() {
-        let {x,y,r,w,dw,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
-            ri = r - sz, ra = r + sz,
-            args = Object.assign({lc:"round",lj:"round",sh},this,{w:0,fs:'transparent'});
-            c1  = Math.cos(w), s1 = Math.sin(w),
-            c2  = Math.cos(w+dw), s2 = Math.sin(w+dw);
-        return g2().beg(args)
-                    .arc({x:0,y:0,r,w,dw})
-                    .lin({x1:ri*c1,y1:ri*s1,x2:ra*c1,y2:ra*s1})
-                    .lin({x1:ri*c2,y1:ri*s2,x2:ra*c2,y2:ra*s2})
-                   .end()
-    }
-});
-
 /**
  * Draw spline by points.
  * Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).
@@ -313,6 +281,7 @@ g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     }
     return this;
 }
+
 g2.prototype.label.prototype = {
     g2() {
         let label = g2();
@@ -346,30 +315,7 @@ g2.prototype.label.prototype = {
         return label;
     }
 }
-/*
-g2.prototype.label.prototype = {
-    g2() {
-        let {_refelem,str,loc,off,fs,font} = this,
-            p = _refelem.a.pointAt(loc),
-            xoff, yoff, sz = parseInt(font||g2.defaultStyle.font), b = str.length*sz,
-            offset = (off+0 === off) ? (off || 1) // amount of offset ...
-                   : (loc === "c") ? 0
-                   : 1;                          // use constant ..
-        if (off !== "left") offset = -offset;  // 'right of' dir ... turn dir vector negative ... default
-        xoff = -p.dy*offset; yoff = p.dx*offset;
 
-        if (str[0] === "@" && (s=_refelem.a[str.substr(1)]) !== undefined)   // expect 's' as string convertable to a number ...
-            str = "" + (Number.isInteger(+s) ? +s : Number(s).toFixed(Math.max(g2.symbol.labelSignificantDigits-Math.log10(s),0)))  // use at least 3 significant digits after decimal point.
-                     + (str.substr(1) === "angle" ? "°" : "");
-        return g2().txt({str,x:()=>p.x+xoff,y:()=>p.y+yoff,
-                         thal: ()=>xoff > 0 ? "left"   : xoff < 0 ? "right"  : "center",
-                         tval: ()=>yoff > 0 ? "bottom" : yoff < 0 ? "top"  : "middle",
-                         fs:fs||'black',
-                         font})
-                   .rec({x:()=>p.x+xoff-p.dy*b,y:()=>p.y+yoff-p.dx*h,b,h:sz})
-    }
-}
-*/
 /**
  * Draw marker on line element.
  * @method

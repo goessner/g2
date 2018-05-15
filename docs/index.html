@@ -13,12 +13,13 @@
     </head>
     <body>
         <!-- Import g2 -->
-        <script src='./g2.js'></script>
-        <script src='./g2.ext.js'></script>
-        <script src='./g2.mec.js'></script>
+        <script src='./src/g2.js'></script>
+        <script src='./src/g2.ext.js'></script>
+        <script src='./src/g2.mec.js'></script>
         <!-- Import tests -->
-        <script src='./index.js'></script>
-        <script src='./index.mec.js'></script>
+        <script src='./index/index.js'></script>
+        <script src='./index/index.ext.js'></script>
+        <script src='./index/index.mec.js'></script>
 
         <h1>g2 Tests</h1><h6>g2.js and g2.ext.js are referenced. canvas and image should look alike.</h6>
         <table class='table table-sm'>
@@ -92,7 +93,7 @@
                 const imagearea = document.createElement('img');
                 imagearea.width = 300;
                 imagearea.height = 150;
-                imagearea.src = './' + name.innerHTML + '.png';
+                imagearea.src = './img/' + name.innerHTML + '.png';
                 image.appendChild(imagearea);
                 tr.appendChild(image);
 

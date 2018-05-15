@@ -29,7 +29,7 @@ g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     g2() {
         let {x1,y1,x2,y2,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
             dx = x2-x1, dy = y2-y1, len = Math.hypot(dx,dy),
-            args = Object.assign({lc:"round",lj:"round",sh},{x:x1,y:y1,w:Math.atan2(dy,dx)},this);
+            args = Object.assign({lc:'round',lj:'round',sh},{x:x1,y:y1,w:Math.atan2(dy,dx)},this);
 
         return g2().beg(args)
                     .p().m({x:0,y:0}).l({x:len,y:0})
@@ -38,7 +38,36 @@ g2.prototype.dim.prototype = g2.mixin({},g2.prototype.lin.prototype,{
                     .stroke({fs:'transparent'})
                    .end();
    }
-})
+});
+
+/**
+ * Angular dimension
+ * @method
+ * @returns {object} g2
+ * @param {object} [p={x:0,y:0}] Center point.
+ * @param {number} r Radius
+ * @param {number} [w=0] Start angle (in radian).
+ * @param {number} [dw=Math.PI/2] Angular range in radian. In case of positive values it is running counterclockwise with
+ *                right handed (cartesian) coordinate system.
+ * @param {string} [args.pos=in] Draw dimension arrows:<br>
+ *                                 'in':  between ticks<br>
+ *                                 'out': outside of ticks
+ */
+g2.prototype.adim = function adim({}) { return this.addCommand({c:'adim',a:arguments[0]}); }
+g2.prototype.adim.prototype = g2.mixin({},g2.prototype.arc.prototype,{
+    g2: function() {
+        let {x,y,r,w,dw,lw,ls,sh} = this, sz = Math.round((lw||1)/2)+4,
+            ri = r - sz, ra = r + sz,
+            args = Object.assign({lc:"round",lj:"round",sh},this,{w:0,fs:'transparent'});
+            c1  = Math.cos(w), s1 = Math.sin(w),
+            c2  = Math.cos(w+dw), s2 = Math.sin(w+dw);
+        return g2().beg(args)
+                    .arc({x:0,y:0,r,w,dw})
+                    .lin({x1:ri*c1,y1:ri*s1,x2:ra*c1,y2:ra*s1})
+                    .lin({x1:ri*c2,y1:ri*s2,x2:ra*c2,y2:ra*s2})
+                   .end()
+    }
+});
 
 /**
  * Draw vector arrow.
@@ -55,7 +84,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     g2() {
         let {x1,y1,x2,y2,lw,sh} = this;
         let z = 2+(lw||1), dx = x2-x1, dy = y2-y1, r = Math.hypot(dx,dy),
-        args = Object.assign({},{x:x1,y:y1,w:Math.atan2(dy,dx),lc:"round",lj:"round",sh},this);
+        args = Object.assign({},{x:x1,y:y1,w:Math.atan2(dy,dx),lc:'round',lj:'round',sh},this);
         return g2().beg(args)
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
@@ -64,7 +93,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
                      .l({x:r-5*z,y:z})
                      .a({dw:-Math.PI/3,x:r-5*z,y:-z})
                      .z()
-                     .drw({fs:"@ls"})
+                     .drw({fs:'@ls'})
                    .end();
     }
 })
@@ -82,12 +111,10 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
 g2.prototype.slider = function () { return this.addCommand({c:'slider',a:arguments[0]}); }
 g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
     g2() {
-        let args = this;
-        args.b = args.b || 32;
-        args.h = args.h || 16;
-        args = Object.assign({},{x:x,y:y,w:w,b:b,h:h},this);
-        return g2().beg({x:args.x,y:args.y,w:args.w})
-                   .rec({x:-args.b/2,y:-args.h/2,b:args.b,h:args.h})
+        this.b = this.b || 32;
+        this.h = this.h || 16;
+        return g2().beg({x:this.x,y:this.y,w:this.w,fs:'#ccc'})
+                   .rec({x:-this.b/2,y:-this.h/2,b:this.b,h:this.h})
                    .end()
     }
 })
@@ -107,25 +134,24 @@ g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
 g2.prototype.spring = function () { return this.addCommand({c:'spring',a:arguments[0]}); }
 g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
     g2() {
-        let args = this;
-        let x1 = 'x1' in args ? args.x1
-               : 'x'  in args ? args.x
+        let x1 = 'x1' in this ? this.x1
+               : 'x'  in this ? this.x
                : 0;
-        let y1 = 'y1' in args ? args.y1
-               : 'y'  in args ? args.y
+        let y1 = 'y1' in this ? this.y1
+               : 'y'  in this ? this.y
                : 0;
-        let x2 = 'x2' in args ? args.x2
-               : 'dx' in args ? (x1 + args.dx)
-               : 'r'  in args ? x1 + args.r*Math.cos(args.w||0)
+        let x2 = 'x2' in this ? this.x2
+               : 'dx' in this ? (x1 + this.dx)
+               : 'r'  in this ? x1 + this.r*Math.cos(this.w||0)
                : x1+10;
-        let y2 = 'y2' in args ? args.y2
-               : 'dy' in args ? (y1 + args.dy)
-               : 'r'  in args ? y1 + args.r*Math.sin(args.w||0)
+        let y2 = 'y2' in this ? this.y2
+               : 'dy' in this ? (y1 + this.dy)
+               : 'r'  in this ? y1 + this.r*Math.sin(this.w||0)
                : y1;
         let len = Math.hypot(x2-x1, y2-y1);
         let xm = (x2+x1)/2;
         let ym = (y2+y1)/2;
-        let h = args && args.h || 16;
+        let h = this && this.h || 16;
         let ux = (x2-x1)/len;
         let uy = (y2-y1)/len;
         return g2().p()
@@ -135,7 +161,7 @@ g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
                    .l({x:xm+( ux/6-uy/2)*h,y:ym+( uy/6+ux/2)*h})
                    .l({x:xm+ux*h/2,y:ym+uy*h/2})
                    .l({x:x2,y:y2})
-                   .stroke({ls:"@nodcolor",args,fs:"transparent",lc:"round",lj:"round"});
+                   .stroke({ls:'@nodcolor',...this,fs:'transparent',lc:'round',lj:'round'});
     }
 })
 
@@ -155,25 +181,24 @@ g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
 g2.prototype.damper = function () { return this.addCommand({c:'damper',a:arguments[0]}); }
 g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
     g2() {
-        let args = this;
-        let x1 = 'x1' in args ? args.x1
-               : 'x'  in args ? args.x
+        let x1 = 'x1' in this ? this.x1
+               : 'x'  in this ? this.x
                : 0;
-        let y1 = 'y1' in args ? args.y1
-               : 'y'  in args ? args.y
+        let y1 = 'y1' in this ? this.y1
+               : 'y'  in this ? this.y
                : 0;
-        let x2 = 'x2' in args ? args.x2
-               : 'dx' in args ? (x1 + args.dx)
-               : 'r'  in args ? x1 + args.r*Math.cos(args.w||0)
+        let x2 = 'x2' in this ? this.x2
+               : 'dx' in this ? (x1 + this.dx)
+               : 'r'  in this ? x1 + this.r*Math.cos(this.w||0)
                : x1+10;
-        let y2 = 'y2' in args ? args.y2
-               : 'dy' in args ? (y1 + args.dy)
-               : 'r'  in args ? y1 + args.r*Math.sin(args.w||0)
+        let y2 = 'y2' in this ? this.y2
+               : 'dy' in this ? (y1 + this.dy)
+               : 'r'  in this ? y1 + this.r*Math.sin(this.w||0)
                : y1;
         let len = Math.hypot(x2-x1, y2-y1);
         let xm = (x2+x1)/2;
         let ym = (y2+y1)/2;
-        let h = args && args.h || 16;
+        let h = this && this.h || 16;
         let ux = (x2-x1)/len;
         let uy = (y2-y1)/len;
         return g2().p()
@@ -185,7 +210,7 @@ g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
                    .l({x:xm+( ux+uy)*h/2,y:ym+( uy-ux)*h/2})
                    .m({x:xm,y:ym})
                    .l({x:x2,y:y2})
-                   .stroke({ls:"@nodcolor",args,fs:"transparent",lc:"round",lj:"round"});
+                   .stroke({ls:'@nodcolor',...this,fs:'transparent',lc:'round',lj:'round'});
     }
 })
 
@@ -259,20 +284,19 @@ g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.bar = function () { return this.addCommand({c:'bar',a:arguments[0]}); }
 g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
     g2() {
-        let args = this;
-        let x1 = 'x1' in args ? args.x1
-               : 'x'  in args ? args.x
+        let x1 = 'x1' in this ? this.x1
+               : 'x'  in this ? this.x
                : 0;
-        let y1 = 'y1' in args ? args.y1
-               : 'y'  in args ? args.y
+        let y1 = 'y1' in this ? this.y1
+               : 'y'  in this ? this.y
                : 0;
-        let x2 = 'x2' in args ? args.x2
-               : 'dx' in args ? (x1 + args.dx)
-               : 'r'  in args ? x1 + args.r*Math.cos(args.w||0)
+        let x2 = 'x2' in this ? this.x2
+               : 'dx' in this ? (x1 + this.dx)
+               : 'r'  in this ? x1 + this.r*Math.cos(this.w||0)
                : x1+10;
-        let y2 = 'y2' in args ? args.y2
-               : 'dy' in args ? (y1 + args.dy)
-               : 'r'  in args ? y1 + args.r*Math.sin(args.w||0)
+        let y2 = 'y2' in this ? this.y2
+               : 'dy' in this ? (y1 + this.dy)
+               : 'r'  in this ? y1 + this.r*Math.sin(this.w||0)
                : y1;
         return g2().lin({...this,ls:'@linkcolor',lw:6,lc:'round'});
     }
@@ -288,20 +312,19 @@ g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
 g2.prototype.bar2 = function () { return this.addCommand({c:'bar2',a:arguments[0]}); }
 g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
     g2() {
-        let args = this;
-        let x1 = 'x1' in args ? args.x1
-               : 'x'  in args ? args.x
+        let x1 = 'x1' in this ? this.x1
+               : 'x'  in this ? this.x
                : 0;
-        let y1 = 'y1' in args ? args.y1
-               : 'y'  in args ? args.y
+        let y1 = 'y1' in this ? this.y1
+               : 'y'  in this ? this.y
                : 0;
-        let x2 = 'x2' in args ? args.x2
-               : 'dx' in args ? (x1 + args.dx)
-               : 'r'  in args ? x1 + args.r*Math.cos(args.w||0)
+        let x2 = 'x2' in this ? this.x2
+               : 'dx' in this ? (x1 + this.dx)
+               : 'r'  in this ? x1 + this.r*Math.cos(this.w||0)
                : x1+10;
-        let y2 = 'y2' in args ? args.y2
-               : 'dy' in args ? (y1 + args.dy)
-               : 'r'  in args ? y1 + args.r*Math.sin(args.w||0)
+        let y2 = 'y2' in this ? this.y2
+               : 'dy' in this ? (y1 + this.dy)
+               : 'r'  in this ? y1 + this.r*Math.sin(this.w||0)
                : y1;
         return g2().lin({x1:x1,y1:y1,x2:x2,y2:y2,ls:'@nodcolor',lw:7,lc:'round'})
                    .lin({x1:x1,y1:y1,x2:x2,y2:y2,ls:'@nodfill2',lw:4.5,lc:'round'})
@@ -319,11 +342,11 @@ g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
 g2.prototype.pulley = function () { return this.addCommand({c:'pulley',a:arguments[0]}); }
 g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
-        return g2().cir({x:this.x,y:this.y,r:this.r,ls:"@nodcolor",fs:"#e6e6e6",lw:1})
-                   .cir({x:this.x,y:this.y,r:this.r-5,ls:"@nodcolor",fs:"#e6e6e6",lw:1})
-                   .cir({x:this.x,y:this.y,r:this.r-6,ls:"#8e8e8e",fs:"transparent",lw:2})
-                   .cir({x:this.x,y:this.y,r:this.r-8,ls:"#aeaeae",fs:"transparent",lw:2})
-                   .cir({x:this.x,y:this.y,r:this.r-10,ls:"#cecece",fs:"transparent",lw:2})
+        return g2().cir({x:this.x,y:this.y,r:this.r,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
+                   .cir({x:this.x,y:this.y,r:this.r-5,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
+                   .cir({x:this.x,y:this.y,r:this.r-6,ls:'#8e8e8e',fs:'transparent',lw:2})
+                   .cir({x:this.x,y:this.y,r:this.r-8,ls:'#aeaeae',fs:'transparent',lw:2})
+                   .cir({x:this.x,y:this.y,r:this.r-10,ls:'#cecece',fs:'transparent',lw:2})
     }
 })
 
@@ -340,9 +363,9 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
         return g2().bar2({x1:this.x,y1:this.y-this.r+4,x2:this.x,y2:this.y+this.r-4})
                    .bar2({x1:this.x-this.r+4,y1:this.y,x2:this.x+this.r-4,y2:this.y})
-                   .cir({x:this.x,y:this.y,r:this.r-2.5,ls:"#e6e6e6",fs:"transparent",lw:5})
-                   .cir({x:this.x,y:this.y,r:this.r,ls:"@nodcolor",fs:"transparent",lw:1})
-                   .cir({x:this.x,y:this.y,r:this.r-5,ls:"@nodcolor",fs:"transparent",lw:1})
+                   .cir({x:this.x,y:this.y,r:this.r-2.5,ls:'#e6e6e6',fs:'transparent',lw:5})
+                   .cir({x:this.x,y:this.y,r:this.r,ls:'@nodcolor',fs:'transparent',lw:1})
+                   .cir({x:this.x,y:this.y,r:this.r-5,ls:'@nodcolor',fs:'transparent',lw:1})
     }
 })
 /**
@@ -361,31 +384,30 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
 g2.prototype.rope = function () { return this.addCommand({c:'rope',a:arguments[0]}); }
 g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
-        let args = this;
-        let x1 = 'p1' in args ? args.p1.x
-               : 'x1' in args ? args.x1
-               : 'x'  in args ? args.x
+        let x1 = 'p1' in this ? this.p1.x
+               : 'x1' in this ? this.x1
+               : 'x'  in this ? this.x
                : 0;
-        let y1 = 'p1' in args ? args.p1.y
-               : 'y1' in args ? args.y1
-               : 'y'  in args ? args.y
+        let y1 = 'p1' in this ? this.p1.y
+               : 'y1' in this ? this.y1
+               : 'y'  in this ? this.y
                : 0;
-        let x2 = 'p2' in args ? args.p2.x
-               : 'x2' in args ? args.x2
-               : 'dx' in args ? (x1 + args.dx)
-               : 'r'  in args ? x1 + args.r*Math.cos(args.w||0)
+        let x2 = 'p2' in this ? this.p2.x
+               : 'x2' in this ? this.x2
+               : 'dx' in this ? (x1 + this.dx)
+               : 'r'  in this ? x1 + this.r*Math.cos(this.w||0)
                : x1+10;
-        let y2 = 'p2' in args ? args.p2.y
-               : 'y2' in args ? args.y2
-               : 'dy' in args ? (y1 + args.dy)
-               : 'r'  in args ? y1 + args.r*Math.sin(args.w||0)
+        let y2 = 'p2' in this ? this.p2.y
+               : 'y2' in this ? this.y2
+               : 'dy' in this ? (y1 + this.dy)
+               : 'r'  in this ? y1 + this.r*Math.sin(this.w||0)
                : y1;
         let Rmin = 10;
-        let R1 = args.r1 > Rmin ? args.r1 - 2.5
-               : args.r1 <-Rmin ? args.r1 + 2.5
+        let R1 = this.r1 > Rmin ? this.r1 - 2.5
+               : this.r1 <-Rmin ? this.r1 + 2.5
                : 0;
-        let R2 = args.r2 > Rmin ? args.r2 - 2.5
-               : args.r2 < Rmin ? args.r2 + 2.5
+        let R2 = this.r2 > Rmin ? this.r2 - 2.5
+               : this.r2 < Rmin ? this.r2 + 2.5
                : 0;
         let dx = x2-x1, dy = y2-y1, dd = dx**2 + dy**2;
         let R12 = R1 + R2, l = Math.sqrt(dd - R12**2);
@@ -408,20 +430,19 @@ g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * @param {bool} [closed=false] Closed polygon.
  * @param {object} [args] Arguments object.
  * @param {number} [args.h=4] Ground shade line width.
- * @param {string} [args.pos=right] Ground shade position ["left","right"].
+ * @param {string} [args.pos=right] Ground shade position ['left','right'].
  */
 g2.prototype.ground = function () { return this.addCommand({c:'ground',a:arguments[0]}); }
 g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
         // OBVIOUS TODO HERE!
-        let args = this;
-        return g2().ply({pts:args.pts,closed:false,ls:'@linkcolor',fs:'transparent',lw:2,lc:'butt',lj:'miter'})
+        return g2().ply({pts:this.pts,closed:false,ls:'@linkcolor',fs:'transparent',lw:2,lc:'butt',lj:'miter'})
                   // .ply({pts:gnd,closed:false,ls:'rgba(100,100,100,0.5)'/*@nodfill2*/,fs:'transparent',lw:2*h,lc:'butt',lj:'miter'})
 }})
 // g2.prototype.ground = function ground(pts,closed,args) {
 //    var i, p0, pp, pn, p, e0, dx, dy, ep, en, len, lam, eq = [],
 //        h = args && args.h || 4,
-//        sign = args && args.pos === "left" ? 1 : -1,
+//        sign = args && args.pos === 'left' ? 1 : -1,
 //        itr =  g2.prototype.ply.itrOf(pts,args);
 //    p0 = pp = itr(i=0);
 //    eq.push(p0);
@@ -449,8 +470,8 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 //       eq[0] = {x:p0.x-sign*(h+1)*e0.y, y:p0.y+sign*(h+1)*e0.x};
 //       eq.push({x:p.x -sign*(h+1)*ep.y, y:p.y +sign*(h+1)*ep.x});
 //    }
-//    return this.beg(Object.assign({x:-0.5,y:-0.5,ls:"@linkcolor",lw:2},args,{fs:"transparent",lc:"butt",lj:"miter"}))
-//                  .ply(eq,closed,{ls:"@nodfill2",lw:2*h})
+//    return this.beg(Object.assign({x:-0.5,y:-0.5,ls:'@linkcolor',lw:2},args,{fs:'transparent',lc:'butt',lj:'miter'}))
+//                  .ply(eq,closed,{ls:'@nodfill2',lw:2*h})
 //                  .ply(pts,closed,args)
 //               .end()
 // };
@@ -469,9 +490,8 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        let args = this;
         // OBVIOUS TODO HERE!!
-        return g2().ply({pts:args.pts, closed:true,ls:'transparent',fs:'@linkfill'})
+        return g2().ply({pts:this.pts,closed:true,ls:'transparent',fs:'@linkfill'})
                   // .ply({pts:gnd,closed:false,ls:'rgba(100,100,100,0.5)'/*@nodfill2*/,fs:'transparent',lw:2*h,lc:'butt',lj:'miter'})
 }})
 
@@ -506,7 +526,7 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 //    var pitr = g2.prototype.ply.itrOf(pts), n = pitr.len, p0 = pitr(0), pn = pitr(n-1),
 //        dlambda = spacing < 1 ? spacing : spacing/Math.hypot(pn.x-p0.x,pn.y-p0.y),
 //        itr = iterator(pts,dlambda), val;
-//    this.ply(pts,false,Object.assign({fs:"@linkfill"},style,{ls:"transparent"}));
+//    this.ply(pts,false,Object.assign({fs:'@linkfill'},style,{ls:'transparent'}));
 
 //    while (!(val = itr.next()).done)
 //       this.vec(val.value.p2,val.value.p1,style);
@@ -516,87 +536,86 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 //    return this;
 // }
 
-g2.prototype.pol = function () { return this.addCommand({c:'pol',a:arguments[0]}); }
-g2.prototype.pol.prototype = g2.mixin({}, {
+g2.prototype.pol = function () { return this.addCommand({c:'pol',a:arguments[0]||{}}); }
+g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
-        let args = this;
-        return g2().cir({x:args.x,y:args.y,r:6,fs:"@nodfill"})
-                   .cir({x:args.x,y:args.y,r:2.5,fs:"@ls",ls:"transparent"});
+        return g2().beg({x:this.x||0,y:this.y||0,scl:this.scl||1,w:this.w||0})
+                   .cir({r:6,fs:'@nodfill'})
+                   .cir({r:2.5,fs:'@ls',ls:'transparent'})
+                   .end();
     }
- });
+}),
 
- g2.prototype.gnd = function () { return this.addCommand({c:'gnd',a:arguments[0]}); }
- g2.prototype.gnd.prototype = g2.mixin({}, {
+ g2.prototype.gnd = function () { return this.addCommand({c:'gnd',a:arguments[0]||{}}); }
+ g2.prototype.gnd.prototype = g2.mixin({}, g2.prototype.use.prototype, {
      g2() {
-         let args = this;
-         return g2().beg({x:args.x,y:args.y})
-                    .cir({x:0,y:0,r:6,ls:"@nodcolor",fs:"@nodfill",lwnosc:true})
+        return g2().beg({x:this.x||0,y:this.y||0,scl:this.scl||1,w:this.w||0})
+                    .cir({x:0,y:0,r:6,ls:'@nodcolor',fs:'@nodfill',lwnosc:true})
                     .p()
                     .m({x:0,y:6})
                     .a({dw:Math.PI/2,x:-6,y:0})
                     .l({x:6,y:0})
                     .a({dw:-Math.PI/2,x:0,y:-6})
                     .z()
-                    .fill({fs:"@nodcolor"})
+                    .fill({fs:'@nodcolor'})
                     .end();
     }
-});
+})
 
-g2.prototype.nod = function () { return this.addCommand({c:'nod',a:arguments[0]}); }
-g2.prototype.nod.prototype = g2.mixin({}, {
+g2.prototype.nod = function () { return this.addCommand({c:'nod',a:arguments[0]||{}}); }
+g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
-        let args = this;
-        return g2().cir({x:args.x,y:args.y,r:4,ls:"@nodcolor",fs:"@nodfill",lwnosc:true});
+        return g2().beg({x:this.x||0,y:this.y||0,scl:this.scl||1,w:this.w||0})
+                   .cir({r:4,ls:'@nodcolor',fs:'@nodfill',lwnosc:true})
+                   .end();
     }
-});
+})
 
-g2.prototype.dblnod = function () { return this.addCommand({c:'dblnod',a:arguments[0]}); }
-g2.prototype.dblnod.prototype = g2.mixin({}, {
+g2.prototype.dblnod = function () { return this.addCommand({c:'dblnod',a:arguments[0]||{}}); }
+g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
-        let args = this;
-        return g2().cir({x:args.x,y:args.y,r:6,ls:"@nodcolor",fs:"@nodfill"})
-                   .cir({x:args.x,y:args.y,r:3,ls:"@nodcolor",fs:"@nodfill2",lwnosc:true});
+        return g2().beg({x:this.x||0,y:this.y||0,scl:this.scl||1,w:this.w||0})
+                   .cir({r:6,ls:'@nodcolor',fs:'@nodfill'})
+                   .cir({r:3,ls:'@nodcolor',fs:'@nodfill2',lwnosc:true})
+                   .end();
     }
-});
+})
 
-g2.prototype.nodfix = function () { return this.addCommand({c:'nodfix',a:arguments[0]}); }
-g2.prototype.nodfix.prototype = g2.mixin({}, {
+g2.prototype.nodfix = function () { return this.addCommand({c:'nodfix',a:arguments[0]||{}}); }
+g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
-        let args = this;
-        return g2().beg({x:args.x,y:args.y})
+        return g2().beg({x:this.x||0,y:this.y||0,scl:this.scl||1,w:this.w||0})
                    .p()
                    .m({x:-8,y:-12})
                    .l({x:0,y:0})
                    .l({x:8,y:-12})
-                   .drw({ls:"@nodcolor",fs:"@nodfill2"})
-                   .cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill"})
+                   .drw({ls:'@nodcolor',fs:'@nodfill2'})
+                   .cir({x:0,y:0,r:4,ls:'@nodcolor',fs:'@nodfill'})
                    .end();
     }
-});
+})
 
-g2.prototype.nodflt = function () { return this.addCommand({c:'nodflt',a:arguments[0]}); }
-g2.prototype.nodflt.prototype = g2.mixin({}, {
+g2.prototype.nodflt = function () { return this.addCommand({c:'nodflt',a:arguments[0]||{}}); }
+g2.prototype.nodflt.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
-        let args = this;
-        return g2().beg({x:args.x,y:args.y})
+        return g2().beg({x:this.x||0,y:this.y||0,scl:this.scl||1,w:this.w||0})
                    .p()
                    .m({x:-8,y:-12})
                    .l({x:0,y:0})
                    .l({x:8,y:-12})
-                   .drw({ls:"@nodcolor",fs:"@nodfill2"})
-                   .cir({x:0,y:0,r:4,ls:"@nodcolor",fs:"@nodfill"})
-                   .lin({x1:-9,y1:-19,x2:9,y2:-19,ls:"@nodfill2",lw:5,lwnosc:false})
-                   .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:"@nodcolor",lw:2,lwnosc:false})
+                   .drw({ls:'@nodcolor',fs:'@nodfill2'})
+                   .cir({x:0,y:0,r:4,ls:'@nodcolor',fs:'@nodfill'})
+                   .lin({x1:-9,y1:-19,x2:9,y2:-19,ls:'@nodfill2',lw:5,lwnosc:false})
+                   .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:'@nodcolor',lw:2,lwnosc:false})
                    .end();
     }
-});
+})
 
-g2.prototype.origin = function () { return this.addCommand({c:'origin',a:arguments[0]}); }
-g2.prototype.origin.prototype = g2.mixin({}, {
+g2.prototype.origin = function () { return this.addCommand({c:'origin',a:arguments[0]||{}}); }
+g2.prototype.origin.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
-        args = this;
         let z = 3.5;
-        return g2().beg({x:args.x,y:args.y,lc:"round",lj:"round",fs:"@ls"})
+        return g2().beg({x:this.x||0,y:this.y||0,scl:this.scl||1,w:this.w||0,lc:'round',lj:'round',fs:'#ccc'})
                    .p()
                    .m({x:6*z,y:0})
                    .l({x:0,y:0})
@@ -612,10 +631,10 @@ g2.prototype.origin.prototype = g2.mixin({}, {
                    .a({dw: Math.PI/3,x:-3/4*z,y:6*z})
                    .z()
                    .drw()
-                   .cir({x:0,y:0,r:2.5})
+                   .cir({x:0,y:0,r:2.5,fs:'#ccc'})
                    .end();
     }
-});
+})
 
 /**
  * Mechanical style values.
@@ -637,12 +656,12 @@ g2.prototype.origin.prototype = g2.mixin({}, {
  * @property {number} [State.labelSignificantDigits=3]   default label's significant digits after numbering point.
  */
 g2.State = g2.State || {};
-g2.State.nodcolor = "#333";
-g2.State.nodfill  = "#dedede";
-g2.State.nodfill2 = "#aeaeae";
-g2.State.linkcolor = "#666";
-g2.State.linkfill = "rgba(200,200,200,0.5)";
-g2.State.dimcolor = "darkslategray";
+g2.State.nodcolor = '#333';
+g2.State.nodfill  = '#dedede';
+g2.State.nodfill2 = '#aeaeae';
+g2.State.linkcolor = '#666';
+g2.State.linkfill = 'rgba(200,200,200,0.5)';
+g2.State.dimcolor = 'darkslategray';
 g2.State.solid = [];
 g2.State.dash = [15,10];
 g2.State.dot = [4,4];

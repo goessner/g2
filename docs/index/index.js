@@ -8,16 +8,16 @@ const pi = Math.PI;
 const tests = [
 
 new Test('cartesian',
-`g2().view({cartesian:true}).grid().use({grp:'origin'})`),
+`g2().view({cartesian:true}).grid().origin()`),
 
 new Test('pan',
-`g2().view({x:25,y:30}).grid().use({grp:'origin'})`),
+`g2().view({x:25,y:30}).grid().origin()`),
 
 new Test('zoom',
-`g2().view({scl:1.5,x:35,y:40}).grid().use({grp:'origin'})`),
+`g2().view({scl:1.5,x:35,y:40}).grid().origin()`),
 
 new Test('view',
-`g2().view({x:35,y:35}).grid().view({scl:1.5}).use({grp:'origin'})`),
+`g2().view({x:35,y:35}).grid().view({scl:1.5}).origin()`),
 
 new Test('del',
 `g2().rec({x:60,y:30,b:80,h:40}).del().cir({x:100,y:50,r:35})`),
