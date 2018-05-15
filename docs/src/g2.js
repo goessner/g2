@@ -143,9 +143,9 @@ g2.prototype = {
      * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
      * array of [[x,y],...] arrays or array of [{x,y},...] objects.
      * @method
-     * @returns {object} this
+     * @returns {object} g2
      * @param {array} pts Array of points.
-     * @param {bool|'split'} [closed = false]
+     * @param {boolean} [closed = false]
      * @param {number} x Start x coordinate.
      * @param {number} y Start y coordinate.
      * @param {number} w Angle.

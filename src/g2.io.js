@@ -2,7 +2,7 @@
  * g2.io (c) 2013-17 Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
- * 
+ *
  */
 
 g2.io = function() {
@@ -26,10 +26,12 @@ g2.io.parseGrp = function(model, id) {
         for (let cmd of model[id]) {
             if (cmd.c === 'use')
                 cmd.a.grp = g2.io.parseGrp(model, cmd.a.grp);
-            g[cmd.c](cmd.a);
+            else if (this[cmd.c])
+                cmd.a ? this[cmd.c](cmd.a) : this[cmd.c]();
+            else  // invalid g2 command !
+               console.error(`io: Unable to handle command '${cmd.c}'`)
         }
         return g;
-
     }
     else if (id in g2.symbol)
         return g2.symbol[id];
@@ -41,7 +43,7 @@ g2.io.prototype = {
         this.model = {'main':[]};
         this.curgrp = this.model.main;
         this.grpidx = 0;
-        return true; 
+        return true;
     },
     exe: function(commands) {
         for (let cmd of commands) {

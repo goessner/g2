@@ -18,13 +18,15 @@ new Test('adim',
      .adim({x:200,y:70,r:50,w:pi/3,dw:-4*pi/3,inside:false})`),
 
 new Test('slider',
-`g2().slider({x:150, y:75, w:Math.PI/4, b:64, h:32, fs:"@linkfill"})`),
+`g2().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})`),
 
 new Test('spring',
-`g2().spring({x:50,y:100, r:100, w: -Math.PI/8})`),
+`g2().spring({x1:50,y1:50,x2:200,y2:25})
+     .spring({x1:50,y1:100,x2:200,y2:125,h:32})`),
 
 new Test('damper',
-`g2().damper({x1:120,y:60, x2: 240, dy: 10})`),
+`g2().damper({x1:120,y1:60,x2:240,y2:70})
+     .damper({x1:50,y1:100,x2:200,y2:125,h:32})`),
 
 new Test('link',
 `let A = {x:50,y:25},B = {x:150,y:25},
@@ -46,16 +48,18 @@ g2().view({cartesian:true})
     .nodflt({...E,w:-Math.PI/2,scl:1.5})`),
 
 new Test('beam',
-`NO EXAMPLE PROVIDED`),
+`g2().view({cartesian:true})
+     .beam({pts:[[200,125],[50,125],[50,50],[200,50]]})`),
 
 new Test('beam2',
-`NO EXAMPLE PROVIDED`),
+`g2().view({cartesian:true})
+     .beam2({pts:[[200,125],[50,125],[50,50],[200,50]]})`),
 
 new Test('bar',
-`NO EXAMPLE PROVIDED`),
+`g2().bar({x1:50,y1:20,x2:250,y2:120})`),
 
 new Test('bar2',
-`NO EXAMPLE PROVIDED`),
+`g2().bar2({x1:50,y1:120,x2:250,y2:120})`),
 
 new Test('pulley',
 `g2().view({cartesian:true})
