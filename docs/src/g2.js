@@ -422,9 +422,9 @@ g2.handler.factory = [];
 
 // predefined polyline/spline point iterators
 g2.pntIterator = {
-   "x,y":   function(pts) { function pitr(i) { return {x:pts[2*i],y:pts[2*i+1]}; }; pitr.len = pts.length/2; return pitr; },
-   "[x,y]": function(pts) { function pitr(i) { return {x:pts[i][0],y:pts[i][1]}; }; pitr.len = pts.length;   return pitr; },
-   "{x,y}": function(pts) { function pitr(i) { return pts[i]; };                    pitr.len = pts.length;   return pitr; }
+   "x,y":   function(pts) { function pitr(i) { return {x:pts[2*i],y:pts[2*i+1]}; };                      pitr.len = pts.length/2; return pitr; },
+   "[x,y]": function(pts) { function pitr(i) { return pts[i] ? {x:pts[i][0],y:pts[i][1]} : undefined; }; pitr.len = pts.length;   return pitr; },
+   "{x,y}": function(pts) { function pitr(i) { return pts[i]; };                                         pitr.len = pts.length;   return pitr; }
 };
 g2.pntItrOf = function(pts) {
    return !(pts && pts.length) ? undefined

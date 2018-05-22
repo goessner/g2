@@ -483,46 +483,47 @@ g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
 g2.prototype.ground = function () { return this.addCommand({c:'ground',a:arguments[0]}); }
 g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        // OBVIOUS TODO HERE!
-        return g2().ply({pts:this.pts,closed:false,ls:'@linkcolor',fs:'transparent',lw:2,lc:'butt',lj:'miter'})
-                  // .ply({pts:gnd,closed:false,ls:'rgba(100,100,100,0.5)'/*@nodfill2*/,fs:'transparent',lw:2*h,lc:'butt',lj:'miter'})
-}})
-// g2.prototype.ground = function ground(pts,closed,args) {
-//    var i, p0, pp, pn, p, e0, dx, dy, ep, en, len, lam, eq = [],
-//        h = args && args.h || 4,
-//        sign = args && args.pos === 'left' ? 1 : -1,
-//        itr =  g2.prototype.ply.itrOf(pts,args);
-//    p0 = pp = itr(i=0);
-//    eq.push(p0);
-//    p = itr(i=1);
-//    dx = p.x-pp.x; dy = p.y-pp.y; len = Math.hypot(dx,dy) || 1;
-//    e0 = ep = {x:dx/len,y:dy/len};
-//    for (pn = itr(++i); i < itr.len; pn = itr(++i)) {
-//       dx = pn.x-p.x; dy = pn.y-p.y; len = Math.hypot(dx,dy) || 1;
-//       en = {x:dx/len,y:dy/len};
-//       lam = (1 - en.x*ep.x - en.y*ep.y) / (ep.y*en.x - ep.x*en.y);
-//       eq.push({x:p.x+sign*(h+1)*(lam*ep.x - ep.y), y:p.y+sign*(h+1)*(lam*ep.y + ep.x)});
-//       ep = en;
-//       pp = p;
-//       p = pn;
-//    }
-//    if (closed) {
-//       dx = p0.x-p.x; dy = p0.y-p.y; len = Math.hypot(dx,dy) || 1;
-//       en = {x:dx/len,y:dy/len};
-//       lam = (1 - en.x*ep.x - en.y*ep.y) / (ep.y*en.x - ep.x*en.y);
-//       eq.push({x:p.x+sign*(h+1)*(lam*ep.x - ep.y), y:p.y+sign*(h+1)*(lam*ep.y + ep.x)});
-//       lam = (1 - e0.x*en.x - e0.y*en.y) / (en.y*e0.x - en.x*e0.y);
-//       eq[0] = {x:p0.x+sign*(h+1)*(-lam*e0.x - e0.y), y:p0.y+sign*(h+1)*(-lam*e0.y + e0.x)};
-//    }
-//    else {
-//       eq[0] = {x:p0.x-sign*(h+1)*e0.y, y:p0.y+sign*(h+1)*e0.x};
-//       eq.push({x:p.x -sign*(h+1)*ep.y, y:p.y +sign*(h+1)*ep.x});
-//    }
-//    return this.beg(Object.assign({x:-0.5,y:-0.5,ls:'@linkcolor',lw:2},args,{fs:'transparent',lc:'butt',lj:'miter'}))
-//                  .ply(eq,closed,{ls:'@nodfill2',lw:2*h})
-//                  .ply(pts,closed,args)
-//               .end()
-// };
+        const args = this;
+        const itr = g2.pntItrOf(args.pts);
+        let pn, en, lam, i,
+            p0 = pp = itr(i=0),
+            h = args && args.h || 4;
+            let p = itr(++i);
+            let dx = p.x - pp.x,
+            dy = p.y - pp.y,
+            len = Math.hypot(dx,dy) || 1,
+            e0 = ep = {x:dx/len,y:dy/len},
+            eq = [p0],
+            pos = 'pos' in args && !args.inside ? -1 : 1,
+            sign = args.pos === 'left' ? 1 : -1;
+        for (pn = itr(++i); i < itr.len; pn = itr(++i)) {
+            dx = pn.x - p.x; dy = pn.y - p.y; len = Math.hypot(dx,dy) || 1;
+            len = Math.hypot(dx,dy) || 1;
+            en = {x:dx/len,y:dy/len};
+            lam = (1 - en.x*ep.x - en.y*ep.y) / (ep.y*en.x - ep.x*en.y);
+            eq.push({x:p.x+sign*(h+1)*(lam*ep.x - ep.y), y:p.y+sign*(h+1)*(lam*ep.y + ep.x)});
+            ep = en;
+            pp = p;
+            p = pn;
+        }
+        if (args.closed) {
+            dx = p0.x-p.x; dy = p0.y-p.y; len = Math.hypot(dx,dy) || 1;
+            en = {x:dx/len,y:dy/len};
+            lam = (1 - en.x*ep.x - en.y*ep.y) / (ep.y*en.x - ep.x*en.y);
+            eq.push({x:p.x+sign*(h+1)*(lam*ep.x - ep.y), y:p.y+sign*(h+1)*(lam*ep.y + ep.x)});
+            lam = (1 - e0.x*en.x - e0.y*en.y) / (en.y*e0.x - en.x*e0.y);
+            eq[0] = {x:p0.x+sign*(h+1)*(-lam*e0.x - e0.y), y:p0.y+sign*(h+1)*(-lam*e0.y + e0.x)};
+        } else {
+            eq[0] = {x:p0.x-sign*(h+1)*e0.y, y:p0.y+sign*(h+1)*e0.x};
+            eq.push({x:p.x -sign*(h+1)*ep.y, y:p.y +sign*(h+1)*ep.x});
+        }
+        return g2().beg({x:-0.5,y:-0.5,ls:'@linkcolor',lw:2,fs:'transparent',lc:'butt',lj:'miter'})
+                   .ply({...args,pts:eq,ls:'@nodfill2',lw:2*h})
+                   .ply({...args})
+                   .end()
+
+    }
+});
 
 /**
  * Polygonial line load. The first and last point define the base line onto which
@@ -541,7 +542,7 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         // OBVIOUS TODO HERE!!
         return g2().ply({pts:this.pts,closed:true,ls:'transparent',fs:'@linkfill'})
                   // .ply({pts:gnd,closed:false,ls:'rgba(100,100,100,0.5)'/*@nodfill2*/,fs:'transparent',lw:2*h,lc:'butt',lj:'miter'})
-}})
+}});
 
 // g2.prototype.load = function load(pts,spacing,style) {
 //    function iterator(p,dlambda) {

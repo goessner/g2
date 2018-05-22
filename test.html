@@ -5,6 +5,8 @@
 <script>
     ctx = document.getElementById('c').getContext('2d');
 
-    g2().vec({x1:50,y1:50,x2:250,y2:100}) // Draw dimension.
+    g2().ground({pts:[{x:25,y:25},{x:75,y:25},{x:75,y:75}]})
+        .ground({pts:[[125,25],[175,25],[175,75]],closed: true})
+        .ground({pts:[25,125,75,125,75,175],closed: true})
         .exe(ctx);                        // Render to context.
 </script>
