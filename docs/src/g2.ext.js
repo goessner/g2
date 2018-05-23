@@ -188,6 +188,7 @@ g2.prototype.use.prototype = {
 
 // complex macros / add prototypes to argument objects
 
+
 /**
  * Draw spline by points.
  * Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).
@@ -197,12 +198,13 @@ g2.prototype.use.prototype = {
  * array of [[x,y],...] arrays or array of [{x,y},...] objects.
  * @see https://pomax.github.io/bezierinfo
  * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
- * [Example](https://goessner.github.io/g2-svg/test/index.html#spline)
  * @method
- * @returns {object} this
- * @param {array} p Array of points.
- * @param {bool} [closed = false] Closed spline.
- * @param {object} style Style object.
+ * @returns {object} g2
+ * @param {object} args - spline arguments object.
+ * @param {object[] | number[][] | number[]} args.pts - array of points.
+ * @param {bool} [args.closed = false] - closed spline.
+ * @example
+ * g2().spline({pts:[100,50,50,150,150,150,100,50]})
  */
 g2.prototype.spline = function spline({pts,closed,x,y,w}) {
     arguments[0]._itr = g2.pntItrOf(pts);
@@ -260,18 +262,18 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
 
 /**
  * Add label to certain elements.
- * See element for support and meaning of arguments.
- * *Please note:* any use of the `label` element requires previous setting of the `cartesian` flag, as it
- * highly depends on definition of a right handed coordinate system (which is required
- * exclusively here).
+ * Please note that cartesian flag is necessary.
  * @method
  * @returns {object} g2
- * @param {string} str Label text
- * @param {float | string} [loc='c'] Label location depending on referenced element.<br>
- *                     'c': centered, wrt. rec, cir, arc<br>
- *                     'beg','mid', 'end', wrt. lin<br>
+ * @param {object} args - label arguments object.
+ * @param {string} args.str - label text
+ * @param {number | string} args.loc - label location depending on referenced element.
+ *                     'c': centered, wrt. rec, cir, arc
+ *                     'beg','mid', 'end', wrt. lin
  *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
- * @param {float} off  Offset distance [optional].
+ * @param {number} args.off - offset distance [optional].
+ * @example
+ * g2().view({cartesian:true}).cir({x:10,y:10,r:5}).label({str:'hello',loc:'s',off:10})
  */
 g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     let idx = g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding label to ...
@@ -319,7 +321,7 @@ g2.prototype.label.prototype = {
  * Draw marker on line element.
  * @method
  * @returns {object} g2
- * @param {object} args - Marker arguments object
+ * @param {object} args - Marker arguments object.
  * @param {object | string} args.mrk - `g2` object or `name` of mark in `symbol` namespace.
  * @param {number | string} args.loc - line parameter [0..1]<br>
  *                                      line location ['beg','end','mid',..].

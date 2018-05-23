@@ -27,14 +27,14 @@ g2.prototype.skip = function skip(tag) {
 /**
  * Dimension
  * @returns {object} g2
- * @param {number} x1 Start x coordinate.
- * @param {number} y1 Start y coordinate.
- * @param {number} x2 End x coordinate.
- * @param {number} y2 End y coordinate.
- * @param {boolean} [inside=true] Draw dimension arrows between or outside of ticks.
+ * @param {object} - dimension arguments object.
+ * @param {number} args.x1 - start x coordinate.
+ * @param {number} args.y1 - start y coordinate.
+ * @param {number} args.x2 - end x coordinate.
+ * @param {number} args.y2 - end y coordinate.
+ * @param {boolean} [args.inside=true] - draw dimension arrows between or outside of ticks.
  * @example
- *  g2().dim({x1:60,y1:40,x2:190,y2:120}) // Draw dimension.
- *      .exe(ctx);                        // Render to context.
+ *  g2().dim({x1:60,y1:40,x2:190,y2:120})
  */
 g2.prototype.dim = function dim({}) { return this.addCommand({c:'dim', a:arguments[0]}); }
 g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
@@ -65,16 +65,16 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
  * Angular dimension
  * @method
  * @returns {object} g2
- * @param {number} x Start x coordinate.
- * @param {number} y Start y coordinate.
- * @param {number} r Radius
- * @param {number} [w=0] Start angle (in radian).
- * @param {number} [dw=Math.PI/2] Angular range in radian. In case of positive values it is running counterclockwise with
- *                right handed (cartesian) coordinate system.
- * @param {boolean} [inside=true] Draw dimension arrows between or outside of ticks.
+ * @param {object} - angular dimension arguments.
+ * @param {number} args.x - start x coordinate.
+ * @param {number} args.y - start y coordinate.
+ * @param {number} args.r - radius
+ * @param {number} [args.w=0] - start angle (in radian).
+ * @param {number} [args.dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
+ *                                       right handed (cartesian) coordinate system.
+ * @param {boolean} [args.inside=true] - draw dimension arrows between or outside of ticks.
  * @example
- * g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3}) // Draw angular dimension.
- *      .exe(ctx);                               // Render to context.
+ * g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
  */
 g2.prototype.adim = function adim({}) { return this.addCommand({c:'adim',a:arguments[0]}); }
 g2.prototype.adim.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
@@ -112,13 +112,13 @@ g2.prototype.adim.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
  * Draw vector arrow.
  * @method
  * @returns {object} g2
- * @param {number} x1 Start x coordinate.
- * @param {number} y1 Start y coordinate.
- * @param {number} x2 End x coordinate.
- * @param {number} y2 End y coordinate.
+ * @param {object} - vector arguments object.
+ * @param {number} args.x1 - start x coordinate.
+ * @param {number} args.y1 - start y coordinate.
+ * @param {number} args.x2 - end x coordinate.
+ * @param {number} args.y2 - end y coordinate.
  * @example
- * g2().vec({x1:50,y1:20,x2:250,y2:120}) // Draw vector.
- *     .exe(ctx)                         // Render to context.
+ * g2().vec({x1:50,y1:20,x2:250,y2:120})
  */
 g2.prototype.vec = function vec({}) { return this.addCommand({c:'vec',a:arguments[0]}); }
 g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
@@ -143,14 +143,14 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
  * Draw slider.
  * @method
  * @returns {object} g2
- * @param {number} x Start x coordinate.
- * @param {number} y Start y coordinate.
- * @param {number} [args.b=32] Slider breadth.
- * @param {number} [args.h=16] Slider height.
- * @param {number} [w=0] Rotation.
+ * @param {object} - slider arguments object.
+ * @param {number} args.x - start x coordinate.
+ * @param {number} args.y - start y coordinate.
+ * @param {number} [args.b=32] - slider breadth.
+ * @param {number} [args.h=16] - slider height.
+ * @param {number} [args.w=0] - rotation.
  * @example
- * g2().slider({x:150,y:75,w:Math.PI/4,b:64,h:32}) // Draw slider.
- *     .exe(ctx)                                   // Render context.
+ * g2().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})
  */
 g2.prototype.slider = function () { return this.addCommand({c:'slider',a:arguments[0]}); }
 g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
@@ -168,14 +168,14 @@ g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
  * Draw linear spring
  * @method
  * @returns {object} g2
- * @param {number} x1 Start x coordinate.
- * @param {number} y1 Start y coordinate.
- * @param {number} x2 End x coordinate.
- * @param {number} y2 End y coordinate.
+ * @param {object} - linear spring arguments object.
+ * @param {number} args.x1 - start x coordinate.
+ * @param {number} args.y1 - start y coordinate.
+ * @param {number} args.x2 - end x coordinate.
+ * @param {number} args.y2 - end y coordinate.
  * @param {number} [args.h=16] Spring height.
  * @example
- * g2().spring({x1:50,y1:100,x2:200,y2:75}) // Draw spring.
- *     .exe(ctx)                            // Render context.
+ * g2().spring({x1:50,y1:100,x2:200,y2:75})
  */
 g2.prototype.spring = function () { return this.addCommand({c:'spring',a:arguments[0]}); }
 g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
@@ -202,14 +202,13 @@ g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * Draw line with centered square damper symbol.
  * @method
  * @returns {object} g2
- * @param {number} x1 Start x coordinate.
- * @param {number} y1 Start y coordinate.
- * @param {number} x2 End x coordinate.
- * @param {number} y2 End y coordinate.
- * @param {object} args Arguments object.
- * @param {number} [args.h=16] Damper height.
- *  * g2().damper({x1:60,y1:120,x2:200,y2:75}) // Draw damper.
- *        .exe(ctx)                            // Render context.
+ * @param {object} - damper arguments object.
+ * @param {number} args.x1 - start x coordinate.
+ * @param {number} args.y1 - start y coordinate.
+ * @param {number} args.x2 - end x coordinate.
+ * @param {number} args.y2 - end y coordinate.
+ * @param {number} [args.h=16] - damper height.
+ *  * g2().damper({x1:60,y1:120,x2:200,y2:75})
  */
 g2.prototype.damper = function () { return this.addCommand({c:'damper',a:arguments[0]}); }
 g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
@@ -238,18 +237,18 @@ g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * Draw polygonial link.
  * @method
  * @returns {object} g2
- * @param {array} pts Array of points.
- * @param {boolean} [closed = false]
- * @param {number} x Start x coordinate.
- * @param {number} y Start y coordinate.
- * @param {number} w Angle.
+ * @param {object} - link arguments object.
+ * @param {object[] | number[][] | number[]} args.pts - array of points.
+ * @param {bool} [args.closed = false] - closed link.
+ * @param {number} args.x - start x coordinate.
+ * @param {number} args.y - start y coordinate.
+ * @param {number} [args.w=0] - angle.
  * @example
  * let A = {x:50,y:25},B = {x:150,y:25},
-     C = {x:50,y:75}, D = {x:100,y:75},
-     E = {x:50,y:125};                  // Define points.
-g2().view({cartesian:true})
-    .link({pts:[A,B,E,A,D,C]})          // Draw link.
-    .exe(ctx)                           // Render to context.
+ *     C = {x:50,y:75}, D = {x:100,y:75},
+ *     E = {x:50,y:125};
+ * g2().view({cartesian:true})
+ *     .link({pts:[A,B,E,A,D,C]})
  */
 g2.prototype.link = function () { return this.addCommand({c:'link',a:arguments[0]}); }
 g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
@@ -262,17 +261,18 @@ g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * Draw alternate glossy polygonial link.
  * @method
  * @returns {object} g2
- * @param {array} pts Array of points.
- * @param {number} x Start x coordinate.
- * @param {number} y Start y coordinate.
- * @param {number} w Angle.
+ * @param {object} - link2 arguments object.
+ * @param {object[] | number[][] | number[]} args.pts - array of points.
+ * @param {bool} [args.closed = false] - closed link.
+ * @param {number} args.x - start x coordinate.
+ * @param {number} args.y - start y coordinate.
+ * @param {number} [args.w=0] - angle.
  * @example
  * let A = {x:50,y:25},B = {x:150,y:25},
-     C = {x:50,y:75}, D = {x:100,y:75},
-     E = {x:50,y:125};                  // Define points.
-g2().view({cartesian:true})
-    .link({pts:[A,B,E,A,D,C]})          // Draw link.
-    .exe(ctx)                           // Render to context.
+ *     C = {x:50,y:75}, D = {x:100,y:75},
+ *     E = {x:50,y:125};
+ * g2().view({cartesian:true})
+ *     .link({pts:[A,B,E,A,D,C]})
  */
 g2.prototype.link2 = function () { return this.addCommand({c:'link2',a:arguments[0]}); }
 g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
@@ -287,14 +287,14 @@ g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * Draw polygonial beam.
  * @method
  * @returns {object} g2
- * @param {array} pts Array of points.
- * @param {number} x Start x coordinate.
- * @param {number} y Start y coordinate.
- * @param {number} w Angle.
+ * @param {object} - beam arguments object.
+ * @param {object[] | number[][] | number[]} args.pts - array of points.
+ * @param {number} args.x - start x coordinate.
+ * @param {number} args.y - start y coordinate.
+ * @param {number} [args.w=0] - angle.
  * @example
  * g2().view({cartesian})
- *     .beam({pts:[[200,125][50,125][50,50][200,50]]})  // Draw beam.
- *     .exe(ctx)                                        // Render to context.
+ *     .beam({pts:[[200,125][50,125][50,50][200,50]]})
  */
 g2.prototype.beam = function () { return this.addCommand({c:'beam',a:arguments[0]}); }
 g2.prototype.beam.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
@@ -307,14 +307,14 @@ g2.prototype.beam.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * Draw alternate glossy polygonial beam.
  * @method
  * @returns {object} g2
- * @param {array} pts Array of points.
- * @param {number} x Start x coordinate.
- * @param {number} y Start y coordinate.
- * @param {number} w Angle.
+ * @param {object} - beam2 arguments object.
+ * @param {object[] | number[][] | number[]} args.pts - array of points.
+ * @param {number} args.x - start x coordinate.
+ * @param {number} args.y - start y coordinate.
+ * @param {number} [args.w=0] - angle.
  * @example
  * g2().view({cartesian})
- *     .beam2({pts:[[200,125][50,125][50,50][200,50]]}) // Draw beam.
- *     .exe(ctx)                                        // Render to context.
+ *     .beam2({pts:[[200,125][50,125][50,50][200,50]]})
  */
 g2.prototype.beam2 = function () { return this.addCommand({c:'beam2',a:arguments[0]}); }
 g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
@@ -329,13 +329,13 @@ g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * Draw bar.
  * @method
  * @returns {object} g2
- * @param {number} x1 Start x coordinate.
- * @param {number} y1 Start y coordinate.
- * @param {number} x2 End x coordinate.
- * @param {number} y2 End y coordinate.
+ * @param {object} - bar arguments object.
+ * @param {number} args.x1 - start x coordinate.
+ * @param {number} args.y1 - start y coordinate.
+ * @param {number} args.x2 - end x coordinate.
+ * @param {number} args.y2 - end y coordinate.
  * @example
- * g2().bar({x1:50,y1:20,x2:250,y2:120}) // Draw bar.
- *     .exe(ctx)                         // Render to context.
+ * g2().bar({x1:50,y1:20,x2:250,y2:120})
  */
 g2.prototype.bar = function () { return this.addCommand({c:'bar',a:arguments[0]}); }
 g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
@@ -349,13 +349,13 @@ g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * Draw alternate glossy bar.
  * @method
  * @returns {object} g2
- * @param {number} x1 Start x coordinate.
- * @param {number} y1 Start y coordinate.
- * @param {number} x2 End x coordinate.
- * @param {number} y2 End y coordinate.
+ * @param {object} - bar2 arguments object.
+ * @param {number} args.x1 - start x coordinate.
+ * @param {number} args.y1 - start y coordinate.
+ * @param {number} args.x2 - end x coordinate.
+ * @param {number} args.y2 - end y coordinate.
  * @example
- * g2().bar2({x1:50,y1:20,x2:250,y2:120}) // Draw bar.
- *     .exe(ctx)                         // Render to context.
+ * g2().bar2({x1:50,y1:20,x2:250,y2:120})
  */
 g2.prototype.bar2 = function () { return this.addCommand({c:'bar2',a:arguments[0]}); }
 g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
@@ -370,16 +370,15 @@ g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
 /**
  * Draw pulley.
  * @method
- * @method
-     * @returns {object} g2
-     * @param {number} x x-value center.
-     * @param {number} y y-value center.
-     * @param {number} r Radius.
-     * @param {number} w Angle.
-     * @example
-     * g2().pulley({x:100,y:75,r:50})   // Draw pulley.
-     *     .exe(ctx);                  // Render to context.
-     */
+ * @returns {object} g2
+ * @param {object} - pulley arguments object.
+ * @param {number} args.x - x-value center.
+ * @param {number} args.y - y-value center.
+ * @param {number} args.r - radius.
+ * @param {number} args.w - angle.
+ * @example
+ * g2().pulley({x:100,y:75,r:50})
+ */
 g2.prototype.pulley = function () { return this.addCommand({c:'pulley',a:arguments[0]}); }
 g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
@@ -394,16 +393,15 @@ g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
 /**
  * Draw alternate pulley.
  * @method
- * @method
-     * @returns {object} g2
-     * @param {number} x x-value center.
-     * @param {number} y y-value center.
-     * @param {number} r Radius.
-     * @param {number} w Angle.
-     * @example
-     * g2().pulley2({x:50,y:30,r:25})   // Draw pulley.
-     *     .exe(ctx);                   // Render to context.
-     */
+ * @returns {object} g2
+ * @param {object} - pulley2 arguments object.
+ * @param {number} args.x - x-value center.
+ * @param {number} args.y - y-value center.
+ * @param {number} args.r - radius.
+ * @param {number} args.w - angle.
+ * @example
+ * g2().pulley2({x:50,y:30,r:25})
+ */
 g2.prototype.pulley2 = function () { return this.addCommand({c:'pulley2',a:arguments[0]}); }
 g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
@@ -418,16 +416,16 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * Draw rope. Amount of pulley radii must be greater than 10 units. They are forced to zero otherwise.
  * @method
  * @returns {object} g2
- * @param {object||number} [p1] Starting point or Coordinate.
- * @param {object||number} [p2] End point or Coordinate.
- * @param {number} [r] Radius of parent element.
+ * @param {object} - rope arguments object.
+ * @param {object | number} args.p1 - starting point or Coordinate.
+ * @param {object | number} args.p2 - end point or Coordinate.
+ * @param {number} args.r - radius of parent element.
  * @example
  * let A = {x:50,y:30}, B = {x:200,y:75};
  * g2().view({cartesian:true})
- *     .pulley({...A,r:20})             // Draw first parent.
- *     .pulley2({...B,r:40})            // Draw second parent.
- *     .rope({p1:A,r1:20,p2:B,r2:40})   // Connect them with a rope.
- *     .exe(ctx)                        // Render context.
+ *     .pulley({...A,r:20})
+ *     .pulley2({...B,r:40})
+ *     .rope({p1:A,r1:20,p2:B,r2:40})
  */
 g2.prototype.rope = function () { return this.addCommand({c:'rope',a:arguments[0]}); }
 g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
@@ -473,12 +471,14 @@ g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
 /**
  * Polygon ground.
  * @method
- * @returns {object} this
- * @param {array} pts Array of points
- * @param {bool} [closed=false] Closed polygon.
- * @param {object} [args] Arguments object.
- * @param {number} [args.h=4] Ground shade line width.
- * @param {string} [args.pos=right] Ground shade position ['left','right'].
+ * @returns {object} g2
+ * @param {object} - ground arguments object.
+ * @param {object[] | number[][] | number[]} args.pts - array of points.
+ * @param {bool} [args.closed=false] - closed polygon.
+ * @param {number} [args.h=4] - ground shade line width.
+ * @param {string} [args.pos=right] - ground shade position ['left','right'].
+ * @example
+ * g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'})
  */
 g2.prototype.ground = function () { return this.addCommand({c:'ground',a:arguments[0]}); }
 g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
@@ -494,7 +494,6 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
             len = Math.hypot(dx,dy) || 1,
             e0 = ep = {x:dx/len,y:dy/len},
             eq = [p0],
-            pos = 'pos' in args && !args.inside ? -1 : 1,
             sign = args.pos === 'left' ? 1 : -1;
         for (pn = itr(++i); i < itr.len; pn = itr(++i)) {
             dx = pn.x - p.x; dy = pn.y - p.y; len = Math.hypot(dx,dy) || 1;
@@ -529,12 +528,12 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * Polygonial line load. The first and last point define the base line onto which
  * the load is acting orthogonal.
  * @method
- * @returns {object} this
- * @param {array} pts Array of load contour points.
- * @param {real} spacing Spacing of the vectors drawn as a positive real number, interprete as<br>
+ * @returns {object} g2
+ * @param {object} - load arguments object.
+ * @param {object[] | number[][] | number[]} args.pts - array of points.
+ * @param {real} spacing - spacing of the vectors drawn as a positive real number, interprete as<br>
  *                       * spacing &lt; 1: spacing = 1/m with a partition of m.<br>
  *                       * spacing &gt; 1: length of spacing.
- * @param {object} [style] Arguments object.
  */
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
@@ -544,46 +543,22 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
                   // .ply({pts:gnd,closed:false,ls:'rgba(100,100,100,0.5)'/*@nodfill2*/,fs:'transparent',lw:2*h,lc:'butt',lj:'miter'})
 }});
 
-// g2.prototype.load = function load(pts,spacing,style) {
-//    function iterator(p,dlambda) {
-//       var ux = pn.x - p0.x, uy = pn.y - p0.y, uu = ux*ux + uy*uy,
-//           lam = [], dlam, lambda = -dlambda;
-
-//       for (var i = 0; i < n; i++)  // build array of projection parameters of polypoints onto base line.
-//          lam[i] = ((pitr(i).x - p0.x)*ux + (pitr(i).y - p0.y)*uy)/uu;
-
-//       return {
-//          next: function() {
-//             lambda += dlambda;
-//             for (var i = 0; i < n; i++) {
-//                dlam = lam[i+1] - lam[i];
-//                if (dlam > 0 && lam[i] <= lambda && lambda <= lam[i+1]) {
-//                   var mu = (lambda - lam[i])/dlam;
-//                   return {
-//                      value: {
-//                         p1: {x:p0.x + lambda*ux, y:p0.y + lambda*uy},
-//                         p2: {x:pitr(i).x + mu*(pitr(i+1).x-pitr(i).x), y:pitr(i).y + mu*(pitr(i+1).y-pitr(i).y)}
-//                      }
-//                   }
-//                }
-//             }
-//             return { done: true };
-//          }
-//       };
-//    }
-//
-//    var pitr = g2.prototype.ply.itrOf(pts), n = pitr.len, p0 = pitr(0), pn = pitr(n-1),
-//        dlambda = spacing < 1 ? spacing : spacing/Math.hypot(pn.x-p0.x,pn.y-p0.y),
-//        itr = iterator(pts,dlambda), val;
-//    this.ply(pts,false,Object.assign({fs:'@linkfill'},style,{ls:'transparent'}));
-
-//    while (!(val = itr.next()).done)
-//       this.vec(val.value.p2,val.value.p1,style);
-
-//    this.proxy(g2.prototype.ply,[pts,false]);
-
-//    return this;
-// }
+/**
+ * Symbols.
+ * @method
+ * @param {object} - symbol arguments object.
+ * @param {number} args.x - x-value center.
+ * @param {number} args.y - y-value center.
+ * @example
+ * g2().view({cartesian:true})
+ *     .pol({x:20,y:75})
+ *     .gnd({x:60,y:75})
+ *     .nod({x:100,y:75})
+ *     .dblnod({x:140,y:75})
+ *     .nodfix({x:180,y:75})
+ *     .nodflt({x:220,y:75})
+ *     .origin({x:260,y:75})
+ */
 
 g2.prototype.pol = function () { return this.addCommand({c:'pol',a:arguments[0]||{}}); }
 g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
