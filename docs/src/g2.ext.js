@@ -281,7 +281,6 @@ g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     }
     return this;
 }
-
 g2.prototype.label.prototype = {
     g2() {
         let label = g2();
@@ -320,35 +319,47 @@ g2.prototype.label.prototype = {
  * Draw marker on line element.
  * @method
  * @returns {object} g2
- * @param {object | string} mrk  `g2` object or Marker name.
- * @param {number | string} loc
- *                    line parameter [0..1]<br>
- *                    line location ['beg','end','mid',..].
- * @param {int} [dir=0]  Direction:<br>
+ * @param {object} args - Marker arguments object
+ * @param {object | string} args.mrk - `g2` object or `name` of mark in `symbol` namespace.
+ * @param {number | string} args.loc - line parameter [0..1]<br>
+ *                                      line location ['beg','end','mid',..].
+ * @param {int} [args.dir=0] - Direction:<br>
  *                   -1 : negative tangent direction<br>
  *                    0 : no orientation (rotation)<br>
  *                    1 : positive tangent direction
  * @example
- * g2().lin(10,10,100,10).mark("tick",0.75,1)
- *     .arc(100,100,50,3.14).mark("sqr",1);<br>
- * [Example](https://goessner.github.io/g2-mec/test/index.html#mark)
+ * g2().lin({x1:10,y1:10,x2:100,y2:10}).mark({mrk:"tick",loc:0.75,dir:1})
  *
  */
 g2.prototype.mark = function mark({mrk,loc,dir,fs,ls}) {
-    let idx = mrk && g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a});
-    if (idx) {
-        let ownerArgs = this.commands[idx].a;
-        for (let itr in loc) {
-            p = this.commands[idx].a.pointAt(loc[itr]);
-            w = dir < 0 ? Math.atan2(-p.dy,-p.dx)
-            : dir > 0 ? Math.atan2( p.dy, p.dx)
-            : 0;
-        this.use({grp:mrk,x:p.x,y:p.y,w:w,scl:ownerArgs.lw || 1,
-            ls:ownerArgs.ls || 'black', fs:ownerArgs.ls || 'black'});
-        }
-//        console.log('fs='+fs);
+    let idx = g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding mark to ...
+    if (idx !== undefined) {
+        arguments[0]['_refelem'] = this.commands[idx];
+        this.addCommand({c:'mark', a: arguments[0]});
     }
     return this;
+}
+g2.prototype.mark.prototype = {
+    markAt(elem,loc,mrk,dir,ls,fs) {
+        const p = elem.pointAt(loc),
+              w = dir < 0 ? Math.atan2(-p.dy,-p.dx)
+                : dir > 0 ? Math.atan2( p.dy, p.dx)
+                : 0;
+        return { grp:mrk,x:p.x,y:p.y,w:w,scl:elem.lw || 1,
+                 ls:ls || elem.ls || 'black',
+                 fs:fs || ls || elem.ls || 'black' }
+    },
+    g2() {
+        let {mrk,loc,dir,fs,ls} = this,
+            elem = this._refelem.a,
+            marks = g2();
+        if (Array.isArray(loc))
+            for (let l of loc)
+                marks.use(this.markAt(elem,l,mrk,dir,ls,fs));
+        else
+            marks.use(this.markAt(elem,loc,mrk,dir,ls,fs));
+        return marks;
+    }
 }
 
 // Helper methods .. not chainable.

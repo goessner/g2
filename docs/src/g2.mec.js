@@ -544,46 +544,22 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
                   // .ply({pts:gnd,closed:false,ls:'rgba(100,100,100,0.5)'/*@nodfill2*/,fs:'transparent',lw:2*h,lc:'butt',lj:'miter'})
 }});
 
-// g2.prototype.load = function load(pts,spacing,style) {
-//    function iterator(p,dlambda) {
-//       var ux = pn.x - p0.x, uy = pn.y - p0.y, uu = ux*ux + uy*uy,
-//           lam = [], dlam, lambda = -dlambda;
-
-//       for (var i = 0; i < n; i++)  // build array of projection parameters of polypoints onto base line.
-//          lam[i] = ((pitr(i).x - p0.x)*ux + (pitr(i).y - p0.y)*uy)/uu;
-
-//       return {
-//          next: function() {
-//             lambda += dlambda;
-//             for (var i = 0; i < n; i++) {
-//                dlam = lam[i+1] - lam[i];
-//                if (dlam > 0 && lam[i] <= lambda && lambda <= lam[i+1]) {
-//                   var mu = (lambda - lam[i])/dlam;
-//                   return {
-//                      value: {
-//                         p1: {x:p0.x + lambda*ux, y:p0.y + lambda*uy},
-//                         p2: {x:pitr(i).x + mu*(pitr(i+1).x-pitr(i).x), y:pitr(i).y + mu*(pitr(i+1).y-pitr(i).y)}
-//                      }
-//                   }
-//                }
-//             }
-//             return { done: true };
-//          }
-//       };
-//    }
-//
-//    var pitr = g2.prototype.ply.itrOf(pts), n = pitr.len, p0 = pitr(0), pn = pitr(n-1),
-//        dlambda = spacing < 1 ? spacing : spacing/Math.hypot(pn.x-p0.x,pn.y-p0.y),
-//        itr = iterator(pts,dlambda), val;
-//    this.ply(pts,false,Object.assign({fs:'@linkfill'},style,{ls:'transparent'}));
-
-//    while (!(val = itr.next()).done)
-//       this.vec(val.value.p2,val.value.p1,style);
-
-//    this.proxy(g2.prototype.ply,[pts,false]);
-
-//    return this;
-// }
+/**
+ * Symbols.
+ * @method
+ * @param {number} x x-value center.
+ * @param {number} y y-value center.
+ * @example
+ * g2().view({cartesian:true})
+ *     .pol({x:20,y:75})     // all sorts of symbols
+ *     .gnd({x:60,y:75})
+ *     .nod({x:100,y:75})
+ *     .dblnod({x:140,y:75})
+ *     .nodfix({x:180,y:75})
+ *     .nodflt({x:220,y:75})
+ *     .origin({x:260,y:75})
+ *     .exe(ctx)             // Render context.
+ */
 
 g2.prototype.pol = function () { return this.addCommand({c:'pol',a:arguments[0]||{}}); }
 g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {

@@ -1,12 +1,9 @@
 <canvas id='c' width='601' height='401' style='border:solid 1px black'></canvas>
 <script src='./src/g2.js'></script>
-<script src='./src/g2.ext.js'></script>
-<script src='./src/g2.mec.js'></script>
+<script src='./docs/src/g2.ext.js'></script>
+<script src='./docs/src/g2.mec.js'></script>
 <script>
     ctx = document.getElementById('c').getContext('2d');
 
-    g2().ground({pts:[{x:25,y:25},{x:75,y:25},{x:75,y:75}]})
-        .ground({pts:[[125,25],[175,25],[175,75]],closed: true})
-        .ground({pts:[25,125,75,125,75,175],closed: true})
-        .exe(ctx);                        // Render to context.
+    g2().lin({x1:50,y1:50,x2:150,y2:50}).mark({mrk:"tick",loc:0.75,dir:0}).exe(ctx);
 </script>
