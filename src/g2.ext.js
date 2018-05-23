@@ -200,7 +200,7 @@ g2.prototype.use.prototype = {
  * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
  * @method
  * @returns {object} g2
- * @param {object} args - spline arguments object
+ * @param {object} args - spline arguments object.
  * @param {object[] | number[][] | number[]} args.pts - array of points.
  * @param {bool} [args.closed = false] - closed spline.
  * @example
@@ -265,7 +265,7 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
  * Please note that cartesian flag is necessary.
  * @method
  * @returns {object} g2
- * @param {object} args - label arguments object
+ * @param {object} args - label arguments object.
  * @param {string} args.str - label text
  * @param {number | string} args.loc - label location depending on referenced element.
  *                     'c': centered, wrt. rec, cir, arc
@@ -321,7 +321,7 @@ g2.prototype.label.prototype = {
  * Draw marker on line element.
  * @method
  * @returns {object} g2
- * @param {object} args - Marker arguments object
+ * @param {object} args - Marker arguments object.
  * @param {object | string} args.mrk - `g2` object or `name` of mark in `symbol` namespace.
  * @param {number | string} args.loc - line parameter [0..1]<br>
  *                                      line location ['beg','end','mid',..].
