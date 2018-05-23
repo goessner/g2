@@ -43,7 +43,7 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
         const sz = Math.round((args.lw||1)/2)+2;
         const dx = args.x2-args.x1, dy = args.y2-args.y1, len = Math.hypot(dx,dy);
         const inside = 'inside' in args && !args.inside ? -1 : 1;
-        return g2().beg({x:args.x1,y:args.y1,w:dy/dx})
+        return g2().beg({x:args.x1,y:args.y1,w:dy/dx === Infinity ? Math.PI/2 : dy/dx === -Infinity ? -Math.PI/2 : dy/dx})
                     .p().m({x:0,y:0}).l({x:len,y:0})
                         .m({x:0,y:sz}).l({x:0,y:-sz})
                         .m({x:len,y:sz}).l({x:len,y:-sz})
@@ -126,7 +126,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
         const args = {...this,lc:'round',lj:'round'};
         const z = 2+(args.lw||1);
         const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
-        return g2().beg({x:args.x1,y:args.y1,w:dy/dx})
+        return g2().beg({...args,x:args.x1,y:args.y1,w:dy/dx === Infinity ? Math.PI/2 : dy/dx === -Infinity ? -Math.PI/2 : dy/dx})
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
                      .stroke({fs:'transparent'})

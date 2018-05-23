@@ -72,6 +72,28 @@ new Test('pulley2',
 new Test('rope',
 `let A = {x:50,y:30}, B = {x:200,y:75};
 g2().view({cartesian:true})
-    .pulley({...A,r:20}).pulley2({...B,r:40}).rope({p1:A,r1:20,p2:B,r2:40})`)
+    .pulley({...A,r:20}).pulley2({...B,r:40}).rope({p1:A,r1:20,p2:B,r2:40})`),
+
+new Test('ground',
+`g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'})`),
+
+new Test('mec',
+`let A = {x:50,y:25},B = {x:150,y:25},
+    C = {x:50,y:75}, D = {x:100,y:75},
+    E = {x:50,y:125};
+g2().view({cartesian:true})
+    .link2({pts:[A,B,E,A,D,C]})
+    .nodfix({...A,scl:1.5})
+    .nod({...B,scl:1.5})
+    .nod({...C,scl:1.5})
+    .nod({...D,scl:1.5})
+    .nodflt({...E,w:-Math.PI/2,scl:1.5})
+    .ground({pts:[{x:E.x-23,y:E.y+20},{x:A.x-23,y:A.y-18},{x:D.x,y:A.y-18}]})
+    .vec({x1:D.x,y1:D.y,x2:D.x+50,y2:D.y,ls:'darkred',lw:2})
+    .vec({x1:B.x,y1:B.y,x2:B.x,y2:B.y-20,ls:'darkred',lw:0.5})
+    .dim({x1:E.x,y1:E.y+15,x2:D.x,y2:E.y+15}).label({str:'b',loc:'s'})
+    .dim({x1:D.x,y1:E.y+15,x2:B.x,y2:E.y+15}).label({str:'b',loc:'s'})
+    .dim({x1:B.x+15,y1:E.y,x2:B.x+15,y2:D.y}).label({str:'b',loc:'w'})
+    .dim({x1:B.x+15,y1:D.y,x2:B.x+15,y2:B.y}).label({str:'b',loc:'w'})`)
 
 )
