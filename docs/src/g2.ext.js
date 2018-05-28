@@ -270,7 +270,7 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
  * @param {number | string} args.loc - label location depending on referenced element.
  *                     'c': centered, wrt. rec, cir, arc
  *                     'beg','mid', 'end', wrt. lin
- *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
+ *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': gicardinal directions
  * @param {number} args.off - offset distance [optional].
  * @example
  * g2().view({cartesian:true}).cir({x:10,y:10,r:5}).label({str:'hello',loc:'s',off:10})
@@ -306,7 +306,7 @@ g2.prototype.label.prototype = {
             fs = fs||'black';
             if (border)
                 label.ell({x:p.x,y:p.y,rx:n*0.8*h/2+2,ry:h/2+2,ls:fs||'black',fs:fs2||'#ffc'})
-//                 .rec({x:p.x-n*0.8*h/2/Math.SQRT2,y:p.y-h/2/Math.SQRT2,b:n*0.8*h/Math.SQRT2,h:h/Math.SQRT2})
+                    // .rec({x:p.x-n*0.8*h/2/Math.SQRT2,y:p.y-h/2/Math.SQRT2,b:n*0.8*h/Math.SQRT2,h:h/Math.SQRT2})
             label.txt({str, x:p.x,y:p.y,
                        thal: "center",
                        tval: "middle",

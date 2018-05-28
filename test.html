@@ -1,9 +1,19 @@
-<canvas id='c' width='601' height='401' style='border:solid 1px black'></canvas>
+<canvas id='c' width='150' height='150'></canvas>
 <script src='./src/g2.js'></script>
-<script src='./docs/src/g2.ext.js'></script>
-<script src='./docs/src/g2.mec.js'></script>
+<script src='./src/g2.ext.js'></script>
+<script src='./src/g2.mec.js'></script>
 <script>
     ctx = document.getElementById('c').getContext('2d');
 
-    g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'}).exe(ctx);
+    g2().view({cartesian:true})
+        .rec({x:25,y:25,b:100,h:75,ld:[6,3]})
+        .label({str:"n",loc:"n",off:10,border:true})
+        .label({str:"ne",loc:"ne",off:10,border:true})
+        .label({str:"e",loc:"e",off:10,border:true})
+        .label({str:"se",loc:"se",off:10,border:true})
+        .label({str:"s",loc:"s",off:10,border:true})
+        .label({str:"sw",loc:"sw",off:10,border:true})
+        .label({str:"w",loc:"w",off:10,border:true})
+        .label({str:"nw",loc:"nw",off:10,border:true})
+        .exe(ctx);
 </script>

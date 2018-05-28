@@ -1,7 +1,6 @@
 tests.push(
     new Test ('g2.ext.js',
-    `//the following tests are for g2.ext.js from
-    g2()`),
+    `g2().txt({str:"the following tests are for g2.ext.js",x:50,y:50})`),
 
     new Test('symbols',
     `g2().view({cartesian:true})
@@ -12,4 +11,29 @@ tests.push(
          .nodfix({x:180,y:75}).label({str:'nodfix',loc:'s',off:25})
          .nodflt({x:220,y:75}).label({str:'nodflt',loc:'s',off:25})
          .origin({x:260,y:75}).label({str:'origin',loc:'s',off:25})`),
+
+    new Test('label',
+    `g2().view({cartesian:true})
+        .cir({x:75,y:75,r:50,ld:[6,3]})
+        .label({str:"n",loc:"n",off:10})
+        .label({str:"ne",loc:"ne",off:10})
+        .label({str:"e",loc:"e",off:10})
+        .label({str:"se",loc:"se",off:10})
+        .label({str:"s",loc:"s",off:10})
+        .label({str:"sw",loc:"sw",off:10})
+        .label({str:"w",loc:"w",off:10})
+        .label({str:"nw",loc:"nw",off:10})`),
+
+    new Test('label2',
+    `g2().view({cartesian:true})
+        .rec({x:30,y:30,b:100,h:75,ld:[6,3]})
+        .label({str:"n",loc:"n",off:10,border:true})
+        .label({str:"ne",loc:"ne",off:10,border:true})
+        .label({str:"e",loc:"e",off:10,border:true})
+        .label({str:"se",loc:"se",off:10,border:true})
+        .label({str:"s",loc:"s",off:10,border:true})
+        .label({str:"sw",loc:"sw",off:10,border:true})
+        .label({str:"w",loc:"w",off:10,border:true})
+        .label({str:"nw",loc:"nw",off:10,border:true})
+        .txt({str:'this does not seem to be right...',x:120,y:125})`),
 )
