@@ -277,7 +277,7 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
  */
 g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     let idx = g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding label to ...
-    if (idx) {
+    if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({c:'label', a: arguments[0]});
     }
