@@ -5,4 +5,4 @@ master-README.md
 #**/test*
 /sample/wiki-samples/g2.js
 *.code-workspace
-.vscode
+#.vscode
