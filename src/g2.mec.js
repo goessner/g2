@@ -4,7 +4,7 @@
  * @author Stefan Goessner
  * @license MIT License
  */
-/* jshint -W014 */
+"use strict"
 
 /**
  * Mechanical extensions.

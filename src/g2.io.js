@@ -4,6 +4,7 @@
  * @link https://github.com/goessner/g2
  *
  */
+"use strict"
 
 g2.io = function() {
    if (this instanceof g2.io) {

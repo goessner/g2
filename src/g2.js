@@ -3,6 +3,7 @@
  * @license MIT License
  * @link https://github.com/goessner/g2
  */
+"use strict"
 
  /**
   * Create a 2D graphics command queue object. Call without using 'new'.

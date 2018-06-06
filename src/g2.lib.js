@@ -4,6 +4,7 @@
  * @license MIT License
  * @link https://github.com/goessner/g2
  */
+"use strict"
 
 var g2 = g2 || {};  // for standalone usage ...
 
@@ -31,7 +32,7 @@ g2 = Object.assign(g2, {
      * @param {number} w0 Start angle in range [0 .. 2*pi].
      * @param {number} dw angular range in radians. Can be positive or negative.
      * @returns {number} Normalised angular parameter lambda.
-     * '0' corresponds to w0 and '1' to w0+dw. To reconstruct an angle from 
+     * '0' corresponds to w0 and '1' to w0+dw. To reconstruct an angle from
      *   the return parameter lambda use: w = w0 + lambda*dw.
      */
     toArc: function(w,w0,dw) {
@@ -44,7 +45,7 @@ g2 = Object.assign(g2, {
         return 0;
     },
     /**
-     * Test, if point is located on line. 
+     * Test, if point is located on line.
      * @param {x,y} point to test.
      * @param {x1,y1} start point of line.
      * @param {x2,y2} end point of line.
@@ -57,7 +58,7 @@ g2 = Object.assign(g2, {
         return -epslen < perp && perp < epslen && -epslen < dot && dot < len*(len+eps);
     },
     /**
-     * Test, if point is located on circle circumference. 
+     * Test, if point is located on circle circumference.
      * @param {x,y} point to test.
      * @param {x,y,r} circle.
      * @param {number} eps.
@@ -95,7 +96,7 @@ g2 = Object.assign(g2, {
         return false;
     },
     /**
-     * Test, if point is located on a box. A box in contrast to a rectangle 
+     * Test, if point is located on a box. A box in contrast to a rectangle
      * is always aligned parallel to coordinate system axes, with its
      * local origin `{x,y}` located in the center. The dimensions `{b,h}` are
      * half size dimensions (so upper right corner is {x+b,y+h}).
@@ -133,13 +134,13 @@ g2 = Object.assign(g2, {
            if (   (y >  pi.y || y >  pj.y)
                && (y <= pi.y || y <= pj.y)
                && (x <= pi.x || x <= pj.x)
-               &&  pi.y !== pj.y 
+               &&  pi.y !== pj.y
                && (pi.x === pj.x || x <= pj.x + (y-pj.y)*(pi.x-pj.x)/(pi.y-pj.y)))
              match++;
         return match%2 != 0;  // even matches required for being outside ..
     },
     /**
-     * Test, if point is located inside of a box. A box in contrast to a rectangle 
+     * Test, if point is located inside of a box. A box in contrast to a rectangle
      * is always aligned parallel to coordinate system axes, with its
      * local origin `{x,y}` located in the center. The dimensions `{b,h}` are
      * half size dimensions (so upper right corner is {x+b,y+h}).

@@ -4,11 +4,10 @@
  * @author Stefan Goessner
  * @license MIT License
  */
-/* jshint -W014 */
+"use strict"
 
 /**
  * Extensions.
- * (Requires cartesian coordinate system)
  * @namespace
  */
 var g2 = g2 || { prototype:{} };  // for jsdoc only ...
