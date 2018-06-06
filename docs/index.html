@@ -14,8 +14,6 @@
                     border: 1px solid black;
                     white-space:pre;
                     font:11px monospace;
-                    overflow:hidden;
-                    text-overflow: ellipsis;
                 }
         </style>
     </head>
@@ -28,23 +26,25 @@
         <script src='./index/index.js'></script>
         <script src='./index/index.ext.js'></script>
         <script src='./index/index.mec.js'></script>
-    <div class="container-fluid">
-        <h1>g2 Tests</h1><h6>g2.js, g2.ext.js, g2.mec.js are referenced. canvas and image should look alike.</h6>
-        <table class='table table-sm'>
-            <thead class='thead-dark' scope='row'>
-                <tr>
-                    <th scope='col'>#</th>
-                    <th scope='col'>name</th>
-                    <th scope='col'>src</th>
-                    <th scope='col'>canvas</th>
-                    <th scope='col'>image</th>
-                    <th scope='col'>error</th>
-                </tr>
-            </thead>
-            <tbody id='tbody'>
-            </tbody>
-        </table>
-    </div>
+        <div class="container-fluid">
+            <h1>g2 Tests</h1>
+            <h6>g2.js, g2.ext.js, g2.mec.js are referenced. canvas and image should look alike.</h6>
+            <p id="errind">Error at number: </p>
+                <table class='table table-hover'>
+                    <thead class='thead-dark' scope='row'>
+                        <tr>
+                            <th scope='col'>#</th>
+                            <th scope='col'>name</th>
+                            <th scope='col'>src</th>
+                            <th scope='col'>canvas</th>
+                            <th scope='col'>image</th>
+                            <th scope='col'>error</th>
+                        </tr>
+                    </thead>
+                    <tbody id='tbody'></tbody>
+                </table>
+            </div>
+        </div>
         <script>
             // render code to canvas and check for errors
             function render() {
@@ -64,6 +64,7 @@
                     catch(e) {
                         error.innerHTML = e;
                         row.classList.add('table-danger')
+                        document.getElementById('errind').innerHTML += idx + ' ';
                     }
                 }
             }
@@ -85,22 +86,22 @@
 
                 const src = document.createElement('td');
                 src.id = 'src' + idx;
-                src.classList.add('container-fluid');
+                // src.classList.add('container-fluid');
                 tr.appendChild(src);
 
                 const canvas = document.createElement('td');
                 tr.appendChild(canvas);
                 const canvasarea = document.createElement('canvas');
                 canvasarea.id = 'cv' + idx;
-                canvasarea.width = 300;
-                canvasarea.height = 150;
+               // canvasarea.width = 300;
+               // canvasarea.height = 150;
                 canvas.appendChild(canvasarea);
 
                 const image = document.createElement('td');
                 tr.appendChild(image);
                 const imagearea = document.createElement('img');
-                imagearea.width = 300;
-                imagearea.height = 150;
+               // imagearea.width = 300;
+               // imagearea.height = 150;
                 imagearea.src = './img/' + name.innerHTML + '.png';
                 image.appendChild(imagearea);
                 tr.appendChild(image);
@@ -111,7 +112,7 @@
 
                 tbody.appendChild(tr);
             }
-            // initial render call + eventlistener
+            // initial render call
             render();
         </script>
     </body>

@@ -3,7 +3,14 @@ new Test ('g2.mec.js',
     `g2().txt({str:"the following tests are for g2.mec.js",x:50,y:50})`),
 
 new Test('symbols',
-`g2().view({cartesian:true}).pol({x:20,y:75}).gnd({x:60,y:75}).nod({x:100,y:75}).dblnod({x:140,y:75}).nodfix({x:180,y:75}).nodflt({x:220,y:75}).origin({x:260,y:75})`),
+`g2().view({cartesian:true})
+     .pol({x:20,y:75})
+     .gnd({x:60,y:75})
+     .nod({x:100,y:75})
+     .dblnod({x:140,y:75})
+     .nodfix({x:180,y:75})
+     .nodflt({x:220,y:75})
+     .origin({x:260,y:75})`),
 
 new Test('vec',
 `g2().vec({x1:50,y1:20,x2:250,y2:120})`),

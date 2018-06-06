@@ -140,7 +140,9 @@ new Test('beg-end',
 
 new Test('use',
 `g2()
-.ins(() =>{ symbol = g2().rec({x:-25,y:-25,b:50,h:50,ls:'gray',lw:3,fs:'@fs2'}).cir({x:0,y:0,r:20})})
+.ins(() =>{ symbol = g2()
+  .rec({x:-25,y:-25,b:50,h:50,ls:'gray',lw:3,fs:'@fs2'})
+  .cir({x:0,y:0,r:20})})
 .use({grp:symbol,x:65,y:50,fs:'red',fs2:'green'})
 .use({grp:symbol,x:135,y:50,fs:'blue',fs2:'yellow'})`),
 
