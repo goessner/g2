@@ -3,6 +3,7 @@
  * @license MIT License
  * @link https://github.com/goessner/g2
  */
+"use strict"
 
  /**
   * Create a 2D graphics command queue object. Call without using 'new'.
@@ -732,13 +733,13 @@ g2.canvasHdl.prototype = {
         tval: (ctx,q) => { ctx.textBaseline=q; }
     },
     initStyle(style) {
-        for (key in style)
+        for (const key in style)
             if (this.get[key] && this.get[key](this.ctx) !== style[key])
                 this.set[key](this.ctx, style[key]);
     },
     setStyle(style) {  // short circuit style setting
         let q, prv = {};
-        for (key in style) {
+        for (const key in style) {
             if (this.get[key]) {  // style keys only ...
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
                     let ref = style[key].substr(1);
@@ -753,7 +754,7 @@ g2.canvasHdl.prototype = {
         return prv;
     },
     resetStyle(style) {   // short circuit style reset
-        for (key in style)
+        for (const key in style)
             this.set[key](this.ctx, style[key]);
     },
     pushStyle(style) {
