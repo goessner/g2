@@ -1,12 +1,11 @@
-<canvas id='c' width='150' height='150'></canvas>
 <script src='./src/g2.js'></script>
 <script src='./src/g2.ext.js'></script>
 <script src='./src/g2.mec.js'></script>
+<canvas id="c" height=1000px width=1000px></canvas>
 <script>
-    ctx = document.getElementById('c').getContext('2d');
-
+    const ctx = document.getElementById("c").getContext("2d");
     g2().view({cartesian:true})
-        .rec({x:25,y:25,b:100,h:75,ld:[6,3]})
+        .rec({x:330,y:330,b:100,h:75,ld:[6,3]})
         .label({str:"n",loc:"n",off:10,border:true})
         .label({str:"ne",loc:"ne",off:10,border:true})
         .label({str:"e",loc:"e",off:10,border:true})

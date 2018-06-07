@@ -450,7 +450,7 @@ g2.getCmdIdx = function(cmds,callbk) {
  * @private
  */
 g2.refineCmdArgs = function({c,a}) {
-    for (let key in a)
+    for (const key in a)
         if (!Object.getOwnPropertyDescriptor(a,key).get &&  // if no getter ... and
             key[0] !== '_' &&                               // no private property ... and
             typeof a[key] === 'function') {                 // a function
@@ -759,7 +759,7 @@ g2.canvasHdl.prototype = {
     },
     pushStyle(style) {
         let cur = {};  // hold changed properties ...
-        for (key in style)
+        for (const key in style)
             if (this.get[key]) {  // style keys only ...
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
                     let ref = style[key].substr(1);
@@ -773,7 +773,7 @@ g2.canvasHdl.prototype = {
     popStyle() {
         let cur = this.stack.pop();
         this.cur = this.stack[this.stack.length-1];
-        for (key in this.cur)
+        for (const key in this.cur)
             if (this.get[key] && this.cur[key] !== cur[key])
                this.set[key](this.ctx, this.cur[key]);
     },

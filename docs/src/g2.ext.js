@@ -4,11 +4,10 @@
  * @author Stefan Goessner
  * @license MIT License
  */
-/* jshint -W014 */
+"use strict"
 
 /**
  * Extensions.
- * (Requires cartesian coordinate system)
  * @namespace
  */
 var g2 = g2 || { prototype:{} };  // for jsdoc only ...
@@ -61,11 +60,11 @@ g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
 };
 
 g2.prototype.rec.prototype = {
-    _dir: { c:[0,1],e:[1,0],ne:[Math.SQRT2/2,Math.SQRT2/2],n:[0,1],nw:[-Math.SQRT2/2,Math.SQRT2/2],
-            w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
+    _dir: { c:[0,1],e:[1,0],ne:[1,1],n:[0,1],nw:[-1,1],
+            w:[-1,0],sw:[-1,-1],s:[0,-1],se:[1,-1] },
     get len() { return 2*(this.b+this.h); },
     pointAt(loc) {
-       var q = this._dir[loc || "c"] || this._dir['c'], nx = q[0], ny = q[1];
+       const q = this._dir[loc || "c"] || this._dir['c'], nx = q[0], ny = q[1];
        return { x: this.x + (1 + nx)*this.b/2,
                 y: this.y + (1 + ny)*this.h/2,
                 dx: -ny,
@@ -270,7 +269,7 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
  * @param {number | string} args.loc - label location depending on referenced element.
  *                     'c': centered, wrt. rec, cir, arc
  *                     'beg','mid', 'end', wrt. lin
- *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': gicardinal directions
+ *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
  * @param {number} args.off - offset distance [optional].
  * @example
  * g2().view({cartesian:true}).cir({x:10,y:10,r:5}).label({str:'hello',loc:'s',off:10})
@@ -289,8 +288,8 @@ g2.prototype.label.prototype = {
         if (this._refelem) {
             let {str,loc,off,fs,font,border,fs2} = this,
                 p = this._refelem.a.pointAt(loc),          // 'loc'ation in coordinates ..
-                tanlen = p.dx*p.dx + p.dy*p.dy,            // tangent length .. (0 || 1) .. !
-                h = parseInt(font||g2.defaultStyle.font),  // char height
+                tanlen = p.dx*p.dx || p.dy*p.dy;            // tangent length .. (0 || 1) .. !
+            let h = parseInt(font||g2.defaultStyle.font),  // char height
                 diag, phi, n;                              // n .. str length
 
             if (str[0] === "@" && (s=this._refelem.a[str.substr(1)]) !== undefined)   // expect 's' as string convertable to a number ...
@@ -306,7 +305,7 @@ g2.prototype.label.prototype = {
             fs = fs||'black';
             if (border)
                 label.ell({x:p.x,y:p.y,rx:n*0.8*h/2+2,ry:h/2+2,ls:fs||'black',fs:fs2||'#ffc'})
-                    // .rec({x:p.x-n*0.8*h/2/Math.SQRT2,y:p.y-h/2/Math.SQRT2,b:n*0.8*h/Math.SQRT2,h:h/Math.SQRT2})
+//                 .rec({x:p.x-n*0.8*h/2/Math.SQRT2,y:p.y-h/2/Math.SQRT2,b:n*0.8*h/Math.SQRT2,h:h/Math.SQRT2})
             label.txt({str, x:p.x,y:p.y,
                        thal: "center",
                        tval: "middle",

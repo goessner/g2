@@ -60,11 +60,11 @@ g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
 };
 
 g2.prototype.rec.prototype = {
-    _dir: { c:[0,1],e:[1,0],ne:[Math.SQRT2/2,Math.SQRT2/2],n:[0,1],nw:[-Math.SQRT2/2,Math.SQRT2/2],
-            w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
+    _dir: { c:[0,1],e:[1,0],ne:[1,1],n:[0,1],nw:[-1,1],
+            w:[-1,0],sw:[-1,-1],s:[0,-1],se:[1,-1] },
     get len() { return 2*(this.b+this.h); },
     pointAt(loc) {
-       var q = this._dir[loc || "c"] || this._dir['c'], nx = q[0], ny = q[1];
+       const q = this._dir[loc || "c"] || this._dir['c'], nx = q[0], ny = q[1];
        return { x: this.x + (1 + nx)*this.b/2,
                 y: this.y + (1 + ny)*this.h/2,
                 dx: -ny,
@@ -288,8 +288,8 @@ g2.prototype.label.prototype = {
         if (this._refelem) {
             let {str,loc,off,fs,font,border,fs2} = this,
                 p = this._refelem.a.pointAt(loc),          // 'loc'ation in coordinates ..
-                tanlen = p.dx*p.dx + p.dy*p.dy,            // tangent length .. (0 || 1) .. !
-                h = parseInt(font||g2.defaultStyle.font),  // char height
+                tanlen = p.dx*p.dx || p.dy*p.dy;            // tangent length .. (0 || 1) .. !
+            let h = parseInt(font||g2.defaultStyle.font),  // char height
                 diag, phi, n;                              // n .. str length
 
             if (str[0] === "@" && (s=this._refelem.a[str.substr(1)]) !== undefined)   // expect 's' as string convertable to a number ...

@@ -26,7 +26,7 @@ tests.push(
 
     new Test('label2',
     `g2().view({cartesian:true})
-        .rec({x:30,y:30,b:100,h:75,ld:[6,3]})
+        .rec({x:50,y:30,b:100,h:75,ld:[6,3]})
         .label({str:"n",loc:"n",off:10,border:true})
         .label({str:"ne",loc:"ne",off:10,border:true})
         .label({str:"e",loc:"e",off:10,border:true})
@@ -34,6 +34,5 @@ tests.push(
         .label({str:"s",loc:"s",off:10,border:true})
         .label({str:"sw",loc:"sw",off:10,border:true})
         .label({str:"w",loc:"w",off:10,border:true})
-        .label({str:"nw",loc:"nw",off:10,border:true})
-        .txt({str:'this does not seem to be right...',x:120,y:125})`),
+        .label({str:"nw",loc:"nw",off:10,border:true})`),
 )

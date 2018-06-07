@@ -4,7 +4,7 @@
  * @author Stefan Goessner
  * @license MIT License
  */
-/* jshint -W014 */
+"use strict"
 
 /**
  * Mechanical extensions.
@@ -43,7 +43,7 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
         const sz = Math.round((args.lw||1)/2)+2;
         const dx = args.x2-args.x1, dy = args.y2-args.y1, len = Math.hypot(dx,dy);
         const inside = 'inside' in args && !args.inside ? -1 : 1;
-        return g2().beg({x:args.x1,y:args.y1,w:dy/dx === Infinity ? Math.PI/2 : dy/dx === -Infinity ? -Math.PI/2 : dy/dx})
+        return g2().beg({x:args.x1,y:args.y1,w:dy/dx})
                     .p().m({x:0,y:0}).l({x:len,y:0})
                         .m({x:0,y:sz}).l({x:0,y:-sz})
                         .m({x:len,y:sz}).l({x:len,y:-sz})
@@ -126,7 +126,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
         const args = {...this,lc:'round',lj:'round'};
         const z = 2+(args.lw||1);
         const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
-        return g2().beg({...args,x:args.x1,y:args.y1,w:dy/dx === Infinity ? Math.PI/2 : dy/dx === -Infinity ? -Math.PI/2 : dy/dx})
+        return g2().beg({...args,x:args.x1,y:args.y1,w:dy/dx})
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
                      .stroke({fs:'transparent'})
@@ -155,7 +155,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
 g2.prototype.slider = function () { return this.addCommand({c:'slider',a:arguments[0]}); }
 g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
     g2() {
-        args = this;
+        const args = this;
         args.b = args.b || 32;
         args.h = args.h || 16;
         return g2().beg({x:args.x,y:args.y,w:args.w,fs:'#ccc'})
@@ -485,14 +485,16 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
         const args = this;
         const itr = g2.pntItrOf(args.pts);
-        let pn, en, lam, i,
-            p0 = pp = itr(i=0),
+        let pn, en, lam, i;
+        let pp = itr(i=0);
+        let p0 = pp,
             h = args && args.h || 4;
-            let p = itr(++i);
-            let dx = p.x - pp.x,
+        let p = itr(++i);
+        let dx = p.x - pp.x,
             dy = p.y - pp.y,
-            len = Math.hypot(dx,dy) || 1,
-            e0 = ep = {x:dx/len,y:dy/len},
+            len = Math.hypot(dx,dy) || 1;
+        let ep = {x:dx/len,y:dy/len};
+        let e0 = ep,
             eq = [p0],
             sign = args.pos === 'left' ? 1 : -1;
         for (pn = itr(++i); i < itr.len; pn = itr(++i)) {
@@ -658,7 +660,7 @@ g2.prototype.origin.prototype = g2.mixin({}, g2.prototype.use.prototype, {
                    .cir({x:0,y:0,r:2.5,fs:'#ccc'})
                    .end();
     }
-})
+});
 
 /**
  * Mechanical style values.
