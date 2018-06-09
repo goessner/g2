@@ -48,18 +48,21 @@ g2.prototype = {
      * and make viewport cartesian.
      * @method
      * @returns {object} g2
-     * @param {number} [scl=1] Absolute scaling factor.
-     * @param {number} [x=0] x-origin in device units.
-     * @param {number} [y=0] y-origin in device units.
-     * @param {booean} [cartesian=false] Set cartesian flag.
+     * @param {object} - view arguments object.
+     * @param {number} [args.scl=1] - absolute scaling factor.
+     * @param {number} [args.x=0] - x-origin in device units.
+     * @param {number} [args.y=0] - y-origin in device units.
+     * @param {booean} [args.cartesian=false] - set cartesian flag.
      */
         view({scl,x,y,cartesian}) { return this.addCommand({c:'view',a:arguments[0]}); },
 
     /**
      * Draw grid.
      * @method
-     * @param {string} [color='#ccc'] Change color.
-     * @param {number} [size=20] Change space between lines.
+     * @returns {object} g2
+     * @param {object} - grid arguments object.
+     * @param {string} [args.color='#ccc'] - change color.
+     * @param {number} [args.size=20] - change space between lines.
      */
         grid({color,size}={}) { return this.addCommand({c:'grid',a:arguments[0]}); },
 
@@ -67,10 +70,11 @@ g2.prototype = {
      * Draw circle by center and radius.
      * @method
      * @returns {object} g2
-     * @param {number} x x-value center.
-     * @param {number} y y-value center.
-     * @param {number} r Radius.
-     * @param {number} w Angle.
+     * @param {object} - circle arguments object.
+     * @param {number} x - x-value center.
+     * @param {number} y - y-value center.
+     * @param {number} r - radius.
+     * @param {number} w - angle.
      * @example
      * g2().cir({x:100,y:80,r:20})  // Draw circle.
      *     .exe(ctx);               // Render to context.
@@ -81,13 +85,14 @@ g2.prototype = {
      * Draw ellipse by center and radius for x and y.
      * @method
      * @returns {object} g2
-     * @param {number} x x-value center.
-     * @param {number} y y-value center.
-     * @param {number} rx Radius x-axys.
-     * @param {number} ry Radius y-axys.
-     * @param {number} w Start angle.
-     * @param {number} dw Angular range.
-     * @param {number} rot Rotation.
+     * @param {object} - ellispe argument object.
+     * @param {number} args.x - x-value center.
+     * @param {number} args.y - y-value center.
+     * @param {number} args.rx - radius x-axys.
+     * @param {number} args.ry - radius y-axys.
+     * @param {number} args.w - start angle.
+     * @param {number} args.dw - angular range.
+     * @param {number} args.rot - rotation.
      * @example
      * g2().ell({x:100,y:80,rx:20,ry:30,w:0,dw:2*Math.PI/4,rot:1})  // Draw circle.
      *     .exe(ctx);               // Render to context.
@@ -98,11 +103,12 @@ g2.prototype = {
      * Draw arc by center point, radius, start angle and angular range.
      * @method
      * @returns {object} g2
-     * @param {number} x x-value center.
-     * @param {number} y y-value center.
-     * @param {number} r Radius.
-     * @param {number} [w=0] Start angle (in radian).
-     * @param {number} [dw=2*pi] Angular range in Radians.
+     * @param {object} - arc arguments object.
+     * @param {number} args.x - x-value center.
+     * @param {number} args.y - y-value center.
+     * @param {number} args.r - radius.
+     * @param {number} [args.w=0] - start angle (in radian).
+     * @param {number} [args.dw=2*pi] - angular range in Radians.
      * @example
      * g2().arc({x:300,y:400,r:390,w:-Math.PI/4,dw:-Math.PI/2})
      *     .exe(ctx);
@@ -113,10 +119,11 @@ g2.prototype = {
      * Draw rectangle by anchor point and dimensions.
      * @method
      * @returns {object} g2
-     * @param {number} x x-value upper left corner.
-     * @param {number} y y-value upper left corner.
-     * @param {number} b Width.
-     * @param {number} h Height.
+     * @param {object} - rectangle arguments object.
+     * @param {number} args.x - x-value upper left corner.
+     * @param {number} args.y - y-value upper left corner.
+     * @param {number} args.b - width.
+     * @param {number} args.h - height.
      * @example
      * g2().rec({x:100,y:80,b:40,h:30}) // Draw rectangle.
      *     .exe(ctx);                   // Render to context.
@@ -127,10 +134,11 @@ g2.prototype = {
      * Draw line by start point and end point.
      * @method
      * @returns {object} g2
-     * @param {number} x1 Start x coordinate.
-     * @param {number} y1 Start y coordinate.
-     * @param {number} x2 End x coordinate.
-     * @param {number} y2 End y coordinate.
+     * @param {object} - line arguments object.
+     * @param {number} args.x1 - start x coordinate.
+     * @param {number} args.y1 - start y coordinate.
+     * @param {number} args.x2 - end x coordinate.
+     * @param {number} args.y2 - end y coordinate.
      * @example
      * g2().lin({x1:10,x2:10,y1:190,y2:10}) // Draw line.
      *     .exe(ctx);                       // Render to context.
@@ -145,11 +153,12 @@ g2.prototype = {
      * array of [[x,y],...] arrays or array of [{x,y},...] objects.
      * @method
      * @returns {object} g2
-     * @param {array} pts Array of points.
-     * @param {boolean} [closed = false]
-     * @param {number} x Start x coordinate.
-     * @param {number} y Start y coordinate.
-     * @param {number} w Angle.
+     * @param {object} - polygon arguments object.
+     * @param {array} args.pts - array of points.
+     * @param {boolean} [args.closed = false]
+     * @param {number} x - start x coordinate.
+     * @param {number} y - start y coordinate.
+     * @param {number} w - angle.
      * @example
      * g2().ply({pts:[100,50,120,60,80,70]}),
      *     .ply({pts:[150,60],[170,70],[130,80]],closed:true}),
@@ -165,10 +174,11 @@ g2.prototype = {
      * Draw text string at anchor point.
      * @method
      * @returns {object} g2
-     * @param {string} s Text string.
-     * @param {number} [x=0] x coordinate of text anchor position.
-     * @param {number} [y=0] y coordinate of text anchor position.
-     * @param {number} [w=0] w Rotation angle about anchor point with respect to positive x-axis.
+     * @param {object} - text arguments object.
+     * @param {string} args.s - text string.
+     * @param {number} [args.x=0] - x coordinate of text anchor position.
+     * @param {number} [args.y=0] - y coordinate of text anchor position.
+     * @param {number} [args.w=0] - w Rotation angle about anchor point with respect to positive x-axis.
      */
         txt({str,x,y,w}) { return this.addCommand({c:'txt',a:arguments[0]}); },
 
@@ -179,11 +189,12 @@ g2.prototype = {
      * In fact you might want to build custom graphics libraries on top of that feature.
      * @method
      * @returns {object} g2
-     * @param {object | string} grp g2 source object or symbol name found in 'g2.symbol' namespace.
-     * @param {number} [x=0] Translation value x.
-     * @param {number} [y=0] Translation value y.
-     * @param {number} [w=0] Rotation angle (in radians).
-     * @param {number} [scl=1] Scale factor.
+     * @param {object} - use arguments object.
+     * @param {object | string} args.grp - g2 source object or symbol name found in 'g2.symbol' namespace.
+     * @param {number} [args.x=0] - translation value x.
+     * @param {number} [args.y=0] - translation value y.
+     * @param {number} [args.w=0] - rotation angle (in radians).
+     * @param {number} [args.scl=1] - scale factor.
      * @example
      * g2.symbol.cross = g2().lin({x1:5,y1:5,x2:-5,y2:-5}).lin({x1:5,y1:-5,x2:-5,y2:5});  // Define symbol.
      * g2().use({grp:"cross",x:100,y:100})  // Draw cross at position 100,100.
@@ -202,15 +213,16 @@ g2.prototype = {
      * This also applies to images of reused g2 objects. If an image can not be loaded, it will be replaced by a broken-image symbol.
      * @method
      * @returns {object} g2
-     * @param {string} uri Image uri or data:url.
-     * @param {number} [x=0] X-coordinate of image (upper left).
-     * @param {number} [y=0] Y-coordinate of image (upper left).
-     * @param {number} [b = undefined] Width.
-     * @param {number} [h = undefined] Height.
-     * @param {number} [xoff = undefined] X-offset.
-     * @param {number} [yoff = undefined] Y-offset.
-     * @param {number} [dx = undefined] Region x.
-     * @param {number} [dy = undefined] Region y.
+     * @param {object} - image arguments object.
+     * @param {string} args.uri - image uri or data:url.
+     * @param {number} [args.x=0] - x-coordinate of image (upper left).
+     * @param {number} [args.y=0] - y-coordinate of image (upper left).
+     * @param {number} [args.b = undefined] - width.
+     * @param {number} [args.h = undefined] - height.
+     * @param {number} [args.xoff = undefined] - x-offset.
+     * @param {number} [args.yoff = undefined] - y-offset.
+     * @param {number} [args.dx = undefined] - region x.
+     * @param {number} [args.dy = undefined] - region y.
      */
         img({uri,x,y,w,b,h,xoff,yoff,dx,dy}) { return this.addCommand({c:'img',a:arguments[0]}); },
 
@@ -219,11 +231,12 @@ g2.prototype = {
      * Optionally apply transformation or style properties.
      * @method
      * @returns {object} g2
-     * @param {number} [x=0] Translation value x.
-     * @param {number} [y=0] Translation value y.
-     * @param {number} [w=0] Rotation angle (in radians).
-     * @param {number} [scl=1] Scale factor.
-     * @param {array} [matrix] Matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]).
+     * @param {object} - beg arguments object.
+     * @param {number} [args.x=0] - translation value x.
+     * @param {number} [args.y=0] - translation value y.
+     * @param {number} [args.w=0] - rotation angle (in radians).
+     * @param {number} [args.scl=1] - scale factor.
+     * @param {array} [args.matrix] - matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]).
      */
         beg({x,y,w,scl,matrix}={}) { return this.addCommand({c:'beg',a:arguments[0]}); },
 
@@ -231,6 +244,7 @@ g2.prototype = {
      * End subcommands. Previous state is restored.
      * @method
      * @returns {object} g2
+     * @param {object} - end arguments object.
      */
         end() { // ignore 'end' commands without matching 'beg'
             let myBeg = 1,
@@ -260,8 +274,9 @@ g2.prototype = {
      * Move to point.
      * @method
      * @returns {object} g2
-     * @param {number} x Move to x coordinate
-     * @param {number} y Move to y coordinate
+     * @param {object} - move arguments object.
+     * @param {number} args.x - move to x coordinate
+     * @param {number} args.y - move to y coordinate
      */
         m({x,y}) { return this.addCommand({c:'m',a:arguments[0]}); },
 
@@ -269,8 +284,9 @@ g2.prototype = {
      * Create line segment to point.
      * @method
      * @returns {object} g2
-     * @param {number} x x coordinate of target point.
-     * @param {number} y y coordinate of target point.
+     * @param {object} - line segment argument object.
+     * @param {number} args.x - x coordinate of target point.
+     * @param {number} args.y - y coordinate of target point.
      * @example
      * g2().p()             // Begin path.
      *     .m({x:0,y:50})   // Move to point.
@@ -285,10 +301,11 @@ g2.prototype = {
      * Create quadratic bezier curve segment to point.
      * @method
      * @returns {object} g2
-     * @param {number} x1 x coordinate of control point.
-     * @param {number} y1 y coordinate of control point.
-     * @param {number} x x coordinate of target point.
-     * @param {number} y y coordinate of target point.
+     * @param {object} - quadratic curve arguments object.
+     * @param {number} args.x1 - x coordinate of control point.
+     * @param {number} args.y1 - y coordinate of control point.
+     * @param {number} args.x - x coordinate of target point.
+     * @param {number} args.y - y coordinate of target point.
      * @example
      * g2().p()               // Begin path.
      *     .m({x:0,y:0})            // Move to point.
@@ -302,12 +319,13 @@ g2.prototype = {
      * Create cubic bezier curve to point.
      * @method
      * @returns {object} g2
-     * @param {number} x1 x coordinate of first control point.
-     * @param {number} y1 y coordinate of first control point.
-     * @param {number} x2 x coordinate of second control point.
-     * @param {number} y2 y coordinate of second control point.
-     * @param {number} x x coordinate of target point.
-     * @param {number} y y coordinate of target point.
+     * @param {object} - cubic curve arguments object.
+     * @param {number} args.x1 - x coordinate of first control point.
+     * @param {number} args.y1 - y coordinate of first control point.
+     * @param {number} args.x2 - x coordinate of second control point.
+     * @param {number} args.y2 - y coordinate of second control point.
+     * @param {number} args.x - x coordinate of target point.
+     * @param {number} args.y - y coordinate of target point.
      * @example
      * g2().p()                        // Begin path.
      *     .m({x:0,y:100})             // Move to point.
@@ -321,9 +339,10 @@ g2.prototype = {
      * Draw arc with angular range to target point.
      * @method
      * @returns {object} g2
-     * @param {number} dw Angular range in radians.
-     * @param {number} x x coordinate of target point.
-     * @param {number} y y coordinate of target point.
+     * @param {object} - arc arguments object.
+     * @param {number} args.dw - angular range in radians.
+     * @param {number} args.x - x coordinate of target point.
+     * @param {number} args.y - y coordinate of target point.
      * @example
      * g2().p()            // Begin path.
      *     .m({x:50,y:50})       // Move to point.
@@ -341,16 +360,18 @@ g2.prototype = {
     /**
      * Stroke the current path or path object.
      * @method
-     * @param {string} [d = undefined] SVG path definition string. Current path is ignored then.
      * @returns {object} g2
+     * @param {object} - stroke arguments object.
+     * @param {string} [args.d = undefined] - SVG path definition string. Current path is ignored then.
      */
         stroke({d}={}) { return this.addCommand({c:'stroke',a:arguments[0]}); },
 
     /**
      * Fill the current path or path object.
      * @method
-     * @param {string} [d = undefined] SVG path definition string. Current path is ignored then.
      * @returns {object} g2
+     * @param {object} - fill arguments object.
+     * @param {string} [args.d = undefined] - SVG path definition string. Current path is ignored then.
      */
         fill({d}={}) { return this.addCommand({c:'fill',a:arguments[0]}); },
 
@@ -358,23 +379,25 @@ g2.prototype = {
      * Shortcut for stroke and fill the current path or path object.
      * In case of shadow style, only the path interior creates shadow, not also the path contour.
      * @method
-     * @param {string} [d = undefined] SVG path definition string.  Current path is ignored then.
      * @returns {object} g2
+     * @param {object} - drw arguments object.
+     * @param {string} [args.d = undefined] - SVG path definition string.  Current path is ignored then.
      */
         drw({d}={}) { return this.addCommand({c:'drw',a:arguments[0]}); },
 
     /**
      * Delete all commands beginning from `idx` to end of command queue.
      * @method
-     * @returns {g2} this
+     * @returns {object} g2
      */
         del(idx) { this.commands.length = idx || 0; return this; },
 
     /**
      * Call function between commands of the command queue.
      * @method
-     * @param {function} [fn] Function.
-     * @returns {g2} this
+     * @returns {object} g2
+     * @param {object} - ins argument object.
+     * @param {function} [args.fn] - Function.
      * @example
      * const node = { fill:'lime', g2() { return g2().cir({x:160,y:50,r:15,fs:this.fill,lw:4,sh:[8,8,8,"gray"]})} };
      * let   color = 'red';
