@@ -11,7 +11,7 @@
  * (Requires cartesian coordinate system)
  * @namespace
  */
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
+var g2 = g2 || { prototype:{} }  // for jsdoc only ...
 
 // extend prototypes for argument objects
 g2.editor = function() {

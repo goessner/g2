@@ -4,15 +4,14 @@
 <canvas id="c" height=1000px width=1000px></canvas>
 <script>
     const ctx = document.getElementById("c").getContext("2d");
-    g2().view({cartesian:true})
-        .rec({x:330,y:330,b:100,h:75,ld:[6,3]})
-        .label({str:"n",loc:"n",off:10,border:true})
-        .label({str:"ne",loc:"ne",off:10,border:true})
-        .label({str:"e",loc:"e",off:10,border:true})
-        .label({str:"se",loc:"se",off:10,border:true})
-        .label({str:"s",loc:"s",off:10,border:true})
-        .label({str:"sw",loc:"sw",off:10,border:true})
-        .label({str:"w",loc:"w",off:10,border:true})
-        .label({str:"nw",loc:"nw",off:10,border:true})
+    g2().grid().beg({x:150,y:50})
+        .load({pts:[{x:50,y:75},{x:100,y:25},{x:250,y:25},{x:300,y:75},{x:250,y:125},{x:275,y:175},{x:50,y:150}]})
+        .nod({x:50,y:75}).label({str:'0: 50/75',loc:'w',border:true})
+        .nod({x:100,y:25}).label({str:'1: 100/25',loc:'w',border:true})
+        .nod({x:250,y:25}).label({str:'2: 250/25',loc:'w',border:true})
+        .nod({x:300,y:75}).label({str:'3: 300/75',loc:'w',border:true})
+        .nod({x:250,y:125}).label({str:'4: 250/125',loc:'w',border:true})
+        .nod({x:275,y:175}).label({str:'5: 275/175',loc:'w',border:true})
+        .nod({x:50,y:150}).label({str:'6: 50/150',loc:'w',border:true})
         .exe(ctx);
 </script>

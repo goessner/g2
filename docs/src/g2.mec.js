@@ -43,7 +43,7 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
         const sz = Math.round((args.lw||1)/2)+2;
         const dx = args.x2-args.x1, dy = args.y2-args.y1, len = Math.hypot(dx,dy);
         const inside = 'inside' in args && !args.inside ? -1 : 1;
-        return g2().beg({x:args.x1,y:args.y1,w:dy/dx})
+        return g2().beg({x:args.x1,y:args.y1,w:dy/dx === Infinity ? Math.PI/2 : dy/dx === -Infinity ? -Math.PI/2 : dy/dx})
                     .p().m({x:0,y:0}).l({x:len,y:0})
                         .m({x:0,y:sz}).l({x:0,y:-sz})
                         .m({x:len,y:sz}).l({x:len,y:-sz})
@@ -126,7 +126,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
         const args = {...this,lc:'round',lj:'round'};
         const z = 2+(args.lw||1);
         const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
-        return g2().beg({...args,x:args.x1,y:args.y1,w:dy/dx})
+        return g2().beg({...args,x:args.x1,y:args.y1,w:dy/dx === Infinity ? Math.PI/2 : dy/dx === -Infinity ? -Math.PI/2 : dy/dx})
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
                      .stroke({fs:'transparent'})
@@ -540,8 +540,26 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        // OBVIOUS TODO HERE!!
-        return g2().ply({pts:this.pts,closed:true,ls:'transparent',fs:'@linkfill'})
+        const args = this;
+        args.spacing = args.spacing || 10;
+        let xmax = args.pts[args.pts.length-1].x;
+        let xmin = args.pts[0].x;
+        for(const pt of args.pts) {
+            if(pt.x < xmin) { xmin = pt.x };
+            if(pt.x > xmax) { xmax = pt.x };
+        }
+        let i = 0;
+
+        return g2().ins((g) => {
+            while (i < (xmax-xmin)/args.spacing) {
+                    g.vec({
+                        x1:xmin+(i*args.spacing),
+                        y1:50,
+                        x2:xmin+(i*args.spacing),
+                        y2:150});
+                    i++;
+                    }
+                }).ply({pts:this.pts,closed:true,ls:'transparent',fs:'@linkfill'})
                   // .ply({pts:gnd,closed:false,ls:'rgba(100,100,100,0.5)'/*@nodfill2*/,fs:'transparent',lw:2*h,lc:'butt',lj:'miter'})
 }});
 
