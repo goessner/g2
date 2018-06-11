@@ -583,9 +583,8 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
                                     }
                                 }
                                 console.log('x:',vecend.x2,',y:',vecend.y2,'is now vecend')
-                                g.dblnod({x:57,y:68})
-                                 .beg({x:vecbeg.x,y:vecbeg.y})
-                                 .vec({x1:0,y1:0,...vecend})
+                                g.beg({x:vecbeg.x,y:vecbeg.y})
+                                 //.vec({x1:0,y1:0,...vecend})
                                  .end()
                                 itr += args.spacing;
                             console.log('------------------------------------------------')
