@@ -1,17 +1,43 @@
 <script src='./src/g2.js'></script>
 <script src='./src/g2.ext.js'></script>
 <script src='./src/g2.mec.js'></script>
-<canvas id="c" height=1000px width=1000px></canvas>
+<script src='./src/g2.kai.js'></script>
+<canvas id="c" height=500px width=500px></canvas>
+<br>
+<input id="slider" type="range" min="-350" max="350" value="0">
+
+<div id="label"></div>
+
 <script>
     const ctx = document.getElementById("c").getContext("2d");
-    g2().grid().beg({x:150,y:50})
-        .load({pts:[{x:50,y:75},{x:100,y:25},{x:250,y:25},{x:300,y:75},{x:250,y:125},{x:275,y:175},{x:50,y:150}]})
-        .nod({x:50,y:75}).label({str:'0: 50/75',loc:'w',border:true})
-        .nod({x:100,y:25}).label({str:'1: 100/25',loc:'w',border:true})
-        .nod({x:250,y:25}).label({str:'2: 250/25',loc:'w',border:true})
-        .nod({x:300,y:75}).label({str:'3: 300/75',loc:'w',border:true})
-        .nod({x:250,y:125}).label({str:'4: 250/125',loc:'w',border:true})
-        .nod({x:275,y:175}).label({str:'5: 275/175',loc:'w',border:true})
-        .nod({x:50,y:150}).label({str:'6: 50/150',loc:'w',border:true})
-        .exe(ctx);
+    const slider =document.getElementById("slider");
+    const label = document.getElementById("label");
+
+    const A = {
+        x: 300,
+        y: 250,
+    }
+    let w = 0;
+
+    slider.oninput = () => render();
+    let render = () => {
+        w = slider.value / 100;
+        label.innerHTML = slider.value / 100;
+
+        g2().del()
+            .clr()
+            .grid()
+            .aid({...A,w:()=>w})
+            .exe(ctx);
+    };
+    render();
 </script>
+
+<!-- .load({pts:[{x:50,y:75},{x:100,y:25},{x:250,y:25},{x:300,y:75},{x:250,y:125},{x:275,y:175},{x:50,y:150}]})
+.nod({x:50,y:75}).label({str:'0: 50/75',loc:'w',border:true})
+.nod({x:100,y:25}).label({str:'1: 100/25',loc:'w',border:true})
+.nod({x:250,y:25}).label({str:'2: 250/25',loc:'w',border:true})
+.nod({x:300,y:75}).label({str:'3: 300/75',loc:'w',border:true})
+.nod({x:250,y:125}).label({str:'4: 250/125',loc:'w',border:true})
+.nod({x:275,y:175}).label({str:'5: 275/175',loc:'w',border:true})
+.nod({x:50,y:150}).label({str:'6: 50/150',loc:'w',border:true}) -->
