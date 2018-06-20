@@ -1,8 +1,4 @@
-# g2.html for testing purposes #
-################################
-g2.html
-master-README.md
-#**/test*
-/sample/wiki-samples/g2.js
-*.code-workspace
+**/test*
+#*.code-workspace
 #.vscode
+src/g2.kai.js

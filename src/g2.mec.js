@@ -540,89 +540,57 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        const args = this;
-        args.w = 0;
-        // args.w = args.w === undefined ? 0 : args.w;
-        args.spacing = args.spacing || 10;
+        const args = this,
+            pitr = g2.pntItrOf(args.pts),
+            n = pitr.len, p0 = pitr(0), pn = pitr(n-1),
+            dlambda = args.spacing || 10,
+            itr = iterator(args.pts, dlambda);
+        let val;
+        function iterator() {
+            const ux = pn.x - p0.x,
+                uy = pn.y - p0.y,
+                uu = Math.hypot(ux,uy),
+                lam = [];
 
-        return g2().ply({pts:this.pts,closed:true,ls:'transparent',fs:'@linkfill'})
-                   .ins((g) => {
-                        let vecbeg = args.pts[0];
-                        let itr = 1;
-                        for (let idx = 0; idx < args.pts.length; idx++) {
-                            const next = idx === args.pts.length - 1 ? 0 : idx + 1;
-                            const dy = args.pts[next].y - args.pts[idx].y;
-                            const dx = args.pts[next].x - args.pts[idx].x;
-                            const len = Math.hypot(dx, dy);
-                            let w = Math.atan(dy/dx);
-                                w = dx < 0 ? w + Math.PI : w;
-                            console.log('idx:',idx,':::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::');
+            let dlam, lambda = -dlambda;
+            for(let itr=0;itr<n;itr++) { // build array of projection parameters of polypoints onto base line.
+                lam.push(((pitr(itr).x - p0.x)*ux + (pitr(itr).y - p0.y)*uy)/uu);
+            }
 
-                            while(itr < len) {
-                                vecbeg = {
-                                    x:vecbeg.x+(args.spacing * Math.cos(w)),
-                                    y:vecbeg.y+(args.spacing * Math.sin(w)),
-                                };
-                                let vecend = {  // Vector should end at the closest wall possible. We iterate down...
-                                    x2: Number.MAX_SAFE_INTEGER,
-                                    y2: Number.MAX_SAFE_INTEGER,
-                                };
-                                console.log('vector starting at x:',vecbeg.x,'y:',vecbeg.y,'hits line')
-                                for(let idx2 = 0; idx2 < args.pts.length; idx2++) {
-                                    if (idx2 !== idx) {
-                                        let s = ( (args.pts[idx2].x - vecbeg.x) * Math.cos(w)
-                                              +   (args.pts[idx2].y - vecbeg.y) * Math.sin(w))
-                                              /    Math.cos(args.w - w)
-                                        console.log(idx2,'at x:',s*Math.sin(args.w),'y:',s*Math.cos(args.w),', vector is',s,'long.');
-                                        if (s < Math.hypot(vecend.y2, vecend.x2)) {
-                                            vecend = {
-                                                x2: s * Math.sin(args.w),
-                                                y2: s * Math.cos(args.w),
-                                            }
-                                        }
-                                    }
+            return {
+                next: () => {
+                    lambda += dlambda;
+                    for (let i = 0; i < n; i++) {
+                        dlam = lam[i+1] - lam[i];
+                        if (dlam > 0 && lam[i] <= lambda && lambda <= lam[i+1]) {
+                            let mu = (lambda - lam[i])/dlam;
+                            return {
+                                value: {
+                                    p1: {
+                                        x1:pitr(i).x + mu*(pitr(i+1).x-pitr(i).x),
+                                        y1:pitr(i).y + mu*(pitr(i+1).y-pitr(i).y)
+                                    },
+                                    p2: {
+                                        x2:p0.x + lambda,
+                                        y2:p0.y + lambda * uy
+                                    },
                                 }
-                                console.log('x:',vecend.x2,',y:',vecend.y2,'is now vecend')
-                                g.beg({x:vecbeg.x,y:vecbeg.y})
-                                 //.vec({x1:0,y1:0,...vecend})
-                                 .end()
-                                itr += args.spacing;
-                            console.log('------------------------------------------------')
                             }
-                            itr = itr % args.spacing;
                         }
-                    })
+                    }
+                    return { done: true };
+                }
+            }
+        }
+    return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
+               .ins((g) => {
+                    while(!(val = itr.next()).done) {
+                        Math.hypot(val.value.p2.x2 - val.value.p1.x1, val.value.p2.y2 - val.value.p1.y1) > 15+(args.lw||1) &&
+                        g.vec({...val.value.p1, ...val.value.p2,lw:args.lw,ls:args.ls});
+                   }
+               })
     }
 });
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
-// g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
-//     g2() {
-//         const args = this;
-//         args.spacing = args.spacing || 10;
-//         let xmax = args.pts[args.pts.length-1].x;
-//         let xmin = args.pts[0].x;
-
-//         for(const pt of args.pts) {
-//             if(pt.x < xmin) { xmin = pt.x };
-//             if(pt.x > xmax) { xmax = pt.x };
-//         }
-//         let i = 0;
-
-//         return g2().ins((g) => {
-//             while (i < (xmax-xmin)/args.spacing) {
-//                     g.vec({
-//                         x1:xmin+(i*args.spacing),
-//                         y1:50,
-//                         x2:xmin+(i*args.spacing),
-//                         y2:150});
-//                     i++;
-//                     }
-//                 }).ply({pts:this.pts,closed:true,ls:'transparent',fs:'@linkfill'})
-//                   // .ply({pts:gnd,closed:false,ls:'rgba(100,100,100,0.5)'/*@nodfill2*/,fs:'transparent',lw:2*h,lc:'butt',lj:'miter'})
-// }});
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Symbols.
