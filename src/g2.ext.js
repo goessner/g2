@@ -60,7 +60,7 @@ g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
 };
 
 g2.prototype.rec.prototype = {
-    _dir: { c:[0,1],e:[1,0],ne:[1,1],n:[0,1],nw:[-1,1],
+    _dir: { c:[0,0],e:[1,0],ne:[1,1],n:[0,1],nw:[-1,1],
             w:[-1,0],sw:[-1,-1],s:[0,-1],se:[1,-1] },
     get len() { return 2*(this.b+this.h); },
     pointAt(loc) {
