@@ -167,6 +167,47 @@ g2.prototype.arc.prototype = {
 g2.prototype.ply.prototype = {
     get isSolid() { return this.closed && this.fs && this.fs !== 'transparent'; },
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
+    pointAt(loc) {
+        const t = loc==="beg" ? 0
+              : loc==="end" ? 1
+              : (loc+0 === loc) ? loc // numerical arg ..
+              : 0.5,   // 'mid' ..
+            pitr = g2.pntItrOf(this.pts),
+            pts = [],
+            len = [];
+        for (let itr = 0; itr < pitr.len; itr++) {
+            const next = pitr(itr+1).x ? pitr(itr+1) : pitr(0);
+            if ((itr === pitr.len-1 && this.closed) || itr < pitr.len-1) {
+                pts.push(pitr(itr));
+                len.push(Math.hypot(
+                    next.x-pitr(itr).x,
+                    next.y-pitr(itr).y)
+                );
+            }
+        }
+        const {t2, x, y, dx, dy} = (() => {
+            const target = t * len.reduce((a,b) => a+b);
+            let tmp = 0;
+            for(let itr = 0; itr < pts.length; itr++) {
+                tmp += len[itr];
+                const next = pitr(itr+1).x ? pitr(itr+1) : pitr(0);
+                if (tmp >= target) {
+                    return {
+                        t2: 1 - (tmp - target) / len[itr],
+                        ...pts[itr],
+                        dx: next.x - pts[itr].x,
+                        dy: next.y - pts[itr].y
+                    }
+                }
+            }
+        })();
+        const len2 = Math.hypot(dx,dy);
+        return { x: x + dx*t2,
+                 y: y + dy*t2,
+                 dx: len2 ? dx/len2 : 1,
+                 dy: len2 ? dy/len2 : 0
+        };
+    },
     x: 0, y: 0,
     hitContour({x,y,eps}) { let p={x:x-this.x,y:y-this.y}; return g2.isPntOnPly(p,this,eps) }, // translational only .. at current .. !
     hitInner({x,y,eps}) { let p={x:x-this.x,y:y-this.y}; return g2.isPntInPly(p,this,eps) }, // translational only .. at current .. !
