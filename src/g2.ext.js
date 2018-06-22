@@ -26,7 +26,7 @@ g2.symbol.tick = g2().p().m({x:0,y:-2}).l({x:0,y:2}).stroke({lc:"round",lwnosc:t
 g2.symbol.dashdot = [25,6.5,2,6.5];
 g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
 
-g2.symbol.dot = g2().cir({x:0,y:0,r:1.5,ls:"transparent"});
+g2.symbol.dot = g2().cir({x:0,y:0,r:2,ls:"transparent"});
 g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
 
  // prototypes for extending argument objects
