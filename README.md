@@ -55,12 +55,12 @@ See the [API Reference](api/README.md) for details.
 
 
 ## GitCDN
-Use the link [https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js](https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js)
+Use the link [https://www.gitcdn.xyz/repo/goessner/g2-new/master/src/g2.js](https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js)
 for getting the latest commit as a raw file.
 
 In HTML use ...
 ```html
-<script src="https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js"></script>
+<script src="https://www.gitcdn.xyz/repo/goessner/g2-new/master/src/g2.js"></script>
 ```
 
 ## Cheat Sheet
