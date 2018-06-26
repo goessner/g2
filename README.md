@@ -36,7 +36,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
         .exe(ctx);  // draw to canvas.
 </script>
 ```
-![first](img/g2-first.png)
+![first](/docs/img/g2-first.png)
 
 ## Documentation
   * [Getting started](../../wiki/getting-started)

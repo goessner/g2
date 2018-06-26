@@ -1,4 +1,4 @@
 **/test*
-#*.code-workspace
-#.vscode
+*.code-workspace
+.vscode
 src/g2.kai.js
