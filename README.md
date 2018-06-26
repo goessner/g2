@@ -51,7 +51,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Interactivity](../../wiki/interactivity)
 
 ## API Reference
-See the [API Reference](api/README.md) for details.
+See the [API Reference](docs/README.md) for details.
 
 
 ## GitCDN

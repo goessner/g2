@@ -1,0 +1,37 @@
+{
+  "name": "g2d",
+  "version": "2.2.5",
+  "description": "g2 - a tiny 2d graphics command library",
+  "keywords": [
+    "vector",
+    "graphics",
+    "2d",
+    "command queue",
+    "canvas",
+    "svg",
+    "javascript"
+  ],
+  "main": "g2.js",
+  "scripts": {
+    "build": "yarn run minify && yarn run jsdoc && yarn run gzip && yarn run cpsamp",
+    "minify": "uglifyjs ./g2.js -o ./g2.min.js --comments -m",
+    "jsdoc": "jsdoc2md ./src/g2.js > ./docs/api/readme.md && jsdoc2md ./src/g2.mec.js > ./docs/api/readme.mec.md && jsdoc2md ./src/g2.ext.js > ./docs/api/readme.ext.md",
+    "gzip": "7z -tgzip a ./g2.min.js.gz ./g2.min.js",
+    "cpsamp": "copyfiles -f ./examples/*.html ../goessner.github.io/g2/examples"
+  },
+  "author": "Stefan Goessner <fang03@web.de>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goessner/g2.git"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "concat": "^1.0.0",
+    "jsdoc-to-markdown": "^1.3.2",
+    "jslint": "^0.9.5",
+    "uglifyjs": "^2.4.10"
+  },
+  "dependencies": {
+    "jsdoc": "^3.5.5"
+  }
+}
