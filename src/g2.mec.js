@@ -11,7 +11,7 @@
  * (Requires cartesian coordinates)
  * @namespace
  */
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
+const g2 = g2 || { prototype:{} };  // for jsdoc only ...
 
 /**
  * Add skip tag to previous command as a filter for findCmdIdx.
@@ -28,11 +28,11 @@ g2.prototype.skip = function skip(tag) {
  * Dimension
  * @returns {object} g2
  * @param {object} - dimension arguments object.
- * @param {number} args.x1 - start x coordinate.
- * @param {number} args.y1 - start y coordinate.
- * @param {number} args.x2 - end x coordinate.
- * @param {number} args.y2 - end y coordinate.
- * @param {boolean} [args.inside=true] - draw dimension arrows between or outside of ticks.
+ * @property {number} x1 - start x coordinate.
+ * @property {number} y1 - start y coordinate.
+ * @property {number} x2 - end x coordinate.
+ * @property {number} y2 - end y coordinate.
+ * @property {boolean} [inside=true] - draw dimension arrows between or outside of ticks.
  * @example
  *  g2().dim({x1:60,y1:40,x2:190,y2:120})
  */
@@ -66,13 +66,13 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
  * @method
  * @returns {object} g2
  * @param {object} - angular dimension arguments.
- * @param {number} args.x - start x coordinate.
- * @param {number} args.y - start y coordinate.
- * @param {number} args.r - radius
- * @param {number} [args.w=0] - start angle (in radian).
- * @param {number} [args.dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
+ * @property {number} x - start x coordinate.
+ * @property {number} y - start y coordinate.
+ * @property {number} r - radius
+ * @property {number} [w=0] - start angle (in radian).
+ * @property {number} [dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
  *                                       right handed (cartesian) coordinate system.
- * @param {boolean} [args.inside=true] - draw dimension arrows between or outside of ticks.
+ * @property {boolean} [inside=true] - draw dimension arrows between or outside of ticks.
  * @example
  * g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
  */
@@ -113,10 +113,10 @@ g2.prototype.adim.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
  * @method
  * @returns {object} g2
  * @param {object} - vector arguments object.
- * @param {number} args.x1 - start x coordinate.
- * @param {number} args.y1 - start y coordinate.
- * @param {number} args.x2 - end x coordinate.
- * @param {number} args.y2 - end y coordinate.
+ * @property {number} x1 - start x coordinate.
+ * @property {number} y1 - start y coordinate.
+ * @property {number} x2 - end x coordinate.
+ * @property {number} y2 - end y coordinate.
  * @example
  * g2().vec({x1:50,y1:20,x2:250,y2:120})
  */
@@ -144,11 +144,11 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - slider arguments object.
- * @param {number} args.x - start x coordinate.
- * @param {number} args.y - start y coordinate.
- * @param {number} [args.b=32] - slider breadth.
- * @param {number} [args.h=16] - slider height.
- * @param {number} [args.w=0] - rotation.
+ * @property {number} x - start x coordinate.
+ * @property {number} y - start y coordinate.
+ * @property {number} [b=32] - slider breadth.
+ * @property {number} [h=16] - slider height.
+ * @property {number} [w=0] - rotation.
  * @example
  * g2().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})
  */
@@ -169,11 +169,11 @@ g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - linear spring arguments object.
- * @param {number} args.x1 - start x coordinate.
- * @param {number} args.y1 - start y coordinate.
- * @param {number} args.x2 - end x coordinate.
- * @param {number} args.y2 - end y coordinate.
- * @param {number} [args.h=16] Spring height.
+ * @property {number} x1 - start x coordinate.
+ * @property {number} y1 - start y coordinate.
+ * @property {number} x2 - end x coordinate.
+ * @property {number} y2 - end y coordinate.
+ * @property {number} [h=16] Spring height.
  * @example
  * g2().spring({x1:50,y1:100,x2:200,y2:75})
  */
@@ -203,11 +203,11 @@ g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - damper arguments object.
- * @param {number} args.x1 - start x coordinate.
- * @param {number} args.y1 - start y coordinate.
- * @param {number} args.x2 - end x coordinate.
- * @param {number} args.y2 - end y coordinate.
- * @param {number} [args.h=16] - damper height.
+ * @property {number} x1 - start x coordinate.
+ * @property {number} y1 - start y coordinate.
+ * @property {number} x2 - end x coordinate.
+ * @property {number} y2 - end y coordinate.
+ * @property {number} [h=16] - damper height.
  *  * g2().damper({x1:60,y1:120,x2:200,y2:75})
  */
 g2.prototype.damper = function () { return this.addCommand({c:'damper',a:arguments[0]}); }
@@ -238,11 +238,11 @@ g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - link arguments object.
- * @param {object[] | number[][] | number[]} args.pts - array of points.
- * @param {bool} [args.closed = false] - closed link.
- * @param {number} args.x - start x coordinate.
- * @param {number} args.y - start y coordinate.
- * @param {number} [args.w=0] - angle.
+ * @property {object[] | number[][] | number[]} pts - array of points.
+ * @property {bool} [closed = false] - closed link.
+ * @property {number} x - start x coordinate.
+ * @property {number} y - start y coordinate.
+ * @property {number} [w=0] - angle.
  * @example
  * let A = {x:50,y:25},B = {x:150,y:25},
  *     C = {x:50,y:75}, D = {x:100,y:75},
@@ -262,11 +262,11 @@ g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - link2 arguments object.
- * @param {object[] | number[][] | number[]} args.pts - array of points.
- * @param {bool} [args.closed = false] - closed link.
- * @param {number} args.x - start x coordinate.
- * @param {number} args.y - start y coordinate.
- * @param {number} [args.w=0] - angle.
+ * @property {object[] | number[][] | number[]} pts - array of points.
+ * @property {bool} [closed = false] - closed link.
+ * @property {number} x - start x coordinate.
+ * @property {number} y - start y coordinate.
+ * @property {number} [w=0] - angle.
  * @example
  * let A = {x:50,y:25},B = {x:150,y:25},
  *     C = {x:50,y:75}, D = {x:100,y:75},
@@ -288,10 +288,10 @@ g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - beam arguments object.
- * @param {object[] | number[][] | number[]} args.pts - array of points.
- * @param {number} args.x - start x coordinate.
- * @param {number} args.y - start y coordinate.
- * @param {number} [args.w=0] - angle.
+ * @property {object[] | number[][] | number[]} pts - array of points.
+ * @property {number} x - start x coordinate.
+ * @property {number} y - start y coordinate.
+ * @property {number} [w=0] - angle.
  * @example
  * g2().view({cartesian})
  *     .beam({pts:[[200,125][50,125][50,50][200,50]]})
@@ -308,10 +308,10 @@ g2.prototype.beam.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - beam2 arguments object.
- * @param {object[] | number[][] | number[]} args.pts - array of points.
- * @param {number} args.x - start x coordinate.
- * @param {number} args.y - start y coordinate.
- * @param {number} [args.w=0] - angle.
+ * @property {object[] | number[][] | number[]} pts - array of points.
+ * @property {number} x - start x coordinate.
+ * @property {number} y - start y coordinate.
+ * @property {number} [w=0] - angle.
  * @example
  * g2().view({cartesian})
  *     .beam2({pts:[[200,125][50,125][50,50][200,50]]})
@@ -330,10 +330,10 @@ g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - bar arguments object.
- * @param {number} args.x1 - start x coordinate.
- * @param {number} args.y1 - start y coordinate.
- * @param {number} args.x2 - end x coordinate.
- * @param {number} args.y2 - end y coordinate.
+ * @property {number} x1 - start x coordinate.
+ * @property {number} y1 - start y coordinate.
+ * @property {number} x2 - end x coordinate.
+ * @property {number} y2 - end y coordinate.
  * @example
  * g2().bar({x1:50,y1:20,x2:250,y2:120})
  */
@@ -350,10 +350,10 @@ g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - bar2 arguments object.
- * @param {number} args.x1 - start x coordinate.
- * @param {number} args.y1 - start y coordinate.
- * @param {number} args.x2 - end x coordinate.
- * @param {number} args.y2 - end y coordinate.
+ * @property {number} x1 - start x coordinate.
+ * @property {number} y1 - start y coordinate.
+ * @property {number} x2 - end x coordinate.
+ * @property {number} y2 - end y coordinate.
  * @example
  * g2().bar2({x1:50,y1:20,x2:250,y2:120})
  */
@@ -372,10 +372,10 @@ g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - pulley arguments object.
- * @param {number} args.x - x-value center.
- * @param {number} args.y - y-value center.
- * @param {number} args.r - radius.
- * @param {number} args.w - angle.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+ * @property {number} r - radius.
+ * @property {number} w - angle.
  * @example
  * g2().pulley({x:100,y:75,r:50})
  */
@@ -395,10 +395,10 @@ g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - pulley2 arguments object.
- * @param {number} args.x - x-value center.
- * @param {number} args.y - y-value center.
- * @param {number} args.r - radius.
- * @param {number} args.w - angle.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+ * @property {number} r - radius.
+ * @property {number} w - angle.
  * @example
  * g2().pulley2({x:50,y:30,r:25})
  */
@@ -417,9 +417,9 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - rope arguments object.
- * @param {object | number} args.p1 - starting point or Coordinate.
- * @param {object | number} args.p2 - end point or Coordinate.
- * @param {number} args.r - radius of parent element.
+ * @property {object | number} p1 - starting point or Coordinate.
+ * @property {object | number} p2 - end point or Coordinate.
+ * @property {number} r - radius of parent element.
  * @example
  * let A = {x:50,y:30}, B = {x:200,y:75};
  * g2().view({cartesian:true})
@@ -473,10 +473,10 @@ g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - ground arguments object.
- * @param {object[] | number[][] | number[]} args.pts - array of points.
- * @param {bool} [args.closed=false] - closed polygon.
- * @param {number} [args.h=4] - ground shade line width.
- * @param {string} [args.pos=right] - ground shade position ['left','right'].
+ * @property {object[] | number[][] | number[]} pts - array of points.
+ * @property {bool} [closed=false] - closed polygon.
+ * @property {number} [h=4] - ground shade line width.
+ * @property {string} [pos=right] - ground shade position ['left','right'].
  * @example
  * g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'})
  */
@@ -532,8 +532,8 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * @method
  * @returns {object} g2
  * @param {object} - load arguments object.
- * @param {object[] | number[][] | number[]} args.pts - array of points.
- * @param {real} spacing - spacing of the vectors drawn as a positive real number, interprete as<br>
+ * @property {object[] | number[][] | number[]} pts - array of points.
+ * @property {number} spacing - spacing of the vectors drawn as a positive real number, interprete as<br>
  *                       * spacing &lt; 1: spacing = 1/m with a partition of m.<br>
  *                       * spacing &gt; 1: length of spacing.
  */
@@ -596,8 +596,8 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * Symbols.
  * @method
  * @param {object} - symbol arguments object.
- * @param {number} args.x - x-value center.
- * @param {number} args.y - y-value center.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
  * @example
  * g2().view({cartesian:true})
  *     .pol({x:20,y:75})

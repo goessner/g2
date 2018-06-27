@@ -7,10 +7,12 @@
 "use strict"
 
 /**
- * Extensions.
- * @namespace
+ * Additional methods for g2.
+ * @typedef {g2}
+ * @param {object} [opts] Custom options object. It is simply copied into the 'g2' instance, but not used from the g2 kernel.
+ * @returns {g2}
  */
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
+const g2 = g2 || { prototype:{} };  // for jsdoc only ...
 
 // g2 symbols (values & geometries) predefined
 g2.symbol.nodcolor = "#333";
@@ -240,9 +242,9 @@ g2.prototype.use.prototype = {
  * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
  * @method
  * @returns {object} g2
- * @param {object} args - spline arguments object.
- * @param {object[] | number[][] | number[]} args.pts - array of points.
- * @param {bool} [args.closed = false] - closed spline.
+ * @param {object} - spline arguments object.
+ * @property {object[] | number[][] | number[]} pts - array of points.
+ * @property {bool} [closed=false] - closed spline.
  * @example
  * g2().spline({pts:[100,50,50,150,150,150,100,50]})
  */
@@ -305,15 +307,17 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
  * Please note that cartesian flag is necessary.
  * @method
  * @returns {object} g2
- * @param {object} args - label arguments object.
- * @param {string} args.str - label text
- * @param {number | string} args.loc - label location depending on referenced element.
- *                     'c': centered, wrt. rec, cir, arc
- *                     'beg','mid', 'end', wrt. lin
+ * @param {object} - label arguments object.
+ * @property {string} str - label text
+ * @property {number | string} loc - label location depending on referenced element. <br>
+ *                     'c': centered, wrt. rec, cir, arc <br>
+ *                     'beg','mid', 'end', wrt. lin <br>
  *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
- * @param {number} args.off - offset distance [optional].
+ * @property {number} off - offset distance [optional].
  * @example
- * g2().view({cartesian:true}).cir({x:10,y:10,r:5}).label({str:'hello',loc:'s',off:10})
+ * g2().view({cartesian:true})
+ *     .cir({x:10,y:10,r:5})
+ *     .label({str:'hello',loc:'s',off:10})
  */
 g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     let idx = g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding label to ...
@@ -361,16 +365,17 @@ g2.prototype.label.prototype = {
  * Draw marker on line element.
  * @method
  * @returns {object} g2
- * @param {object} args - Marker arguments object.
- * @param {object | string} args.mrk - `g2` object or `name` of mark in `symbol` namespace.
- * @param {number | string} args.loc - line parameter [0..1]<br>
+ * @param {object} - Marker arguments object.
+ * @property {object | string} mrk - `g2` object or `name` of mark in `symbol` namespace.
+ * @property {number | string} loc - line parameter [0..1]<br>
  *                                      line location ['beg','end','mid',..].
- * @param {int} [args.dir=0] - Direction:<br>
+ * @property {int} [dir=0] - Direction:<br>
  *                   -1 : negative tangent direction<br>
  *                    0 : no orientation (rotation)<br>
  *                    1 : positive tangent direction
  * @example
- * g2().lin({x1:10,y1:10,x2:100,y2:10}).mark({mrk:"tick",loc:0.75,dir:1})
+ * g2().lin({x1:10,y1:10,x2:100,y2:10})
+ *     .mark({mrk:"tick",loc:0.75,dir:1})
  *
  */
 g2.prototype.mark = function mark({mrk,loc,dir,fs,ls}) {
