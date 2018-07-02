@@ -12,7 +12,7 @@
  * @param {object} [opts] Custom options object. It is simply copied into the 'g2' instance, but not used from the g2 kernel.
  * @returns {g2}
  */
-const g2 = g2 || { prototype:{} };  // for jsdoc only ...
+var g2 = g2 || { prototype:{} };  // for jsdoc only ...
 
 // g2 symbols (values & geometries) predefined
 g2.symbol.nodcolor = "#333";

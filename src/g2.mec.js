@@ -11,8 +11,7 @@
  * (Requires cartesian coordinates)
  * @namespace
  */
-const g2 = g2 || { prototype:{} };  // for jsdoc only ...
-
+var g2 = g2 || { prototype:{} };  // for jsdoc only ...
 /**
  * Add skip tag to previous command as a filter for findCmdIdx.
  * See 'mark' and 'label' commands for usage.
