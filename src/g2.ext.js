@@ -167,7 +167,7 @@ g2.prototype.arc.prototype = {
 };
 
 g2.prototype.ply.prototype = {
-    get isSolid() { return this.closed && this.fs && this.fs !== 'transparent'; },
+    isSolid: this.closed  && this.fs && this.fs !== 'transparent',
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     pointAt(loc) {
         const t = loc==="beg" ? 0
@@ -196,7 +196,8 @@ g2.prototype.ply.prototype = {
                 if (tmp >= target) {
                     return {
                         t2: 1 - (tmp - target) / len[itr],
-                        ...pts[itr],
+                        x: pts[itr].x,
+                        y: pts[itr].y,
                         dx: next.x - pts[itr].x,
                         dy: next.y - pts[itr].y
                     }
