@@ -167,13 +167,22 @@ g2.prototype.arc.prototype = {
 };
 
 g2.prototype.ply.prototype = {
-    isSolid: this.closed  && this.fs && this.fs !== 'transparent',
+    get isSolid() { return this.closed && this.fs && this.fs !== 'transparent' },
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
+    // get len() {
+    //     let len_itr = 0;
+    //     let last_pt = {x:0,y:0};
+    //     g2.pntItrOf(this.pts).map(pt => {
+    //         len_itr += Math.hypot(pt.x-last_pt.x, pt.y-last_pt.y);
+    //         last_pt = pt;
+    //     });
+    //     return len_itr;
+    // },
     pointAt(loc) {
         const t = loc==="beg" ? 0
-              : loc==="end" ? 1
-              : (loc+0 === loc) ? loc // numerical arg ..
-              : 0.5,   // 'mid' ..
+                : loc==="end" ? 1
+                : (loc+0 === loc) ? loc // numerical arg ..
+                : 0.5,   // 'mid' ..
             pitr = g2.pntItrOf(this.pts),
             pts = [],
             len = [];
