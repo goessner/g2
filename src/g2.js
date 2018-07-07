@@ -679,12 +679,34 @@ g2.canvasHdl.prototype = {
     l({x,y}) { this.ctx.lineTo(x,y); },
     q({x,y,x1,y1}) { this.ctx.quadraticCurveTo(x1,y1,x,y); },
     c({x,y,x1,y1,x2,y2}) { this.ctx.bezierCurveTo(x1,y1,x2,y2,x,y); },
-    a({dw,x,y,_xp,_yp}) {
-        if (dw > Number.EPSILON && dw < 2*Math.PI || dw < -Number.EPSILON && dw > -2*Math.PI) {
-            let dx = x - _xp, dy = y - _yp, tdw_2 = Math.tan(dw/2),
-                rx = (dx - dy/tdw_2)/2, ry = (dy + dx/tdw_2)/2,
-                w = Math.atan2(-ry,-rx);
-            this.ctx.arc(_xp+rx,_yp+ry,Math.hypot(rx,ry),w,w+dw,dw<0);
+    a({x,y,dw,k,phi,_xp,_yp}) {  // todo: fix bug ... see mec.constraint.rot
+        let x1 = dw > 0 ? _xp : x,
+            y1 = dw > 0 ? _yp : y,
+            x2 = dw > 0 ? x : _xp,
+            y2 = dw > 0 ? y : _yp;
+
+        if (dw < 0) dw = -dw;
+        if (k === undefined) k = 1;
+
+        if (dw > Number.EPSILON && k > Number.EPSILON) {  // elliptical or circular arc ...
+            let x12 = x2-x1, y12 = y2-y1;
+            if (k !== 1) {  // elliptical arc ..
+                let cp = phi ? Math.cos(phi) : 1, sp = phi ? Math.sin(phi) : 0,
+                    dx = -x12*cp - y12*sp, dy = -x12*sp - y12*cp,
+                    sdw_2 = Math.sin(dw/2),
+                    R = Math.sqrt((dx*dx + dy*dy/(k*k))/(4*sdw_2*sdw_2)),
+                    w = Math.atan2(k*dx,dy) - dw/2;
+                this.ctx.ellipse(x1 - R*Math.cos(w),
+                                 y1 - R*Math.sin(w),
+                                 R, R*k, phi, w, w+dw, false);
+            }
+            else {  // circular arc ...
+                let dx = x12, dy = y2-y1, tdw_2 = Math.tan(dw/2),
+                    rx = (x12 - k*y12/tdw_2)/2, ry = (y12 + k*x12/tdw_2)/2,
+                    R  = Math.hypot(rx,ry),
+                    w = Math.atan2(-ry,-rx);
+                this.ctx.ellipse(x1+rx,y1+ry,R,R,0,w,w+dw,false);
+            }
         }
         else
             this.ctx.lineTo(x,y);
