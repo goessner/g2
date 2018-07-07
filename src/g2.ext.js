@@ -187,7 +187,7 @@ g2.prototype.ply.prototype = {
             pts = [],
             len = [];
         for (let itr = 0; itr < pitr.len; itr++) {
-            const next = pitr(itr+1).x ? pitr(itr+1) : pitr(0);
+            const next = pitr(itr+1) ? pitr(itr+1) : pitr(0);
             if ((itr === pitr.len-1 && this.closed) || itr < pitr.len-1) {
                 pts.push(pitr(itr));
                 len.push(Math.hypot(
@@ -400,7 +400,7 @@ g2.prototype.mark.prototype = {
     markAt(elem,loc,mrk,dir,ls,fs) {
         const p = elem.pointAt(loc),
               w = dir < 0 ? Math.atan2(-p.dy,-p.dx)
-                : dir > 0 ? Math.atan2( p.dy, p.dx)
+                :(dir > 0 || dir === undefined) ? Math.atan2( p.dy, p.dx)
                 : 0;
         return { grp:mrk,x:p.x,y:p.y,w:w,scl:elem.lw || 1,
                  ls:ls || elem.ls || 'black',
