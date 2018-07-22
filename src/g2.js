@@ -632,15 +632,16 @@ g2.canvasHdl.prototype = {
             return img;
         }
 
-        let args = arguments[0],
-            img = args._image || (args._image = getImg(uri,false)),
-            sw = w ? Math.sin(w) : 0,
-            cw = w ? Math.cos(w) : 1,
-            b =  img && img.width || 20,
-            h =  img && img.height || 20;
+        scl = scl || 1;
+        const args = arguments[0],
+              img = args._image || (args._image = getImg(uri,false)),
+              sw = w ? scl*Math.sin(w) : 0,
+              cw = w ? scl*Math.cos(w) : scl,
+              b = img && img.width || 20,
+              h = img && img.height || 20;
 
         x = x || 0; y = y || 0; xoff = xoff || 0; yoff = yoff || 0;
-        this.setTrf(this.isCartesian ? [cw,sw,sw,-cw,x-sw*(h-yoff),y+cw*(h-yoff)]
+        this.setTrf(this.isCartesian ? [cw,sw,sw,-cw,x-cw*xoff-sw*(h-yoff),y-sw*xoff+cw*(h-yoff)]
                                      : [cw,sw,-sw,cw,x-xoff,y-yoff]);
         if (img.complete)
            this.ctx.drawImage(img,0,0);
