@@ -680,38 +680,40 @@ g2.canvasHdl.prototype = {
     l({x,y}) { this.ctx.lineTo(x,y); },
     q({x,y,x1,y1}) { this.ctx.quadraticCurveTo(x1,y1,x,y); },
     c({x,y,x1,y1,x2,y2}) { this.ctx.bezierCurveTo(x1,y1,x2,y2,x,y); },
-    a({x,y,dw,k,phi,_xp,_yp}) {  // todo: fix bug ... see mec.constraint.rot
-        let x1 = dw > 0 ? _xp : x,
-            y1 = dw > 0 ? _yp : y,
-            x2 = dw > 0 ? x : _xp,
-            y2 = dw > 0 ? y : _yp;
-
-        if (dw < 0) dw = -dw;
-        if (k === undefined) k = 1;
-
-        if (dw > Number.EPSILON && k > Number.EPSILON) {  // elliptical or circular arc ...
-            let x12 = x2-x1, y12 = y2-y1;
-            if (k !== 1) {  // elliptical arc ..
+    a({x,y,dw,k,phi,_xp,_yp}) {  // todo: fix elliptical arc bug ...
+        if (k === undefined) k = 1;  // ratio r1/r2
+        if (Math.abs(dw) > Number.EPSILON) {
+            if (k === 1) { // circular arc ...
+                let x12 = x-_xp, y12 = y-_yp;
+                let tdw_2 = Math.tan(dw/2),
+                    rx = (x12 - y12/tdw_2)/2, ry = (y12 + x12/tdw_2)/2,
+                    R = Math.hypot(rx,ry),
+                    w = Math.atan2(-ry,-rx);
+                this.ctx.ellipse(_xp+rx,_yp+ry,R,R,0,w,w+dw,this.cartesian?dw>0:dw<0);
+            }
+            else { // elliptical arc .. still buggy .. !
+                if (phi === undefined) phi = 0;
+                let x1 = dw > 0 ? _xp : x,
+                    y1 = dw > 0 ? _yp : y,
+                    x2 = dw > 0 ? x : _xp,
+                    y2 = dw > 0 ? y : _yp;
+                let x12 = x2-x1, y12 = y2-y1,
+                    _dw = (dw < 0) ? dw : -dw;
+//                if (dw < 0) dw = -dw;   // test for bugs .. !
                 let cp = phi ? Math.cos(phi) : 1, sp = phi ? Math.sin(phi) : 0,
                     dx = -x12*cp - y12*sp, dy = -x12*sp - y12*cp,
-                    sdw_2 = Math.sin(dw/2),
+                    sdw_2 = Math.sin(_dw/2),
                     R = Math.sqrt((dx*dx + dy*dy/(k*k))/(4*sdw_2*sdw_2)),
-                    w = Math.atan2(k*dx,dy) - dw/2;
-                this.ctx.ellipse(x1 - R*Math.cos(w),
-                                 y1 - R*Math.sin(w),
-                                 R, R*k, phi, w, w+dw, false);
-            }
-            else {  // circular arc ...
-                let dx = x12, dy = y2-y1, tdw_2 = Math.tan(dw/2),
-                    rx = (x12 - k*y12/tdw_2)/2, ry = (y12 + k*x12/tdw_2)/2,
-                    R  = Math.hypot(rx,ry),
-                    w = Math.atan2(-ry,-rx);
-                this.ctx.ellipse(x1+rx,y1+ry,R,R,0,w,w+dw,false);
+                    w = Math.atan2(k*dx,dy) - _dw/2,
+                    x0 = x1 - R*Math.cos(w),
+                    y0 = y1 - R*k*Math.sin(w);
+                this.ctx.ellipse(x0,y0,R, R*k,phi,w,w+dw,this.cartesian?dw>0:dw<0);
             }
         }
         else
             this.ctx.lineTo(x,y);
     },
+
     stroke({d}={}) {
         let tmp = this.setStyle(arguments[0]);
         d ? this.ctx.stroke(new Path2D(d)) : this.ctx.stroke();  // SVG path syntax
