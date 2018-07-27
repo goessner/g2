@@ -46,5 +46,11 @@ tests.push(
     new Test('mark2',
     `g2().view({cartesian:true})
          .rec({x:50,y:30,b:100,h:75,ld:[6,3]})
-         .mark({mrk:"dot",loc:["c","n","ne","e","se","s","sw","w","nw"]})`)
+         .mark({mrk:"dot",loc:["c","n","ne","e","se","s","sw","w","nw"]})`),
+
+    new Test('mark3',
+    `g2().view({cartesian:true})
+         .ply({pts:[40,40,100,40,100,100,200,100,200,40]})
+         .mark({mrk:"dot",loc:["beg",0.25,"mid",0.75,1]})
+         .mark({mrk:"tick",loc:[0.1,0.3,0.5,0.7,0.9]})`),
 )

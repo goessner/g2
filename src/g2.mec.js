@@ -541,52 +541,58 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        const args = Object.assign({}, this),
-            pitr = g2.pntItrOf(args.pts),
-            n = pitr.len, p0 = pitr(0), pn = pitr(n-1),
-            dlambda = args.spacing || 10,
-            itr = iterator(args.pts, dlambda);
-        let val;
-        function iterator() {
-            const ux = pn.x - p0.x,
-                uy = pn.y - p0.y,
-                uu = Math.hypot(ux,uy),
-                lam = [];
+        const args = Object.assign({}, this);
 
-            let dlam, lambda = -dlambda;
-            for(let itr=0;itr<n;itr++) { // build array of projection parameters of polypoints onto base line.
-                lam.push(((pitr(itr).x - p0.x)*ux + (pitr(itr).y - p0.y)*uy)/uu);
-            }
-
-            return {
-                next: () => {
-                    lambda += dlambda;
-                    for (let i = 0; i < n; i++) {
-                        dlam = lam[i+1] - lam[i];
-                        if (dlam > 0 && lam[i] <= lambda && lambda <= lam[i+1]) {
-                            let mu = (lambda - lam[i])/dlam;
-                            return {
-                                pts: {
-                                    x1:pitr(i).x + mu*(pitr(i+1).x-pitr(i).x),
-                                    y1:pitr(i).y + mu*(pitr(i+1).y-pitr(i).y),
-                                    x2:p0.x + lambda,
-                                    y2:p0.y + lambda * uy
-                                }
-                            }
-                        }
-                    }
-                    return { done: true };
-                }
-            }
-        }
-    return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
-               .ins((g) => {
-                    while(!(val = itr.next()).done) {
-                        Math.hypot(val.pts.x2 - val.pts.x1, val.pts.y2 - val.pts.y1) > 15+(args.lw||1) &&
-                        g.vec(Object.assign({},val,{lw:args.lw,ls:args.ls}));
-                   }
-               })
+        return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
+                   .mark({mrk:"dot",loc:[0.1,0.2]})
     }
+    // g2() {
+    //     const args = Object.assign({}, this),
+    //         pitr = g2.pntItrOf(args.pts),
+    //         n = pitr.len, p0 = pitr(0), pn = pitr(n-1),
+    //         dlambda = args.spacing || 10,
+    //         itr = iterator(args.pts, dlambda);
+    //     let val;
+    //     function iterator() {
+    //         const ux = pn.x - p0.x,
+    //             uy = pn.y - p0.y,
+    //             uu = Math.hypot(ux,uy),
+    //             lam = [];
+
+    //         let dlam, lambda = -dlambda;
+    //         for(let itr=0;itr<n;itr++) { // build array of projection parameters of polypoints onto base line.
+    //             lam.push(((pitr(itr).x - p0.x)*ux + (pitr(itr).y - p0.y)*uy)/uu);
+    //         }
+
+    //         return {
+    //             next: () => {
+    //                 lambda += dlambda;
+    //                 for (let i = 0; i < n; i++) {
+    //                     dlam = lam[i+1] - lam[i];
+    //                     if (dlam > 0 && lam[i] <= lambda && lambda <= lam[i+1]) {
+    //                         let mu = (lambda - lam[i])/dlam;
+    //                         return {
+    //                             pts: {
+    //                                 x1:pitr(i).x + mu*(pitr(i+1).x-pitr(i).x),
+    //                                 y1:pitr(i).y + mu*(pitr(i+1).y-pitr(i).y),
+    //                                 x2:p0.x + lambda,
+    //                                 y2:p0.y + lambda * uy
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //                 return { done: true };
+    //             }
+    //         }
+    //     }
+    // return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
+    //            .ins((g) => {
+    //                 while(!(val = itr.next()).done) {
+    //                     Math.hypot(val.pts.x2 - val.pts.x1, val.pts.y2 - val.pts.y1) > 15+(args.lw||1) &&
+    //                     g.vec(Object.assign({},val,{lw:args.lw,ls:args.ls}));
+    //                }
+    //            })
+    // }
 });
 
 /**
