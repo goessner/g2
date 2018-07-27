@@ -547,8 +547,7 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         const pitr = g2.pntItrOf(args.pts),
             startLoc = [],
             arr = [],
-            arrLen = [];
-        let plyLen = 0;
+            arrLen = [0];
 
         for (let itr = 0; itr < pitr.len ; itr++) {
             arr.push(pitr(itr));
@@ -558,27 +557,24 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         for (let itr = 0; itr < pitr.len; itr++) {
             const next = pitr(itr+1).x !== undefined ? pitr(itr+1) : pitr(0);
             if (itr <= pitr.len-1) {
-                arrLen.push(Math.hypot(
+                arrLen.push(arrLen[arrLen.length-1] + Math.hypot(
                     next.x-pitr(itr).x,
                     next.y-pitr(itr).y));
             }
         };
-
-        plyLen = arrLen.reduce((a,b) => a+b);
-        for(let itr=1,idx=0,w; itr*args.spacing < plyLen; itr++) {
-            if(arrLen[idx]>=itr*args.spacing) {
-               w = Math.atan((arr[idx+1].y-arr[idx].y)/(arr[idx+1].x-arr[idx].x));
-            }
-            else {
+        for(let itr=0,idx=0; idx <= arr.length-1; itr++) {
+            if(arrLen[idx]<=itr*args.spacing) {
                 idx++;
-            }
-            let a = Math.floor(Math.abs(w)*1000);
-            let b = Math.floor(Math.abs(args.w%Math.PI)*1000);
-            if(a !== b) {
-                startLoc.push(itr*args.spacing/plyLen);
+            } else {
+                const next = pitr(idx+1) ? pitr(idx+1) : pitr(0);
+                const a = Math.floor(Math.abs(Math.atan2((next.x-arr[idx].x),(next.y-arr[idx].y))*1000));
+                const b = Math.floor(Math.abs(args.w%Math.PI)*1000);
+                if (a !== b) {
+                    startLoc.push((itr*args.spacing)/arrLen[arrLen.length-1]);
+                }
             }
         }
-        args.pts = arr;
+        args.pts = arr; // for args.pointsAt(...)...
 
         /*-----------------------------------stolen from g2.lib-----------------------------------*/
         function isPntOnPly({x,y}) {
