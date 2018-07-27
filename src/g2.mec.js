@@ -541,58 +541,94 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        const args = Object.assign({}, this);
+        const args = Object.create(this);
+        args.spacing = args.spacing || 30;
+        args.w = args.w === undefined ? -Math.PI/2 : args.w;
+        args.w = args.w%Math.PI;
+        const pitr = g2.pntItrOf(args.pts),
+            startLoc = [],
+            arr = [],
+            plyLen = len(pitr);
 
-        return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
-                   .mark({mrk:"dot",loc:[0.1,0.2]})
+        for (let itr = 0; itr < pitr.len ; itr++) {
+            arr.push(pitr(itr));
+        }
+        if (arr[arr.length-1] !== arr[0]) { arr.push(arr[0]) };
+
+        for(let itr = 0; itr*args.spacing < plyLen; itr++) {
+            startLoc.push(itr*args.spacing/plyLen);
+        }
+        args.pts = arr;
+
+        function len(pitr) { // maybe put this in ply.prototype...
+            let tmp = 0;
+            for (let itr = 0; itr < pitr.len; itr++) {
+                const next = pitr(itr+1).x !== undefined ? pitr(itr+1) : pitr(0);
+                if (itr <= pitr.len-1) {
+                    tmp += Math.hypot(
+                        next.x-pitr(itr).x,
+                        next.y-pitr(itr).y);
+                }
+            }
+            return tmp;
+        };
+
+        /*-----------------------------------stolen from g2.lib-----------------------------------*/
+        function isPntOnPly({x,y}) {
+            for (let i=0,n=arr.length; i<n-1; i++) {
+                if (isPntOnLin({x,y},arr[i],arr[(i+1)%n],Number.EPSILON)) {
+                    return true;
+                }
+            }
+            return false;
+        };
+        function isPntOnLin({x,y},p1,p2,eps=Number.EPSILON) {
+            const dx = p2.x - p1.x, dy = p2.y - p1.y, dx2 = x - p1.x, dy2 = y - p1.y,
+                dot = dx*dx2 + dy*dy2, perp = dx*dy2 - dy*dx2, len = Math.hypot(dx,dy), epslen = eps*len;
+            return -epslen < perp && perp < epslen && -epslen < dot && dot < len*(len+eps);
+        };
+        function isPntInPly({x,y}) {
+            let match = 0;
+            for (let n=arr.length,i=0,pi=arr[i],pj=arr[n-1]; i<n; pj=pi,pi=arr[++i]) {
+                if (   (y >  pi.y || y >  pj.y)
+                && (y <= pi.y || y <= pj.y)
+                && (x <= pi.x || x <= pj.x)
+                &&  pi.y !== pj.y
+                && (pi.x === pj.x || x <= pj.x + (y-pj.y)*(pi.x-pj.x)/(pi.y-pj.y))) {
+                    match++;
+                }
+            }
+            return match%2 != 0;
+        };
+        /*----------------------------------------------------------------------------------------*/
+
+        return g2().ply({pts:args.pts,closed:true,ls:'black',fs:'@linkfill'})
+                   .ins(g => {
+                       for (const pts of startLoc) {
+                           let dist = (10*args.lw||10);; // minimum distance a vector has to be
+                            const {x,y} = args.pointAt(pts),
+                                t = {
+                                    x:x+Math.cos(args.w)*dist,
+                                    y:y+Math.sin(args.w)*dist
+                                };
+                            if (isPntInPly(t,{pts:arr})) {
+                                while(isPntInPly(t,{pts:arr} && !isPntOnPly(t,{pts:arr}))) {
+                                     dist++;
+                                     t.x = x+Math.cos(args.w)*dist,
+                                     t.y = y+Math.sin(args.w)*dist
+                                    };
+                                g.vec({
+                                    x1:x,
+                                    y1:y,
+                                    x2:t.x,
+                                    y2:t.y,
+                                    ls: args.ls || "darkred",
+                                    lw: args.lw || 1
+                                });
+                            }
+                        }
+                    })
     }
-    // g2() {
-    //     const args = Object.assign({}, this),
-    //         pitr = g2.pntItrOf(args.pts),
-    //         n = pitr.len, p0 = pitr(0), pn = pitr(n-1),
-    //         dlambda = args.spacing || 10,
-    //         itr = iterator(args.pts, dlambda);
-    //     let val;
-    //     function iterator() {
-    //         const ux = pn.x - p0.x,
-    //             uy = pn.y - p0.y,
-    //             uu = Math.hypot(ux,uy),
-    //             lam = [];
-
-    //         let dlam, lambda = -dlambda;
-    //         for(let itr=0;itr<n;itr++) { // build array of projection parameters of polypoints onto base line.
-    //             lam.push(((pitr(itr).x - p0.x)*ux + (pitr(itr).y - p0.y)*uy)/uu);
-    //         }
-
-    //         return {
-    //             next: () => {
-    //                 lambda += dlambda;
-    //                 for (let i = 0; i < n; i++) {
-    //                     dlam = lam[i+1] - lam[i];
-    //                     if (dlam > 0 && lam[i] <= lambda && lambda <= lam[i+1]) {
-    //                         let mu = (lambda - lam[i])/dlam;
-    //                         return {
-    //                             pts: {
-    //                                 x1:pitr(i).x + mu*(pitr(i+1).x-pitr(i).x),
-    //                                 y1:pitr(i).y + mu*(pitr(i+1).y-pitr(i).y),
-    //                                 x2:p0.x + lambda,
-    //                                 y2:p0.y + lambda * uy
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //                 return { done: true };
-    //             }
-    //         }
-    //     }
-    // return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
-    //            .ins((g) => {
-    //                 while(!(val = itr.next()).done) {
-    //                     Math.hypot(val.pts.x2 - val.pts.x1, val.pts.y2 - val.pts.y1) > 15+(args.lw||1) &&
-    //                     g.vec(Object.assign({},val,{lw:args.lw,ls:args.ls}));
-    //                }
-    //            })
-    // }
 });
 
 /**
