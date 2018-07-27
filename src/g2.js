@@ -655,7 +655,7 @@ g2.canvasHdl.prototype = {
         this.exe(grp.commands);
         this.end();
     },
-    beg({x,y,w,scl,matrix,unsizable}) {
+    beg({x,y,w,scl,matrix,unsizable}={}) {
         let trf = matrix;
         x = x || 0;
         y = y || 0;
