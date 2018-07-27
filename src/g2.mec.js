@@ -42,7 +42,7 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
         const sz = Math.round((args.lw||1)/2)+2;
         const dx = args.x2-args.x1, dy = args.y2-args.y1, len = Math.hypot(dx,dy);
         const inside = 'inside' in args && !args.inside ? -1 : 1;
-        return g2().beg({x:args.x1,y:args.y1,w:Math.atan(dy/dx)})
+        return g2().beg({x:args.x1,y:args.y1,w:Math.atan2(dy,dx)})
                     .p().m({x:0,y:0}).l({x:len,y:0})
                         .m({x:0,y:sz}).l({x:0,y:-sz})
                         .m({x:len,y:sz}).l({x:len,y:-sz})
@@ -125,7 +125,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
         const args = Object.assign({}, this, {lc:'round',lj:'round'});
         const z = 2+(args.lw||1);
         const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
-        return g2().beg(Object.assign({}, args, {x:args.x1,y:args.y1,w:Math.atan(dy/dx)}))
+        return g2().beg(Object.assign({}, args, {x:args.x1,y:args.y1,w:Math.atan2(dy,dx)}))
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
                      .stroke({fs:'transparent'})
@@ -544,34 +544,41 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         const args = Object.create(this);
         args.spacing = args.spacing || 30;
         args.w = args.w === undefined ? -Math.PI/2 : args.w;
-        args.w = args.w%Math.PI;
         const pitr = g2.pntItrOf(args.pts),
             startLoc = [],
             arr = [],
-            plyLen = len(pitr);
+            arrLen = [];
+        let plyLen = 0;
 
         for (let itr = 0; itr < pitr.len ; itr++) {
             arr.push(pitr(itr));
         }
         if (arr[arr.length-1] !== arr[0]) { arr.push(arr[0]) };
 
-        for(let itr = 0; itr*args.spacing < plyLen; itr++) {
-            startLoc.push(itr*args.spacing/plyLen);
+        for (let itr = 0; itr < pitr.len; itr++) {
+            const next = pitr(itr+1).x !== undefined ? pitr(itr+1) : pitr(0);
+            if (itr <= pitr.len-1) {
+                arrLen.push(Math.hypot(
+                    next.x-pitr(itr).x,
+                    next.y-pitr(itr).y));
+            }
+        };
+
+        plyLen = arrLen.reduce((a,b) => a+b);
+        for(let itr=1,idx=0,w; itr*args.spacing < plyLen; itr++) {
+            if(arrLen[idx]>=itr*args.spacing) {
+               w = Math.atan((arr[idx+1].y-arr[idx].y)/(arr[idx+1].x-arr[idx].x));
+            }
+            else {
+                idx++;
+            }
+            let a = Math.floor(Math.abs(w)*1000);
+            let b = Math.floor(Math.abs(args.w%Math.PI)*1000);
+            if(a !== b) {
+                startLoc.push(itr*args.spacing/plyLen);
+            }
         }
         args.pts = arr;
-
-        function len(pitr) { // maybe put this in ply.prototype...
-            let tmp = 0;
-            for (let itr = 0; itr < pitr.len; itr++) {
-                const next = pitr(itr+1).x !== undefined ? pitr(itr+1) : pitr(0);
-                if (itr <= pitr.len-1) {
-                    tmp += Math.hypot(
-                        next.x-pitr(itr).x,
-                        next.y-pitr(itr).y);
-                }
-            }
-            return tmp;
-        };
 
         /*-----------------------------------stolen from g2.lib-----------------------------------*/
         function isPntOnPly({x,y}) {
@@ -590,7 +597,7 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         function isPntInPly({x,y}) {
             let match = 0;
             for (let n=arr.length,i=0,pi=arr[i],pj=arr[n-1]; i<n; pj=pi,pi=arr[++i]) {
-                if (   (y >  pi.y || y >  pj.y)
+                if((y >= pi.y || y >= pj.y)
                 && (y <= pi.y || y <= pj.y)
                 && (x <= pi.x || x <= pj.x)
                 &&  pi.y !== pj.y
@@ -602,7 +609,7 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         };
         /*----------------------------------------------------------------------------------------*/
 
-        return g2().ply({pts:args.pts,closed:true,ls:'black',fs:'@linkfill'})
+        return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
                    .ins(g => {
                        for (const pts of startLoc) {
                            let dist = (10*args.lw||10);; // minimum distance a vector has to be
@@ -612,11 +619,11 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
                                     y:y+Math.sin(args.w)*dist
                                 };
                             if (isPntInPly(t,{pts:arr})) {
-                                while(isPntInPly(t,{pts:arr} && !isPntOnPly(t,{pts:arr}))) {
+                                while(isPntInPly(t,{pts:arr}) && !isPntOnPly(t,{pts:arr})) {
                                      dist++;
                                      t.x = x+Math.cos(args.w)*dist,
                                      t.y = y+Math.sin(args.w)*dist
-                                    };
+                                };
                                 g.vec({
                                     x1:x,
                                     y1:y,

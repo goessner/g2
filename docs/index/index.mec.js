@@ -83,6 +83,15 @@ g2().view({cartesian:true})
 new Test('ground',
 `g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'})`),
 
+new Test('load1',
+`g2().view({cartesian:true})
+     .bar({x1:20,y1:50,x2:220,y2:50})
+     .load({pts:[20,50,30,140,250,90,220,50],lw:1,w:-Math.PI/3})`),
+
+new Test('load2',
+`g2().view({cartesian:true})
+     .load({pts:[10,10,100,10,100,130,200,130,200,60,10,60],spacing:10})`),
+
 new Test('mec',
 `let A = {x:50,y:25},B = {x:150,y:25},
     C = {x:50,y:75}, D = {x:100,y:75},
