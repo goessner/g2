@@ -375,7 +375,7 @@ g2.prototype = {
      * @param {object} - drw arguments object.
      * @property {string} [d = undefined] - SVG path definition string.  Current path is ignored then.
      */
-        drw({d}={}) { return this.addCommand({c:'drw',a:arguments[0]}); },
+        drw({d,lsh}={}) { return this.addCommand({c:'drw',a:arguments[0]}); },
 
     /**
      * Delete all commands beginning from `idx` to end of command queue.
@@ -724,13 +724,13 @@ g2.canvasHdl.prototype = {
         d ? this.ctx.fill(new Path2D(d)) : this.ctx.fill();  // SVG path syntax
         this.resetStyle(tmp);
     },
-    drw({d}={}) {
+    drw({d,lsh}={}) {
         let ctx = this.ctx,
             tmp = this.setStyle(arguments[0]),
             p = d && new Path2D(d);   // SVG path syntax
         d ? ctx.fill(p) : ctx.fill();
-        if (ctx.shadowColor !== 'rgba(0, 0, 0, 0)' && ctx.fillStyle !== 'rgba(0, 0, 0, 0)') {
-           let shc = ctx.shadowColor;        // avoid stroke shadow when filled ...
+        if (ctx.shadowColor !== 'rgba(0, 0, 0, 0)' && ctx.fillStyle !== 'rgba(0, 0, 0, 0)' && !lsh) {
+           let shc = ctx.shadowColor;        // usually avoid stroke shadow when filling ...
            ctx.shadowColor = 'rgba(0, 0, 0, 0)';
            d ? ctx.stroke(p) : ctx.stroke();
            ctx.shadowColor = shc;
@@ -739,6 +739,7 @@ g2.canvasHdl.prototype = {
            d ? ctx.stroke(p) : ctx.stroke();
         this.resetStyle(tmp);
     },
+
     // State management (transform & style)
     // getters & setters
     get: {
