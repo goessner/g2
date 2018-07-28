@@ -542,7 +542,7 @@ g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
         const args = Object.create(this);
-        args.spacing = args.spacing || 30;
+        args.spacing = args.spacing || 20;
         args.w = args.w === undefined ? -Math.PI/2 : args.w;
         const pitr = g2.pntItrOf(args.pts),
             startLoc = [],
@@ -562,19 +562,6 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         args.pts = arr; // for args.pointsAt(...)...
 
         /*-----------------------------------stolen from g2.lib-----------------------------------*/
-        function isPntOnPly({x,y}) {
-            for (let i=0,n=arr.length; i<n-1; i++) {
-                if (isPntOnLin({x,y},arr[i],arr[(i+1)%n],Number.EPSILON)) {
-                    return true;
-                }
-            }
-            return false;
-        };
-        function isPntOnLin({x,y},p1,p2,eps=Number.EPSILON) {
-            const dx = p2.x - p1.x, dy = p2.y - p1.y, dx2 = x - p1.x, dy2 = y - p1.y,
-                dot = dx*dx2 + dy*dy2, perp = dx*dy2 - dy*dx2, len = Math.hypot(dx,dy), epslen = eps*len;
-            return -epslen < perp && perp < epslen && -epslen < dot && dot < len*(len+eps);
-        };
         function isPntInPly({x,y}) {
             let match = 0;
             for (let n=arr.length,i=0,pi=arr[i],pj=arr[n-1]; i<n; pj=pi,pi=arr[++i]) {
@@ -593,14 +580,14 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
                    .ins(g => {
                        for (const pts of startLoc) {
-                           let dist = (10*args.lw||10);; // minimum distance a vector has to be
+                            let dist = (10*args.lw||10); // minimum distance a vector has to be
                             const {x,y} = args.pointAt(pts),
                                 t = {
                                     x:x+Math.cos(args.w)*dist,
                                     y:y+Math.sin(args.w)*dist
                                 };
-                            if (isPntInPly(t,{pts:arr}) && !isPntOnPly(t,{pts:arr})) {
-                                while(isPntInPly(t,{pts:arr}) && !isPntOnPly(t,{pts:arr})) {
+                            if (isPntInPly(t,{pts:arr})) {
+                                while(isPntInPly(t,{pts:arr})) {
                                      dist++;
                                      t.x = x+Math.cos(args.w)*dist,
                                      t.y = y+Math.sin(args.w)*dist
