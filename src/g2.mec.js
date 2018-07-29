@@ -124,16 +124,19 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({}, this, {lc:'round',lj:'round'});
         const z = 2+(args.lw||1);
+        args.ls = args.ls || "#000";
+        args.fs = args.fs || args.ls;
         const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
         return g2().beg(Object.assign({}, args, {x:args.x1,y:args.y1,w:Math.atan2(dy,dx)}))
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
-                     .stroke({fs:'transparent'})
+                     .stroke({ls:args.ls})
                      .p().m({x:r,y:0})
                      .l({x:r-5*z,y:z})
                      .a({dw:-Math.PI/3,x:r-5*z,y:-z})
                      .z()
-                     .drw({fs:'@ls'})
+                     .stroke({ls:args.ls})
+                     .drw({fs:args.fs})
                    .end();
     }
 })
@@ -703,21 +706,8 @@ g2.prototype.origin.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
         let z = 3.5;
         return g2().beg({x:this.x||0,y:this.y||0,scl:this.scl||1,w:this.w||0,lc:'round',lj:'round',fs:'#ccc'})
-                   .p()
-                   .m({x:6*z,y:0})
-                   .l({x:0,y:0})
-                   .l({x:0,y:6*z})
-                   .stroke()
-                   .p()
-                   .m({x:10*z,y:0})
-                   .l({x:6*z,y:3/4*z})
-                   .a({dw:-Math.PI/3,x:6*z,y:-3/4*z})
-                   .z()
-                   .m({x:0,y:10*z})
-                   .l({x:3/4*z,y:6*z})
-                   .a({dw: Math.PI/3,x:-3/4*z,y:6*z})
-                   .z()
-                   .drw()
+                   .vec({x1:0,y1:0,x2:10*z,y2:0,lw:0.8,fs:'#ccc'})
+                   .vec({x1:0,y1:0,x2:0,y2:10*z,lw:0.8,fs:'#ccc'})
                    .cir({x:0,y:0,r:2.5,fs:'#ccc'})
                    .end();
     }
