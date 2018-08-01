@@ -160,7 +160,7 @@ g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
         const args = Object.assign({}, this);
         args.b = args.b || 32;
         args.h = args.h || 16;
-        return g2().beg({x:args.x,y:args.y,w:args.w,fs:'#ccc'})
+        return g2().beg({x:args.x,y:args.y,w:args.w,fs:'@linkfill'})
                    .rec({x:-args.b/2,y:-args.h/2,b:args.b,h:args.h})
                    .end()
     }

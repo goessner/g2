@@ -24,7 +24,7 @@ new Test('adim',
      .adim({x:200,y:70,r:50,w:pi/3,dw:-4*pi/3,inside:false})`),
 
 new Test('slider',
-`g2().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})`),
+`g2().grid().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})`),
 
 new Test('spring',
 `g2().spring({x1:50,y1:50,x2:200,y2:25})
