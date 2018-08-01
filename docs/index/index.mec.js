@@ -83,7 +83,7 @@ g2().view({cartesian:true})
 new Test('ground',
 `g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'})`),
 
-new Test('load1',
+new Test('load',
 `g2().view({cartesian:true})
      .bar({x1:20,y1:50,x2:220,y2:50})
      .load({pts:[20,50,30,140,250,90,220,50],lw:1,w:-Math.PI/3,ls:"blue"})`),

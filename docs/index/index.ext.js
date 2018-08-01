@@ -2,16 +2,6 @@ tests.push(
     new Test ('g2.ext.js',
     `g2().txt({str:"the following tests are for g2.ext.js",x:50,y:50})`),
 
-    new Test('symbols',
-    `g2().view({cartesian:true})
-         .pol({x:20,y:75}).label({str:'pol',loc:'s',off:25})
-         .gnd({x:60,y:75}).label({str:'gnd',loc:'s',off:25})
-         .nod({x:100,y:75}).label({str:'nod',loc:'s',off:25})
-         .dblnod({x:140,y:75}).label({str:'dblnod',loc:'s',off:25})
-         .nodfix({x:180,y:75}).label({str:'nodfix',loc:'s',off:25})
-         .nodflt({x:220,y:75}).label({str:'nodflt',loc:'s',off:25})
-         .origin({x:260,y:75}).label({str:'origin',loc:'s',off:25})`),
-
     new Test('label',
     `g2().view({cartesian:true})
          .cir({x:75,y:75,r:50,ld:[6,3]})
@@ -37,6 +27,16 @@ tests.push(
          .label({str:"sw",loc:"sw",off:10,border:true})
          .label({str:"w",loc:"w",off:10,border:true})
          .label({str:"nw",loc:"nw",off:10,border:true})`),
+
+    new Test('label3',
+    `g2().view({cartesian:true})
+        .pol({x:20,y:75}).label({str:'pol',loc:'s',off:25})
+        .gnd({x:60,y:75}).label({str:'gnd',loc:'s',off:25})
+        .nod({x:100,y:75}).label({str:'nod',loc:'s',off:25})
+        .dblnod({x:140,y:75}).label({str:'dblnod',loc:'s',off:25})
+        .nodfix({x:180,y:75}).label({str:'nodfix',loc:'s',off:25})
+        .nodflt({x:220,y:75}).label({str:'nodflt',loc:'s',off:25})
+        .origin({x:260,y:75}).label({str:'origin',loc:'s',off:25})`),
 
     new Test('mark',
     `g2().view({cartesian:true})
