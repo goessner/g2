@@ -431,7 +431,7 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  *     .rope({p1:A,r1:20,p2:B,r2:40})
  */
 g2.prototype.rope = function () { return this.addCommand({c:'rope',a:arguments[0]}); }
-g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
+g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({}, this);
         let x1 = 'p1' in args ? args.p1.x
