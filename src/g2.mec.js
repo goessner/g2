@@ -160,7 +160,8 @@ g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
         const args = Object.assign({}, this);
         args.b = args.b || 32;
         args.h = args.h || 16;
-        return g2().beg({x:args.x,y:args.y,w:args.w,fs:'@linkfill'})
+        args.fs = args.fs || '@linkfill'
+        return g2().beg({x:args.x,y:args.y,w:args.w,fs:args.fs})
                    .rec({x:-args.b/2,y:-args.h/2,b:args.b,h:args.h})
                    .end()
     }
@@ -255,7 +256,10 @@ g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
 g2.prototype.link = function () { return this.addCommand({c:'link',a:arguments[0]}); }
 g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        return g2().ply(Object.assign({}, this, {closed:true,ls:'@linkcolor',fs:'transparent',lw:7,lc:'round',lj:'round'}));
+        const args = Object.assign({}, this);
+        args.ls = args.ls || '@linkcolor';
+        args.fs = args.fs || 'transparent';
+        return g2().ply(Object.assign({}, this, {closed:true,ls:args.ls,fs:args.fs,lw:7,lc:'round',lj:'round'}));
     }
 })
 
@@ -279,6 +283,7 @@ g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.link2 = function () { return this.addCommand({c:'link2',a:arguments[0]}); }
 g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
+        const args = Object.assign({}, this);
         return g2().ply(Object.assign({}, this,{closed:true,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'}))
                    .ply(Object.assign({}, this,{closed:true,ls:'@nodfill2',fs:'transparent',lw:4.5,lc:'round',lj:'round'}))
                    .ply(Object.assign({}, this,{closed:true,ls:'@nodfill',fs:'transparent',lw:2,lc:'round',lj:'round'}));
