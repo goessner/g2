@@ -39,24 +39,35 @@ g2.prototype.dim = function dim({}) { return this.addCommand({c:'dim', a:argumen
 g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
     g2() {
         const args = Object.assign({}, this, {lc:'round',lj:'round',w:0});
-        const sz = Math.round((args.lw||1)/2)+2;
+        args.off = args.off || 0;
+        args.lw = args.lw || 1;
         const dx = args.x2-args.x1, dy = args.y2-args.y1, len = Math.hypot(dx,dy);
-        const inside = 'inside' in args && !args.inside ? -1 : 1;
-        return g2().beg({x:args.x1,y:args.y1,w:Math.atan2(dy,dx)})
-                    .p().m({x:0,y:0}).l({x:len,y:0})
-                        .m({x:0,y:sz}).l({x:0,y:-sz})
-                        .m({x:len,y:sz}).l({x:len,y:-sz})
-                    .stroke({fs:'transparent'})
-                    .p().m({x:len,y:0})
-                            .l({x:len-inside*5*sz,y:sz})
-                            .a({dw:-inside*Math.PI/3,x:len-inside*5*sz,y:-sz})
-                            .z()
-                        .m({x:0,y:0})
-                            .l({x:inside*5*sz,y:sz})
-                            .a({dw:inside*Math.PI/3,x:inside*5*sz,y:-sz})
-                            .z()
-                        .drw({fs:'@ls'})
-                   .end();
+        const inside = 'inside' in args && !args.inside ? false : true;
+        let over = typeof args.over == "number" ? args.over : !args.over ? 10 : 0;
+        over = args.off > 0 ? Math.abs(over) : -Math.abs(over);
+        const w = Math.atan2(dy,dx);
+        return g2().beg({x:args.x1 - args.off*Math.sin(w),y:args.y1 + args.off*Math.cos(w),w:w})
+                   .vec({
+                       x1:inside ? 1 : -25,
+                       y1:0,x2:0,y2:0,
+                       fs:args.fs,ls:args.ls,lw:args.lw})
+                   .vec({
+                       x1:inside ? 0 : len + 25,y1:0,
+                       x2:inside ? len : len,y2:0,
+                       fs:args.fs,ls:args.ls,lw:args.lw})
+                   .ins(g => {if(!inside)
+                       {g.lin({x1:0,y1:0,x2:len,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})}})
+                   .end()
+                   .ins(g => {if(!!args.off) {
+                       g.lin({x1:args.x1,y1:args.y1,
+                        x2:args.x1 - (over + args.off)*Math.sin(w),
+                        y2:args.y1 + (over + args.off)*Math.cos(w),
+                        lw:args.lw/2,lw:args.lw/2,ls:args.ls,fs:args.fs})
+                  .lin({x1:args.x1+Math.cos(w)*len,y1:args.y1+Math.sin(w)*len,
+                        x2:args.y1+Math.cos(w)*len-(over + args.off)*Math.sin(w),
+                        y2:args.x1+Math.sin(w)*len+(over + args.off)*Math.cos(w),
+                        lw:args.lw/2,ls:args.ls,fs:args.fs})
+                   }})
     }
 });
 
