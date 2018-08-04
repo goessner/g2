@@ -84,32 +84,18 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
  */
 g2.prototype.adim = function adim({}) { return this.addCommand({c:'adim',a:arguments[0]}); }
 g2.prototype.adim.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
-    g2() {
-        const args = Object.assign({lc:'round',lj:'round',w:0}, this);
-        const inside = 'inside' in args && !args.inside ? -1 : 1;
-        const wm = inside*(args.dw >= 0 ? 12/args.r : -12/args.r);
-        const sz = Math.round((args.lw||1)/2)+2;
-        const ri = args.r - sz, ra = args.r + sz;
-        const c1  = Math.cos(args.w), s1 = Math.sin(args.w);
-        const c2  = Math.cos(args.w+args.dw), s2 = Math.sin(args.w+args.dw);
-        const c1m = Math.cos(args.w+wm), s1m = Math.sin(args.w+wm);
-        const c2m = Math.cos(args.w+args.dw-wm), s2m = Math.sin(args.w+args.dw-wm);
-        return g2().beg({x:args.x,y:args.y,w:c1})
-                    .arc({x:0,y:0,r:args.r,w:args.w,dw:args.dw})
-                    .p()
-                    .m({x:args.r*c1,y:args.r*s1})
-                    .l({x:ri*c1m,y:ri*s1m})
-                    .a({w:Math.PI/3,x:ra*c1m,y:ra*s1m})
-                    .z()
-                    .m({x:ri*c1,y:ri*s1})
-                    .l({x:ra*c1,y:ra*s1})
-                    .m({x:args.r*c2,y:args.r*s2})
-                    .l({x:ri*c2m,y:ri*s2m})
-                    .a({w:-Math.PI/3,x:ra*c2m,y:ra*s2m})
-                    .z()
-                    .m({x:ri*c2,y:ri*s2})
-                    .l({x:ra*c2,y:ra*s2})
-                    .drw({fs:'@ls'})
+        g2() {
+        const args = Object.assign({lw:1,w:0,lc:'round',lj:'round',inside:true,fs:"#000"}, this);
+        return g2().beg({x:args.x,y:args.y,w:args.w})
+                   .arc({x:0,y:0,r:args.r,w:0,dw:args.dw,ls:args.ls,lw:args.lw})
+                   .vec({x1:args.inside ? args.r-.15:args.r-3.708,
+                         y1:args.inside?1:24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
+                   .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
+                   .end()
+                   .beg({x:args.x,y:args.y,w:args.w+args.dw})
+                   .vec({x1:args.inside ? args.r-.15:args.r-3.708,
+                         y1:args.inside?-1:-24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
+                   .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
                    .end()
     }
 });
