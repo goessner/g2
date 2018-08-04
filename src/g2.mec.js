@@ -548,9 +548,7 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        const args = Object.create(this);
-        args.spacing = args.spacing || 20;
-        args.w = args.w || -Math.PI/2;
+        const args = Object.assign({ pointAt: this.pointAt, spacing: 20, w: -Math.PI/2 }, this);
         const pitr = g2.pntItrOf(args.pts),
             startLoc = [],
             arr = [];
