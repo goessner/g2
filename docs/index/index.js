@@ -128,7 +128,7 @@ new Test('txt-3',
  .end()`),
 
 new Test('img',
-`g2().img({uri:'./atom.png',x:30,y:30})`),
+`g2().img({uri:'./img/atom.png',x:30,y:30})`),
 
 new Test('img-2',
 `// intended 'file Not Found' error.
