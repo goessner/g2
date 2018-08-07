@@ -126,8 +126,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
                      .l({x:r-5*z,y:z})
                      .a({dw:-Math.PI/3,x:r-5*z,y:-z})
                      .z()
-                     .stroke({ls:args.ls})
-                     .drw({fs:args.fs})
+                     .drw({ls:args.ls,fs:args.fs})
                    .end();
     }
 })
