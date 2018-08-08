@@ -118,6 +118,7 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
         const args = Object.assign({ls:"#000",fs:"@ls",lc:'round',lj:'round',lw:1}, this);
         const z = 2+(args.lw);
         const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
+        if (!Math.hypot(dx,dy)) return g2();
         return g2().beg(Object.assign({}, args, {x:args.x1,y:args.y1,w:Math.atan2(dy,dx)}))
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
