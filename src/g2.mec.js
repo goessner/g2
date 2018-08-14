@@ -116,7 +116,7 @@ g2.prototype.vec = function vec({}) { return this.addCommand({c:'vec',a:argument
 g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({ls:"#000",fs:"@ls",lc:'round',lj:'round',lw:1}, this);
-        const z = 2+(args.lw);
+        const z = args.z || 2+(args.lw);
         const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
         if (!Math.hypot(dx,dy)) return g2();
         return g2().beg(Object.assign({}, args, {x:args.x1,y:args.y1,w:Math.atan2(dy,dx)}))
