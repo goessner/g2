@@ -1,7 +1,7 @@
 /**
  * g2 (c) 2013-18 Stefan Goessner
  * @license MIT License
- * @link https://github.com/goessner/g2-new
+ * @link https://github.com/goessner/g2
  */
 "use strict"
 
