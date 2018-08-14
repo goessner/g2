@@ -40,16 +40,19 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
     g2() {
         const args = Object.assign({lw:1,w:0,lc:'round',lj:'round',off:0,over:0,inside:true,fs:"#000"}, this);
         const dx = args.x2-args.x1, dy = args.y2-args.y1, len = Math.hypot(dx,dy);
+        args.fixed = args.fixed || len/2;
         const over = args.off > 0 ? Math.abs(args.over) : -Math.abs(args.over);
         const w = Math.atan2(dy,dx);
         return g2().beg({x:args.x1 - args.off*Math.sin(w),y:args.y1 + args.off*Math.cos(w),w:w})
                    .vec({
                        x1:args.inside ? 1 : -25,
                        y1:0,x2:0,y2:0,
+                       fixed:args.fixed,
                        fs:args.fs,ls:args.ls,lw:args.lw})
                    .vec({
                        x1:args.inside ? 0 : len + 25,y1:0,
                        x2:args.inside ? len : len,y2:0,
+                       fixed:args.fixed,
                        fs:args.fs,ls:args.ls,lw:args.lw})
                    .ins(g => {if(!args.inside)
                        {g.lin({x1:0,y1:0,x2:len,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})}})
@@ -59,9 +62,9 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
                         x2:args.x1 - (over + args.off)*Math.sin(w),
                         y2:args.y1 + (over + args.off)*Math.cos(w),
                         lw:args.lw/2,lw:args.lw/2,ls:args.ls,fs:args.fs})
-                  .lin({x1:args.x1+Math.cos(w)*len,y1:args.y1+Math.sin(w)*len,
-                        x2:args.y1+Math.cos(w)*len-(over + args.off)*Math.sin(w),
-                        y2:args.x1+Math.sin(w)*len+(over + args.off)*Math.cos(w),
+                        .lin({x1:args.x1+Math.cos(w)*len,y1:args.y1+Math.sin(w)*len,
+                        x2:args.x1+Math.cos(w)*len-(over + args.off)*Math.sin(w),
+                        y2:args.y1+Math.sin(w)*len+(over + args.off)*Math.cos(w),
                         lw:args.lw/2,ls:args.ls,fs:args.fs})
                    }})
     }
@@ -89,12 +92,12 @@ g2.prototype.adim.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
         return g2().beg({x:args.x,y:args.y,w:args.w})
                    .arc({x:0,y:0,r:args.r,w:0,dw:args.dw,ls:args.ls,lw:args.lw})
                    .vec({x1:args.inside ? args.r-.15:args.r-3.708,
-                         y1:args.inside?1:24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
+                         y1:args.inside?1:24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
                    .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
                    .end()
                    .beg({x:args.x,y:args.y,w:args.w+args.dw})
                    .vec({x1:args.inside ? args.r-.15:args.r-3.708,
-                         y1:args.inside?-1:-24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
+                         y1:args.inside?-1:-24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
                    .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
                    .end()
     }
@@ -115,10 +118,11 @@ g2.prototype.adim.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
 g2.prototype.vec = function vec({}) { return this.addCommand({c:'vec',a:arguments[0]}); }
 g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
     g2() {
-        const args = Object.assign({ls:"#000",fs:"@ls",lc:'round',lj:'round',lw:1}, this);
-        const z = args.z || 2+(args.lw);
+        const args = Object.assign({ls:"#000",fs:"@ls",lc:'round',lj:'round',lw:1,fixed:undefined}, this);
         const dx = args.x2-args.x1, dy = args.y2-args.y1, r = Math.hypot(dx,dy);
-        if (!Math.hypot(dx,dy)) return g2();
+        let z = args.head || 2+(args.lw);
+        const z2 = (args.fixed || r) / 10;
+        z = z > z2 ? z2 : z;
         return g2().beg(Object.assign({}, args, {x:args.x1,y:args.y1,w:Math.atan2(dy,dx)}))
                      .p().m({x:0,y:0})
                      .l({x:r,y:0})
