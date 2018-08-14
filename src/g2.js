@@ -566,10 +566,19 @@ g2.canvasHdl.prototype = {
     },
     arc({x,y,r,w,dw}) {
         w = w||0;
-        dw = dw||2*Math.PI;
-        this.ctx.beginPath();
-        this.ctx.arc(x||0,y||0,Math.abs(r),w,w+dw,dw<0);
-        this.drw(arguments[0]);
+        dw = dw === undefined ? 2*Math.PI : dw;
+        if (Math.abs(dw) > Number.EPSILON && Math.abs(r) > Number.EPSILON) {
+            this.ctx.beginPath();
+            this.ctx.arc(x||0,y||0,Math.abs(r),w,w+dw,dw<0);
+            this.drw(arguments[0]);
+        }
+        else if (Math.abs(dw) < Number.EPSILON && Math.abs(r) > Number.EPSILON) {
+            const cw = Math.cos(w), sw = Math.sin(w);
+            this.ctx.beginPath();
+            this.ctx.moveTo(x-r*cw,y-r*sw)
+            this.ctx.lineTo(x+r*cw,y+r*sw)
+        }
+    //  else  // nothing to draw with r === 0
     },
     ell({x,y,rx,ry,w,dw,rot}) {
         ry = ry||rx;
