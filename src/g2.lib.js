@@ -151,5 +151,22 @@ g2 = Object.assign(g2, {
     isPntInBox({x:xp,y:yp},{x,y,b,h}) {
         var dx = xp - x, dy = yp - y;
         return dx >= -b && dx <= b && dy >= -h && dy <= h;
+    },
+
+    arc3pts(x1,y1,x2,y2,x3,y3) {
+        const dx1 = x2 - x1, dy1 = y2 - y1;
+        const dx2 = x3 - x2, dy2 = y3 - y2;
+        const den = dx1*dy2 - dy1*dx2;
+        const lam = Math.abs(den) > Number.EPSILON
+                  ? 0.5*((dx1 + dx2)*dx2 + (dy1 + dy2)*dy2)/den
+                  : 0;
+        const x0 = lam ? x1 + 0.5*dx1 - lam*dy1 : x1 + 0.5*(dx1 + dx2);
+        const y0 = lam ? y1 + 0.5*dy1 + lam*dx1 : y1 + 0.5*(dy1 + dy2);
+        const dx01 = x1 - x0, dy01 = y1 - y0;
+        const dx03 = x3 - x0, dy03 = y3 - y0;
+        const dw = lam ? Math.atan2(dx01*dy03-dy01*dx03,dx01*dx03+dy01*dy03) : 0;
+        const r  = dw ? Math.hypot(dy01,dx01) : 0.5*Math.hypot(dy1+dy2,dx1+dx2);
+
+        return {x:x0,y:y0,r:r,w:Math.atan2(dy01,dx01),dw};
     }
 })
