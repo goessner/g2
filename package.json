@@ -14,7 +14,7 @@
   "main": "g2.js",
   "scripts": {
     "build": "yarn run minify && yarn run jsdoc && yarn run gzip && yarn run cpsamp",
-    "minify": "uglifyjs ./src/g2.core.js ./src/g2.ext.js ./src/g2.mec.js -o ./src/g2.js --comments",
+    "minify": "uglifyjs ./src/g2.core.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js ./src/g2.lib.js -o ./src/g2.js --comments",
     "jsdoc": "jsdoc2md ./src/g2.core.js > ./docs/api/g2.core.md && jsdoc2md ./src/g2.mec.js > ./docs/api/g2.mec.md && jsdoc2md ./src/g2.ext.js > ./docs/api/g2.ext.md",
     "gzip": "7z -tgzip a ./g2.min.js.gz ./g2.min.js",
     "cpsamp": "copyfiles -f ./examples/*.html ../goessner.github.io/g2/examples"
