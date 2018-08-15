@@ -6,9 +6,9 @@
 </head>
 
 <body>
-<script src="../g2.js"></script>
+<script src="../g2.core.js"></script>
 <script>
-const pi = Math.PI, 
+const pi = Math.PI,
       wheel = g2().cir({x:0,y:0,r:15})
                     .cir({x:0,y:0,r:3,fs:"@ls"}),
       car   = g2().p()
@@ -19,7 +19,7 @@ const pi = Math.PI,
                   .drw()
                   .use({grp:wheel,x:-40,y:20,fs:"snow",lw:3})
                   .use({grp:wheel,x: 40,y:20,fs:"#9c9",lw:3}),
-     cs = [];        
+     cs = [];
 function createCanvas() {
     cs.push({}), cur = cs.length-1
     cs[cur].c = document.createElement("canvas");
@@ -36,8 +36,8 @@ g2().view({cartesian: true})
     .ins(createCanvas())    // create a new canvas after embedded linebreak
     .ins(cs[1].c.width = 400)
     .use({grp:car,x:300,y:25,scl:0.75,ls:"green",fs:"orange",lw:4})
-    .exe(cs[1].ctx)    
-    
+    .exe(cs[1].ctx)
+
 </script>
 </body>
 </html>

@@ -51,7 +51,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
   * [Interactivity](../../wiki/interactivity)
 
 ## API Reference
-See the [API Reference for g2](docs/api/g2.md) for details.
+See the [API Reference for g2](docs/api/g2.core.md) for details.
 
 Also see the [API Reference for g2.ext](docs/api/g2.ext.md) and the [API Reference for g2.mec](docs/api/g2.mec.md).
 

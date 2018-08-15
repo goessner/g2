@@ -1,8 +1,8 @@
 <canvas id="c" width="400" height="120"></canvas>
-<script src="g2.js"></script>
+<script src="g2.core.js"></script>
 <script>
     const ctx = document.getElementById("c").getContext("2d"),
-        pi = Math.PI, 
+        pi = Math.PI,
         wheel = g2().cir({x:0,y:0,r:15})
                     .cir({x:0,y:0,r:3,fs:"@ls"}),
         car   = g2().p()
