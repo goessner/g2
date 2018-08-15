@@ -66,7 +66,7 @@ In HTML use ...
 ```
 
 ## Cheat Sheet
-Check out the single page [Cheat Sheet](api/sheet.pdf).
+Check out the single page [Cheat Sheet](docs/api/sheet.pdf).
 
 
 # License
