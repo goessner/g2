@@ -1,32 +1,26 @@
 /**
  * g2 (c) 2013-18 Stefan Goessner
+ * @file core functionality for `g2`.
+ * @author Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
  */
 "use strict"
 
- /**
-  * Create a 2D graphics command queue object. Call without using 'new'.
-  * @typedef {g2}
-  * @param {object} [opts] Custom options object. It is simply copied into the 'g2' instance, but not used from the g2 kernel.
-  * @returns {g2}
-  * @example
-  * const ctx = document.getElementById("c").getContext("2d");
-  * g2()                                   // Create 'g2' instance.
-  *     .lin({x1:50,y1:50,x2:100,y2:100})  // Append ...
-  *     .lin({x1:100,y1:100,x2:200,y2:50}) // ... commands.
-  *     .exe(ctx);                         // Execute commands addressing canvas context.
-  */
-/*
-function g2(opts) {
-    if (this instanceof g2) {
-        if (opts) Object.assign(this,opts);
-        this.commands = [];
-        return this;
-    }
-    return g2.apply(Object.create(g2.prototype),[opts]);
-}
-*/
+/**
+ * Create a 2D graphics command queue object. Call without using 'new'.
+ * @typedef {g2}
+ * @param {object} [opts] Custom options object. It is simply copied into the 'g2' instance, but not used from the g2 kernel.
+ * @returns {g2}
+ * @example
+ * const ctx = document.getElementById("c").getContext("2d");
+ * g2()                                   // Create 'g2' instance.
+ *     .lin({x1:50,y1:50,x2:100,y2:100})  // Append ...
+ *     .lin({x1:100,y1:100,x2:200,y2:50}) // ... commands.
+ *     .exe(ctx);                         // Execute commands addressing canvas context.
+ */
+var g2 = g2 || { prototype:{} };  // for jsdoc only ...
+
 function g2(opts) {
     let o = Object.create(g2.prototype);
     o.commands = [];
