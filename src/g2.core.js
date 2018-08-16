@@ -1,6 +1,5 @@
 /**
- * g2 (c) 2013-18 Stefan Goessner
- * @file core functionality for `g2`.
+ * g2.core (c) 2013-18 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
@@ -19,7 +18,6 @@
  *     .lin({x1:100,y1:100,x2:200,y2:50}) // ... commands.
  *     .exe(ctx);                         // Execute commands addressing canvas context.
  */
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
 
 function g2(opts) {
     let o = Object.create(g2.prototype);

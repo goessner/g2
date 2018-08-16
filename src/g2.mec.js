@@ -1,8 +1,9 @@
 /**
- * g2.mec (c) 2013-16 Stefan Goessner
- * @file mechanical extensions to `g2`.
+ * g2.mec (c) 2013-18 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
+ * @requires g2.core.js
+ * @requires g2.ext.js
  */
 "use strict"
 

@@ -1,8 +1,8 @@
 /**
- * g2 element prototypes (c) 2015-18 Stefan Goessner
- * @file extensions to `g2`.
+ * g2.ext (c) 2015-18 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
+ * @requires g2.core.js
  */
 "use strict"
 
@@ -12,7 +12,7 @@
  * @param {object} [opts] Custom options object. It is simply copied into the 'g2' instance, but not used from the g2 kernel.
  * @returns {g2}
  */
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
+let g2 = g2 || { prototype:{} };  // for jsdoc only ...
 
 // g2 symbols (values & geometries) predefined
 g2.symbol.nodcolor = "#333";
