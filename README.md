@@ -1,6 +1,6 @@
 [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/blob/master/LICENSE)
-[![npm](https://img.shields.io/npm/v/g2d.svg)](https://www.npmjs.com/package/g2d)
-[![npm](https://img.shields.io/npm/dt/g2d.svg)](https://www.npmjs.com/package/g2d)
+[![npm](https://img.shields.io/npm/v/g2d.svg)](https://npmjs.com/package/g2d)
+[![npm](https://img.shields.io/npm/dt/g2d.svg)](https://npmjs.com/package/g2d)
 [![no dependencies](https://img.shields.io/gemnasium/mathiasbynens/he.svg)](https://github.com/goessner/g2)
 
 # g<sup>2</sup>
@@ -57,12 +57,12 @@ Also see the [API Reference for g2.ext](docs/api/g2.ext.md) and the [API Referen
 
 
 ## GitCDN
-Use the link [https://www.gitcdn.xyz/repo/goessner/g2/master/src/g2.js](https://www.gitcdn.xyz/repo/goessner/g2/master/src/g2.js)
+Use the link [https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js](https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js)
 for getting the latest commit as a raw file.
 
 In HTML use ...
 ```html
-<script src="https://www.gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
+<script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
 ```
 
 ## Cheat Sheet
