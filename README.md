@@ -57,7 +57,7 @@ Also see the [API Reference for g2.ext](docs/api/g2.ext.md) and the [API Referen
 
 
 ## GitCDN
-Use the link [https://www.gitcdn.xyz/repo/goessner/g2/master/src/g2.js](https://gitcdn.xyz/repo/goessner/g2/master/g2.min.js)
+Use the link [https://www.gitcdn.xyz/repo/goessner/g2/master/src/g2.js](https://www.gitcdn.xyz/repo/goessner/g2/master/src/g2.js)
 for getting the latest commit as a raw file.
 
 In HTML use ...
