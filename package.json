@@ -13,11 +13,10 @@
   ],
   "main": "g2.js",
   "scripts": {
-    "build": "yarn run minify && yarn run jsdoc && yarn run gzip && yarn run cpsamp",
-    "minify": "uglifyjs ./src/g2.core.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js ./src/g2.lib.js -o ./src/g2.js --comments",
+    "build": "yarn run minify && yarn run jsdoc && yarn run 7z",
+    "minify": "uglifyjs ./src/g2.core.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js -o ./src/g2.js --comments",
     "jsdoc": "jsdoc2md ./src/g2.core.js > ./docs/api/g2.core.md && jsdoc2md ./src/g2.mec.js > ./docs/api/g2.mec.md && jsdoc2md ./src/g2.ext.js > ./docs/api/g2.ext.md",
-    "gzip": "7z -tgzip a ./g2.min.js.gz ./g2.min.js",
-    "cpsamp": "copyfiles -f ./examples/*.html ../goessner.github.io/g2/examples"
+    "7z": "7z -tgzip a ./g2.min.js.gz ./g2.min.js"
   },
   "author": "Stefan Goessner <fang03@web.de>",
   "repository": {
@@ -26,12 +25,10 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "concat": "^1.0.0",
     "jsdoc-to-markdown": "^1.3.2",
-    "jslint": "^0.9.5",
     "uglify-es": "^3.3.9"
   },
   "dependencies": {
-    "jsdoc": "^3.5.5"
+    "jsdoc-to-markdown": "^3.5.5"
   }
 }

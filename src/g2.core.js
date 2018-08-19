@@ -628,27 +628,46 @@ g2.canvasHdl.prototype = {
     },
     loadedImages: new Map(),
     loadingImages: new Map(),
+    preloadImage(uri, onload, onerror) {
+        const img = new Image();
+        img.src = uri;
+        img.addEventListener('error',onerror);
+        img.addEventListener('load',() => onload(img),{once:true});
+        this.loadingImages.set(uri, img);
+    },
     img({uri,x,y,b,h,w}) {
-        const drawImg = () => {
+        const errorImageStr = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7";
+        const drawImg = (img) => {
             this.ctx.save();
             if(this.isCartesian) this.ctx.scale(1,-1);
             this.ctx.translate(x,y = this.isCartesian ? -y : y);
             this.ctx.rotate(this.isCartesian ? -w : w);
-            this.ctx.drawImage(this.loadedImages.get(uri),0,this.isCartesian ? -h : 0,b,h);
+            this.ctx.drawImage(img,0,this.isCartesian ? -h : 0,b,h);
             this.ctx.restore();
-        };
-        if (this.loadedImages.has(uri)) {
-            drawImg();
+        }
+        let img = this.loadedImages.get(uri);
+        if (img) {
+            drawImg(img);
         } else if (!this.loadingImages.has(uri)) {
-            const img = new Image();
-            img.src = uri;
-            img.addEventListener('error',() => this.ctx.drawImage(getImg("data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7"),0,0),{once:true});
-            img.addEventListener('load',() => {
-                this.loadedImages.set(uri, img);
+            this.preloadImage(uri, (loadedImg) => {
+                this.loadedImages.set(uri, loadedImg);
                 this.loadingImages.delete(uri);
-                drawImg();
-            },{once:true});
-            this.loadingImages.set(uri, img);
+                drawImg(loadedImg);
+            }, () => {
+                img = this.loadedImages.get(errorImageStr);
+                if (img) {
+                    this.loadedImages.set(uri, img);
+                    this.loadingImages.delete(uri);
+                    drawImg(img)
+                } else {
+                    this.preloadImage(errorImageStr, (loadedImg) => {
+                        this.loadedImages.set(uri, loadedImg);
+                        this.loadingImages.delete(uri);
+                        drawImg(loadedImg);
+                    })
+                }
+               
+            });
         };
     },
     use({grp}) {
