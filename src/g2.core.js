@@ -645,30 +645,19 @@ g2.canvasHdl.prototype = {
             this.ctx.drawImage(img,0,this.isCartesian ? -h : 0,b,h);
             this.ctx.restore();
         }
-        let img = this.loadedImages.get(uri);
-        if (img) {
-            drawImg(img);
-        } else if (!this.loadingImages.has(uri)) {
-            this.preloadImage(uri, (loadedImg) => {
-                this.loadedImages.set(uri, loadedImg);
-                this.loadingImages.delete(uri);
-                drawImg(loadedImg);
-            }, () => {
-                img = this.loadedImages.get(errorImageStr);
-                if (img) {
-                    this.loadedImages.set(uri, img);
-                    this.loadingImages.delete(uri);
-                    drawImg(img)
-                } else {
-                    this.preloadImage(errorImageStr, (loadedImg) => {
-                        this.loadedImages.set(uri, loadedImg);
-                        this.loadingImages.delete(uri);
-                        drawImg(loadedImg);
-                    })
-                }
-               
-            });
+        const load = (id, uri, parallelLoad, onfail) => {
+            const img = this.loadedImages.get(id);
+            if (img) {
+                drawImg(img);
+            } else if (parallelLoad || !this.loadingImages.has(id)) {
+                this.preloadImage(uri, (loadedImg) => {
+                    this.loadedImages.set(id, loadedImg);
+                    this.loadingImages.delete(id);
+                    drawImg(loadedImg);
+                }, onfail);
+            }
         };
+        load(uri, uri, false, () => load(uri, errorImageStr, true, undefined));
     },
     use({grp}) {
         this.beg(arguments[0]);
