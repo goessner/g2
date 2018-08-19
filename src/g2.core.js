@@ -626,28 +626,30 @@ g2.canvasHdl.prototype = {
         this.resetTrf();
         this.resetStyle(tmp);
     },
-    img({uri,x,y,w,scl,xoff,yoff}) {
-        const getImg = (uri) => {
-            let img = new Image();
+    loadedImages: new Map(),
+    loadingImages: new Map(),
+    img({uri,x,y,b,h,w}) {
+        const drawImg = () => {
+            this.ctx.save();
+            if(this.isCartesian) this.ctx.scale(1,-1);
+            this.ctx.translate(x,y = this.isCartesian ? -y : y);
+            this.ctx.rotate(this.isCartesian ? -w : w);
+            this.ctx.drawImage(this.loadedImages.get(uri),0,this.isCartesian ? -h : 0,b,h);
+            this.ctx.restore();
+        };
+        if (this.loadedImages.has(uri)) {
+            drawImg();
+        } else if (!this.loadingImages.has(uri)) {
+            const img = new Image();
             img.src = uri;
             img.addEventListener('error',() => this.ctx.drawImage(getImg("data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7"),0,0),{once:true});
-            img.addEventListener('load',() => this.ctx.drawImage(img,0,0),{once:true});
-            return img;
-        }
-
-        scl = scl || 1;
-        const args = arguments[0],
-              img = args._image || (args._image = getImg(uri,false)),
-              sw = w ? scl*Math.sin(w) : 0,
-              cw = w ? scl*Math.cos(w) : scl,
-              b = img && img.width || 20,
-              h = img && img.height || 20;
-
-        x = x || 0; y = y || 0; xoff = xoff || 0; yoff = yoff || 0;
-        this.setTrf(this.isCartesian ? [cw,sw,sw,-cw,x-cw*xoff-sw*(h-yoff),y-sw*xoff+cw*(h-yoff)]
-                                     : [cw,sw,-sw,cw,x-xoff,y-yoff]);
-
-        this.resetTrf();
+            img.addEventListener('load',() => {
+                this.loadedImages.set(uri, img);
+                this.loadingImages.delete(uri);
+                drawImg();
+            },{once:true});
+            this.loadingImages.set(uri, img);
+        };
     },
     use({grp}) {
         this.beg(arguments[0]);
