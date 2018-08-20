@@ -484,6 +484,29 @@ g2.mixin = function mixin(obj, ...protos) {
     return obj;
 }
 
+// handler requirements: preloadImage, loadedImages, errorImageStr
+g2.preloadImages = function(imgs, cb) {
+    let numInFlight = imgs.length * g2.preloadImages.hdlrs.length;
+    if (numInFlight === 0) {
+        cb();
+        return;
+    }
+    const load = (hdl, uri, id, onerror) => {
+        hdl.preloadImage(uri, (img) => {
+            hdl.loadedImages.set(id, img);
+            if (--numInFlight === 0) {
+                cb();
+            }
+        }, onerror);
+    }
+    for (const hdl of g2.preloadImages.hdlrs.map(hdlr => hdlr.prototype)) {
+        for (const imgUrl of imgs) {
+            load(hdl, imgUrl, imgUrl, () => load(hdl, imgUrl, hdl.errorImageStr, undefined));
+        }
+    }
+}
+g2.preloadImages.hdlrs = [];
+
 /**
  * Copy properties, even as getters .. a useful fraction of the above ..
  * @private
@@ -509,6 +532,7 @@ g2.canvasHdl = function(ctx) {
 };
 g2.handler.factory.push((ctx) => ctx instanceof g2.canvasHdl ? ctx
                                : ctx instanceof CanvasRenderingContext2D ? g2.canvasHdl(ctx) : false);
+g2.preloadImages.hdlrs.push(g2.canvasHdl);
 
 g2.canvasHdl.prototype = {
     init(grp,style) {
@@ -626,6 +650,7 @@ g2.canvasHdl.prototype = {
         this.resetTrf();
         this.resetStyle(tmp);
     },
+    errorImageStr: "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7",
     loadedImages: new Map(),
     loadingImages: new Map(),
     preloadImage(uri, onload, onerror) {
@@ -636,7 +661,6 @@ g2.canvasHdl.prototype = {
         this.loadingImages.set(uri, img);
     },
     img({uri,x,y,b,h,w}) {
-        const errorImageStr = "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7";
         const drawImg = (img) => {
             this.ctx.save();
             if(this.isCartesian) this.ctx.scale(1,-1);
@@ -653,11 +677,10 @@ g2.canvasHdl.prototype = {
                 this.preloadImage(uri, (loadedImg) => {
                     this.loadedImages.set(id, loadedImg);
                     this.loadingImages.delete(id);
-                    drawImg(loadedImg);
                 }, onfail);
             }
         };
-        load(uri, uri, false, () => load(uri, errorImageStr, true, undefined));
+        load(uri, uri, false, () => load(uri, this.errorImageStr, true, undefined));
     },
     use({grp}) {
         this.beg(arguments[0]);
