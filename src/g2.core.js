@@ -210,7 +210,7 @@ g2.prototype = {
      * @property {number} [dx = undefined] - region x.
      * @property {number} [dy = undefined] - region y.
      */
-        img({uri,x,y,w,b,h,xoff,yoff,dx,dy}) { return this.addCommand({c:'img',a:arguments[0]}); },
+        img({uri,x,y,w,b,h,xoff,yoff,dx,dy,pre}) { return this.addCommand({c:'img',a:arguments[0]}); },
 
     /**
      * Begin subcommands. Current state is saved.
@@ -660,7 +660,7 @@ g2.canvasHdl.prototype = {
         img.addEventListener('load',() => onload(img),{once:true});
         this.loadingImages.set(uri, img);
     },
-    img({uri,x,y,b,h,w}) {
+    img({uri,x,y,b,h,w,pre}) {
         const drawImg = (img) => {
             this.ctx.save();
             if(this.isCartesian) this.ctx.scale(1,-1);
@@ -677,6 +677,7 @@ g2.canvasHdl.prototype = {
                 this.preloadImage(uri, (loadedImg) => {
                     this.loadedImages.set(id, loadedImg);
                     this.loadingImages.delete(id);
+                    if(!pre)drawImg(loadedImg);
                 }, onfail);
             }
         };
