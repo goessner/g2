@@ -660,13 +660,14 @@ g2.canvasHdl.prototype = {
         img.addEventListener('load',() => onload(img),{once:true});
         this.loadingImages.set(uri, img);
     },
-    img({uri,x,y,b,h,w,pre}) {
+    img({uri,x,y,b,h,xoff,yoff,dx,dy,w,pre}) {
         const drawImg = (img) => {
             this.ctx.save();
             if(this.isCartesian) this.ctx.scale(1,-1);
-            this.ctx.translate(x,y = this.isCartesian ? -y : y);
+            this.ctx.translate(x||0,y = this.isCartesian ? -y||0 : y||0);
             this.ctx.rotate(this.isCartesian ? -w : w);
-            this.ctx.drawImage(img,0,this.isCartesian ? -h : 0,b,h);
+            this.ctx.drawImage(img,xoff||0,yoff||0,dx||img.width,dy||img.height,
+                        0,this.isCartesian ? -h :0,b ||img.width,h ||img.height);
             this.ctx.restore();
         }
         const load = (id, uri, parallelLoad, onfail) => {
