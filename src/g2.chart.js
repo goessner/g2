@@ -10,7 +10,7 @@ var g2 = g2 || { prototype:{} };  // for jsdoc only ...
  * Create x/y-line chart.
  * @constructor
  * @returns {object} chart
- * @param {object} args - Chart arguments object or 
+ * @param {object} args - Chart arguments object or
  * @param {float} args.x - x-position of lower left corner of chart rectangle.
  * @param {float} args.y - y-position of lower left corner of chart rectangle.
  * @param {float} [args.b=150] - width of chart rectangle.
@@ -82,7 +82,7 @@ g2.prototype.chart.prototype = {
         g.beg({x:this.x,y:this.y,lw:1,...this.defaults.style,...this.style});
 
         if (title)
-            g.txt({ str: this.title && this.title.text || this.title, 
+            g.txt({ str: this.title && this.title.text || this.title,
                     x: this.get('b')/2,
                     y: this.get('h') + this.get("title","offset"),
                     w: 0,
@@ -115,7 +115,7 @@ g2.prototype.chart.prototype = {
         }
         // Get func's bounding box
         if (itr && (setXmin || setXmax || setYmin || setYmax)) {
-            let xmin = Number.POSITIVE_INFINITY, ymin = Number.POSITIVE_INFINITY, 
+            let xmin = Number.POSITIVE_INFINITY, ymin = Number.POSITIVE_INFINITY,
                 xmax = Number.NEGATIVE_INFINITY, ymax = Number.NEGATIVE_INFINITY,
                 p;  // data point
             for (let i=0, n=itr.len; i<n; i++) {
@@ -168,7 +168,7 @@ g2.prototype.chart.prototype = {
 //        console.log("Dt="+Dt+",N="+(Dt - t0)/ dt)
 //        console.log("DT="+Dt+",N="+(Dt - t0)/ dt)
         N = Math.floor((Dt - t0)/ dt) + 1;
-        j0 = base % 2 && i0 % 2 ? i0 + 1 : i0; 
+        j0 = base % 2 && i0 % 2 ? i0 + 1 : i0;
         jth = exp === 0 && N < 11 ? 1 : base===2 && N > 9 ? 5 : 2;
 
         return {
@@ -185,7 +185,7 @@ g2.prototype.chart.prototype = {
             i0,                 // first tick index relative to tick origin (can be negative)
             j0,                 // first labeled tick
             jth,                // # of ticks between two major ticks
-            itr(i) {            // tick iterator 
+            itr(i) {            // tick iterator
                 return { t: this.t0 + i*this.dt,
                     z: parseFloat((this.z0 + i*this.dz).toFixed(Math.abs(this.exp))),
                     maj: (this.j0 - this.i0 + i)%this.jth === 0 };
@@ -215,8 +215,8 @@ g2.prototype.chart.prototype = {
         g.beg(axisstyle);
         for (let i=0; i<this.xAxis.N; i++) {
             tick = this.xAxis.itr(i);
-            if (showticks) g.lin({x1:tick.t,x2:tick.t,y2:tick.maj ? -ticklen : -2/3*ticklen});
-            if (showgrid)  g.lin({x1:tick.t,x2:tick.t,y2:this.h,...gridstyle});
+            if (showgrid)  g.lin({x1:tick.t,y1:0,x2:tick.t,y2:this.h,...gridstyle});
+            if (showticks) g.lin({x1:tick.t,y1:tick.maj ? ticklen : 2/3*ticklen,x2:tick.t,y2:tick.maj ? -ticklen : -2/3*ticklen});
             if (showlabels && tick.maj)  // add label
                 g.txt({ str: parseFloat(tick.z),
                         x: tick.t,
@@ -224,17 +224,17 @@ g2.prototype.chart.prototype = {
                         w: 0,
                         ...(this.get("xaxis","labels","style") || {}) });
         }
-        if (showline) 
+        if (showline)
             g.lin({x2:this.b});
-        if (showorigin && this.xmin <= 0 && this.xmax >= 0) 
+        if (showorigin && this.xmin <= 0 && this.xmax >= 0)
             g.lin({x1:-this.xAxis.zmin*this.xAxis.scl,
                    x2:-this.xAxis.zmin*this.xAxis.scl,y2:this.h});  // origin line emphasized ...
         if (title)
             g.txt({str:title.text || title,
                    x:this.b/2,
                    y:-(  this.get("xaxis","title","offset")
-                        +(showticks  && this.get("xaxis","ticks","len") || 0)     
-                        +(showlabels && this.get("xaxis","labels","offset") || 0)     
+                        +(showticks  && this.get("xaxis","ticks","len") || 0)
+                        +(showlabels && this.get("xaxis","labels","offset") || 0)
                         +(showlabels && parseFloat(this.get("xaxis","labels","style","font")) || 0)),
                    w:0,
                    ...(this.get('xaxis','title','style'))});
@@ -263,8 +263,8 @@ g2.prototype.chart.prototype = {
         g.beg(axisstyle);
         for (let i=0; i<this.yAxis.N; i++) {
             tick = this.yAxis.itr(i);
-            if (showticks) g.lin({y1:tick.t,x2:tick.maj ? -ticklen : -2/3*ticklen,y2:tick.t});
-            if (showgrid)  g.lin({y1:tick.t,x2:this.b,y2:tick.t,...gridstyle});
+            if (showgrid)  g.lin({y1:tick.t,x2:this.b,x1:0,y2:tick.t,...gridstyle});
+            if (showticks) g.lin({y1:tick.t,x2:tick.maj ? -ticklen : -2/3*ticklen,y2:tick.t,y2:tick.t,x1:tick.maj ? ticklen : 2/3*ticklen});
             if (showlabels && tick.maj)  // add label
                 g.txt({ str: parseFloat(tick.z),
                         x: -(this.get("yaxis","ticks","len")+this.get("yaxis","labels","offset")),
@@ -272,15 +272,15 @@ g2.prototype.chart.prototype = {
                         w: Math.PI/2,
                         ...this.get("yaxis","labels","style") });
         }
-        if (showline) 
+        if (showline)
             g.lin({y2:this.h});
-        if (showorigin && this.ymin <= 0 && this.ymax >= 0) 
+        if (showorigin && this.ymin <= 0 && this.ymax >= 0)
             g.lin({y1:-this.yAxis.zmin*this.yAxis.scl,x2:this.b,y2:-this.yAxis.zmin*this.yAxis.scl});  // origin line emphasized ...
         if (title)
             g.txt({ str: title.text || title,
                     x:-(  this.get("yaxis","title","offset")
-                        +(showticks  && this.get("yaxis","ticks","len") || 0)     
-                        +(showlabels && this.get("yaxis","labels","offset") || 0)     
+                        +(showticks  && this.get("yaxis","ticks","len") || 0)
+                        +(showlabels && this.get("yaxis","labels","offset") || 0)
                         +(showlabels && parseFloat(this.get("yaxis","labels","style","font")) || 0)),
                     y:this.h/2,
                     w:Math.PI/2,
@@ -297,7 +297,7 @@ g2.prototype.chart.prototype = {
         if (itr) {
             let fill = fn.fill || fn.style && fn.style.fs && fn.style.fs !== "transparent",
                 color = fn.color = fn.color || fn.style && fn.style.ls || defaultcolor,
-                plydata = [], 
+                plydata = [],
                 args = { pts:plydata,
                          closed:false,
                          ls:color,
@@ -342,10 +342,10 @@ g2.prototype.chart.prototype = {
         const loc = n4 ? this[n1] && this[n1][n2] && this[n1][n2][n3] && this[n1][n2][n3][n4]
                        : n3 ? this[n1] && this[n1][n2] && this[n1][n2][n3]
                             : n2 ? this[n1] && this[n1][n2]
-                                 : n1 ? this[n1] 
+                                 : n1 ? this[n1]
                                       : undefined,
               dflts = this.defaults;
-        return loc !== undefined 
+        return loc !== undefined
              ? loc
              : n4 ? dflts[n1] && dflts[n1][n2] && dflts[n1][n2][n3] && dflts[n1][n2][n3][n4]
                   : n3 ? dflts[n1] && dflts[n1][n2] && dflts[n1][n2][n3]
@@ -431,19 +431,19 @@ g2.color = {
         if (color in g2.color.names)
             color = "#" + g2.color.names[color];
         // #rrggbb
-        if (res = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color)) 
+        if (res = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color))
             return {r:parseInt(res[1], 16), g:parseInt(res[2], 16), b:parseInt(res[3], 16), a:alpha};
         // Look for #rgb
-        if (res = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color)) 
+        if (res = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color))
             return {r:parseInt(res[1] + res[1], 16), g:parseInt(res[2] + res[2], 16), b:parseInt(res[3] + res[3], 16), a:alpha};
         // rgb(rrr,ggg,bbb)
-        if (res = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color)) 
+        if (res = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color))
             return {r:parseInt(res[1]), g:parseInt(res[2]), b:parseInt(res[3]), a:alpha};
         // rgba(rrr,ggg,bbb,a)
-        if (res = /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(color)) 
+        if (res = /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(color))
             return {r:parseInt(res[1]), g:parseInt(res[2]), b:parseInt(res[3]),a:(alpha!==undefined?alpha:parseFloat(res[4]))};
         // rgb(rrr%,ggg%,bbb%)
-        if (res = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(color)) 
+        if (res = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(color))
             return {r:parseFloat(res[1]) * 2.55, g:parseFloat(res[2]) * 2.55, b:parseFloat(result[3]) * 2.55, a:alpha};
     },
     rgbaStr(color,alpha) {
@@ -458,12 +458,12 @@ g2.color = {
         darkorchid: '9932cc', darkred: '8b0000', darksalmon: 'e9967a', darkseagreen: '8fbc8f', darkslateblue: '483d8b', darkslategray: '2f4f4f', darkturquoise: '00ced1',
         darkviolet: '9400d3', deeppink: 'ff1493', deepskyblue: '00bfff', dimgray: '696969', dodgerblue: '1e90ff', feldspar: 'd19275', firebrick: 'b22222',
         floralwhite: 'fffaf0', forestgreen: '228b22', fuchsia: 'ff00ff', gainsboro: 'dcdcdc', ghostwhite: 'f8f8ff', gold: 'ffd700', goldenrod: 'daa520', gray: '808080',
-        green: '008000', greenyellow: 'adff2f', honeydew: 'f0fff0', hotpink: 'ff69b4', indianred : 'cd5c5c', indigo : '4b0082', ivory: 'fffff0', khaki: 'f0e68c', 
+        green: '008000', greenyellow: 'adff2f', honeydew: 'f0fff0', hotpink: 'ff69b4', indianred : 'cd5c5c', indigo : '4b0082', ivory: 'fffff0', khaki: 'f0e68c',
         lavender: 'e6e6fa', lavenderblush: 'fff0f5', lawngreen: '7cfc00', lemonchiffon: 'fffacd', lightblue: 'add8e6', lightcoral: 'f08080', lightcyan: 'e0ffff',
-        lightgoldenrodyellow: 'fafad2', lightgrey: 'd3d3d3', lightgreen: '90ee90', lightpink: 'ffb6c1', lightsalmon: 'ffa07a', lightseagreen: '20b2aa', 
+        lightgoldenrodyellow: 'fafad2', lightgrey: 'd3d3d3', lightgreen: '90ee90', lightpink: 'ffb6c1', lightsalmon: 'ffa07a', lightseagreen: '20b2aa',
         lightskyblue: '87cefa', lightslateblue: '8470ff', lightslategray: '778899', lightsteelblue: 'b0c4de', lightyellow: 'ffffe0', lime: '00ff00', limegreen: '32cd32',
         linen: 'faf0e6', magenta: 'ff00ff', maroon: '800000', mediumaquamarine: '66cdaa', mediumblue: '0000cd', mediumorchid: 'ba55d3', mediumpurple: '9370d8',
-        mediumseagreen: '3cb371', mediumslateblue: '7b68ee', mediumspringgreen: '00fa9a', mediumturquoise: '48d1cc', mediumvioletred: 'c71585', midnightblue: '191970',     
+        mediumseagreen: '3cb371', mediumslateblue: '7b68ee', mediumspringgreen: '00fa9a', mediumturquoise: '48d1cc', mediumvioletred: 'c71585', midnightblue: '191970',
         mintcream: 'f5fffa', mistyrose: 'ffe4e1', moccasin: 'ffe4b5', navajowhite: 'ffdead', navy: '000080', oldlace: 'fdf5e6', olive: '808000', olivedrab: '6b8e23',
         orange: 'ffa500', orangered: 'ff4500', orchid: 'da70d6', palegoldenrod: 'eee8aa', palegreen: '98fb98', paleturquoise: 'afeeee', palevioletred: 'd87093',
         papayawhip: 'ffefd5', peachpuff: 'ffdab9', peru: 'cd853f', pink: 'ffc0cb', plum: 'dda0dd', powderblue: 'b0e0e6', purple: '800080', rebeccapurple:'663399',
