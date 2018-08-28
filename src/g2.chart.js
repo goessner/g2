@@ -5,50 +5,49 @@
  */
 
 var g2 = g2 || { prototype:{} };  // for jsdoc only ...
-
 /**
  * Create x/y-line chart.
  * @constructor
  * @returns {object} chart
  * @param {object} args - Chart arguments object or
- * @param {float} args.x - x-position of lower left corner of chart rectangle.
- * @param {float} args.y - y-position of lower left corner of chart rectangle.
- * @param {float} [args.b=150] - width of chart rectangle.
- * @param {float} [args.h=100] - height of chart rectangle.
- * @param {string} [args.ls] - border color.
- * @param {string} [args.fs] - fill color.
- * @param {(string|object)} [args.title] - chart title.
- * @param {string} [args.title.text] - chart title text string.
- * @param {float} [args.title.offset=0] - chart title vertical offset.
- * @param {object} [args.title.style] - chart title style.
- * @param {string} [args.title.style.font=14px serif] - chart title font.
- * @param {string} [args.title.style.thal=center] - chart title horizontal align.
- * @param {string} [args.title.style.tval=bottom] - chart title vertical align.
- * @param {array} [args.funcs=[]] - array of dataset `data` and/or function `fn` objects.
- * @param {object} [args.funcs[item]] - dataset or function object.
- * @param {array} [args.funcs[item].data] - data points as flat array `[x,y,..]`, array of point arrays `[[x,y],..]` or array of point objects `[{x,y},..]`.
- * @param {function} [args.funcs[item].fn] - function `y = f(x)` recieving x-value returning y-value.
- * @param {float} [args.funcs[item].dx] - x increment to apply to function `fn`. Ignored with data points.
- * @param {boolean} [args.funcs[item].fill] - fill region between function graph and x-origin line.
- * @param {boolean} [args.funcs[item].dots] - place circular dots at data points (Avoid with `fn`s).
- * @param {boolean|object} [args.xaxis=false] - x-axis.
- * @param {boolean|object} [args.xaxis.grid=false] - x-axis grid lines.
- * @param {string} [args.xaxis.grid.ls] - x-axis grid line style (color).
- * @param {string} [args.xaxis.grid.lw] - x-axis grid line width.
- * @param {string} [args.xaxis.grid.ld] - x-axis grid line dash style.
- * @param {boolean} [args.xaxis.line=true] - display x-axis base line.
- * @param {boolean} [args.xaxis.origin=false] - display x-axis origin line.
- * @param {boolean|object} [args.yaxis=false] - y-axis.
- * @param {boolean|object} [args.yaxis.grid=false] - y-axis grid lines.
- * @param {string} [args.yaxis.grid.ls] - y-axis grid line style color.
- * @param {string} [args.yaxis.grid.lw] - y-axis grid line width.
- * @param {string} [args.yaxis.grid.ld] - y-axis grid line dash style.
- * @param {boolean} [args.yaxis.line=true] - display y-axis base line.
- * @param {boolean} [args.yaxis.origin=false] - display y-axis origin line.
- * @param {float} [args.xmin] - minimal x-axis value. If not given it is calculated from chart data values.
- * @param {float} [args.xmax] - maximal x-axis value. If not given it is calculated from chart data values.
- * @param {float} [args.ymin] - minimal y-axis value. If not given it is calculated from chart data values.
- * @param {float} [args.ymax] - maximal y-axis value. If not given it is calculated from chart data values.
+ * @property {float} x - x-position of lower left corner of chart rectangle.
+ * @property {float} y - y-position of lower left corner of chart rectangle.
+ * @property {float} [b=150] - width of chart rectangle.
+ * @property {float} [h=100] - height of chart rectangle.
+ * @property {string} [ls] - border color.
+ * @property {string} [fs] - fill color.
+ * @property {(string|object)} [title] - chart title.
+ * @property {string} [title.text] - chart title text string.
+ * @property {float} [title.offset=0] - chart title vertical offset.
+ * @property {object} [title.style] - chart title style.
+ * @property {string} [title.style.font=14px serif] - chart title font.
+ * @property {string} [title.style.thal=center] - chart title horizontal align.
+ * @property {string} [title.style.tval=bottom] - chart title vertical align.
+ * @property {array} [funcs=[]] - array of dataset `data` and/or function `fn` objects.
+ * @property {object} [funcs[item]] - dataset or function object.
+ * @property {array} [funcs[item].data] - data points as flat array `[x,y,..]`, array of point arrays `[[x,y],..]` or array of point objects `[{x,y},..]`.
+ * @property {function} [funcs[item].fn] - function `y = f(x)` recieving x-value returning y-value.
+ * @property {float} [funcs[item].dx] - x increment to apply to function `fn`. Ignored with data points.
+ * @property {boolean} [funcs[item].fill] - fill region between function graph and x-origin line.
+ * @property {boolean} [funcs[item].dots] - place circular dots at data points (Avoid with `fn`s).
+ * @property {boolean|object} [xaxis=false] - x-axis.
+ * @property {boolean|object} [xaxis.grid=false] - x-axis grid lines.
+ * @property {string} [xaxis.grid.ls] - x-axis grid line style (color).
+ * @property {string} [xaxis.grid.lw] - x-axis grid line width.
+ * @property {string} [xaxis.grid.ld] - x-axis grid line dash style.
+ * @property {boolean} [xaxis.line=true] - display x-axis base line.
+ * @property {boolean} [xaxis.origin=false] - display x-axis origin line.
+ * @property {boolean|object} [yaxis=false] - y-axis.
+ * @property {boolean|object} [yaxis.grid=false] - y-axis grid lines.
+ * @property {string} [yaxis.grid.ls] - y-axis grid line style color.
+ * @property {string} [yaxis.grid.lw] - y-axis grid line width.
+ * @property {string} [yaxis.grid.ld] - y-axis grid line dash style.
+ * @property {boolean} [yaxis.line=true] - display y-axis base line.
+ * @property {boolean} [yaxis.origin=false] - display y-axis origin line.
+ * @property {float} [xmin] - minimal x-axis value. If not given it is calculated from chart data values.
+ * @property {float} [xmax] - maximal x-axis value. If not given it is calculated from chart data values.
+ * @property {float} [ymin] - minimal y-axis value. If not given it is calculated from chart data values.
+ * @property {float} [ymax] - maximal y-axis value. If not given it is calculated from chart data values.
  */
 g2.prototype.chart = function chart({x,y,b,h,style,title,funcs,xaxis,xmin,xmax,yaxis,ymin,ymax}) {
     return this.addCommand({c:'chart',a:arguments[0]});
@@ -63,11 +62,12 @@ g2.prototype.chart.prototype = {
         if (!this.h) this.h = this.defaults.h;
         // initialize function graphs (only once ...)
         if (funcs && funcs.length) {  // init all funcs ...
-            for (let i=0; i<funcs.length; i++)
-                this.initFunc(funcs[i],this.xmin===undefined,
-                                       this.xmax===undefined,
-                                       this.ymin===undefined,
-                                       this.ymax===undefined);
+            for (const func of funcs)
+                this.initFunc(func,
+                    this.xmin===undefined,
+                    this.xmax===undefined,
+                    this.ymin===undefined,
+                    this.ymax===undefined);
         }
 //        if (this.xaxis)
             this.xAxis = this.autoAxis(this.get('xmin'),this.get('xmax'),0,this.b);
@@ -109,9 +109,11 @@ g2.prototype.chart.prototype = {
         if (fn.data && fn.data.length) { // data must have a polyline conform array structure
             itr = fn.itr = g2.pntItrOf(fn.data);  // get iterator ...
         }
-        else if (fn.fn && !setXmin && !setXmax && fn.dx) {
-            itr = fn.itr = (i) => { let x = this.xmin + i*fn.dx; return { x:x, y:fn.fn(x) }; }
-            itr.len = (this.xmax - this.xmin)/fn.dx + 1;
+        else if (fn.fn && fn.dx) {
+            const xmin = this.xmin || this.defaults.xmin;
+            const xmax = this.xmax || this.defaults.xmax;
+            itr = fn.itr = (i) => { let x = xmin + i*fn.dx; return { x:x, y:fn.fn(x) }; }
+            itr.len = (xmax - xmin)/fn.dx + 1;
         }
         // Get func's bounding box
         if (itr && (setXmin || setXmax || setYmin || setYmax)) {
@@ -125,7 +127,6 @@ g2.prototype.chart.prototype = {
                 if (p.x > xmax) xmax = p.x;
                 if (p.y > ymax) ymax = p.y;
             }
-            fn.xmin = xmin; fn.xmax = xmax, fn.ymin = ymin, fn.ymax = ymax;
             if (setXmin && (this.xmin === undefined || xmin < this.xmin)) this.xmin = xmin;
             if (setXmax && (this.xmax === undefined || xmax < this.xmax)) this.xmax = xmax;
             if (setYmin && (this.ymin === undefined || ymin < this.ymin)) this.ymin = ymin;
