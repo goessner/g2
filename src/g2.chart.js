@@ -226,10 +226,9 @@ g2.prototype.chart.prototype = {
                         ...(this.get("xaxis","labels","style") || {}) });
         }
         if (showline)
-            g.lin({x2:this.b});
+            g.lin({y1:0,y2:0,x1:0,x2:this.b});
         if (showorigin && this.xmin <= 0 && this.xmax >= 0)
-            g.lin({x1:-this.xAxis.zmin*this.xAxis.scl,
-                   x2:-this.xAxis.zmin*this.xAxis.scl,y2:this.h});  // origin line emphasized ...
+            g.lin({x1:-this.xAxis.zmin*this.xAxis.scl,y1:0,x2:-this.xAxis.zmin*this.xAxis.scl,y2:this.h});  // origin line emphasized ...
         if (title)
             g.txt({str:title.text || title,
                    x:this.b/2,
@@ -264,7 +263,7 @@ g2.prototype.chart.prototype = {
         g.beg(axisstyle);
         for (let i=0; i<this.yAxis.N; i++) {
             tick = this.yAxis.itr(i);
-            if (showgrid)  g.lin({y1:tick.t,x2:this.b,x1:0,y2:tick.t,...gridstyle});
+            if (i && showgrid)  g.lin({y1:tick.t,x2:this.b,x1:0,y2:tick.t,...gridstyle});
             if (showticks) g.lin({y1:tick.t,x2:tick.maj ? -ticklen : -2/3*ticklen,y2:tick.t,y2:tick.t,x1:tick.maj ? ticklen : 2/3*ticklen});
             if (showlabels && tick.maj)  // add label
                 g.txt({ str: parseFloat(tick.z),
@@ -274,9 +273,9 @@ g2.prototype.chart.prototype = {
                         ...this.get("yaxis","labels","style") });
         }
         if (showline)
-            g.lin({y2:this.h});
+            g.lin({y1:0,x1:0,x2:0,y2:this.h});
         if (showorigin && this.ymin <= 0 && this.ymax >= 0)
-            g.lin({y1:-this.yAxis.zmin*this.yAxis.scl,x2:this.b,y2:-this.yAxis.zmin*this.yAxis.scl});  // origin line emphasized ...
+            g.lin({x1:0,y1:-this.yAxis.zmin*this.yAxis.scl,x2:this.b,y2:-this.yAxis.zmin*this.yAxis.scl});  // origin line emphasized ...
         if (title)
             g.txt({ str: title.text || title,
                     x:-(  this.get("yaxis","title","offset")
