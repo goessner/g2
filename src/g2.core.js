@@ -406,10 +406,10 @@ g2.prototype = {
      * @returns {object} g2
      * @param {object} ctx Context.
      */
-        exe(ctx) {
+        async exe(ctx) {
             let handler = g2.handler(ctx);
             if (handler && handler.init(this))
-               handler.exe(this.commands);
+                await handler.exe(this.commands);
             return this;
         },
         // helpers ...
@@ -485,25 +485,14 @@ g2.mixin = function mixin(obj, ...protos) {
 }
 
 // handler requirements: preloadImage, loadedImages, errorImageStr
-g2.preloadImages = function(imgs, cb) {
-    let numInFlight = imgs.length * g2.preloadImages.hdlrs.length;
-    if (numInFlight === 0) {
-        cb();
-        return;
-    }
-    const load = (hdl, uri, id, onerror) => {
-        hdl.preloadImage(uri, (img) => {
-            hdl.loadedImages.set(id, img);
-            if (--numInFlight === 0) {
-                cb();
-            }
-        }, onerror);
-    }
+g2.preloadImages = async function(imgs) {
+    const flight = [];
     for (const hdl of g2.preloadImages.hdlrs.map(hdlr => hdlr.prototype)) {
-        for (const imgUrl of imgs) {
-            load(hdl, imgUrl, imgUrl, () => load(hdl, imgUrl, hdl.errorImageStr, undefined));
+        for (const imgUri of imgs) {
+            flight.push(hdl.loadImage(imgUri));
         }
     }
+    await Promise.all(flight);
 }
 g2.preloadImages.hdlrs = [];
 
@@ -541,11 +530,14 @@ g2.canvasHdl.prototype = {
         this.initStyle(style ? Object.assign({},this.cur,style) : this.cur);
         return true;
     },
-    exe(commands) {
+    async exe(commands) {
         for (let cmd of commands) {
-            if (cmd.c && this[cmd.c])
-                this[cmd.c](cmd.a);
-            else if (cmd.a && 'g2' in cmd.a)
+            if (cmd.c && this[cmd.c]) {
+                const rx = this[cmd.c](cmd.a);
+                if (rx && rx instanceof Promise) {
+                    await rx;
+                }
+            } else if (cmd.a && 'g2' in cmd.a)
                 this.exe(cmd.a.g2().commands);
         }
     },
@@ -653,36 +645,64 @@ g2.canvasHdl.prototype = {
     errorImageStr: "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7",
     loadedImages: new Map(),
     loadingImages: new Map(),
-    preloadImage(uri, onload, onerror) {
-        const img = new Image();
-        img.src = uri;
-        img.addEventListener('error',onerror);
-        img.addEventListener('load',() => onload(img),{once:true});
-        this.loadingImages.set(uri, img);
-    },
-    img({uri,x,y,b,h,xoff,yoff,dx,dy,w,pre}) {
-        const drawImg = (img) => {
-            this.ctx.save();
-            if(this.isCartesian) this.ctx.scale(1,-1);
-            this.ctx.translate(x||0,y = this.isCartesian ? -y||0 : y||0);
-            this.ctx.rotate(this.isCartesian ? -w : w);
-            this.ctx.drawImage(img,xoff||0,yoff||0,dx||img.width,dy||img.height,
-                        0,this.isCartesian ? -h :0,b ||img.width,h ||img.height);
-            this.ctx.restore();
-        }
-        const load = (id, uri, parallelLoad, onfail) => {
-            const img = this.loadedImages.get(id);
-            if (img) {
-                drawImg(img);
-            } else if (parallelLoad || !this.loadingImages.has(id)) {
-                this.preloadImage(uri, (loadedImg) => {
-                    this.loadedImages.set(id, loadedImg);
-                    this.loadingImages.delete(id);
-                    if(!pre)drawImg(loadedImg);
-                }, onfail);
+    async loadImage(uri) {
+        const download = async (xuri) => {
+            const pimg = new Promise((resolve, reject) => {
+                let img = new Image();
+                img.src = xuri;
+                
+                function error(err) {
+                    img.removeEventListener('load', load);
+                    img = undefined;
+                    reject(err);
+                };
+                function load() {
+                    img.removeEventListener('error', error);
+                    resolve(img);
+                    img = undefined;
+                };
+                img.addEventListener('error', error, {once:true});
+                img.addEventListener('load', load, {once:true});
+            });
+
+            try {
+                return await pimg;
+            } catch (err) {
+                console.warn(`failed to (pre-)load image; '${xuri}'`, err);
+                if (xuri === this.errorImageStr) {
+                    throw err; 
+                } else {
+                    return await download(this.errorImageStr);
+                }
             }
-        };
-        load(uri, uri, false, () => load(uri, this.errorImageStr, true, undefined));
+        }
+
+        let img = this.loadedImages.get(uri);
+        if (img !== undefined) {
+            return img;
+        } else if ((img = this.loadingImages.get(uri)) !== undefined) {
+            return await img;
+        }
+        img = download(uri);
+        this.loadingImages.set(uri, img);
+        try {
+            img = await img;
+        } finally {
+            this.loadingImages.delete(uri)
+        }
+        this.loadedImages.set(uri, img);
+        return img;
+    },
+    async img({uri,x,y,b,h,xoff,yoff,dx,dy,w}) {
+        const img_ = await this.loadImage(uri);
+
+        this.ctx.save();
+        if(this.isCartesian) this.ctx.scale(1,-1);
+        this.ctx.translate(x||0,y = this.isCartesian ? -y||0 : y||0);
+        this.ctx.rotate(this.isCartesian ? -w : w);
+        this.ctx.drawImage(img_,xoff||0,yoff||0,dx||img_.width,dy||img_.height,
+                    0,this.isCartesian ? -h :0,b ||img_.width,h ||img_.height);
+        this.ctx.restore();
     },
     use({grp}) {
         this.beg(arguments[0]);
