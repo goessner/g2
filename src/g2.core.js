@@ -414,7 +414,16 @@ g2.prototype = {
         },
         // helpers ...
         addCommand({c,a}) {
-            this.commands.push(a ? g2.refineCmdArgs(arguments[0]) : {c});
+            if (a) {
+                for (const key in a)
+                    if (!Object.getOwnPropertyDescriptor(a,key).get &&  // if no getter ... and
+                        key[0] !== '_' &&                               // no private property ... and
+                        typeof a[key] === 'function') {                 // a function
+                        Object.defineProperty(a, key, { get:a[key], enumerable:true, configurable:true, writabel:false });
+                    }
+                if (g2.prototype[c].prototype) Object.setPrototypeOf(a, g2.prototype[c].prototype);
+            }
+            this.commands.push(arguments[0]);
             return this;
         }
     };
@@ -455,21 +464,6 @@ g2.getCmdIdx = function(cmds,callbk) {
             return i;
     return false;  // command with index '0' signals 'failing' ...
 };
-/**
- * refine command arguments object.
- * @private
- */
-g2.refineCmdArgs = function({c,a}) {
-    for (const key in a)
-        if (!Object.getOwnPropertyDescriptor(a,key).get &&  // if no getter ... and
-            key[0] !== '_' &&                               // no private property ... and
-            typeof a[key] === 'function') {                 // a function
-            Object.defineProperty(a, key, { get:a[key], enumerable:true, configurable:true, writabel:false });
-        }
-    if (g2.prototype[c].prototype) Object.setPrototypeOf(a, g2.prototype[c].prototype);
-//    if (g2.prototype[c].prototype) a.__proto__ = g2.prototype[c].prototype;
-    return arguments[0];
-}
 
 /**
  * Replacement for Object.assign, as it does not assign getters and setter properly ...
