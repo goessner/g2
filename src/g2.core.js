@@ -414,11 +414,11 @@ g2.prototype = {
         },
         // helpers ...
         addCommand({c,a}) {
-            if (a) {
+            if (a && Object.getPrototypeOf(a) === Object.prototype) {  // modify only pure argument objects 'a' 
                 for (const key in a)
-                    if (!Object.getOwnPropertyDescriptor(a,key).get &&  // if no getter ... and
-                        key[0] !== '_' &&                               // no private property ... and
-                        typeof a[key] === 'function') {                 // a function
+                    if (!Object.getOwnPropertyDescriptor(a,key).get    // if 'key' is no getter ...
+                     && key[0] !== '_'                                 // and no private property ... 
+                     && typeof a[key] === 'function') {                // and a function
                         Object.defineProperty(a, key, { get:a[key], enumerable:true, configurable:true, writabel:false });
                     }
                 if (g2.prototype[c].prototype) Object.setPrototypeOf(a, g2.prototype[c].prototype);
