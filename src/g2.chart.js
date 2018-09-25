@@ -110,8 +110,8 @@ g2.prototype.chart.prototype = {
             itr = fn.itr = g2.pntItrOf(fn.data);  // get iterator ...
         }
         else if (fn.fn && fn.dx) {
-            const xmin = Number(this.xmin) || this.defaults.xmin;
-            const xmax = Number(this.xmax) || this.defaults.xmax;
+            const xmin = +this.xmin || this.defaults.xmin;
+            const xmax = +this.xmax || this.defaults.xmax;
             itr = fn.itr = (i) => { let x = xmin + i*fn.dx; return { x:x, y:fn.fn(x) }; }
             itr.len = (xmax - xmin)/fn.dx + 1;
         }
