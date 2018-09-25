@@ -379,11 +379,12 @@ g2.prototype.pulley = function () { return this.addCommand({c:'pulley',a:argumen
 g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
         const args = Object.assign({}, this);
-        return g2().cir({x:args.x,y:args.y,r:args.r,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
-                   .cir({x:args.x,y:args.y,r:args.r-5,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
-                   .cir({x:args.x,y:args.y,r:args.r-6,ls:'#8e8e8e',fs:'transparent',lw:2})
-                   .cir({x:args.x,y:args.y,r:args.r-8,ls:'#aeaeae',fs:'transparent',lw:2})
-                   .cir({x:args.x,y:args.y,r:args.r-10,ls:'#cecece',fs:'transparent',lw:2})
+        return g2().beg({x:args.x,y:args.y,w:args.w})
+                   .cir({x:0,y:0,r:args.r,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
+                   .cir({x:0,y:0,r:args.r-5,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
+                   .cir({x:0,y:0,r:args.r-6,ls:'#8e8e8e',fs:'transparent',lw:2})
+                   .cir({x:0,y:0,r:args.r-8,ls:'#aeaeae',fs:'transparent',lw:2})
+                   .cir({x:0,y:0,r:args.r-10,ls:'#cecece',fs:'transparent',lw:2})
     }
 })
 
@@ -403,11 +404,13 @@ g2.prototype.pulley2 = function () { return this.addCommand({c:'pulley2',a:argum
 g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
         const args = Object.assign({}, this);
-        return g2().bar2({x1:args.x,y1:args.y-args.r+4,x2:args.x,y2:args.y+args.r-4})
-                   .bar2({x1:args.x-args.r+4,y1:args.y,x2:args.x+args.r-4,y2:args.y})
-                   .cir({x:args.x,y:args.y,r:args.r-2.5,ls:'#e6e6e6',fs:'transparent',lw:5})
-                   .cir({x:args.x,y:args.y,r:args.r,ls:'@nodcolor',fs:'transparent',lw:1})
-                   .cir({x:args.x,y:args.y,r:args.r-5,ls:'@nodcolor',fs:'transparent',lw:1})
+        return g2().beg({x:args.x,y:args.y,w:args.w})
+                   .bar2({x1:0,y1:-args.r+4,x2:0,y2:args.r-4})
+                   .bar2({x1:-args.r+4,y1:0,x2:args.r-4,y2:0})
+                   .cir({x:0,y:0,r:args.r-2.5,ls:'#e6e6e6',fs:'transparent',lw:5})
+                   .cir({x:0,y:0,r:args.r,ls:'@nodcolor',fs:'transparent',lw:1})
+                   .cir({x:0,y:0,r:args.r-5,ls:'@nodcolor',fs:'transparent',lw:1})
+                   .end()
     }
 })
 /**
