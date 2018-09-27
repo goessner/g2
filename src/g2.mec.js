@@ -385,6 +385,7 @@ g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
                    .cir({x:0,y:0,r:args.r-6,ls:'#8e8e8e',fs:'transparent',lw:2})
                    .cir({x:0,y:0,r:args.r-8,ls:'#aeaeae',fs:'transparent',lw:2})
                    .cir({x:0,y:0,r:args.r-10,ls:'#cecece',fs:'transparent',lw:2})
+                   .end()
     }
 })
 
