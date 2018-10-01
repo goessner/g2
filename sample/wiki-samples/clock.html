@@ -1,0 +1,46 @@
+
+<canvas id="c" height="250px" width="250px"></canvas>
+<script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.core.js"></script>
+<script>
+    const c = document.getElementById("c");
+    const ctx = c.getContext("2d");
+    const mid = {x:c.width/2,y:c.height/2};
+    let time = new Date();
+    const seconds = g2()
+        .beg({lw:1.5,w:() => Math.PI/30*time.getSeconds()})
+        .lin({x1:0,y1:0,x2:85,y2:0})
+        .cir({x:90,y:0,r:5})
+        .lin({x1:95,y1:0,x2:113,y2:0})
+        .end();
+    const minutes = g2()
+        .beg({lw:3,w:() => Math.PI/30*time.getMinutes() + (Math.PI/30*time.getSeconds())/60})
+        .lin({x1:0,y1:0,x2:80,y2:0})
+        .end();
+    const hours = g2()
+        .beg({lw:3,w:() => Math.PI/6*time.getHours() + (Math.PI/6*time.getMinutes())/60})
+        .lin({x1:0,y1:0,x2:50,y2:0})
+        .end();
+    const clock = g2()
+        .cir({x:0,y:0,r:121,lw:2,ls:"burlywood",fs:"beige"})
+        .cir({x:0,y:0,r:123,lw:2,ls:"brown"})
+        .ins((g) => {
+            for(let itr = 0; itr < 60; itr++) {
+                itr % 6 === 0 ? x1 = 105 : x1 = 110;
+                g.beg({w:Math.PI*itr/30}).lin({x1:x1,y1:0,x2:115,y2:0,ls:"darkgrey"}).end();
+            }
+        });
+    (function render() {
+        time = new Date();
+        g2().del()
+            .clr()
+            .beg({...mid,w:-Math.PI/2})
+            .use({grp:clock})
+            .use({grp:seconds})
+            .use({grp:minutes})
+            .use({grp:hours})
+            .cir({x:0,y:0,r:4,fs:"grey"})
+            .end()
+            .exe(ctx);
+        requestAnimationFrame(render);
+    })()  
+</script>
