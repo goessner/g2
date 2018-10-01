@@ -377,8 +377,8 @@ g2.prototype.label.prototype = {
  * @returns {object} g2
  * @param {object} - Marker arguments object.
  * @property {object | string} mrk - `g2` object or `name` of mark in `symbol` namespace.
- * @property {number | string | number[] | string[]} loc - line parameter [0..1]<br>
- *                                      line location ['beg','end','mid',..].
+ * @property {number | string | number[] | string[]} loc - line location ['beg','end',0.1,0.9,'mid',...].<br>
+ *                                      
  * @property {int} [dir=0] - Direction:<br>
  *                   -1 : negative tangent direction<br>
  *                    0 : no orientation (rotation)<br>
