@@ -1,5 +1,5 @@
 tests.push(
-    new Test('g2.chart.js',
+    new Test('chart',
 `g2().view({cartesian:true})
      .chart({x:40,y:40,b:190,h:90,
             funcs:[{data:[-2,4,2,-1,3,3,4,2],fill:true}],
