@@ -607,8 +607,9 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 });
 
 /**
- * Symbols.
+ * Creates a symbol at given coordinates.
  * @method
+ * @returns {object} g2
  * @param {object} - symbol arguments object.
  * @property {number} x - x-value center.
  * @property {number} y - y-value center.
@@ -622,7 +623,6 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *     .nodflt({x:220,y:75})
  *     .origin({x:260,y:75})
  */
-
 g2.prototype.pol = function () { return this.addCommand({c:'pol',a:arguments[0]||{}}); }
 g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
@@ -633,7 +633,13 @@ g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
                    .end();
     }
 }),
-
+/**
+ * @method
+ * @returns {object} g2
+ * @param {object} - symbol arguments object.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+*/
  g2.prototype.gnd = function () { return this.addCommand({c:'gnd',a:arguments[0]||{}}); }
  g2.prototype.gnd.prototype = g2.mixin({}, g2.prototype.use.prototype, {
      g2() {
@@ -651,7 +657,13 @@ g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
                     .end();
     }
 })
-
+/**
+ * @method
+ * @returns {object} g2
+ * @param {object} - symbol arguments object.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+*/
 g2.prototype.nod = function () { return this.addCommand({c:'nod',a:arguments[0]||{}}); }
 g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
@@ -662,7 +674,13 @@ g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
                    .end();
     }
 })
-
+/**
+ * @method
+ * @returns {object} g2
+ * @param {object} - symbol arguments object.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+*/
 g2.prototype.dblnod = function () { return this.addCommand({c:'dblnod',a:arguments[0]||{}}); }
 g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
@@ -674,7 +692,13 @@ g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
                    .end();
     }
 })
-
+/**
+ * @method
+ * @returns {object} g2
+ * @param {object} - symbol arguments object.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+*/
 g2.prototype.nodfix = function () { return this.addCommand({c:'nodfix',a:arguments[0]||{}}); }
 g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
@@ -690,7 +714,13 @@ g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.use.prototype, {
                    .end();
     }
 })
-
+/**
+ * @method
+ * @returns {object} g2
+ * @param {object} - symbol arguments object.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+*/
 g2.prototype.nodflt = function () { return this.addCommand({c:'nodflt',a:arguments[0]||{}}); }
 g2.prototype.nodflt.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
@@ -708,7 +738,13 @@ g2.prototype.nodflt.prototype = g2.mixin({}, g2.prototype.use.prototype, {
                    .end();
     }
 })
-
+/**
+ * @method
+ * @returns {object} g2
+ * @param {object} - symbol arguments object.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+*/
 g2.prototype.origin = function () { return this.addCommand({c:'origin',a:arguments[0]||{}}); }
 g2.prototype.origin.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
