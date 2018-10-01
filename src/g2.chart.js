@@ -164,7 +164,7 @@ g2.prototype.chart.prototype = {
         i0 = (scl*Math.abs(zmin) + eps/2)%dt < eps
            ? Math.floor(zmin/dz)
            : Math.floor(zmin/dz) + 1;
-        z0 = i0*dz;
+        let z0 = i0*dz;
         t0 = Math.round(scl*(z0 - zmin));
 //        console.log("Dt="+Dt+",N="+(Dt - t0)/ dt)
 //        console.log("DT="+Dt+",N="+(Dt - t0)/ dt)
