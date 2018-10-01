@@ -614,14 +614,7 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * @property {number} x - x-value center.
  * @property {number} y - y-value center.
  * @example
- * g2().view({cartesian:true})
- *     .pol({x:20,y:75})
- *     .gnd({x:60,y:75})
- *     .nod({x:100,y:75})
- *     .dblnod({x:140,y:75})
- *     .nodfix({x:180,y:75})
- *     .nodflt({x:220,y:75})
- *     .origin({x:260,y:75})
+ * g2().pol({x:10,y:10})
  */
 g2.prototype.pol = function () { return this.addCommand({c:'pol',a:arguments[0]||{}}); }
 g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
@@ -639,6 +632,8 @@ g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * @param {object} - symbol arguments object.
  * @property {number} x - x-value center.
  * @property {number} y - y-value center.
+ * @example
+ * g2().gnd({x:10,y:10})
 */
  g2.prototype.gnd = function () { return this.addCommand({c:'gnd',a:arguments[0]||{}}); }
  g2.prototype.gnd.prototype = g2.mixin({}, g2.prototype.use.prototype, {
@@ -663,6 +658,8 @@ g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * @param {object} - symbol arguments object.
  * @property {number} x - x-value center.
  * @property {number} y - y-value center.
+ * @example
+ * g2().nod({x:10,y:10})
 */
 g2.prototype.nod = function () { return this.addCommand({c:'nod',a:arguments[0]||{}}); }
 g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
@@ -680,6 +677,8 @@ g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * @param {object} - symbol arguments object.
  * @property {number} x - x-value center.
  * @property {number} y - y-value center.
+ * @example
+ * g2().dblnod({x:10,y:10})
 */
 g2.prototype.dblnod = function () { return this.addCommand({c:'dblnod',a:arguments[0]||{}}); }
 g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
@@ -693,11 +692,15 @@ g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     }
 })
 /**
+ * Since some symbols are not symmetrical, the cartesian mode is recommended.
  * @method
  * @returns {object} g2
  * @param {object} - symbol arguments object.
  * @property {number} x - x-value center.
  * @property {number} y - y-value center.
+ * @example
+ * g2().view({cartesian:true})
+ *     .nodfix({x:10,y:10})
 */
 g2.prototype.nodfix = function () { return this.addCommand({c:'nodfix',a:arguments[0]||{}}); }
 g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.use.prototype, {
@@ -720,6 +723,9 @@ g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * @param {object} - symbol arguments object.
  * @property {number} x - x-value center.
  * @property {number} y - y-value center.
+ * @example
+ * g2().view({cartesian:true})
+ *     .nodflt({x:10,y:10})
 */
 g2.prototype.nodflt = function () { return this.addCommand({c:'nodflt',a:arguments[0]||{}}); }
 g2.prototype.nodflt.prototype = g2.mixin({}, g2.prototype.use.prototype, {
@@ -744,6 +750,9 @@ g2.prototype.nodflt.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * @param {object} - symbol arguments object.
  * @property {number} x - x-value center.
  * @property {number} y - y-value center.
+ * @example
+ * g2().view({cartesian:true})
+ *     .origin({x:10,y:10})
 */
 g2.prototype.origin = function () { return this.addCommand({c:'origin',a:arguments[0]||{}}); }
 g2.prototype.origin.prototype = g2.mixin({}, g2.prototype.use.prototype, {
