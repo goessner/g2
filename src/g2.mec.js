@@ -32,6 +32,8 @@ g2.prototype.skip = function skip(tag) {
  * @property {number} y1 - start y coordinate.
  * @property {number} x2 - end x coordinate.
  * @property {number} y2 - end y coordinate.
+ * @property {number} off - offset.
+ * @property {number} over - overshoot of offset lines.
  * @property {boolean} [inside=true] - draw dimension arrows between or outside of ticks.
  * @example
  *  g2().dim({x1:60,y1:40,x2:190,y2:120})
@@ -536,6 +538,7 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * @returns {object} g2
  * @param {object} - load arguments object.
  * @property {object[] | number[][] | number[]} pts - array of points.
+ * @property {number} w - angle of vectors.
  * @property {number} spacing - spacing of the vectors drawn as a positive real number, interprete as<br>
  *                       * spacing &lt; 1: spacing = 1/m with a partition of m.<br>
  *                       * spacing &gt; 1: length of spacing.
