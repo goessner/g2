@@ -19,6 +19,11 @@ new Test('dim',
 `g2().dim({x1:20,y1:75,x2:200,y2:75})
      .dim({x1:20,y1:125,x2:200,y2:125,inside:false})`),
 
+new Test('dim2',
+`A = {x1: 30,y1:50,x2:200,y2:120}
+g2().lin({...A,ls:"red",lw:2})
+     .dim({...A, off:-15,over:5})`),
+
 new Test('adim',
 `g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
      .adim({x:200,y:70,r:50,w:pi/3,dw:-4*pi/3,inside:false})`),

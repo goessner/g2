@@ -15,7 +15,7 @@
   "scripts": {
     "build": "yarn run minify && yarn run jsdoc && yarn run 7z",
     "minify": "uglifyjs ./src/g2.core.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js -o ./src/g2.js --comments",
-    "jsdoc": "jsdoc2md ./src/g2.core.js > ./docs/api/g2.core.md && jsdoc2md ./src/g2.mec.js > ./docs/api/g2.mec.md && jsdoc2md ./src/g2.ext.js > ./docs/api/g2.ext.md ./src/g2.chart.js > ./docs/api/g2.chart.md",
+    "jsdoc": "jsdoc2md ./src/g2.core.js > ./docs/api/g2.core.md && jsdoc2md ./src/g2.mec.js > ./docs/api/g2.mec.md && jsdoc2md ./src/g2.ext.js > ./docs/api/g2.ext.md && jsdoc2md ./src/g2.chart.js > ./docs/api/g2.chart.md",
     "7z": "7z -tgzip a ./g2.min.js.gz ./g2.min.js"
   },
   "author": "Stefan Goessner <fang03@web.de>",
