@@ -406,10 +406,10 @@ g2.prototype = {
      * @returns {object} g2
      * @param {object} ctx Context.
      */
-        async exe(ctx) {
+        exe(ctx) {
             let handler = g2.handler(ctx);
             if (handler && handler.init(this))
-                await handler.exe(this.commands);
+                handler.exe(this.commands);
             return this;
         },
         // helpers ...
