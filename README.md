@@ -65,6 +65,9 @@ In HTML use ...
 <script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
 ```
 
+### Tests
+Tests are found on the [Github Page](https://goessner.github.io/g2/)
+
 ## Cheat Sheet
 Check out the single page [Cheat Sheet](docs/api/sheet.pdf).
 
