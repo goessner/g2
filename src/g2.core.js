@@ -429,7 +429,7 @@ g2.prototype = {
     };
 
 // statics
-g2.defaultStyle = {fs:'transparent',ls:'#000',lw:1,lc:"butt",lj:"miter",ld:[],ml:10,sh:[0,0],font:'14px serif',thal:'start',tval:'alphabetic'};
+g2.defaultStyle = {fs:'transparent',ls:'#000',lw:1,lc:"butt",lj:"miter",ld:[],ml:10,sh:[0,0],lsh:false,font:'14px serif',thal:'start',tval:'alphabetic'};
 g2.symbol = {};
 g2.handler = function(ctx) {
     let hdl;

@@ -65,6 +65,10 @@ g2.prototype.rec.prototype = {
     _dir: { c:[0,0],e:[1,0],ne:[1,1],n:[0,1],nw:[-1,1],
             w:[-1,0],sw:[-1,-1],s:[0,-1],se:[1,-1] },
     get len() { return 2*(this.b+this.h); },
+    get isSolid() { return this.fs && this.fs !== 'transparent' },
+    get len() { return 2*Math.PI*this.r; },
+    get lsh() { return this.state & g2.OVER; },
+    get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false; },
     pointAt(loc) {
        const q = this._dir[loc || "c"] || this._dir['c'], nx = q[0], ny = q[1];
        return { x: this.x + (1 + nx)*this.b/2,
@@ -72,7 +76,10 @@ g2.prototype.rec.prototype = {
                 dx: -ny,
                 dy:  nx
        };
-    }
+    },
+    hitContour({x,y,eps}) { return g2.isPntOnBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps) },
+    hitInner({x,y,eps}) {return g2.isPntInBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps) },
+    drag({dx,dy}) { this.x += dx; this.y += dy }
 };
 
 g2.prototype.cir.prototype = {
@@ -81,6 +88,7 @@ g2.prototype.cir.prototype = {
             w:[-1,0],sw:[-Math.SQRT2/2,-Math.SQRT2/2],s:[0,-1],se:[Math.SQRT2/2,-Math.SQRT2/2] },
     get isSolid() { return this.fs && this.fs !== 'transparent' },
     get len() { return 2*Math.PI*this.r; },
+    get lsh() { return this.state & g2.OVER; },
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     pointAt(loc) {
        var q = (loc+0 === loc) ? [Math.cos(loc*2*Math.PI),Math.sin(loc*2*Math.PI)]
