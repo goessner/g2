@@ -31,6 +31,9 @@ g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 
 g2.symbol.dot = g2().cir({x:0,y:0,r:2,ls:"transparent"});
 g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
 
+// constants for element selection / editing
+g2.NONE = 0x0; g2.OVER = 0x1; g2.DRAG = 0x2; g2.EDIT = 0x4;
+
  // prototypes for extending argument objects
  g2.prototype.lin.prototype = {
     isSolid: false,
