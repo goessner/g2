@@ -607,7 +607,7 @@ g2.canvasHdl.prototype = {
         ctx.lineTo(x2,y2);
         this.stroke(arguments[0]);
     },
-    ply: function({pts,closed,x,y,w,_itr}) {
+    ply: function({pts,closed,x,y,w,_itr=()=>0}) {
         let p, i, len = _itr.len, istrf = !!(x || y || w), cw, sw;
         if (istrf) this.setTrf([cw=(w?Math.cos(w):1),sw=(w?Math.sin(w):0),-sw,cw,x||0,y||0]);
         this.ctx.beginPath();
