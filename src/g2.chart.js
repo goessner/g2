@@ -79,15 +79,16 @@ g2.prototype.chart.prototype = {
                fs:this.get("fs"),ls:this.get("ls")});
 
         // draw title & axes ...
-        g.beg({x:this.x,y:this.y,lw:1,...this.defaults.style,...this.style});
+        g.beg(Object.assign({}, {x:this.x,y:this.y,lw:1}, this.defaults.style,this.style));
 
         if (title)
-            g.txt({ str: this.title && this.title.text || this.title,
-                    x: this.get('b')/2,
-                    y: this.get('h') + this.get("title","offset"),
-                    w: 0,
-                    ...this.defaults.title.style,
-                    ...(this.title && this.title.style || {})});
+            g.txt(Object.assign({}, {
+                str: this.title && this.title.text || this.title,
+                x: this.get('b')/2,
+                y: this.get('h') + this.get("title","offset"),
+                w: 0
+            }, this.defaults.title.style,
+              (this.title && this.title.style || {})));
         if (this.xaxis) this.drawXAxis(g);
         if (this.yaxis) this.drawYAxis(g);
 
@@ -200,11 +201,9 @@ g2.prototype.chart.prototype = {
     drawXAxis(g) {
         let tick,
             showgrid = this.xaxis && this.xaxis.grid,
-            gridstyle = showgrid && {...this.defaults.xaxis.grid,...this.xaxis.grid},
+            gridstyle = showgrid && Object.assign({}, this.defaults.xaxis.grid, this.xaxis.grid),
             showaxis = this.xaxis || this.xAxis,
-            axisstyle = showaxis && {...this.defaults.xaxis.style,
-                                     ...this.defaults.xaxis.labels.style,
-                                     ...(this.xaxis && this.xaxis.style || {}) },
+            axisstyle = showaxis && Object.assign({}, this.defaults.xaxis.style, this.defaults.xaxis.labels.style, (this.xaxis && this.xaxis.style || {}) ),
             showline = showaxis && this.get("xaxis","line"),
             showlabels = this.xAxis && showaxis && this.get("xaxis","labels"),
             showticks = this.xAxis && showaxis && this.get("xaxis","ticks"),
@@ -216,28 +215,30 @@ g2.prototype.chart.prototype = {
         g.beg(axisstyle);
         for (let i=0; i<this.xAxis.N; i++) {
             tick = this.xAxis.itr(i);
-            if (showgrid)  g.lin({x1:tick.t,y1:0,x2:tick.t,y2:this.h,...gridstyle});
+            if (showgrid)  g.lin(Object.assign({}, {x1:tick.t,y1:0,x2:tick.t,y2:this.h }, gridstyle));
             if (showticks) g.lin({x1:tick.t,y1:tick.maj ? ticklen : 2/3*ticklen,x2:tick.t,y2:tick.maj ? -ticklen : -2/3*ticklen});
             if (showlabels && tick.maj)  // add label
-                g.txt({ str: parseFloat(tick.z),
-                        x: tick.t,
-                        y: -(this.get("xaxis","ticks","len")+this.get("xaxis","labels","offset")),
-                        w: 0,
-                        ...(this.get("xaxis","labels","style") || {}) });
+                g.txt(Object.assign({}, {
+                    str: parseFloat(tick.z),
+                    x: tick.t,
+                    y: -(this.get("xaxis","ticks","len")+this.get("xaxis","labels","offset")),
+                    w: 0
+                }, (this.get("xaxis","labels","style") || {}) ));
         }
         if (showline)
             g.lin({y1:0,y2:0,x1:0,x2:this.b});
         if (showorigin && this.xmin <= 0 && this.xmax >= 0)
             g.lin({x1:-this.xAxis.zmin*this.xAxis.scl,y1:0,x2:-this.xAxis.zmin*this.xAxis.scl,y2:this.h});  // origin line emphasized ...
         if (title)
-            g.txt({str:title.text || title,
-                   x:this.b/2,
-                   y:-(  this.get("xaxis","title","offset")
-                        +(showticks  && this.get("xaxis","ticks","len") || 0)
-                        +(showlabels && this.get("xaxis","labels","offset") || 0)
-                        +(showlabels && parseFloat(this.get("xaxis","labels","style","font")) || 0)),
-                   w:0,
-                   ...(this.get('xaxis','title','style'))});
+            g.txt(Object.assign({}, {
+                str:title.text || title,
+                x:this.b/2,
+                y:-(  this.get("xaxis","title","offset")
+                  +(showticks  && this.get("xaxis","ticks","len") || 0)
+                  +(showlabels && this.get("xaxis","labels","offset") || 0)
+                  +(showlabels && parseFloat(this.get("xaxis","labels","style","font")) || 0)),
+                w:0
+            }, (this.get('xaxis','title','style'))));
         g.end();
     },
     /**
@@ -247,11 +248,9 @@ g2.prototype.chart.prototype = {
     drawYAxis(g) {
         let tick,
             showgrid = this.yaxis && this.yaxis.grid,
-            gridstyle = showgrid && {...this.defaults.yaxis.grid,...this.yaxis.grid},
+            gridstyle = showgrid && Object.assign({}, this.defaults.yaxis.grid,this.yaxis.grid),
             showaxis = this.yaxis || this.yAxis,
-            axisstyle = showaxis && {...this.defaults.yaxis.style,
-                                     ...this.defaults.yaxis.labels.style,
-                                     ...(this.yaxis && this.yaxis.style || {}) },
+            axisstyle = showaxis && Object.assign({},this.defaults.yaxis.style, this.defaults.yaxis.labels.style, (this.yaxis && this.yaxis.style || {})),
             showline = showaxis && this.get("yaxis","line"),
             showlabels = this.yAxis && showaxis && this.get("yaxis","labels"),
             showticks = this.yAxis && showaxis && this.get("yaxis","ticks"),
@@ -263,28 +262,30 @@ g2.prototype.chart.prototype = {
         g.beg(axisstyle);
         for (let i=0; i<this.yAxis.N; i++) {
             tick = this.yAxis.itr(i);
-            if (i && showgrid)  g.lin({y1:tick.t,x2:this.b,x1:0,y2:tick.t,...gridstyle});
+            if (i && showgrid)  g.lin(Object.assign({},{y1:tick.t,x2:this.b,x1:0,y2:tick.t},gridstyle));
             if (showticks) g.lin({y1:tick.t,x2:tick.maj ? -ticklen : -2/3*ticklen,y2:tick.t,y2:tick.t,x1:tick.maj ? ticklen : 2/3*ticklen});
             if (showlabels && tick.maj)  // add label
-                g.txt({ str: parseFloat(tick.z),
-                        x: -(this.get("yaxis","ticks","len")+this.get("yaxis","labels","offset")),
-                        y: tick.t,
-                        w: Math.PI/2,
-                        ...this.get("yaxis","labels","style") });
+                g.txt(Object.assign({}, {
+                    str: parseFloat(tick.z),
+                    x: -(this.get("yaxis","ticks","len")+this.get("yaxis","labels","offset")),
+                    y: tick.t,
+                    w: Math.PI/2
+                }, this.get("yaxis","labels","style") ));
         }
         if (showline)
             g.lin({y1:0,x1:0,x2:0,y2:this.h});
         if (showorigin && this.ymin <= 0 && this.ymax >= 0)
             g.lin({x1:0,y1:-this.yAxis.zmin*this.yAxis.scl,x2:this.b,y2:-this.yAxis.zmin*this.yAxis.scl});  // origin line emphasized ...
         if (title)
-            g.txt({ str: title.text || title,
-                    x:-(  this.get("yaxis","title","offset")
-                        +(showticks  && this.get("yaxis","ticks","len") || 0)
-                        +(showlabels && this.get("yaxis","labels","offset") || 0)
-                        +(showlabels && parseFloat(this.get("yaxis","labels","style","font")) || 0)),
-                    y:this.h/2,
-                    w:Math.PI/2,
-                    ...(this.get('yaxis','title','style'))});
+            g.txt(Object.assign({}, {
+                str: title.text || title,
+                x:-(  this.get("yaxis","title","offset")
+                  +(showticks  && this.get("yaxis","ticks","len") || 0)
+                  +(showlabels && this.get("yaxis","labels","offset") || 0)
+                  +(showlabels && parseFloat(this.get("yaxis","labels","style","font")) || 0)),
+                y:this.h/2,
+                w:Math.PI/2
+            }, (this.get('yaxis','title','style'))));
         g.end();
     },
     /**
@@ -298,12 +299,13 @@ g2.prototype.chart.prototype = {
             let fill = fn.fill || fn.style && fn.style.fs && fn.style.fs !== "transparent",
                 color = fn.color = fn.color || fn.style && fn.style.ls || defaultcolor,
                 plydata = [],
-                args = { pts:plydata,
-                         closed:false,
-                         ls:color,
-                         fs:(fill?g2.color.rgbaStr(color,0.125):'transparent'),
-                         lw:1,
-                         ...fn.style };
+                args = Object.assign({}, {
+                    pts:plydata,
+                    closed:false,
+                    ls:color,
+                    fs:(fill?g2.color.rgbaStr(color,0.125):'transparent'),
+                    lw:1
+                }, fn.style);
 
             if (fill)  // start from base line (y=0)
                 plydata.push(this.pntOf({x:itr(0).x,y:0}));
@@ -318,7 +320,7 @@ g2.prototype.chart.prototype = {
             if (fn.dots) {
                 g.beg({fs:"snow"});
                 for (var i=0; i<plydata.length; i++)
-                    g.cir({...plydata[i],r:2,lw:1});
+                    g.cir(Object.assign({}, plydata[i], { r:2,lw:1 }));
                 g.end();
             }
         }
