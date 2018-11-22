@@ -203,6 +203,7 @@ g2.prototype = {
      * @property {string} uri - image uri or data:url.
      * @property {number} [x = 0] - x-coordinate of image (upper left).
      * @property {number} [y = 0] - y-coordinate of image (upper left).
+     * @property {number} [w = 0] - rotation angle (about upper left, in radians).
      * @property {number} [b = undefined] - width.
      * @property {number} [h = undefined] - height.
      * @property {number} [xoff = undefined] - x-offset.
