@@ -210,7 +210,7 @@ g2.prototype = {
      * @property {number} [dx = undefined] - region x.
      * @property {number} [dy = undefined] - region y.
      */
-        img({uri,x,y,w,b,h,xoff,yoff,dx,dy,pre}) { return this.addCommand({c:'img',a:arguments[0]}); },
+        img({uri,x,y,w,b,h,xoff,yoff,dx,dy}) { return this.addCommand({c:'img',a:arguments[0]}); },
 
     /**
      * Begin subcommands. Current state is saved.
@@ -644,7 +644,6 @@ g2.canvasHdl.prototype = {
             const pimg = new Promise((resolve, reject) => {
                 let img = new Image();
                 img.src = xuri;
-                
                 function error(err) {
                     img.removeEventListener('load', load);
                     img = undefined;
@@ -664,7 +663,7 @@ g2.canvasHdl.prototype = {
             } catch (err) {
                 console.warn(`failed to (pre-)load image; '${xuri}'`, err);
                 if (xuri === this.errorImageStr) {
-                    throw err; 
+                    throw err;
                 } else {
                     return await download(this.errorImageStr);
                 }
