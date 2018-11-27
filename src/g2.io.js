@@ -2,17 +2,16 @@
  * g2.io (c) 2013-17 Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
- *
  */
 "use strict"
 
 g2.io = function() {
-   if (this instanceof g2.io) {
-      this.model = null;
-      this.grpidx = 0;
-      return this;
-   }
-   return g2.io.apply(Object.create(g2.io.prototype));
+    if (this instanceof g2.io) {
+        this.model = null;
+        this.grpidx = 0;
+        return this;
+    }
+    return g2.io.apply(Object.create(g2.io.prototype));
 };
 g2.handler.factory.push((ctx) => ctx instanceof g2.io ? ctx : false);
 
@@ -29,8 +28,8 @@ g2.io.parseGrp = function(model, id) {
                 cmd.a.grp = g2.io.parseGrp(model, cmd.a.grp);
             else if (this[cmd.c])
                 cmd.a ? this[cmd.c](cmd.a) : this[cmd.c]();
-            else  // invalid g2 command !
-               console.error(`io: Unable to handle command '${cmd.c}'`)
+            else    // invalid g2 command !
+                console.error(`io: Unable to handle command '${cmd.c}'`);
         }
         return g;
     }

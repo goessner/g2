@@ -89,7 +89,7 @@ g2 = Object.assign(g2, {
      * @return {boolean} the test result.
      */
     isPntOnPly({x,y},{pts,closed},eps=Number.EPSILON) {
-//        console.log(pts)
+    //  console.log(pts)
         for (var i=0,n=pts.length; i<(closed ? n : n-1); i++)
             if (g2.isPntOnLin({x,y},pts[i],pts[(i+1)%n],eps))
                 return true;
@@ -131,12 +131,12 @@ g2 = Object.assign(g2, {
     isPntInPly({x,y},{pts,closed},eps=Number.EPSILON) {
         let match = 0;
         for (let n=pts.length,i=0,pi=pts[i],pj=pts[n-1]; i<n; pj=pi,pi=pts[++i])
-           if (   (y >  pi.y || y >  pj.y)
-               && (y <= pi.y || y <= pj.y)
-               && (x <= pi.x || x <= pj.x)
-               &&  pi.y !== pj.y
-               && (pi.x === pj.x || x <= pj.x + (y-pj.y)*(pi.x-pj.x)/(pi.y-pj.y)))
-             match++;
+            if(    (y >  pi.y || y >  pj.y)
+                && (y <= pi.y || y <= pj.y)
+                && (x <= pi.x || x <= pj.x)
+                &&  pi.y !== pj.y
+                && (pi.x === pj.x || x <= pj.x + (y-pj.y)*(pi.x-pj.x)/(pi.y-pj.y)))
+                match++;
         return match%2 != 0;  // even matches required for being outside ..
     },
     /**

@@ -1,16 +1,15 @@
+
+"use strict"
+
 /**
  * g2.mec (c) 2013-18 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @requires g2.core.js
  * @requires g2.ext.js
- */
-"use strict"
-
-/**
- * Mechanical extensions.
- * (Requires cartesian coordinates)
- * @namespace
+ * @typedef {g2}
+ * @description Mechanical extensions. (Requires cartesian coordinates)
+ * @returns {g2}
  */
 var g2 = g2 || { prototype:{} };  // for jsdoc only ...
 /**
@@ -26,6 +25,7 @@ g2.prototype.skip = function skip(tag) {
 
 /**
  * Dimension
+ * @method
  * @returns {object} g2
  * @param {object} - dimension arguments object.
  * @property {number} x1 - start x coordinate.
@@ -46,30 +46,37 @@ g2.prototype.dim.prototype = g2.mixin({}, g2.prototype.lin.prototype, {
         args.fixed = args.fixed || len/2;
         const over = args.off > 0 ? Math.abs(args.over) : -Math.abs(args.over);
         const w = Math.atan2(dy,dx);
-        return g2().beg({x:args.x1 - args.off*Math.sin(w),y:args.y1 + args.off*Math.cos(w),w:w})
-                   .vec({
-                       x1:args.inside ? 1 : -25,
-                       y1:0,x2:0,y2:0,
-                       fixed:args.fixed,
-                       fs:args.fs,ls:args.ls,lw:args.lw})
-                   .vec({
-                       x1:args.inside ? 0 : len + 25,y1:0,
-                       x2:args.inside ? len : len,y2:0,
-                       fixed:args.fixed,
-                       fs:args.fs,ls:args.ls,lw:args.lw})
-                   .ins(g => {if(!args.inside)
-                       {g.lin({x1:0,y1:0,x2:len,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})}})
-                   .end()
-                   .ins(g => {if(!!args.off) {
-                       g.lin({x1:args.x1,y1:args.y1,
-                        x2:args.x1 - (over + args.off)*Math.sin(w),
-                        y2:args.y1 + (over + args.off)*Math.cos(w),
-                        lw:args.lw/2,lw:args.lw/2,ls:args.ls,fs:args.fs})
-                        .lin({x1:args.x1+Math.cos(w)*len,y1:args.y1+Math.sin(w)*len,
-                        x2:args.x1+Math.cos(w)*len-(over + args.off)*Math.sin(w),
-                        y2:args.y1+Math.sin(w)*len+(over + args.off)*Math.cos(w),
-                        lw:args.lw/2,ls:args.ls,fs:args.fs})
-                   }})
+        return g2()
+            .beg({x:args.x1 - args.off*Math.sin(w),y:args.y1 + args.off*Math.cos(w),w:w})
+            .vec({
+                x1:args.inside ? 1 : -25,
+                y1:0,x2:0,y2:0,
+                fixed:args.fixed,
+                fs:args.fs,ls:args.ls,lw:args.lw
+            })
+            .vec({
+                x1:args.inside ? 0 : len + 25,y1:0,
+                x2:args.inside ? len : len,y2:0,
+                fixed:args.fixed,
+                fs:args.fs,ls:args.ls,lw:args.lw
+            })
+            .ins(g => {if(!args.inside)
+                {g.lin({x1:0,y1:0,x2:len,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})}
+            })
+            .end()
+            .ins(g => {if(!!args.off)
+                g.lin({
+                    x1:args.x1,y1:args.y1,
+                    x2:args.x1 - (over + args.off)*Math.sin(w),
+                    y2:args.y1 + (over + args.off)*Math.cos(w),
+                    lw:args.lw/2,lw:args.lw/2,ls:args.ls,fs:args.fs})
+                 .lin({
+                    x1:args.x1+Math.cos(w)*len,y1:args.y1+Math.sin(w)*len,
+                    x2:args.x1+Math.cos(w)*len-(over + args.off)*Math.sin(w),
+                    y2:args.y1+Math.sin(w)*len+(over + args.off)*Math.cos(w),
+                    lw:args.lw/2,ls:args.ls,fs:args.fs
+                })
+            });
     }
 });
 
@@ -92,17 +99,20 @@ g2.prototype.adim = function adim({}) { return this.addCommand({c:'adim',a:argum
 g2.prototype.adim.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
         g2() {
         const args = Object.assign({lw:1,w:0,lc:'round',lj:'round',inside:true,fs:"#000"}, this);
-        return g2().beg({x:args.x,y:args.y,w:args.w})
-                   .arc({x:0,y:0,r:args.r,w:0,dw:args.dw,ls:args.ls,lw:args.lw})
-                   .vec({x1:args.inside ? args.r-.15:args.r-3.708,
-                         y1:args.inside?1:24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
-                   .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
-                   .end()
-                   .beg({x:args.x,y:args.y,w:args.w+args.dw})
-                   .vec({x1:args.inside ? args.r-.15:args.r-3.708,
-                         y1:args.inside?-1:-24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
-                   .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
-                   .end()
+        return g2()
+            .beg({x:args.x,y:args.y,w:args.w})
+            .arc({x:0,y:0,r:args.r,w:0,dw:args.dw,ls:args.ls,lw:args.lw})
+            .vec({
+                x1:args.inside ? args.r-.15:args.r-3.708,
+                y1:args.inside?1:24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
+            .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
+            .end()
+            .beg({x:args.x,y:args.y,w:args.w+args.dw})
+            .vec({
+                x1:args.inside ? args.r-.15:args.r-3.708,
+                y1:args.inside?-1:-24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
+            .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
+            .end();
     }
 });
 
@@ -126,16 +136,17 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
         let z = args.head || 2+(args.lw);
         const z2 = (args.fixed || r) / 10;
         z = z > z2 ? z2 : z;
-        return g2().beg(Object.assign({}, args, {x:args.x1,y:args.y1,w:Math.atan2(dy,dx)}))
-                     .p().m({x:0,y:0})
-                     .l({x:r,y:0})
-                     .stroke({ls:args.ls})
-                     .p().m({x:r,y:0})
-                     .l({x:r-5*z,y:z})
-                     .a({dw:-Math.PI/3,x:r-5*z,y:-z})
-                     .z()
-                     .drw({ls:args.ls,fs:args.fs})
-                   .end();
+        return g2()
+            .beg(Object.assign({}, args, {x:args.x1,y:args.y1,w:Math.atan2(dy,dx)}))
+            .p().m({x:0,y:0})
+            .l({x:r,y:0})
+            .stroke({ls:args.ls})
+            .p().m({x:r,y:0})
+            .l({x:r-5*z,y:z})
+            .a({dw:-Math.PI/3,x:r-5*z,y:-z})
+            .z()
+            .drw({ls:args.ls,fs:args.fs})
+            .end();
     }
 })
 
@@ -156,9 +167,10 @@ g2.prototype.slider = function () { return this.addCommand({c:'slider',a:argumen
 g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
     g2() {
         const args = Object.assign({b:32,h:16,fs:'@linkfill'}, this);
-        return g2().beg({x:args.x,y:args.y,w:args.w,fs:args.fs})
-                   .rec({x:-args.b/2,y:-args.h/2,b:args.b,h:args.h})
-                   .end()
+        return g2()
+            .beg({x:args.x,y:args.y,w:args.w,fs:args.fs})
+            .rec({x:-args.b/2,y:-args.h/2,b:args.b,h:args.h})
+            .end();
     }
 })
 
@@ -182,17 +194,18 @@ g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
         const len = Math.hypot(args.x2-args.x1, args.y2-args.y1);
         const xm = (args.x2+args.x1)/2;
         const ym = (args.y2+args.y1)/2;
-        const h = args.h
+        const h = args.h;
         const ux = (args.x2-args.x1)/len;
         const uy = (args.y2-args.y1)/len;
-        return g2().p()
-                   .m({x:args.x1,y:args.y1})
-                   .l({x:xm-ux*h/2,y:ym-uy*h/2})
-                   .l({x:xm+(-ux/6+uy/2)*h,y:ym+(-uy/6-ux/2)*h})
-                   .l({x:xm+( ux/6-uy/2)*h,y:ym+( uy/6+ux/2)*h})
-                   .l({x:xm+ux*h/2,y:ym+uy*h/2})
-                   .l({x:args.x2,y:args.y2})
-                   .stroke(Object.assign({}, {ls:'@nodcolor'},this,{fs:'transparent',lc:'round',lj:'round'}));
+        return g2()
+            .p()
+            .m({x:args.x1,y:args.y1})
+            .l({x:xm-ux*h/2,y:ym-uy*h/2})
+            .l({x:xm+(-ux/6+uy/2)*h,y:ym+(-uy/6-ux/2)*h})
+            .l({x:xm+( ux/6-uy/2)*h,y:ym+( uy/6+ux/2)*h})
+            .l({x:xm+ux*h/2,y:ym+uy*h/2})
+            .l({x:args.x2,y:args.y2})
+            .stroke(Object.assign({}, {ls:'@nodcolor'},this,{fs:'transparent',lc:'round',lj:'round'}));
     }
 })
 
@@ -218,16 +231,17 @@ g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
         const h = args.h;
         const ux = (args.x2-args.x1)/len;
         const uy = (args.y2-args.y1)/len;
-        return g2().p()
-                   .m({x:args.x1,y:args.y1})
-                   .l({x:xm-ux*h/2,y:ym-uy*h/2})
-                   .m({x:xm+( ux-uy)*h/2,y:ym+( uy+ux)*h/2})
-                   .l({x:xm+(-ux-uy)*h/2,y:ym+(-uy+ux)*h/2})
-                   .l({x:xm+(-ux+uy)*h/2,y:ym+(-uy-ux)*h/2})
-                   .l({x:xm+( ux+uy)*h/2,y:ym+( uy-ux)*h/2})
-                   .m({x:xm,y:ym})
-                   .l({x:args.x2,y:args.y2})
-                   .stroke(Object.assign({}, {ls:'@nodcolor'},this,{fs:'transparent',lc:'round',lj:'round'}));
+        return g2()
+            .p()
+            .m({x:args.x1,y:args.y1})
+            .l({x:xm-ux*h/2,y:ym-uy*h/2})
+            .m({x:xm+( ux-uy)*h/2,y:ym+( uy+ux)*h/2})
+            .l({x:xm+(-ux-uy)*h/2,y:ym+(-uy+ux)*h/2})
+            .l({x:xm+(-ux+uy)*h/2,y:ym+(-uy-ux)*h/2})
+            .l({x:xm+( ux+uy)*h/2,y:ym+( uy-ux)*h/2})
+            .m({x:xm,y:ym})
+            .l({x:args.x2,y:args.y2})
+            .stroke(Object.assign({}, {ls:'@nodcolor'},this,{fs:'transparent',lc:'round',lj:'round'}));
     }
 })
 
@@ -276,9 +290,10 @@ g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.link2 = function () { return this.addCommand({c:'link2',a:arguments[0]}); }
 g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        return g2().ply(Object.assign({closed:true,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this))
-                   .ply(Object.assign({closed:true,ls:'@nodfill2',fs:'transparent',lw:4.5,lc:'round',lj:'round'},this))
-                   .ply(Object.assign({closed:true,ls:'@nodfill',fs:'transparent',lw:2,lc:'round',lj:'round'},this));
+        return g2()
+            .ply(Object.assign({closed:true,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this))
+            .ply(Object.assign({closed:true,ls:'@nodfill2',fs:'transparent',lw:4.5,lc:'round',lj:'round'},this))
+            .ply(Object.assign({closed:true,ls:'@nodfill',fs:'transparent',lw:2,lc:'round',lj:'round'},this));
     }
 })
 
@@ -318,9 +333,10 @@ g2.prototype.beam.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
 g2.prototype.beam2 = function () { return this.addCommand({c:'beam2',a:arguments[0]}); }
 g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
-        return g2().ply(Object.assign({closed:false,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this))
-                   .ply(Object.assign({closed:false,ls:'@nodfill2',fs:'transparent',lw:4.5,lc:'round',lj:'round'},this))
-                   .ply(Object.assign({closed:false,ls:'@nodfill',fs:'transparent',lw:2,lc:'round',lj:'round'},this));
+        return g2()
+            .ply(Object.assign({closed:false,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this))
+            .ply(Object.assign({closed:false,ls:'@nodfill2',fs:'transparent',lw:4.5,lc:'round',lj:'round'},this))
+            .ply(Object.assign({closed:false,ls:'@nodfill',fs:'transparent',lw:2,lc:'round',lj:'round'},this));
     }
 })
 
@@ -359,9 +375,10 @@ g2.prototype.bar2 = function () { return this.addCommand({c:'bar2',a:arguments[0
 g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({}, this);
-        return g2().lin({x1:args.x1,y1:args.y1,x2:args.x2,y2:args.y2,ls:'@nodcolor',lw:7,lc:'round'})
-                   .lin({x1:args.x1,y1:args.y1,x2:args.x2,y2:args.y2,ls:'@nodfill2',lw:4.5,lc:'round'})
-                   .lin({x1:args.x1,y1:args.y1,x2:args.x2,y2:args.y2,ls:'@nodfill',lw:2,lc:'round'});
+        return g2()
+            .lin({x1:args.x1,y1:args.y1,x2:args.x2,y2:args.y2,ls:'@nodcolor',lw:7,lc:'round'})
+            .lin({x1:args.x1,y1:args.y1,x2:args.x2,y2:args.y2,ls:'@nodfill2',lw:4.5,lc:'round'})
+            .lin({x1:args.x1,y1:args.y1,x2:args.x2,y2:args.y2,ls:'@nodfill',lw:2,lc:'round'});
     }
 })
 
@@ -381,13 +398,14 @@ g2.prototype.pulley = function () { return this.addCommand({c:'pulley',a:argumen
 g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
         const args = Object.assign({}, this);
-        return g2().beg({x:args.x,y:args.y,w:args.w})
-                   .cir({x:0,y:0,r:args.r,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
-                   .cir({x:0,y:0,r:args.r-5,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
-                   .cir({x:0,y:0,r:args.r-6,ls:'#8e8e8e',fs:'transparent',lw:2})
-                   .cir({x:0,y:0,r:args.r-8,ls:'#aeaeae',fs:'transparent',lw:2})
-                   .cir({x:0,y:0,r:args.r-10,ls:'#cecece',fs:'transparent',lw:2})
-                   .end()
+        return g2()
+            .beg({x:args.x,y:args.y,w:args.w})
+            .cir({x:0,y:0,r:args.r,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
+            .cir({x:0,y:0,r:args.r-5,ls:'@nodcolor',fs:'#e6e6e6',lw:1})
+            .cir({x:0,y:0,r:args.r-6,ls:'#8e8e8e',fs:'transparent',lw:2})
+            .cir({x:0,y:0,r:args.r-8,ls:'#aeaeae',fs:'transparent',lw:2})
+            .cir({x:0,y:0,r:args.r-10,ls:'#cecece',fs:'transparent',lw:2})
+            .end();
     }
 })
 
@@ -407,15 +425,17 @@ g2.prototype.pulley2 = function () { return this.addCommand({c:'pulley2',a:argum
 g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
     g2() {
         const args = Object.assign({}, this);
-        return g2().beg({x:args.x,y:args.y,w:args.w})
-                   .bar2({x1:0,y1:-args.r+4,x2:0,y2:args.r-4})
-                   .bar2({x1:-args.r+4,y1:0,x2:args.r-4,y2:0})
-                   .cir({x:0,y:0,r:args.r-2.5,ls:'#e6e6e6',fs:'transparent',lw:5})
-                   .cir({x:0,y:0,r:args.r,ls:'@nodcolor',fs:'transparent',lw:1})
-                   .cir({x:0,y:0,r:args.r-5,ls:'@nodcolor',fs:'transparent',lw:1})
-                   .end()
+        return g2()
+            .beg({x:args.x,y:args.y,w:args.w})
+            .bar2({x1:0,y1:-args.r+4,x2:0,y2:args.r-4})
+            .bar2({x1:-args.r+4,y1:0,x2:args.r-4,y2:0})
+            .cir({x:0,y:0,r:args.r-2.5,ls:'#e6e6e6',fs:'transparent',lw:5})
+            .cir({x:0,y:0,r:args.r,ls:'@nodcolor',fs:'transparent',lw:1})
+            .cir({x:0,y:0,r:args.r-5,ls:'@nodcolor',fs:'transparent',lw:1})
+            .end();
     }
 })
+
 /**
  * Draw rope. Amount of pulley radii must be greater than 10 units. They are forced to zero otherwise.
  * @method
@@ -492,16 +512,16 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
         const itr = g2.pntItrOf(args.pts);
         let pn, en, lam, i;
         let pp = itr(i=0);
-        let p0 = pp,
-            h = args.h
+        let p0 = pp;
+        let h = args.h;
         let p = itr(++i);
-        let dx = p.x - pp.x,
-            dy = p.y - pp.y,
-            len = Math.hypot(dx,dy) || 1;
+        let dx = p.x - pp.x;
+        let dy = p.y - pp.y;
+        let len = Math.hypot(dx,dy) || 1;
         let ep = {x:dx/len,y:dy/len};
-        let e0 = ep,
-            eq = [p0],
-            sign = args.pos === 'left' ? 1 : -1;
+        let e0 = ep;
+        let eq = [p0];
+        let sign = args.pos === 'left' ? 1 : -1;
         for (pn = itr(++i); i < itr.len; pn = itr(++i)) {
             dx = pn.x - p.x; dy = pn.y - p.y; len = Math.hypot(dx,dy) || 1;
             len = Math.hypot(dx,dy) || 1;
@@ -523,11 +543,11 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
             eq[0] = {x:p0.x-sign*(h+1)*e0.y, y:p0.y+sign*(h+1)*e0.x};
             eq.push({x:p.x -sign*(h+1)*ep.y, y:p.y +sign*(h+1)*ep.x});
         }
-        return g2().beg({x:-0.5,y:-0.5,ls:'@linkcolor',lw:2,fs:'transparent',lc:'butt',lj:'miter'})
-                   .ply(Object.assign({}, args,{pts:eq,ls:'@nodfill2',lw:2*h}))
-                   .ply(Object.assign({}, args))
-                   .end()
-
+        return g2()
+            .beg({x:-0.5,y:-0.5,ls:'@linkcolor',lw:2,fs:'transparent',lc:'butt',lj:'miter'})
+            .ply(Object.assign({}, args,{pts:eq,ls:'@nodfill2',lw:2*h}))
+            .ply(Object.assign({}, args))
+            .end();
     }
 });
 
@@ -547,65 +567,61 @@ g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0
 g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
     g2() {
         const args = Object.assign({ pointAt: this.pointAt, spacing: 20, w: -Math.PI/2 }, this);
-        const pitr = g2.pntItrOf(args.pts),
-            startLoc = [],
-            arr = [];
+        const pitr = g2.pntItrOf(args.pts), startLoc = [], arr = [];
         let arrLen = 0;
         for (let itr = 0; itr < pitr.len ; itr++) {
             arr.push(pitr(itr));
         }
-        if (arr[arr.length-1] !== arr[0]) { arr.push(arr[0]) };
+        if (arr[arr.length-1] !== arr[0]) {
+            arr.push(arr[0]);
+        }
         for (let itr = 1; itr < arr.length; itr++) {
             arrLen += Math.hypot(arr[itr].y-arr[itr-1].y,arr[itr].x-arr[itr-1].x);
         }
-
         for(let itr=0;itr*args.spacing < arrLen; itr++) {
             startLoc.push((itr*args.spacing)/arrLen);
         }
         args.pts = arr; // for args.pointsAt(...)...
-
         /*-----------------------------------stolen from g2.lib-----------------------------------*/
         function isPntInPly({x,y}) {
             let match = 0;
             for (let n=arr.length,i=0,pi=arr[i],pj=arr[n-1]; i<n; pj=pi,pi=arr[++i]) {
-                if((y >= pi.y || y >= pj.y)
-                && (y <= pi.y || y <= pj.y)
-                && (x <= pi.x || x <= pj.x)
-                &&  pi.y !== pj.y
-                && (pi.x === pj.x || x <= pj.x + (y-pj.y)*(pi.x-pj.x)/(pi.y-pj.y))) {
+                if(    (y >= pi.y || y >= pj.y)
+                    && (y <= pi.y || y <= pj.y)
+                    && (x <= pi.x || x <= pj.x)
+                    &&  pi.y !== pj.y
+                    && (pi.x === pj.x || x <= pj.x + (y-pj.y)*(pi.x-pj.x)/(pi.y-pj.y))) {
                     match++;
                 }
             }
             return match%2 != 0;
         };
         /*----------------------------------------------------------------------------------------*/
-
-        return g2().ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
-                   .ins(g => {
-                       for (const pts of startLoc) {
-                            let dist = (10*args.lw||10); // minimum distance a vector has to be
-                            const {x,y} = args.pointAt(pts),
-                                t = {
-                                    x:x+Math.cos(args.w)*dist,
-                                    y:y+Math.sin(args.w)*dist
-                                };
-                            if (isPntInPly(t,{pts:arr})) {
-                                while(isPntInPly(t,{pts:arr})) {
-                                     dist++;
-                                     t.x = x+Math.cos(args.w)*dist,
-                                     t.y = y+Math.sin(args.w)*dist
-                                };
-                                g.vec({
-                                    x1:x,
-                                    y1:y,
-                                    x2:t.x,
-                                    y2:t.y,
-                                    ls: args.ls || "darkred",
-                                    lw: args.lw || 1
-                                });
-                            }
-                        }
-                    })
+        return g2()
+            .ply({pts:args.pts,closed:true,ls:'transparent',fs:'@linkfill'})
+            .ins(g => {
+                for (const pts of startLoc) {
+                    let dist = (10*args.lw||10); // minimum distance a vector has to be
+                    const {x,y} = args.pointAt(pts),
+                    t = {
+                        x:x+Math.cos(args.w)*dist,
+                        y:y+Math.sin(args.w)*dist
+                    };
+                    if (isPntInPly(t,{pts:arr})) {
+                        while(isPntInPly(t,{pts:arr})) {
+                            dist++;
+                            t.x = x+Math.cos(args.w)*dist,
+                            t.y = y+Math.sin(args.w)*dist
+                        };
+                        g.vec({
+                            x1:x,   y1:y,
+                            x2:t.x, y2:t.y,
+                            ls: args.ls || "darkred",
+                            lw: args.lw || 1
+                        });
+                    }
+                }
+            });
     }
 });
 
@@ -623,12 +639,14 @@ g2.prototype.pol = function () { return this.addCommand({c:'pol',a:arguments[0]|
 g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
         const args = Object.assign({x:0,y:0,scl:1,w:0},this);
-        return g2().beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
-                   .cir({r:6,fs:'@nodfill'})
-                   .cir({r:2.5,fs:'@ls',ls:'transparent'})
-                   .end();
+        return g2()
+            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
+            .cir({r:6,fs:'@nodfill'})
+            .cir({r:2.5,fs:'@ls',ls:'transparent'})
+            .end();
     }
-}),
+})
+
 /**
  * @method
  * @returns {object} g2
@@ -642,19 +660,20 @@ g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  g2.prototype.gnd.prototype = g2.mixin({}, g2.prototype.use.prototype, {
      g2() {
         const args = Object.assign({x:0,y:0,scl:1,w:0},this);
-
-        return g2().beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
-                    .cir({x:0,y:0,r:6,ls:'@nodcolor',fs:'@nodfill',lwnosc:true})
-                    .p()
-                    .m({x:0,y:6})
-                    .a({dw:Math.PI/2,x:-6,y:0})
-                    .l({x:6,y:0})
-                    .a({dw:-Math.PI/2,x:0,y:-6})
-                    .z()
-                    .fill({fs:'@nodcolor'})
-                    .end();
+        return g2()
+            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
+            .cir({x:0,y:0,r:6,ls:'@nodcolor',fs:'@nodfill',lwnosc:true})
+            .p()
+            .m({x:0,y:6})
+            .a({dw:Math.PI/2,x:-6,y:0})
+            .l({x:6,y:0})
+            .a({dw:-Math.PI/2,x:0,y:-6})
+            .z()
+            .fill({fs:'@nodcolor'})
+            .end();
     }
 })
+
 /**
  * @method
  * @returns {object} g2
@@ -668,12 +687,13 @@ g2.prototype.nod = function () { return this.addCommand({c:'nod',a:arguments[0]|
 g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
         const args = Object.assign({x:0,y:0,scl:1,w:0},this);
-
-        return g2().beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
-                   .cir({r:4,ls:'@nodcolor',fs:'@nodfill',lwnosc:true})
-                   .end();
+        return g2()
+            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
+            .cir({r:4,ls:'@nodcolor',fs:'@nodfill',lwnosc:true})
+            .end();
     }
 })
+
 /**
  * @method
  * @returns {object} g2
@@ -687,13 +707,14 @@ g2.prototype.dblnod = function () { return this.addCommand({c:'dblnod',a:argumen
 g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
         const args = Object.assign({x:0,y:0,scl:1,w:0},this);
-
-        return g2().beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
-                   .cir({r:6,ls:'@nodcolor',fs:'@nodfill'})
-                   .cir({r:3,ls:'@nodcolor',fs:'@nodfill2',lwnosc:true})
-                   .end();
+        return g2()
+            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
+            .cir({r:6,ls:'@nodcolor',fs:'@nodfill'})
+            .cir({r:3,ls:'@nodcolor',fs:'@nodfill2',lwnosc:true})
+            .end();
     }
 })
+
 /**
  * Since some symbols are not symmetrical, the cartesian mode is recommended.
  * @method
@@ -709,17 +730,18 @@ g2.prototype.nodfix = function () { return this.addCommand({c:'nodfix',a:argumen
 g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
         const args = Object.assign({x:0,y:0,scl:1,w:0},this);
-
-        return g2().beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
-                   .p()
-                   .m({x:-8,y:-12})
-                   .l({x:0,y:0})
-                   .l({x:8,y:-12})
-                   .drw({ls:'@nodcolor',fs:'@nodfill2'})
-                   .cir({x:0,y:0,r:4,ls:'@nodcolor',fs:'@nodfill'})
-                   .end();
+        return g2()
+            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
+            .p()
+            .m({x:-8,y:-12})
+            .l({x:0,y:0})
+            .l({x:8,y:-12})
+            .drw({ls:'@nodcolor',fs:'@nodfill2'})
+            .cir({x:0,y:0,r:4,ls:'@nodcolor',fs:'@nodfill'})
+            .end();
     }
 })
+
 /**
  * @method
  * @returns {object} g2
@@ -734,19 +756,20 @@ g2.prototype.nodflt = function () { return this.addCommand({c:'nodflt',a:argumen
 g2.prototype.nodflt.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
         const args = Object.assign({x:0,y:0,scl:1,w:0},this);
-
-        return g2().beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
-                   .p()
-                   .m({x:-8,y:-12})
-                   .l({x:0,y:0})
-                   .l({x:8,y:-12})
-                   .drw({ls:'@nodcolor',fs:'@nodfill2'})
-                   .cir({x:0,y:0,r:4,ls:'@nodcolor',fs:'@nodfill'})
-                   .lin({x1:-9,y1:-19,x2:9,y2:-19,ls:'@nodfill2',lw:5,lwnosc:false})
-                   .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:'@nodcolor',lw:2,lwnosc:false})
-                   .end();
+        return g2()
+            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
+            .p()
+            .m({x:-8,y:-12})
+            .l({x:0,y:0})
+            .l({x:8,y:-12})
+            .drw({ls:'@nodcolor',fs:'@nodfill2'})
+            .cir({x:0,y:0,r:4,ls:'@nodcolor',fs:'@nodfill'})
+            .lin({x1:-9,y1:-19,x2:9,y2:-19,ls:'@nodfill2',lw:5,lwnosc:false})
+            .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:'@nodcolor',lw:2,lwnosc:false})
+            .end();
     }
 })
+
 /**
  * @method
  * @returns {object} g2
@@ -761,14 +784,14 @@ g2.prototype.origin = function () { return this.addCommand({c:'origin',a:argumen
 g2.prototype.origin.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     g2() {
         const args = Object.assign({x:0,y:0,scl:1,w:0,z:3.5},this);
-
-        return g2().beg({x:args.x,y:args.y,scl:args.scl,w:args.w,lc:'round',lj:'round',fs:'#ccc'})
-                   .vec({x1:0,y1:0,x2:10*args.z,y2:0,lw:0.8,fs:'#ccc'})
-                   .vec({x1:0,y1:0,x2:0,y2:10*args.z,lw:0.8,fs:'#ccc'})
-                   .cir({x:0,y:0,r:2.5,fs:'#ccc'})
-                   .end();
+        return g2()
+            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w,lc:'round',lj:'round',fs:'#ccc'})
+            .vec({x1:0,y1:0,x2:10*args.z,y2:0,lw:0.8,fs:'#ccc'})
+            .vec({x1:0,y1:0,x2:0,y2:10*args.z,lw:0.8,fs:'#ccc'})
+            .cir({x:0,y:0,r:2.5,fs:'#ccc'})
+            .end();
     }
-});
+})
 
 /**
  * Mechanical style values.
