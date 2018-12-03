@@ -539,14 +539,14 @@ g2.canvasHdl.prototype = {
         this.pushTrf(cartesian ? [scl,0,0,-scl,x,this.ctx.canvas.height-1-y]
                                : [scl,0,0,scl,x,y] );
     },
-    grid({color,size}={}) {
+    grid({color='#ccc',size}={}) {
         let ctx = this.ctx, b = ctx.canvas.width, h = ctx.canvas.height,
             {x,y,scl} = this.uniTrf,
             sz = size || this.gridSize(scl),
             xoff = x%sz, yoff = y%sz;
         ctx.save();
         ctx.setTransform(1,0,0,1,0,0);
-        ctx.strokeStyle = color || "#ccc";
+        ctx.strokeStyle = color;
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (let x=xoff,nx=b+1; x<nx; x+=sz) { ctx.moveTo(x,0); ctx.lineTo(x,h); }
@@ -561,17 +561,15 @@ g2.canvasHdl.prototype = {
         ctx.clearRect(0,0,b||ctx.canvas.width,h||ctx.canvas.height);
         ctx.restore();
     },
-    cir({x,y,r}) {
+    cir({x=0,y=0,r}) {
         this.ctx.beginPath();
         this.ctx.arc(x||0,y||0,Math.abs(r),0,2*Math.PI,true);
         this.drw(arguments[0]);
     },
-    arc({x,y,r,w,dw}) {
-        w = w||0;
-        dw = dw === undefined ? 2*Math.PI : dw;
+    arc({x=0,y=0,r,w=0,dw=2*Math.PI}) {
         if (Math.abs(dw) > Number.EPSILON && Math.abs(r) > Number.EPSILON) {
             this.ctx.beginPath();
-            this.ctx.arc(x||0,y||0,Math.abs(r),w,w+dw,dw<0);
+            this.ctx.arc(x,y,Math.abs(r),w,w+dw,dw<0);
             this.drw(arguments[0]);
         }
         else if (Math.abs(dw) < Number.EPSILON && Math.abs(r) > Number.EPSILON) {
@@ -582,32 +580,25 @@ g2.canvasHdl.prototype = {
         }
     //  else  // nothing to draw with r === 0
     },
-    ell({x,y,rx,ry,w,dw,rot}) {
-        ry = ry||rx;
-        w = w||0;
-        dw = dw||2*Math.PI;
-        rot = rot||0;
+    ell({x=0,y=0,rx,ry,w=0,dw=2*Math.PI,rot=0}) {
         this.ctx.beginPath();
-        this.ctx.ellipse(x||0,y||0,Math.abs(rx),Math.abs(ry),rot,w,w+dw,dw<0);
+        this.ctx.ellipse(x,y,Math.abs(rx),Math.abs(ry),rot,w,w+dw,dw<0);
         this.drw(arguments[0]);
     },
-    rec({x,y,b,h}) {
+    rec({x=0,y=0,b,h}) {
         let tmp = this.setStyle(arguments[0]);
-        h = h || b;
-        x = x || 0;
-        y = y || 0;
         this.ctx.fillRect(x,y,b,h);
         this.ctx.strokeRect(x,y,b,h);
         this.resetStyle(tmp);
     },
-    lin({x1,y1,x2,y2}) {
+    lin({x1=0,y1=0,x2,y2}) {
         let ctx = this.ctx;
         ctx.beginPath();
         ctx.moveTo(x1,y1);
         ctx.lineTo(x2,y2);
         this.stroke(arguments[0]);
     },
-    ply: function({pts,closed,x,y,w,_itr=()=>0}) {
+    ply: function({pts,closed,x=0,y=0,w=0,_itr=()=>0}) {
         let p, i, len = _itr.len, istrf = !!(x || y || w), cw, sw;
         if (istrf) this.setTrf([cw=(w?Math.cos(w):1),sw=(w?Math.sin(w):0),-sw,cw,x||0,y||0]);
         this.ctx.beginPath();
@@ -620,8 +611,7 @@ g2.canvasHdl.prototype = {
         if (istrf) this.resetTrf();
         return i-1;  // number of points ..
     },
-    txt({str,x,y,w,unsizable}) {
-        x = x || 0; y = y || 0;
+    txt({str,x=0,y=0,w=0,unsizable}) {
         let tmp = this.setStyle(arguments[0]),
             sw = w ? Math.sin(w) : 0,
             cw = w ? Math.cos(w) : 1,
@@ -661,7 +651,7 @@ g2.canvasHdl.prototype = {
             try {
                 return await pimg;
             } catch (err) {
-                console.warn(`failed to (pre-)load image; '${xuri}'`, err);
+                // console.warn(`failed to (pre-)load image; '${xuri}'`, err);
                 if (xuri === this.errorImageStr) {
                     throw err;
                 } else {
@@ -686,14 +676,14 @@ g2.canvasHdl.prototype = {
         this.loadedImages.set(uri, img);
         return img;
     },
-    async img({uri,x,y,b,h,xoff,yoff,dx,dy,w}) {
+    async img({uri,x=0,y=0,b,h,xoff=0,yoff=0,dx,dy,w}) {
         const img_ = await this.loadImage(uri);
 
         this.ctx.save();
         if(this.isCartesian) this.ctx.scale(1,-1);
-        this.ctx.translate(x||0,y = this.isCartesian ? -y||0 : y||0);
+        this.ctx.translate(x,y = this.isCartesian ? -y : y);
         this.ctx.rotate(this.isCartesian ? -w : w);
-        this.ctx.drawImage(img_,xoff||0,yoff||0,dx||img_.width,dy||img_.height,
+        this.ctx.drawImage(img_,xoff,yoff,dx||img_.width,dy||img_.height,
                     0,this.isCartesian ? -h :0,b ||img_.width,h ||img_.height);
         this.ctx.restore();
     },
@@ -702,14 +692,10 @@ g2.canvasHdl.prototype = {
         this.exe(grp.commands);
         this.end();
     },
-    beg({x,y,w,scl,matrix,unsizable}={}) {
+    beg({x=0,y=0,w=0,scl=1,matrix,unsizable}={}) {
         let trf = matrix;
-        x = x || 0;
-        y = y || 0;
         if (!trf) {
             let ssw, scw;
-            w = w || 0;
-            scl = scl || 1;
             ssw = w ? Math.sin(w)*scl : 0;
             scw = w ? Math.cos(w)*scl : scl;
             trf = [scw,ssw,-ssw,scw,x,y];
