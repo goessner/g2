@@ -1,13 +1,12 @@
+"use strict"
+
 /**
  * g2.chart (c) 2015-18 Stefan Goessner
- * @license
- * MIT License
- */
-
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
-/**
- * Create x/y-line chart.
- * @constructor
+ * @author Stefan Goessner
+ * @license MIT License
+ * @requires g2.core.js
+ * @requires g2.ext.js
+ * @typedef g2
  * @returns {object} chart
  * @param {object} args - Chart arguments object or
  * @property {float} x - x-position of lower left corner of chart rectangle.
@@ -62,21 +61,26 @@ g2.prototype.chart.prototype = {
         if (!this.h) this.h = this.defaults.h;
         // initialize function graphs (only once ...)
         if (funcs && funcs.length) {  // init all funcs ...
-            for (const func of funcs)
-                this.initFunc(func,
+            for (const func of funcs) {
+                this.initFunc(
+                    func,
                     this.xmin===undefined,
                     this.xmax===undefined,
                     this.ymin===undefined,
-                    this.ymax===undefined);
+                    this.ymax===undefined
+                );
+            }
         }
-//        if (this.xaxis)
-            this.xAxis = this.autoAxis(this.get('xmin'),this.get('xmax'),0,this.b);
-//        if (this.yaxis)
-            this.yAxis = this.autoAxis(this.get('ymin'),this.get('ymax'),0,this.h);
+        // if (this.xaxis)
+        this.xAxis = this.autoAxis(this.get('xmin'),this.get('xmax'),0,this.b);
+        // if (this.yaxis)
+        this.yAxis = this.autoAxis(this.get('ymin'),this.get('ymax'),0,this.h);
 
         // draw background & border ...
-        g.rec({x:this.x,y:this.y,b:this.b,h:this.h,
-               fs:this.get("fs"),ls:this.get("ls")});
+        g.rec({
+            x:this.x,y:this.y,b:this.b,h:this.h,
+            fs:this.get("fs"),ls:this.get("ls")
+        });
 
         // draw title & axes ...
         g.beg(Object.assign({x:this.x,y:this.y,lw:1}, this.defaults.style,this.style));
@@ -87,8 +91,9 @@ g2.prototype.chart.prototype = {
                 x: this.get('b')/2,
                 y: this.get('h') + this.get("title","offset"),
                 w: 0
-            }, this.defaults.title.style,
-              (this.title && this.title.style || {})));
+                }, this.defaults.title.style,
+                (this.title && this.title.style || {})
+            ));
         if (this.xaxis) this.drawXAxis(g);
         if (this.yaxis) this.drawYAxis(g);
 
@@ -167,8 +172,8 @@ g2.prototype.chart.prototype = {
            : Math.floor(zmin/dz) + 1;
         let z0 = i0*dz;
         t0 = Math.round(scl*(z0 - zmin));
-//        console.log("Dt="+Dt+",N="+(Dt - t0)/ dt)
-//        console.log("DT="+Dt+",N="+(Dt - t0)/ dt)
+        // console.log("Dt="+Dt+",N="+(Dt - t0)/ dt)
+        // console.log("DT="+Dt+",N="+(Dt - t0)/ dt)
         N = Math.floor((Dt - t0)/ dt) + 1;
         j0 = base % 2 && i0 % 2 ? i0 + 1 : i0;
         jth = exp === 0 && N < 11 ? 1 : base===2 && N > 9 ? 5 : 2;
@@ -210,7 +215,7 @@ g2.prototype.chart.prototype = {
             ticklen = showticks ? this.get("xaxis","ticks","len") : 0,
             showorigin = showaxis && this.get("xaxis","origin"),
             title = this.xaxis && (this.get("xaxis","title","text") || this.xaxis.title) || '';
-//console.log(this.xAxis)
+        // console.log(this.xAxis)
         // draw tick/grid lines
         g.beg(axisstyle);
         for (let i=0; i<this.xAxis.N; i++) {
@@ -336,7 +341,7 @@ g2.prototype.chart.prototype = {
         return { x: this.x + Math.max(Math.min((xy.x - this.xAxis.zmin)*this.xAxis.scl,this.b),0),
                  y: this.y + Math.max(Math.min((xy.y - this.yAxis.zmin)*this.yAxis.scl,this.h),0) };
     },
-   /**
+    /**
       * Get nested chart property either as custom property or as default property.
       * @private
       */
@@ -346,7 +351,7 @@ g2.prototype.chart.prototype = {
                             : n2 ? this[n1] && this[n1][n2]
                                  : n1 ? this[n1]
                                       : undefined,
-              dflts = this.defaults;
+            dflts = this.defaults;
         return loc !== undefined
              ? loc
              : n4 ? dflts[n1] && dflts[n1][n2] && dflts[n1][n2][n3] && dflts[n1][n2][n3][n4]
@@ -355,7 +360,7 @@ g2.prototype.chart.prototype = {
                             : n1 ? dflts[n1]
                                  : undefined;
     },
-  // default properties
+    // default properties
     defaults: {
         x: 0,
         y: 0,
@@ -378,12 +383,12 @@ g2.prototype.chart.prototype = {
             style: { font:"16px serif", fs:"black", thal:"center", tval:"bottom" }
         },
         funcs: [],
-/*
+        /*
         func: {
             style: { lw:1, fs:"transparent" },
             // s. https://web.njit.edu/~kevin/rgb.txt.html
         },
-*/
+        */
         xaxis: {
             fill: false,
             line: true,

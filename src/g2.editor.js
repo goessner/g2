@@ -53,7 +53,7 @@ g2.editor.prototype = {
             }
             else {
                 for (let elm=false, i=commands.length; i && !elm; i--)  // stop after first hit .. starting from list end !
-                    elm = this.hit(commands[i-1].a)
+                    elm = this.hit(commands[i-1].a);
             }
             this.evt = false;
         }
