@@ -61,15 +61,13 @@ g2.prototype.chart.prototype = {
         if (!this.h) this.h = this.defaults.h;
         // initialize function graphs (only once ...)
         if (funcs && funcs.length) {  // init all funcs ...
-            for (const func of funcs) {
-                this.initFunc(
-                    func,
-                    this.xmin===undefined,
-                    this.xmax===undefined,
-                    this.ymin===undefined,
-                    this.ymax===undefined
-                );
-            }
+            const tmp = [
+                this.xmin===undefined,
+                this.xmax===undefined,
+                this.ymin===undefined,
+                this.ymax===undefined
+            ];
+            funcs.forEach(f => this.initFunc(f,...tmp));
         }
         // if (this.xaxis)
         this.xAxis = this.autoAxis(this.get('xmin'),this.get('xmax'),0,this.b);
@@ -123,20 +121,28 @@ g2.prototype.chart.prototype = {
         }
         // Get func's bounding box
         if (itr && (setXmin || setXmax || setYmin || setYmax)) {
-            let xmin = Number.POSITIVE_INFINITY, ymin = Number.POSITIVE_INFINITY,
-                xmax = Number.NEGATIVE_INFINITY, ymax = Number.NEGATIVE_INFINITY,
-                p;  // data point
-            for (let i=0, n=itr.len; i<n; i++) {
-                p = itr(i);
-                if (p.x < xmin) xmin = p.x;
-                if (p.y < ymin) ymin = p.y;
-                if (p.x > xmax) xmax = p.x;
-                if (p.y > ymax) ymax = p.y;
+            const xarr = [];
+            const yarr = [];
+            for (let i=0; i < itr.len; ++i) {
+                xarr.push(itr(i).x);
+                yarr.push(itr(i).y);
             }
-            if (setXmin && (this.xmin === undefined || xmin < this.xmin)) this.xmin = xmin;
-            if (setXmax && (this.xmax === undefined || xmax < this.xmax)) this.xmax = xmax;
-            if (setYmin && (this.ymin === undefined || ymin < this.ymin)) this.ymin = ymin;
-            if (setYmax && (this.ymax === undefined || ymax < this.ymax)) this.ymax = ymax;
+            if (setXmin) {
+                const xmin = Math.min(...xarr);
+                if (!this.xmin || xmin < this.xmin) this.xmin = xmin;
+            }
+            if (setXmax) {
+                const xmax = Math.max(...xarr);
+                if (!this.xmax || xmax > this.xmax) this.xmax = xmax;
+            }
+            if (setYmin) {
+                const ymin = Math.min(...yarr);
+                if (!this.ymin || ymin < this.ymin) this.ymin = ymin;
+            }
+            if (setYmax) {
+                const ymax = Math.max(...yarr);
+                if (!this.ymax || ymax > this.ymax) this.ymax = ymax;
+            }
 
             if (fn.color && typeof fn.color === "number") // color index [0..n]
                 fn.color = this.defaults.colors[fn.color % this.defaults.colors.length];
