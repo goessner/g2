@@ -142,6 +142,7 @@ g2.prototype = {
      * @returns {object} g2
      * @param {object} - polygon arguments object.
      * @property {array} pts - array of points.
+     * @property {string} [format] - format string of points array structure. Useful for handing over initial empty points array. One of `['x,y','[x,y]','{x,y}']`. Has precedence over `pts` content.
      * @property {boolean} [closed = false]
      * @property {number} x - start x coordinate.
      * @property {number} y - start y coordinate.
@@ -152,8 +153,8 @@ g2.prototype = {
      *     .ply({pts:[{x:160,y:70},{x:180,y:80},{x:140,y:90}]}),
      *     .exe(ctx);
      */
-        ply({pts,closed,x,y,w}) {
-            arguments[0]._itr = g2.pntItrOf(pts);
+        ply({pts,format,closed,x,y,w}) {
+            arguments[0]._itr = format && g2.pntIterator[format](pts) || g2.pntItrOf(pts);
             return this.addCommand({c:'ply',a:arguments[0]});
         },
 
