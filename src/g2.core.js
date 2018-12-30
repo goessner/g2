@@ -599,18 +599,21 @@ g2.canvasHdl.prototype = {
         ctx.lineTo(x2,y2);
         this.stroke(arguments[0]);
     },
-    ply: function({pts,closed,x=0,y=0,w=0,_itr=()=>0}) {
-        let p, i, len = _itr.len, istrf = !!(x || y || w), cw, sw;
-        if (istrf) this.setTrf([cw=(w?Math.cos(w):1),sw=(w?Math.sin(w):0),-sw,cw,x||0,y||0]);
-        this.ctx.beginPath();
-        this.ctx.moveTo((p=_itr(0)).x,p.y);
-        for (i=1; i < len; i++)
-            this.ctx.lineTo((p=_itr(i)).x,p.y);
-        if (closed)  // closed then ..
-            this.ctx.closePath();
-        this.drw(arguments[0]);
-        if (istrf) this.resetTrf();
-        return i-1;  // number of points ..
+    ply: function({pts,closed,x=0,y=0,w=0,_itr}) {
+        if (_itr && _itr.len) {
+            let p, i, len = _itr.len, istrf = !!(x || y || w), cw, sw;
+            if (istrf) this.setTrf([cw=(w?Math.cos(w):1),sw=(w?Math.sin(w):0),-sw,cw,x||0,y||0]);
+            this.ctx.beginPath();
+            this.ctx.moveTo((p=_itr(0)).x,p.y);
+            for (i=1; i < len; i++)
+                this.ctx.lineTo((p=_itr(i)).x,p.y);
+            if (closed)  // closed then ..
+                this.ctx.closePath();
+            this.drw(arguments[0]);
+            if (istrf) this.resetTrf();
+            return i-1;  // number of points ..
+        }
+        return 0;
     },
     txt({str,x=0,y=0,w=0,unsizable}) {
         let tmp = this.setStyle(arguments[0]),
