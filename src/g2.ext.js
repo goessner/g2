@@ -430,6 +430,9 @@ g2.prototype.mark.prototype = {
  * Theses styles can be referenced using the comfortable '@' syntax.
  * @namespace
  * @property {object} symbol  `g2` symbol namespace.
+ * @property {object} [symbol.tick] Predefined symbol: a little tick
+ * @property {object} [symbol.dot] Predefined symbol: a little dot
+ * @property {object} [symbol.sqr] Predefined symbol: a little square
  * @property {string} [symbol.nodcolor=#333]    node color.
  * @property {string} [symbol.nodfill=#dedede]   node fill color.
  * @property {string} [symbol.nodfill2=#aeaeae]    alternate node fill color, somewhat darker.
@@ -442,11 +445,12 @@ g2.prototype.mark.prototype = {
  * @property {array} [symbol.dashdot=[25,6.5,2,6.5]]   dashdotted line style.
  * @property {number} [symbol.labelOffset=5]    default label offset distance.
  * @property {number} [symbol.labelSignificantDigits=3]   default label's significant digits after numbering point.
- * @property {method} [symbol.tick] creates a little tick
- * @property {method} [symbol.dot] creates a little dot
- * @property {method} [symbol.sqr] creates a little square
  */
 g2.symbol = g2.symbol || {};
+g2.symbol.tick = g2().p().m({x:0,y:-2}).l({x:0,y:2}).stroke({lc:"round",lwnosc:true});
+g2.symbol.dot = g2().cir({x:0,y:0,r:2,ls:"transparent"});
+g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
+
 g2.symbol.nodcolor = "#333";
 g2.symbol.nodfill  = "#dedede";
 g2.symbol.nodfill2 = "#aeaeae";
@@ -459,7 +463,4 @@ g2.symbol.dot = [4,4];
 g2.symbol.dashdot = [25,6.5,2,6.5];
 g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
 
-g2.symbol.tick = g2().p().m({x:0,y:-2}).l({x:0,y:2}).stroke({lc:"round",lwnosc:true});
-g2.symbol.dot = g2().cir({x:0,y:0,r:2,ls:"transparent"});
-g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
 // Helper methods .. not chainable.

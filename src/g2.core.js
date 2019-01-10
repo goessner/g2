@@ -170,13 +170,14 @@ g2.prototype = {
     txt({str,x,y,w}) { return this.addCommand({c:'txt',a:arguments[0]}); },
 
     /**
-     * Reference g2 graphics commands from another g2 object.
+     * Reference g2 graphics commands from another g2 object or a predefined g2.symbol.
      * With this command you can reuse instances of grouped graphics commands
      * while applying a similarity transformation and style properties on them.
      * In fact you might want to build custom graphics libraries on top of that feature.
      * @method
      * @returns {object} g2
      * @param {object} - use arguments object.
+     * @see {@link https://github.com/goessner/g2/blob/master/docs/api/g2.ext.md#g2symbol--object predefined symbols in g2.ext}
      * @property {object | string} grp - g2 source object or symbol name found in 'g2.symbol' namespace.
      * @property {number} [x=0] - translation value x.
      * @property {number} [y=0] - translation value y.
