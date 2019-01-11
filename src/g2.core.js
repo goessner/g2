@@ -480,18 +480,6 @@ g2.mixin = function mixin(obj, ...protos) {
     return obj;
 }
 
-// handler requirements: preloadImage, loadedImages, errorImageStr
-g2.preloadImages = async function(imgs) {
-    const flight = [];
-    for (const hdl of g2.preloadImages.hdlrs.map(hdlr => hdlr.prototype)) {
-        for (const imgUri of imgs) {
-            flight.push(hdl.loadImage(imgUri));
-        }
-    }
-    await Promise.all(flight);
-}
-g2.preloadImages.hdlrs = [];
-
 /**
  * Copy properties, even as getters .. a useful fraction of the above ..
  * @private
@@ -517,7 +505,6 @@ g2.canvasHdl = function(ctx) {
 };
 g2.handler.factory.push((ctx) => ctx instanceof g2.canvasHdl ? ctx
                                : ctx instanceof CanvasRenderingContext2D ? g2.canvasHdl(ctx) : false);
-g2.preloadImages.hdlrs.push(g2.canvasHdl);
 
 g2.canvasHdl.prototype = {
     init(grp,style) {
@@ -632,8 +619,7 @@ g2.canvasHdl.prototype = {
         this.resetStyle(tmp);
     },
     errorImageStr: "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7",
-    loadedImages: new Map(),
-    loadingImages: new Map(),
+    images: Object.create(null),
     async loadImage(uri) {
         const download = async (xuri) => {
             const pimg = new Promise((resolve, reject) => {
@@ -665,20 +651,17 @@ g2.canvasHdl.prototype = {
             }
         }
 
-        let img = this.loadedImages.get(uri);
+        let img = this.images[uri];
         if (img !== undefined) {
-            return img;
-        } else if ((img = this.loadingImages.get(uri)) !== undefined) {
-            return await img;
+            return img instanceof Promise ? await img : img;
         }
         img = download(uri);
-        this.loadingImages.set(uri, img);
+        this.images[uri] = img;
         try {
             img = await img;
         } finally {
-            this.loadingImages.delete(uri);
+            this.images[uri] = img;
         }
-        this.loadedImages.set(uri, img);
         return img;
     },
     async img({uri,x=0,y=0,b,h,xoff=0,yoff=0,dx,dy,w}) {
