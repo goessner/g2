@@ -4,11 +4,9 @@
  * @license MIT License
  * @link https://github.com/goessner/g2
  */
-"use strict"
+import { g2 } from './g2.core';
 
-var g2 = g2 || {};  // for standalone usage ...
-
-g2 = Object.assign(g2, {
+Object.assign(g2, {
     EPS: Number.EPSILON,
     PI: Math.PI,
     PI2: 2*Math.PI,

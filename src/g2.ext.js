@@ -1,16 +1,13 @@
-
-"use strict"
-
 /**
  * g2.ext (c) 2015-18 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @requires g2.core.js
- * @typedef {g2}
+ * @typedef g2
  * @description Additional methods for g2.
  * @returns {g2}
  */
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
+import { g2 } from './g2.core';
 
 // constants for element selection / editing
 g2.NONE = 0x0; g2.OVER = 0x1; g2.DRAG = 0x2; g2.EDIT = 0x4;

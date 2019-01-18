@@ -1,0 +1,5 @@
+# npm pack output
+g2d-*.tgz
+
+yarn.lock
+node_modules

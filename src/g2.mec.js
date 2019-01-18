@@ -1,17 +1,16 @@
 
-"use strict"
-
 /**
  * g2.mec (c) 2013-18 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @requires g2.core.js
  * @requires g2.ext.js
- * @typedef {g2}
+ * @typedef g2
  * @description Mechanical extensions. (Requires cartesian coordinates)
  * @returns {g2}
  */
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
+import {g2} from './g2.core';
+import './g2.ext';
 /**
  * Add skip tag to previous command as a filter for findCmdIdx.
  * See 'mark' and 'label' commands for usage.

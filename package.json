@@ -1,6 +1,6 @@
 {
   "name": "g2d",
-  "version": "2.5.0",
+  "version": "2.5.2",
   "description": "g2 - a tiny 2d graphics command library",
   "keywords": [
     "vector",
@@ -11,13 +11,20 @@
     "svg",
     "javascript"
   ],
-  "main": "g2.js",
+  "main": "./index.js",
+  "typings": "./src/g2.d.ts",
+  "files": [
+    "index.js",
+    "src/g2.d.ts",
+    "src/g2.core.js",
+    "src/g2.ext.js",
+    "src/g2.lib.js",
+    "src/g2.chart.js",
+    "src/g2.mec.js"
+  ],
   "scripts": {
-    "build": "npm run minify && npm run jsdoc && npm run 7z",
-    "minify": "uglifyjs ./src/g2.core.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js -o ./src/g2.js --comments",
-    "concat": "type .\\src\\g2.core.js .\\src\\g2.lib.js .\\src\\g2.ext.js .\\src\\g2.mec.js .\\src\\g2.chart.js  >.\\src\\g2.full.js",
-    "jsdoc": "jsdoc2md ./src/g2.core.js > ./docs/api/g2.core.md && jsdoc2md ./src/g2.mec.js > ./docs/api/g2.mec.md && jsdoc2md ./src/g2.ext.js > ./docs/api/g2.ext.md && jsdoc2md ./src/g2.chart.js > ./docs/api/g2.chart.md",
-    "7z": "7z -tgzip a ./g2.min.js.gz ./g2.min.js"
+    "build": "webpack && npm run jsdoc",
+    "jsdoc": "jsdoc2md ./src/g2.core.js > ./docs/api/g2.core.md && jsdoc2md ./src/g2.mec.js > ./docs/api/g2.mec.md && jsdoc2md ./src/g2.ext.js > ./docs/api/g2.ext.md && jsdoc2md ./src/g2.chart.js > ./docs/api/g2.chart.md"
   },
   "author": "Stefan Goessner <fang03@web.de>",
   "repository": {
@@ -26,11 +33,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "concat": "^1.0.0",
     "jsdoc-to-markdown": "^1.3.2",
-    "uglify-es": "^3.3.9"
-  },
-  "dependencies": {
-    "jsdoc-to-markdown": "^3.5.5"
+    "webpack": "^4.28.4"
   }
 }

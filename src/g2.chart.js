@@ -1,5 +1,3 @@
-"use strict"
-
 /**
  * g2.chart (c) 2015-18 Stefan Goessner
  * @author Stefan Goessner
@@ -7,8 +5,8 @@
  * @requires g2.core.js
  * @requires g2.ext.js
  * @typedef g2
- * @returns {object} chart
- * @param {object} args - Chart arguments object or
+ * @returns {g2}
+ * @param {object} args - Chart arguments object
  * @property {float} x - x-position of lower left corner of chart rectangle.
  * @property {float} y - y-position of lower left corner of chart rectangle.
  * @property {float} [b=150] - width of chart rectangle.
@@ -48,6 +46,9 @@
  * @property {float} [ymin] - minimal y-axis value. If not given it is calculated from chart data values.
  * @property {float} [ymax] - maximal y-axis value. If not given it is calculated from chart data values.
  */
+import { g2 } from './g2.core';
+import './g2.ext';
+
 g2.prototype.chart = function chart({x,y,b,h,style,title,funcs,xaxis,xmin,xmax,yaxis,ymin,ymax}) {
     return this.addCommand({c:'chart',a:arguments[0]});
 }

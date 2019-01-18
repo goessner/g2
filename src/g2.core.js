@@ -6,7 +6,7 @@
  * @author Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
- * @typedef {g2}
+ * @typedef g2
  * @param {object} [opts] Custom options object. It is simply copied into the 'g2' instance, but not used from the g2 kernel.
  * @description Create a 2D graphics command queue object. Call without using 'new'.
  * @returns {g2}
@@ -18,7 +18,7 @@
  *     .exe(ctx);                         // Execute commands addressing canvas context.
  */
 
-function g2(opts) {
+export function g2(opts) {
     let o = Object.create(g2.prototype);
     o.commands = [];
     if (opts) Object.assign(o,opts);
@@ -915,6 +915,3 @@ g2.render = function render(fn) {
     }
     animate(performance.now());
 }
-
-// use it with node.js ... ?
-if (typeof module !== 'undefined') module.exports = g2;
