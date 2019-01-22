@@ -169,13 +169,14 @@ g2.prototype = {
     txt({str,x,y,w}) { return this.addCommand({c:'txt',a:arguments[0]}); },
 
     /**
-     * Reference g2 graphics commands from another g2 object.
+     * Reference g2 graphics commands from another g2 object or a predefined g2.symbol.
      * With this command you can reuse instances of grouped graphics commands
      * while applying a similarity transformation and style properties on them.
      * In fact you might want to build custom graphics libraries on top of that feature.
      * @method
      * @returns {object} g2
      * @param {object} - use arguments object.
+     * @see {@link https://github.com/goessner/g2/blob/master/docs/api/g2.ext.md#g2symbol--object predefined symbols in g2.ext}
      * @property {object | string} grp - g2 source object or symbol name found in 'g2.symbol' namespace.
      * @property {number} [x=0] - translation value x.
      * @property {number} [y=0] - translation value y.
@@ -490,18 +491,6 @@ g2.mixin = function mixin(obj, ...protos) {
     return obj;
 }
 
-// handler requirements: preloadImage, loadedImages, errorImageStr
-g2.preloadImages = async function(imgs) {
-    const flight = [];
-    for (const hdl of g2.preloadImages.hdlrs.map(hdlr => hdlr.prototype)) {
-        for (const imgUri of imgs) {
-            flight.push(hdl.loadImage(imgUri));
-        }
-    }
-    await Promise.all(flight);
-}
-g2.preloadImages.hdlrs = [];
-
 /**
  * Copy properties, even as getters .. a useful fraction of the above ..
  * @private
@@ -527,7 +516,6 @@ g2.canvasHdl = function(ctx) {
 };
 g2.handler.factory.push((ctx) => ctx instanceof g2.canvasHdl ? ctx
                                : ctx instanceof CanvasRenderingContext2D ? g2.canvasHdl(ctx) : false);
-g2.preloadImages.hdlrs.push(g2.canvasHdl);
 
 g2.canvasHdl.prototype = {
     init(grp,style) {
@@ -642,8 +630,7 @@ g2.canvasHdl.prototype = {
         this.resetStyle(tmp);
     },
     errorImageStr: "data:image/gif;base64,R0lGODlhHgAeAKIAAAAAmWZmmZnM/////8zMzGZmZgAAAAAAACwAAAAAHgAeAEADimi63P5ryAmEqHfqPRWfRQF+nEeeqImum0oJQxUThGaQ7hSs95ezvB4Q+BvihBSAclk6fgKiAkE0kE6RNqwkUBtMa1OpVlI0lsbmFjrdWbMH5Tdcu6wbf7J8YM9H4y0YAE0+dHVKIV0Efm5VGiEpY1A0UVMSBYtPGl1eNZhnEBGEck6jZ6WfoKmgCQA7",
-    loadedImages: new Map(),
-    loadingImages: new Map(),
+    images: Object.create(null),
     async loadImage(uri) {
         const download = async (xuri) => {
             const pimg = new Promise((resolve, reject) => {
@@ -675,20 +662,17 @@ g2.canvasHdl.prototype = {
             }
         }
 
-        let img = this.loadedImages.get(uri);
+        let img = this.images[uri];
         if (img !== undefined) {
-            return img;
-        } else if ((img = this.loadingImages.get(uri)) !== undefined) {
-            return await img;
+            return img instanceof Promise ? await img : img;
         }
         img = download(uri);
-        this.loadingImages.set(uri, img);
+        this.images[uri] = img;
         try {
             img = await img;
         } finally {
-            this.loadingImages.delete(uri);
+            this.images[uri] = img;
         }
-        this.loadedImages.set(uri, img);
         return img;
     },
     async img({uri,x=0,y=0,b,h,xoff=0,yoff=0,dx,dy,w}) {

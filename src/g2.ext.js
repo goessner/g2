@@ -12,23 +12,6 @@
  */
 var g2 = g2 || { prototype:{} };  // for jsdoc only ...
 
-// g2 symbols (values & geometries) predefined
-g2.symbol.nodcolor = "#333";
-g2.symbol.nodfill  = "#dedede";
-g2.symbol.nodfill2 = "#aeaeae";
-g2.symbol.linkcolor = "#666";
-g2.symbol.linkfill = "rgba(225,225,225,0.75)";
-g2.symbol.dimcolor = "darkslategray";
-g2.symbol.solid = [];
-g2.symbol.dash = [15,10];
-g2.symbol.dot = [4,4];
-g2.symbol.tick = g2().p().m({x:0,y:-2}).l({x:0,y:2}).stroke({lc:"round",lwnosc:true});
-g2.symbol.dashdot = [25,6.5,2,6.5];
-g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
-
-g2.symbol.dot = g2().cir({x:0,y:0,r:2,ls:"transparent"});
-g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
-
 // constants for element selection / editing
 g2.NONE = 0x0; g2.OVER = 0x1; g2.DRAG = 0x2; g2.EDIT = 0x4;
 
@@ -440,5 +423,44 @@ g2.prototype.mark.prototype = {
         return marks;
     }
 }
+
+/**
+ * Extensed style values.
+ * Not really meant to get overwritten. But if you actually want, proceed.<br>
+ * Theses styles can be referenced using the comfortable '@' syntax.
+ * @namespace
+ * @property {object} symbol  `g2` symbol namespace.
+ * @property {object} [symbol.tick] Predefined symbol: a little tick
+ * @property {object} [symbol.dot] Predefined symbol: a little dot
+ * @property {object} [symbol.sqr] Predefined symbol: a little square
+ * @property {string} [symbol.nodcolor=#333]    node color.
+ * @property {string} [symbol.nodfill=#dedede]   node fill color.
+ * @property {string} [symbol.nodfill2=#aeaeae]    alternate node fill color, somewhat darker.
+ * @property {string} [symbol.linkcolor=#666]   link color.
+ * @property {string} [symbol.linkfill=rgba(225,225,225,0.75)]   link fill color, semi-transparent.
+ * @property {string} [symbol.dimcolor=darkslategray]   dimension color.
+ * @property {array} [symbol.solid=[]]   solid line style.
+ * @property {array} [symbol.dash=[15,10]]   dashed line style.
+ * @property {array} [symbol.dot=[4,4]]   dotted line style.
+ * @property {array} [symbol.dashdot=[25,6.5,2,6.5]]   dashdotted line style.
+ * @property {number} [symbol.labelOffset=5]    default label offset distance.
+ * @property {number} [symbol.labelSignificantDigits=3]   default label's significant digits after numbering point.
+ */
+g2.symbol = g2.symbol || {};
+g2.symbol.tick = g2().p().m({x:0,y:-2}).l({x:0,y:2}).stroke({lc:"round",lwnosc:true});
+g2.symbol.dot = g2().cir({x:0,y:0,r:2,ls:"transparent"});
+g2.symbol.sqr = g2().rec({x:-1.5,y:-1.5,b:3,h:3,ls:"transparent"});
+
+g2.symbol.nodcolor = "#333";
+g2.symbol.nodfill  = "#dedede";
+g2.symbol.nodfill2 = "#aeaeae";
+g2.symbol.linkcolor = "#666";
+g2.symbol.linkfill = "rgba(225,225,225,0.75)";
+g2.symbol.dimcolor = "darkslategray";
+g2.symbol.solid = [];
+g2.symbol.dash = [15,10];
+g2.symbol.dot = [4,4];
+g2.symbol.dashdot = [25,6.5,2,6.5];
+g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
 
 // Helper methods .. not chainable.
