@@ -678,10 +678,9 @@ g2.canvasHdl.prototype = {
     },
     async img({uri,x=0,y=0,b,h,xoff=0,yoff=0,dx,dy,w,scl=1}) {
         const img_ = await this.loadImage(uri);
-
+        b = b*scl; h = h*scl;
         this.ctx.save();
-        if(this.isCartesian) this.ctx.scale(scl,-scl);
-        else this.ctx.scale(scl,scl);
+        if(this.isCartesian) this.ctx.scale(1,-1);
         this.ctx.translate(x,y = this.isCartesian ? -y : y);
         this.ctx.rotate(this.isCartesian ? -w : w);
         this.ctx.drawImage(img_,xoff,yoff,dx||img_.width,dy||img_.height,
