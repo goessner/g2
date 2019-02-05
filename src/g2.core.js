@@ -1,8 +1,5 @@
-
-"use strict"
-
 /**
- * g2.core (c) 2013-18 Stefan Goessner
+ * g2.core (c) 2013-19 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
@@ -17,6 +14,8 @@
  *     .lin({x1:100,y1:100,x2:200,y2:50}) // ... commands.
  *     .exe(ctx);                         // Execute commands addressing canvas context.
  */
+
+"use strict"
 
 function g2(opts) {
     let o = Object.create(g2.prototype);
@@ -445,9 +444,21 @@ g2.handler.factory = [];
 
 // predefined polyline/spline point iterators
 g2.pntIterator = {
-   "x,y":   function(pts) { function pitr(i) { return {x:pts[2*i],y:pts[2*i+1]}; };                      pitr.len = pts.length/2; return pitr; },
-   "[x,y]": function(pts) { function pitr(i) { return pts[i] ? {x:pts[i][0],y:pts[i][1]} : undefined; }; pitr.len = pts.length;   return pitr; },
-   "{x,y}": function(pts) { function pitr(i) { return pts[i]; };                                         pitr.len = pts.length;   return pitr; }
+   "x,y":   function(pts) { 
+                function pitr(i) { return {x:pts[2*i],y:pts[2*i+1]}; };
+                Object.defineProperty(pitr, 'len', { get:() => pts.length/2, enumerable:true, configurable:true, writabel:false });
+                return pitr; 
+            },
+   "[x,y]": function(pts) { 
+                function pitr(i) { return pts[i] ? {x:pts[i][0],y:pts[i][1]} : undefined; }; 
+                Object.defineProperty(pitr, 'len', { get:() => pts.length, enumerable:true, configurable:true, writabel:false });
+                return pitr;
+            },
+   "{x,y}": function(pts) { 
+                function pitr(i) { return pts[i]; };
+                Object.defineProperty(pitr, 'len', { get:() => pts.length, enumerable:true, configurable:true, writabel:false });
+                return pitr; 
+            }
 };
 g2.pntItrOf = function(pts) {
    return !(pts && pts.length) ? undefined
@@ -674,7 +685,7 @@ g2.canvasHdl.prototype = {
         this.ctx.translate(x,y = this.isCartesian ? -y : y);
         this.ctx.rotate(this.isCartesian ? -w : w);
         this.ctx.drawImage(img_,xoff,yoff,dx||img_.width,dy||img_.height,
-                    0,this.isCartesian ? -h :0,b ||img_.width,h ||img_.height);
+                    0,this.isCartesian ? -h || 0 :0,b ||img_.width,h ||img_.height);
         this.ctx.restore();
     },
     use({grp}) {
