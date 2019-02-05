@@ -211,8 +211,9 @@ g2.prototype = {
      * @property {number} [yoff = undefined] - y-offset.
      * @property {number} [dx = undefined] - region x.
      * @property {number} [dy = undefined] - region y.
+     * @property {number} [scl = 1] - image scaling.
      */
-    img({uri,x,y,w,b,h,xoff,yoff,dx,dy}) { return this.addCommand({c:'img',a:arguments[0]}); },
+    img({uri,x,y,w,b,h,xoff,yoff,dx,dy,scl}) { return this.addCommand({c:'img',a:arguments[0]}); },
 
     /**
      * Begin subcommands. Current state is saved.
@@ -664,11 +665,12 @@ g2.canvasHdl.prototype = {
         }
         return img;
     },
-    async img({uri,x=0,y=0,b,h,xoff=0,yoff=0,dx,dy,w}) {
+    async img({uri,x=0,y=0,b,h,xoff=0,yoff=0,dx,dy,w,scl=1}) {
         const img_ = await this.loadImage(uri);
 
         this.ctx.save();
-        if(this.isCartesian) this.ctx.scale(1,-1);
+        if(this.isCartesian) this.ctx.scale(scl,-scl);
+        else this.ctx.scale(scl,scl);
         this.ctx.translate(x,y = this.isCartesian ? -y : y);
         this.ctx.rotate(this.isCartesian ? -w : w);
         this.ctx.drawImage(img_,xoff,yoff,dx||img_.width,dy||img_.height,
