@@ -678,13 +678,14 @@ g2.canvasHdl.prototype = {
     },
     async img({uri,x=0,y=0,b,h,xoff=0,yoff=0,dx,dy,w,scl=1}) {
         const img_ = await this.loadImage(uri);
-        b = b*scl; h = h*scl;
+        b = (b || img_.width ) * scl;
+        h = (h || img_.height) * scl;
         this.ctx.save();
         if(this.isCartesian) this.ctx.scale(1,-1);
         this.ctx.translate(x,y = this.isCartesian ? -y : y);
         this.ctx.rotate(this.isCartesian ? -w : w);
         this.ctx.drawImage(img_,xoff,yoff,dx||img_.width,dy||img_.height,
-                    0,this.isCartesian ? -h || 0 :0,b ||img_.width,h ||img_.height);
+                    0,this.isCartesian ? -h:0,b,h);
         this.ctx.restore();
     },
     use({grp}) {
