@@ -1,27 +1,10 @@
 new TestContainer("mec",
      tests = [
-
-          new Test('g2.mec.js',
-               `g2().txt({str:"the following tests are for g2.mec.js",x:50,y:50})`),
-
-          new Test('symbols',
-               `g2().view({cartesian:true})
-     .pol({x:20,y:75})
-     .gnd({x:60,y:75})
-     .nod({x:100,y:75})
-     .dblnod({x:140,y:75})
-     .nodfix({x:180,y:75})
-     .nodflt({x:220,y:75})
-     .origin({x:260,y:75})`),
-
-          new Test('vec',
-               `g2().vec({x1:50,y1:20,x2:250,y2:120})`),
-
           new Test('dim',
-               `g2().dim({x1:20,y1:75,x2:200,y2:75})
-     .dim({x1:20,y1:125,x2:200,y2:125,inside:false})`),
+               `g2().dim({x1:50,y1:75,x2:230,y2:75})
+     .dim({x1:50,y1:125,x2:230,y2:125,inside:false})`),
 
-          new Test('dim2',
+          new Test('dim-2',
                `A = {x1: 30,y1:50,x2:200,y2:120}
 g2().lin({...A,ls:"red",lw:2})
      .dim({...A, off:-15,over:5})`),
@@ -29,6 +12,9 @@ g2().lin({...A,ls:"red",lw:2})
           new Test('adim',
                `g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
      .adim({x:200,y:70,r:50,w:pi/3,dw:-4*pi/3,inside:false})`),
+
+          new Test('vec',
+               `g2().vec({x1:50,y1:20,x2:250,y2:120})`),
 
           new Test('slider',
                `g2().grid().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})`),
@@ -95,9 +81,19 @@ g2().view({cartesian:true})
      .bar({x1:20,y1:50,x2:220,y2:50})
      .load({pts:[20,50,30,140,250,90,220,50],lw:1,w:-Math.PI/3,ls:"blue"})`),
 
-          new Test('load2',
+          new Test('load-2',
                `g2().view({cartesian:true})
      .load({pts:[10,10,100,10,100,130,200,130,200,60,10,60],spacing:10})`),
+
+     new Test('pol',
+               `g2().view({cartesian:true})
+     .pol({x:20,y:75})
+     .gnd({x:60,y:75})
+     .nod({x:100,y:75})
+     .dblnod({x:140,y:75})
+     .nodfix({x:180,y:75})
+     .nodflt({x:220,y:75})
+     .origin({x:260,y:75})`),
 
           new Test('mec',
                `let A = {x:50,y:25},B = {x:150,y:25},

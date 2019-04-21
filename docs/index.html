@@ -54,9 +54,20 @@
     <div class="container-fluid" id="container">
         <h1>g2 Tests</h1>
         <h6>g2.js, g2.ext.js, g2.mec.js are referenced. canvas and image should look alike.</h6>
-        <p id="errind">Error at number: </p>
+        <p id="errind">Error found at: </p>
+        <p id="diffind">Differences at: </p>
     </div>
     <script>
+        let globalItr = 0;
+        let errind = document.getElementById('errind');
+        let diffind = document.getElementById('diffind');
+
+        let testingData = [];
+        fetch('https://raw.githubusercontent.com/goessner/g2/WIP/index-overhaul/docs/index/index.tests.json')
+            .then(response => response.text())
+            .then((data) => { testingData = JSON.parse(data); })
+            .then(() => allTestContainer.forEach(createList));
+
         function createList({name, tests}) {
             const container = document.querySelector('#container');
 
@@ -112,12 +123,14 @@
                 
                 const canvas = document.createElement('td');
                 const canvasArea = document.createElement('canvas');
+                canvasArea.classList.add('testCanvas');
                 const ctx = canvasArea.getContext('2d');
                 canvas.appendChild(canvasArea);
                 
                 const image = document.createElement('td');
-                const imageArea = document.createElement('img');
-                imageArea.src = './img/' + entry.name + '.png';
+                const imageArea = document.createElement('canvas');
+                const imageCtx = imageArea.getContext('2d');
+                g2().img({uri:testingData[globalItr]}).exe(imageCtx);
                 image.appendChild(imageArea);
                 
                 const error = document.createElement('td');
@@ -127,16 +140,29 @@
                 try {
                     g2().del().clr().exe(ctx);
                     eval(entry.src).exe(ctx);
+                    if( canvasArea.toDataURL() !== testingData[globalItr] ) {
+                        diffind.innerHTML += 'g2.' + name + ': ' + itr + ', ';
+                    }
                 }
                 catch (e) {
                     error.innerHTML = e;
-                    tr.classList.add('table-danger')
-                    document.getElementById('errind').innerHTML += 'ERROR!';
+                    tr.classList.add('table-danger');
+                    errind.innerHTML += 'g2.' + name + ': ' + itr;
                 }
+                globalItr++;
             }
             tests.forEach(createListEntry);
         }
-        allTestContainer.forEach(createList);
+
+        function getTests() {
+            const a = document.getElementsByClassName('testCanvas');
+            const tests = [];
+            for (let itr = 0; itr < a.length; ++itr) {
+                tests.push(a[itr].toDataURL());
+            }
+            const str = JSON.stringify(tests);
+            console.log(str);
+        }
     </script>
 </body>
 </html>

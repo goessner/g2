@@ -1,8 +1,14 @@
 new TestContainer("ext",
      tests = [
 
-          new Test('g2.ext.js',
-               `g2().txt({str:"the following tests are for g2.ext.js",x:50,y:50})`),
+          new Test('spline',
+               `g2().spline({pts:[50,40,150,60,150,60],closed:false,lw:4,ls:'#080'})`),
+
+          new Test('spline-2',
+               `g2().spline({pts:[50,20,50,80,150,20],closed:false,lw:4,ls:'#080'})`),
+
+          new Test('spline-3',
+               `g2().spline({pts:[50,30,150,20,150,80,50,70],closed:true,lw:4,ls:'#080',fs:'orange'})`),
 
           new Test('label',
                `g2().view({cartesian:true})
@@ -17,7 +23,7 @@ new TestContainer("ext",
          .label({str:"w",loc:"w",off:10})
          .label({str:"nw",loc:"nw",off:10})`),
 
-          new Test('label2',
+          new Test('label-2',
                `g2().view({cartesian:true})
          .rec({x:50,y:30,b:100,h:75,ld:[6,3]})
          .label({str:"c",loc:"c",border:true})
@@ -30,7 +36,7 @@ new TestContainer("ext",
          .label({str:"w",loc:"w",off:10,border:true})
          .label({str:"nw",loc:"nw",off:10,border:true})`),
 
-          new Test('label3',
+          new Test('label-3',
                `g2().view({cartesian:true})
         .pol({x:20,y:75}).label({str:'pol',loc:'s',off:25})
         .gnd({x:60,y:75}).label({str:'gnd',loc:'s',off:25})
@@ -45,12 +51,12 @@ new TestContainer("ext",
          .cir({x:75,y:75,r:50,ld:[6,3]})
          .mark({mrk:"dot",loc:["c","n","ne","e","se","s","sw","w","nw"]})`),
 
-          new Test('mark2',
+          new Test('mark-2',
                `g2().view({cartesian:true})
          .rec({x:50,y:30,b:100,h:75,ld:[6,3]})
          .mark({mrk:"dot",loc:["c","n","ne","e","se","s","sw","w","nw"]})`),
 
-          new Test('mark3',
+          new Test('mark-3',
                `g2().view({cartesian:true})
          .ply({pts:[40,40,100,40,100,100,200,100,200,40]})
          .mark({mrk:"dot",loc:["beg",0.25,"mid",0.75,1]})
