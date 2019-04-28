@@ -63,10 +63,14 @@
         let diffind = document.getElementById('diffind');
 
         let testingData = [];
-        fetch('https://raw.githubusercontent.com/goessner/g2/WIP/index-overhaul/docs/index/index.tests.json')
-            .then(response => response.text())
-            .then((data) => { testingData = JSON.parse(data); })
-            .then(() => allTestContainer.forEach(createList));
+
+        const tests = window.chrome
+            ? 'https://raw.githubusercontent.com/goessner/g2/WIP/index-overhaul/docs/index/index.chrome.json'
+            : 'https://raw.githubusercontent.com/goessner/g2/WIP/index-overhaul/docs/index/index.firefox.json';
+
+        fetch(tests)
+            .then(response => response.json())
+            .then((data) => data.forEach(createList));
 
         function createList({name, tests}) {
             const container = document.querySelector('#container');
