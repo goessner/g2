@@ -115,7 +115,7 @@ new TestContainer(
     .use({grp:smiley,x:150,y:50,fs:'orange',scl:5,lw:1});`),
 
         new Test('img',
-            `g2().img({uri:'../docs/img/atom.png',b:200,h:100})`),
+            `g2().img({uri:'img/atom.png',b:200,h:100})`),
 
         new Test('img-2',
             `// intended 'file Not Found' error.
