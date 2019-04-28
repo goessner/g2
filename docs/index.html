@@ -22,55 +22,16 @@
         }
     </style>
 </head>
-
 <body>
-    <!-- Import g2 -->
     <script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
-    <!-- Import tests -->
-    <script>
-        const allTestContainer = [];
-        allTestContainer.hrefTemplate = "https://github.com/goessner/g2/blob/master/docs/api/g2.$.md";
-        class TestContainer {
-            constructor(name, tests) {
-                this.name = name;
-                this.tests = tests;
-                allTestContainer.push(this);
-            }
-        }
-
-        class Test {
-            constructor(name, src) {
-                this.name = name;
-                this.src = src;
-            }
-        }
-
-        const pi = Math.PI;
-    </script>
-    <script src="./index/index.js"></script>
-    <script src="./index/index.ext.js"></script>
-    <script src="./index/index.mec.js"></script>
-    <script src="./index/index.chart.js"></script>
     <div class="container-fluid" id="container">
         <h1>g2 Tests</h1>
         <h6>g2.js, g2.ext.js, g2.mec.js are referenced. canvas and image should look alike.</h6>
         <p id="errind">Error found at: </p>
-        <p id="diffind">Differences at: </p>
     </div>
     <script>
-        let globalItr = 0;
-        let errind = document.getElementById('errind');
-        let diffind = document.getElementById('diffind');
-
-        let testingData = [];
-
-        const tests = window.chrome
-            ? 'https://raw.githubusercontent.com/goessner/g2/WIP/index-overhaul/docs/index/index.chrome.json'
-            : 'https://raw.githubusercontent.com/goessner/g2/WIP/index-overhaul/docs/index/index.firefox.json';
-
-        fetch(tests)
-            .then(response => response.json())
-            .then((data) => data.forEach(createList));
+        const errind = document.getElementById('errind');
+        const hrefTemplate = "https://github.com/goessner/g2/blob/master/docs/api/g2.$.md";
 
         function createList({name, tests}) {
             const container = document.querySelector('#container');
@@ -78,7 +39,7 @@
             const heading = document.createElement('h3');
             const a = document.createElement('a');
             a.innerHTML = 'g2.' + name;
-            a.href = allTestContainer.hrefTemplate.replace('$', name);
+            a.href = hrefTemplate.replace('$', name);
             heading.innerHTML = 'Tests for ';
             heading.appendChild(a);
 
@@ -132,9 +93,8 @@
                 canvas.appendChild(canvasArea);
                 
                 const image = document.createElement('td');
-                const imageArea = document.createElement('canvas');
-                const imageCtx = imageArea.getContext('2d');
-                g2().img({uri:testingData[globalItr]}).exe(imageCtx);
+                const imageArea = document.createElement('img');
+                imageArea.src = 'img/' + entry.name + '.png';
                 image.appendChild(imageArea);
                 
                 const error = document.createElement('td');
@@ -144,29 +104,36 @@
                 try {
                     g2().del().clr().exe(ctx);
                     eval(entry.src).exe(ctx);
-                    if( canvasArea.toDataURL() !== testingData[globalItr] ) {
-                        diffind.innerHTML += 'g2.' + name + ': ' + itr + ', ';
-                    }
                 }
                 catch (e) {
                     error.innerHTML = e;
                     tr.classList.add('table-danger');
                     errind.innerHTML += 'g2.' + name + ': ' + itr;
                 }
-                globalItr++;
             }
             tests.forEach(createListEntry);
         }
 
-        function getTests() {
-            const a = document.getElementsByClassName('testCanvas');
-            const tests = [];
-            for (let itr = 0; itr < a.length; ++itr) {
-                tests.push(a[itr].toDataURL());
-            }
-            const str = JSON.stringify(tests);
-            console.log(str);
-        }
     </script>
+    <script>
+        class TestContainer {
+            constructor(name, tests) {
+                this.name = name;
+                this.tests = tests;
+                createList(this);
+            }
+        }
+        class Test {
+            constructor(name, src) {
+                this.name = name;
+                this.src = src;
+            }
+        }
+        const pi = Math.PI;
+    </script>
+    <script src="./index/index.core.js"></script>
+    <script src="./index/index.ext.js"></script>
+    <script src="./index/index.mec.js"></script>
+    <script src="./index/index.chart.js"></script>
 </body>
 </html>

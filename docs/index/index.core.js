@@ -168,7 +168,4 @@ g2().img({uri:'unknown.png',x:1,y:1,b:30,h:30})`),
 
         new Test('del',
             `g2().rec({x:60,y:30,b:80,h:40}).del().cir({x:100,y:50,r:35})`),
-
-        new Test('grid',
-            `g2().grid()`),
     ]);
