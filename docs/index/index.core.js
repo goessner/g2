@@ -168,4 +168,15 @@ g2().img({uri:'unknown.png',x:1,y:1,b:30,h:30})`),
 
         new Test('del',
             `g2().rec({x:60,y:30,b:80,h:40}).del().cir({x:100,y:50,r:35})`),
+
+        new Test('ins',
+`const node = { fill:'lime', g2() {
+    return g2().cir({x:160,y:50,r:15,fs:this.fill,lw:4,sh:[8,8,8,"gray"]})}
+};
+let color = 'red';
+g2().cir({x:40,y:50,r:15,fs:color,lw:4,sh:[8,8,8,"gray"]})
+    .ins(()=>{color='green'})
+    .cir({x:80,y:50,r:15,fs:color,lw:4,sh:[8,8,8,"gray"]})
+    .ins((g)=>g.cir({x:120,y:50,r:15,fs:'orange',lw:4,sh:[8,8,8,"gray"]}))
+    .ins(node)`)
     ]);
