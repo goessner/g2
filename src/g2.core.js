@@ -1,3 +1,6 @@
+
+"use strict"
+
 /**
  * g2.core (c) 2013-19 Stefan Goessner
  * @author Stefan Goessner
@@ -14,8 +17,6 @@
  *     .lin({x1:100,y1:100,x2:200,y2:50}) // ... commands.
  *     .exe(ctx);                         // Execute commands addressing canvas context.
  */
-
-"use strict"
 
 function g2(opts) {
     let o = Object.create(g2.prototype);
@@ -203,16 +204,18 @@ g2.prototype = {
      * @property {string} uri - image uri or data:url.
      * @property {number} [x = 0] - x-coordinate of image (upper left).
      * @property {number} [y = 0] - y-coordinate of image (upper left).
+     * @property {number} [b = image.width] - width.
+     * @property {number} [h = image.height] - height.
+     * @property {number} [sx = 0] - source x-offset.
+     * @property {number} [sy = 0] - source y-offset.
+     * @property {number} [sb = image.width] - source width.
+     * @property {number} [sh = image.height] - source height.
+     * @property {number} [xoff = 0] - x-offset.
+     * @property {number} [yoff = 0] - y-offset.
      * @property {number} [w = 0] - rotation angle (about upper left, in radians).
-     * @property {number} [b = undefined] - width.
-     * @property {number} [h = undefined] - height.
-     * @property {number} [xoff = undefined] - x-offset.
-     * @property {number} [yoff = undefined] - y-offset.
-     * @property {number} [dx = undefined] - region x.
-     * @property {number} [dy = undefined] - region y.
      * @property {number} [scl = 1] - image scaling.
      */
-    img({uri,x,y,w,b,h,xoff,yoff,dx,dy,scl}) { return this.addCommand({c:'img',a:arguments[0]}); },
+    img({uri,x,y,b,h,sx,sy,sb,sh,xoff,yoff,w,scl}) { return this.addCommand({c:'img',a:arguments[0]}); },
 
     /**
      * Begin subcommands. Current state is saved.
