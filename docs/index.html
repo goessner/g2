@@ -80,7 +80,7 @@
                 testLink.innerHTML = entry.name;
 
                 testLink.href = a.href + '#g2+' + (entry.name.match(/-[1-9]+$/) ?
-                    entry.name.slice(0,entry.name.lastIndexOf('-')) : entry.name);
+                    entry.name.slice(0, entry.name.lastIndexOf('-')) : entry.name);
                 testName.appendChild(testLink);
 
                 const src = document.createElement('td');
@@ -103,6 +103,7 @@
 
                 [number, testName, src, canvas, image, error].forEach(e => tr.appendChild(e));
                 tbody.appendChild(tr);
+
                 function render(str) {
                     try {
                         g2().del().clr().exe(ctx);
@@ -114,6 +115,7 @@
                         tr.classList.add('table-danger');
                         errind.innerHTML += 'g2.' + name + ': ' + itr;
                     }
+
                 }
                 render(entry.src);
             }

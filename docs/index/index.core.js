@@ -121,6 +121,59 @@ new TestContainer(
             `// intended 'file Not Found' error.
 g2().img({uri:'unknown.png',x:1,y:1,b:30,h:30})`),
 
+        new Test('img-3',
+        `g2().img({uri:'img/flower.jpg'})`),
+                
+        new Test('img-4',
+        `g2().img({uri:'img/flower.jpg', x: 10, y: 10})`),
+
+        new Test('img-5',
+        `g2().img({uri:'img/flower.jpg', x: 10, y: 10, b: 100, h: 50})`),
+
+        new Test('img-6',
+        `g2().img({uri:'img/flower.jpg', x: 10, y: 10 , b: 100, h: 50, w: 0.5})
+        .rec({x: 10, y: 10, b: 100, h: 50})`),
+
+        new Test('img-7',
+        `g2().img({uri:'img/flower.jpg', y: 60 , xoff:-10, yoff:-50, b: 100, h: 50})`),
+
+        new Test('img-8',
+        `g2().img({uri:'img/flower.jpg', y: 60 , x:10, yoff:-50, b: 100, h: 50, w: 0.5})
+    .rec({x: 10, y: 10, b: 100, h: 50})`),
+
+        new Test('img-9',
+        `g2().img({uri:'img/flower.jpg', y: 10, x: 10, scl: 0.5})`),
+    
+        new Test('img-10',
+        `g2().img({uri:'img/flower.jpg', x: 10, y: 10, b:200, h: 100, sx:10, sy:10})
+    .rec({x: 10, y: 10, b: 200, h: 100})`),
+
+        new Test('img-11',
+        `g2().img({uri:'img/flower.jpg', x: 10, y: 10, b: 200, h: 100, sx: 10, sy: 10, w: 0.5})
+    .beg({x: 10, y: 10, w: 0.5})
+    .rec({b: 200, h: 100})
+    .end()`),
+
+        new Test('img-12',
+        `g2().img({uri:'img/flower.jpg', x: 50, y: 50, b:140, h:65, xoff:10, yoff:10})
+    .rec({x: 50, y: 50, b: 150, h: 75})`),
+
+        new Test('img-13',
+        `g2().img({uri:'img/flower.jpg', x: 50, y: 50, b:140, h:65, xoff: 10, yoff: 10, w:0.5})
+    .beg({x:50, y:50, w:0.5})
+    .rec({b: 150, h: 75})
+    .end()`),
+
+        new Test('img-14',
+        `g2().img({uri:'img/flower.jpg', x: 10, y: 10, sb: 100, sh: 100, h: 60})`),
+
+        new Test('img-15',
+        `g2().img({uri:'img/flower.jpg', x: 10, y: 10, sb: 100, sh: 100, h: 60, w: 0.5})`),
+
+        new Test('img-16',
+        `g2().view({cartesian:true})
+    .img({uri:'img/flower.jpg'})`),
+
         new Test('beg',
             `g2().beg({w:0.2,scl:2,ls:'#666',fs:'orange',lw:3,lc:'round',lj:'round'})
     .rec({x:30,y:10,b:30,h:20})
