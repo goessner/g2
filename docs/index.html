@@ -56,7 +56,7 @@
                 t.innerHTML = e;
                 return t;
             }
-            const th = ["#", "name", "src", "canvas", "image", "error"].map(addColumn);  
+            const th = ["#", "name", "src", "canvas", "image", "error"].map(addColumn);
 
             const tbody = document.createElement('tbody');
 
@@ -71,10 +71,10 @@
             function createListEntry(entry) {
                 const tr = document.createElement('tr');
                 tr.id = name + 'Test' + itr++;
-                
+
                 const number = document.createElement('td');
                 number.innerHTML = itr;
-                
+
                 const testName = document.createElement('td');
                 const testLink = document.createElement('a');
                 testLink.innerHTML = entry.name;
@@ -84,32 +84,38 @@
                 testName.appendChild(testLink);
 
                 const src = document.createElement('td');
+                src.contentEditable = true;
                 src.innerHTML = entry.src;
-                
+                src.addEventListener('input', () => render(src.innerHTML));
+
                 const canvas = document.createElement('td');
                 const canvasArea = document.createElement('canvas');
                 canvasArea.classList.add('testCanvas');
                 const ctx = canvasArea.getContext('2d');
                 canvas.appendChild(canvasArea);
-                
+
                 const image = document.createElement('td');
                 const imageArea = document.createElement('img');
                 imageArea.src = 'img/' + entry.name + '.png';
                 image.appendChild(imageArea);
-                
+
                 const error = document.createElement('td');
-                
+
                 [number, testName, src, canvas, image, error].forEach(e => tr.appendChild(e));
                 tbody.appendChild(tr);
-                try {
-                    g2().del().clr().exe(ctx);
-                    eval(entry.src).exe(ctx);
+                function render(str) {
+                    try {
+                        g2().del().clr().exe(ctx);
+                        eval(str).exe(ctx);
+                        tr.classList.remove('table-danger');
+                    }
+                    catch (e) {
+                        error.innerHTML = e;
+                        tr.classList.add('table-danger');
+                        errind.innerHTML += 'g2.' + name + ': ' + itr;
+                    }
                 }
-                catch (e) {
-                    error.innerHTML = e;
-                    tr.classList.add('table-danger');
-                    errind.innerHTML += 'g2.' + name + ': ' + itr;
-                }
+                render(entry.src);
             }
             tests.forEach(createListEntry);
         }
@@ -136,4 +142,5 @@
     <script src="./index/index.mec.js"></script>
     <script src="./index/index.chart.js"></script>
 </body>
+
 </html>
