@@ -19,7 +19,19 @@ new TestContainer("chart",
             xaxis:{title:"x-axis",origin:true},
             yaxis:{title:"y-axis",origin:true},
         })`),
+
                 new Test('chart-3',
+                        `g2().view({cartesian:true})
+        .chart({x:40,y:40,b:190,h:90,fs:'black',
+                funcs:[
+                        {data:[-2,4,2,-1,3,3,4,2],style:{ls:'violet',lw:3,sh:[5,5,5,'rgba(255,0,255,0.7)']}},
+                        {fn:Math.sin,dx:Math.PI/20,style:{ls:'green',lw:3,sh:[5,5,5,'rgba(0,255,0,0.5)']}}
+                ],
+                title:{text:"chart"},
+                xaxis:{title:"x-axis",origin:true},
+                yaxis:{title:"y-axis",origin:true},
+        })`),
+                new Test('chart-4',
                         `g2().view({cartesian:true})
         .chart({x:40,y:40,b:190,h:90,
                 funcs:[{data:[-2,4,2,-1,3,3,4,2],fill:true}],
