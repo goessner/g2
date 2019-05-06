@@ -174,6 +174,10 @@ g2().img({uri:'unknown.png',x:1,y:1,b:30,h:30})`),
         `g2().view({cartesian:true})
     .img({uri:'img/flower.jpg'})`),
 
+        new Test('img-17',
+        `g2().view({cartesian:true})
+    .img({uri:'img/flower.jpg', y: 10, x: 20, scl: 0.5, xoff:50, w:0.4}) `),
+
         new Test('beg',
             `g2().beg({w:0.2,scl:2,ls:'#666',fs:'orange',lw:3,lc:'round',lj:'round'})
     .rec({x:30,y:10,b:30,h:20})

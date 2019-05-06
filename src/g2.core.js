@@ -682,14 +682,15 @@ g2.canvasHdl.prototype = {
     async img({uri,x=0,y=0,b,h,sx=0,sy=0,sb,sh,xoff=0,yoff=0,w=0,scl=1}) {
         const img_ = await this.loadImage(uri);
         this.ctx.save();
-        const [cw,sw] = [Math.cos(w), Math.sin(w)];
         const cart = this.isCartesian ? -1 : 1;
         sb = sb || img_.width;
         b = b || img_.width;
         sh = (sh || img_.height);
         h = (h || img_.height)*cart;
         yoff*=cart;
+        w*=cart;
         y = this.isCartesian ? -y+sy : y;
+        const [cw,sw] = [Math.cos(w), Math.sin(w)];
         this.ctx.scale(scl, scl* cart);
         this.ctx.transform(cw, sw, -sw, cw,x,y);
         this.ctx.drawImage(img_,sx,sy,sb,sh,xoff,yoff,b,h);
