@@ -689,10 +689,10 @@ g2.canvasHdl.prototype = {
         h = (h || img_.height)*cart;
         yoff*=cart;
         w*=cart;
-        y = this.isCartesian ? -y+sy : y;
+        y = this.isCartesian ? -(y/scl)+sy : y/scl;
         const [cw,sw] = [Math.cos(w), Math.sin(w)];
         this.ctx.scale(scl, scl*cart);
-        this.ctx.transform(cw, sw, -sw, cw,x/scl,y/scl);
+        this.ctx.transform(cw, sw, -sw, cw,x/scl,y);
         this.ctx.drawImage(img_,sx,sy,sb,sh,xoff,yoff,b,h);
         this.ctx.restore();
     },
