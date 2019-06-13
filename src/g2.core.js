@@ -42,7 +42,7 @@ g2.prototype = {
      * @property {number} [scl=1] - absolute scaling factor.
      * @property {number} [x=0] - x-origin in device units.
      * @property {number} [y=0] - y-origin in device units.
-     * @property {booean} [cartesian=false] - set cartesian flag.
+     * @property {boolean} [cartesian=false] - set cartesian flag.
      */
     view({scl,x,y,cartesian}) { return this.addCommand({c:'view',a:arguments[0]}); },
 
@@ -65,6 +65,11 @@ g2.prototype = {
      * @property {number} y - y-value center.
      * @property {number} r - radius.
      * @property {number} w - angle.
+     * @property {string} [fs=transparent] - fill color.
+     * @property {string} [ls=black] - stroke color.
+     * @property {string} [lw=1] - line width.
+     * @property {array} [sh=[0,0,0,'transparent']]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
      * @example
      * g2().cir({x:100,y:80,r:20})  // Draw circle.
      */
@@ -82,6 +87,12 @@ g2.prototype = {
      * @property {number} w - start angle.
      * @property {number} dw - angular range.
      * @property {number} rot - rotation.
+     * @property {string} [fs=transparent] - fill color.
+     * @property {string} [ls=black] - stroke color.
+     * @property {string} [lw=1] - line width.
+     * @property {array} [ld=[]] - line dash array.
+     * @property {array} [sh=[0,0,0,"transparent"]]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
      * @example
      * g2().ell({x:100,y:80,rx:20,ry:30,w:0,dw:2*Math.PI/4,rot:1})  // Draw circle.
      */
@@ -97,6 +108,13 @@ g2.prototype = {
      * @property {number} r - radius.
      * @property {number} [w=0] - start angle (in radian).
      * @property {number} [dw=2*pi] - angular range in Radians.
+     * @property {string} [fs=transparent] - fill color.
+     * @property {string} [ls=black] - stroke color.
+     * @property {string} [lw=1] - line width.
+     * @property {string} [lc=butt] - line cap [`butt`, `round`, `square`].
+     * @property {array} [ld=[]] - line dash array.
+     * @property {array} [sh=[0,0,0,"transparent"]]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
      * @example
      * g2().arc({x:300,y:400,r:390,w:-Math.PI/4,dw:-Math.PI/2})
      *     .exe(ctx);
@@ -112,6 +130,14 @@ g2.prototype = {
      * @property {number} y - y-value upper left corner.
      * @property {number} b - width.
      * @property {number} h - height.
+     * @property {string} [fs=transparent] - fill color.
+     * @property {string} [ls=black] - stroke color.
+     * @property {string} [lw=1] - line width.
+     * @property {string} [lj='miter'] - line join [`round`, `bevel`, `miter`].
+     * @property {number} [ml=10] - miter limit.
+     * @property {array} [ld=[]] - line dash array.
+     * @property {array} [sh=[0,0,0,"transparent"]]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
      * @example
      * g2().rec({x:100,y:80,b:40,h:30}) // Draw rectangle.
      */
@@ -126,6 +152,12 @@ g2.prototype = {
      * @property {number} y1 - start y coordinate.
      * @property {number} x2 - end x coordinate.
      * @property {number} y2 - end y coordinate.
+     * @property {string} [ls=black] - stroke color.
+     * @property {string} [lw=1] - line width.
+     * @property {string} [lc=butt] - line cap [`butt`, `round`, `square`].
+     * @property {array} [ld=[]] - line dash array.
+     * @property {array} [sh=[0,0,0,"transparent"]]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
      * @example
      * g2().lin({x1:10,x2:10,y1:190,y2:10}) // Draw line.
      */
@@ -146,6 +178,15 @@ g2.prototype = {
      * @property {number} x - start x coordinate.
      * @property {number} y - start y coordinate.
      * @property {number} w - angle.
+     * @property {string} [fs=transparent] - fill color.
+     * @property {string} [ls=black] - stroke color.
+     * @property {string} [lw=1] - line width.
+     * @property {string} [lc=butt] - line cap [`butt`, `round`, `square`].
+     * @property {string} [lj='miter'] - line join [`round`, `bevel`, `miter`].
+     * @property {number} [ml=10] - miter limit.
+     * @property {array} [ld=[]] - line dash array.
+     * @property {array} [sh=[0,0,0,"transparent"]]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
      * @example
      * g2().ply({pts:[100,50,120,60,80,70]}),
      *     .ply({pts:[150,60],[170,70],[130,80]],closed:true}),
@@ -166,6 +207,17 @@ g2.prototype = {
      * @property {number} [x=0] - x coordinate of text anchor position.
      * @property {number} [y=0] - y coordinate of text anchor position.
      * @property {number} [w=0] - w Rotation angle about anchor point with respect to positive x-axis.
+     * @property {string} [fs=transparent] - fill color.
+     * @property {string} [ls=black] - stroke color.
+     * @property {array} [sh=[0,0,0,"transparent"]]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
+     * @property {string} [thal='start']
+     * - Text horizontal alignment [`'start'`,`'end'`,`'left'`,`'right'`,`'center'`]
+     * @property {string} [tval='alphabetic']
+     * - Text vertival alignment [`'top'`,`'hanging'`,`'middle'`,`'alphabetic'`,`'ideographic'`,`'bottom'`]
+     * @property {string} [font='normal 14px serif'] -
+     * [Font]{@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font}
+     * [styling]{@link https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font}
      */
     txt({str,x,y,w}) { return this.addCommand({c:'txt',a:arguments[0]}); },
 
@@ -183,6 +235,22 @@ g2.prototype = {
      * @property {number} [y=0] - translation value y.
      * @property {number} [w=0] - rotation angle (in radians).
      * @property {number} [scl=1] - scale factor.
+     * @property {string} [fs=transparent] - fill color.
+     * @property {string} [ls=black] - stroke color.
+     * @property {string} [lw=1] - line width.
+     * @property {string} [lc=butt] - line cap [`butt`, `round`, `square`].
+     * @property {string} [lj='miter'] - line join [`round`, `bevel`, `miter`].
+     * @property {number} [ml=10] - miter limit.
+     * @property {array} [ld=[]] - line dash array.
+     * @property {array} [sh=[0,0,0,"transparent"]]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
+     * @property {string} [thal='start']
+     * - Text horizontal alignment [`'start'`,`'end'`,`'left'`,`'right'`,`'center'`]
+     * @property {string} [tval='alphabetic']
+     * - Text vertival alignment [`'top'`,`'hanging'`,`'middle'`,`'alphabetic'`,`'ideographic'`,`'bottom'`]
+     * @property {string} [font='normal 14px serif'] -
+     * [Font]{@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font}
+     * [styling]{@link https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font}
      * @example
      * g2.symbol.cross = g2().lin({x1:5,y1:5,x2:-5,y2:-5}).lin({x1:5,y1:-5,x2:-5,y2:5});  // Define symbol.
      * g2().use({grp:"cross",x:100,y:100})  // Draw cross at position 100,100.
@@ -228,6 +296,22 @@ g2.prototype = {
      * @property {number} [w = 0] - rotation angle (in radians).
      * @property {number} [scl = 1] - scale factor.
      * @property {array} [matrix] - matrix instead of single transform arguments (SVG-structure [a,b,c,d,x,y]).
+     * @property {string} [fs=transparent] - fill color.
+     * @property {string} [ls=black] - stroke color.
+     * @property {string} [lw=1] - line width.
+     * @property {string} [lc=butt] - line cap [`butt`, `round`, `square`].
+     * @property {string} [lj='miter'] - line join [`round`, `bevel`, `miter`].
+     * @property {number} [ml=10] - miter limit.
+     * @property {array} [ld=[]] - line dash array.
+     * @property {array} [sh=[0,0,0,"transparent"]]
+     * shadow values [`x-offset`,`y-offset`,`blur`,`color`],
+     * @property {string} [thal='start']
+     * - text horizontal alignment [`'start'`,`'end'`,`'left'`,`'right'`,`'center'`]
+     * @property {string} [tval='alphabetic']
+     * - text vertival alignment [`'top'`,`'hanging'`,`'middle'`,`'alphabetic'`,`'ideographic'`,`'bottom'`]
+     * @property {string} [font='normal 14px serif'] -
+     * [Font]{@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font}
+     * [styling]{@link https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font}
      */
     beg({x,y,w,scl,matrix}={}) { return this.addCommand({c:'beg',a:arguments[0]}); },
 
