@@ -69,7 +69,7 @@ In HTML use ...
 Tests are found on the [Github Page](https://goessner.github.io/g2/)
 
 ## Cheat Sheet
-Check out the single page [Cheat Sheet](docs/api/sheet.pdf).
+Check out the single page [Cheat Sheet](docs/api/cheatsheet.pdf).
 
 
 # License
