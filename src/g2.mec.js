@@ -151,6 +151,35 @@ g2.prototype.vec.prototype = g2.mixin({},g2.prototype.lin.prototype,{
 })
 
 /**
+ * Draw vector with an angle
+ * @method
+ * @returns {object} g2
+ * @param {object}  - angle vector arguments object
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+ * @property {number} r - radius.
+ * @property {number} [w=0] - start angle (in radian).
+ * @property {number} [dw=2*pi] - angular range in Radians.
+ * @example
+ * g2().avec({x:300,y:400,r:390,w:-Math.PI/4,dw:-Math.PI/2})
+ *     .exe(ctx);
+ */
+g2.prototype.avec = function vec({}) { return this.addCommand({c: 'avec',a:arguments[0]}); }
+g2.prototype.avec.prototype = g2.mixin({}, g2.prototype.arc.prototype, {
+    g2() {
+        const args = Object.assign({ls:"#000", fs:"@ls", lc:'round', lj:'round', fixed: 30, lw:1, dw: 2*Math.PI}, this);
+        const z = args.fixed / 2;
+        return g2()
+            .beg({x:args.x, y:args.y,w:args.w+args.dw})
+            .arc({x:0, y:0, r:args.r, w:-args.dw, dw:args.dw, ls:args.ls, lw:args.lw})
+            .vec({x1:args.r*Math.sqrt(1-(z/args.r)**2), x2: args.r,
+                y1:-1*Math.sign(args.dw)*z, y2:0,
+                fixed: args.fixed})
+            .end()
+    }
+})
+
+/**
  * Draw slider.
  * @method
  * @returns {object} g2

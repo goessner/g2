@@ -16,6 +16,13 @@ g2().lin({...A,ls:"red",lw:2})
           new Test('vec',
                `g2().vec({x1:50,y1:20,x2:250,y2:120})`),
 
+          new Test('avec',
+               `g2().avec({x: 220, y: 50, r: 30, w: 1, dw: -Math.PI})
+     .avec({x: 180, y: 80, w: Math.PI/2, dw: Math.PI, r: 50})
+     .lin({x1: 180, x2: 180, y1: 20, y2: 140})
+     .avec({x: 65, y: 65, r: 60, w: 1})
+     .avec({x: 80, y: 50, r: 30})`),
+
           new Test('slider',
                `g2().grid().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})`),
 
