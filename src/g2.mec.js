@@ -712,14 +712,12 @@ g2.prototype.pol.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * @example
  * g2().nod({x:10,y:10})
 */
-g2.prototype.nod = function () { return this.addCommand({c:'nod',a:arguments[0]||{}}); }
-g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
+g2.prototype.nod = function({x=0,y=0}) { return this.addCommand({c:'nod',a:arguments[0]}); }
+g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
+    get r() { return 5; },
+    get isSolid() { return true; },
     g2() {
-        const args = Object.assign({x:0,y:0,scl:1,w:0},this);
-        return g2()
-            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
-            .cir({r:4,ls:'@nodcolor',fs:'@nodfill',lwnosc:true})
-            .end();
+        return g2().cir({x:this.x,y:this.y,r:this.r,ls:'@nodcolor',fs:'@nodfill',sh:this.sh})
     }
 })
 
@@ -732,20 +730,21 @@ g2.prototype.nod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * @example
  * g2().dblnod({x:10,y:10})
 */
-g2.prototype.dblnod = function () { return this.addCommand({c:'dblnod',a:arguments[0]||{}}); }
-g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
+g2.prototype.dblnod = function({x=0,y=0}) { return this.addCommand({c:'dblnod',a:arguments[0]}); }
+g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
+    get r() { return 6; },
+    get isSolid() { return true; },
     g2() {
-        const args = Object.assign({x:0,y:0,scl:1,w:0},this);
         return g2()
-            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
-            .cir({r:6,ls:'@nodcolor',fs:'@nodfill'})
-            .cir({r:3,ls:'@nodcolor',fs:'@nodfill2',lwnosc:true})
+            .beg({x:this.x,y:this.y})
+                .cir({r:6,ls:'@nodcolor',fs:'@nodfill',sh:this.sh})
+                .cir({r:3,ls:'@nodcolor',fs:'@nodfill2'})
             .end();
     }
 })
 
 /**
- * Since some symbols are not symmetrical, the cartesian mode is recommended.
+ * Since some symbols are not symmetrical, cartesian mode is recommended.
  * @method
  * @returns {object} g2
  * @param {object} - symbol arguments object.
@@ -755,18 +754,19 @@ g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * g2().view({cartesian:true})
  *     .nodfix({x:10,y:10})
 */
-g2.prototype.nodfix = function () { return this.addCommand({c:'nodfix',a:arguments[0]||{}}); }
-g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.use.prototype, {
+g2.prototype.nodfix = function ({x=0,y=0}) { return this.addCommand({c:'nodfix',a:arguments[0]||{x:0,y:0}}); }
+g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
+    get r() { return 5; },
+    get isSolid() { return true; },
     g2() {
-        const args = Object.assign({x:0,y:0,scl:1,w:0},this);
         return g2()
-            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
+            .beg({x:this.x,y:this.y,scl:this.scl,w:this.w,sh:this.sh})
             .p()
             .m({x:-8,y:-12})
             .l({x:0,y:0})
             .l({x:8,y:-12})
             .drw({ls:'@nodcolor',fs:'@nodfill2'})
-            .cir({x:0,y:0,r:4,ls:'@nodcolor',fs:'@nodfill'})
+                .cir({x:0,y:0,r:this.r,ls:'@nodcolor',fs:'@nodfill'})
             .end();
     }
 })
@@ -781,18 +781,19 @@ g2.prototype.nodfix.prototype = g2.mixin({}, g2.prototype.use.prototype, {
  * g2().view({cartesian:true})
  *     .nodflt({x:10,y:10})
 */
-g2.prototype.nodflt = function () { return this.addCommand({c:'nodflt',a:arguments[0]||{}}); }
-g2.prototype.nodflt.prototype = g2.mixin({}, g2.prototype.use.prototype, {
+g2.prototype.nodflt = function ({x=0,y=0}) { return this.addCommand({c:'nodflt',a:arguments[0]||{x,y}}); }
+g2.prototype.nodflt.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
+    get r() { return 5; },
+    get isSolid() { return true; },
     g2() {
-        const args = Object.assign({x:0,y:0,scl:1,w:0},this);
         return g2()
-            .beg({x:args.x,y:args.y,scl:args.scl,w:args.w})
+            .beg({x:this.x,y:this.y,w:this.w,sh:this.sh})
             .p()
             .m({x:-8,y:-12})
             .l({x:0,y:0})
             .l({x:8,y:-12})
             .drw({ls:'@nodcolor',fs:'@nodfill2'})
-            .cir({x:0,y:0,r:4,ls:'@nodcolor',fs:'@nodfill'})
+                .cir({x:0,y:0,r:this.r,ls:'@nodcolor',fs:'@nodfill'})
             .lin({x1:-9,y1:-19,x2:9,y2:-19,ls:'@nodfill2',lw:5,lwnosc:false})
             .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:'@nodcolor',lw:2,lwnosc:false})
             .end();
@@ -822,35 +823,3 @@ g2.prototype.origin.prototype = g2.mixin({}, g2.prototype.use.prototype, {
     }
 })
 
-/**
- * Mechanical style values.
- * Not really meant to get overwritten. But if you actually want, proceed.<br>
- * Theses styles can be referenced using the comfortable '@' syntax.
- * @namespace
- * @property {object} State  `g2` state namespace.
- * @property {string} [State.nodcolor=#333]    node color.
- * @property {string} [State.nodfill=#dedede]   node fill color.
- * @property {string} [State.nodfill2=#aeaeae]    alternate node fill color, somewhat darker.
- * @property {string} [State.linkcolor=#666]   link color.
- * @property {string} [State.linkfill=rgba(225,225,225,0.75)]   link fill color, semi-transparent.
- * @property {string} [State.dimcolor=darkslategray]   dimension color.
- * @property {array} [State.solid=[]]   solid line style.
- * @property {array} [State.dash=[15,10]]   dashed line style.
- * @property {array} [State.dot=[4,4]]   dotted line style.
- * @property {array} [State.dashdot=[25,6.5,2,6.5]]   dashdotted line style.
- * @property {number} [State.labelOffset=5]    default label offset distance.
- * @property {number} [State.labelSignificantDigits=3]   default label's significant digits after numbering point.
- */
-g2.State = g2.State || {};
-g2.State.nodcolor = '#333';
-g2.State.nodfill  = '#dedede';
-g2.State.nodfill2 = '#aeaeae';
-g2.State.linkcolor = '#666';
-g2.State.linkfill = 'rgba(225,225,225,0.75)';
-g2.State.dimcolor = 'darkslategray';
-g2.State.solid = [];
-g2.State.dash = [15,10];
-g2.State.dot = [4,4];
-g2.State.dashdot = [25,6.5,2,6.5];
-g2.State.labelOffset = 5;
-g2.State.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
