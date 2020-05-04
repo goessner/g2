@@ -35,7 +35,7 @@ g2.prototype.lin.prototype = {
             dy: len ? dy/len : 0
        };
     },
-    hitContour({x,y,eps}) { return g2.isPntOnLin({x,y},{x:this.x1,y:this.y1},{x:this.x2,y:this.y2},eps) },
+    hit({x,y,eps}) { return g2.isPntOnLin({x,y},{x:this.x1,y:this.y1},{x:this.x2,y:this.y2},eps) },
     drag({dx,dy}) {
         this.x1 += dx; this.x2 += dx;
         this.y1 += dy; this.y2 += dy;
@@ -63,8 +63,10 @@ g2.prototype.rec.prototype = {
             dy:  nx
         };
     },
-    hitContour({x,y,eps}) { return g2.isPntOnBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps) },
-    hitInner({x,y,eps}) {return g2.isPntInBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps) },
+    hit({x,y,eps}) {
+        return this.isSolid ? g2.isPntInBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps)
+                            : g2.isPntOnBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps);
+    },
     drag({dx,dy}) { this.x += dx; this.y += dy }
 };
 
@@ -86,8 +88,10 @@ g2.prototype.cir.prototype = {
             dx: -ny,
             dy:  nx };
     },
-    hitContour({x,y,eps}) { return g2.isPntOnCir({x,y},this,eps) },
-    hitInner({x,y,eps}) {return g2.isPntInCir({x,y},this,eps) },
+    hit({x,y,eps}) {
+        return this.isSolid ? g2.isPntInCir({x,y},this,eps)
+                            : g2.isPntOnCir({x,y},this,eps);
+    },
     drag({dx,dy}) { this.x += dx; this.y += dy },
     handles(grp) {
         const p0 = {
@@ -128,7 +132,7 @@ g2.prototype.arc.prototype = {
     },
     isSolid: false,
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
-    hitContour({x,y,eps}) { return g2.isPntOnArc({x,y},this,eps) },
+    hit({x,y,eps}) { return g2.isPntOnArc({x,y},this,eps) },
     drag({dx,dy}) { this.x += dx; this.y += dy; },
     handles(grp) {
         const p0 = {
@@ -219,9 +223,11 @@ g2.prototype.ply.prototype = {
             dy: len2 ? dy/len2 : 0
         };
     },
-    x: 0, y: 0,
-    hitContour({x,y,eps}) { let p={x:x-this.x,y:y-this.y}; return g2.isPntOnPly(p,this,eps) }, // translational only .. at current .. !
-    hitInner({x,y,eps}) { let p={x:x-this.x,y:y-this.y}; return g2.isPntInPly(p,this,eps) }, // translational only .. at current .. !
+//    x: 0, y: 0,
+    hit({x,y,eps}) {
+        return this.isSolid ? g2.isPntInPly({x:x-this.x,y:y-this.y},this,eps)   // translational transformation only .. at current .. !
+                            : g2.isPntOnPly({x:x-this.x,y:y-this.y},this,eps);
+    },
     drag({dx,dy}) { this.x += dx; this.y += dy; },
     handles(grp) {
         let p, slf=this;
@@ -233,10 +239,16 @@ g2.prototype.ply.prototype = {
     }
 }
 
+// use is currently not transformed
 g2.prototype.use.prototype = {
-    _dir: g2.prototype.cir.prototype._dir,
-    r: 5,
-    pointAt: g2.prototype.cir.prototype.pointAt
+    get isSolid() { return false },
+    hit(at) {
+        for (const cmd of this.grp.commands) {
+            if (cmd.a.hit && cmd.a.hit(at))
+                return true;
+        }
+        return false;
+    }
 };
 
 // complex macros / add prototypes to argument objects
@@ -333,7 +345,7 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
  *     .label({str:'hello',loc:'s',off:10})
  */
 g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
-    let idx = g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding label to ...
+    let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding label to ...
     if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({c:'label', a: arguments[0]});
@@ -392,7 +404,7 @@ g2.prototype.label.prototype = {
  *
  */
 g2.prototype.mark = function mark({mrk,loc,dir,fs,ls}) {
-    let idx = g2.getCmdIdx(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding mark to ...
+    let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding mark to ...
     if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({c:'mark', a: arguments[0]});
@@ -425,7 +437,7 @@ g2.prototype.mark.prototype = {
 }
 
 /**
- * Extensed style values.
+ * Extended style values.
  * Not really meant to get overwritten. But if you actually want, proceed.<br>
  * Theses styles can be referenced using the comfortable '@' syntax.
  * @namespace
