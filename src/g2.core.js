@@ -1,3 +1,6 @@
+
+"use strict"
+
 /**
  * g2.core (c) 2013-19 Stefan Goessner
  * @author Stefan Goessner
@@ -14,8 +17,6 @@
  *     .lin({x1:100,y1:100,x2:200,y2:50}) // ... commands.
  *     .exe(ctx);                         // Execute commands addressing canvas context.
  */
-
-"use strict"
 
 function g2(opts) {
     let o = Object.create(g2.prototype);
@@ -187,10 +188,11 @@ g2.prototype = {
      * g2().use({grp:"cross",x:100,y:100})  // Draw cross at position 100,100.
      */
     use({grp,x,y,w,scl}) {
-        if (typeof grp === "string")  // must be a member name of the 'g2.symbol' namespace
-            arguments[0].grp = grp = g2.symbol[grp];
-        if (grp && grp !== this)      // avoid self reference ..
+        if (grp && grp !== this) {     // avoid self reference ..
+            if (typeof grp === "string") // must be a member name of the 'g2.symbol' namespace
+                arguments[0].grp = g2.symbol[(grp in g2.symbol) ? grp : 'unknown'];
             this.addCommand({c:'use',a:arguments[0]});
+        }
         return this;
     },
 
@@ -236,12 +238,12 @@ g2.prototype = {
      */
     end() { // ignore 'end' commands without matching 'beg'
         let myBeg = 1,
-            findMyBeg = (cmd) => {
+            findMyBeg = (cmd) => {   // care about nested beg...end blocks ...
                 if      (cmd.c === 'beg') myBeg--;
                 else if (cmd.c === 'end') myBeg++;
                 return myBeg === 0;
             }
-        return g2.getCmdIdx(this.commands,findMyBeg) !== false ? this.addCommand({c:'end'}) : this;
+        return g2.cmdIdxBy(this.commands,findMyBeg) !== false ? this.addCommand({c:'end'}) : this;
     },
 
     /**
@@ -397,10 +399,10 @@ g2.prototype = {
      *     .ins(node)                                               // draw node.
      *     .exe(ctx)                                                // render to canvas context.
      */
-    ins(fn) {
-        return typeof fn === 'function' ? (fn(this) || this)
-                : typeof fn === 'object'   ? ( this.commands.push({c:'ins',a:fn}), this ) // no 'addCommand' .. !
-                : this;
+    ins(arg) {
+        return typeof arg === 'function' ? (arg(this) || this)                   // no further processing by handler ...
+             : typeof arg === 'object'   ? ( this.commands.push({a:arg}), this ) // no explicit command name .. !
+             : this;
     },
     /**
      * Execute g2 commands. It does so automatically and recursively with 'use'ed commands.
@@ -416,13 +418,31 @@ g2.prototype = {
     },
     // helpers ...
     addCommand({c,a}) {
-        if (a && Object.getPrototypeOf(a) === Object.prototype) {  // modify only pure argument objects 'a' 
-            for (const key in a)
+        if (a && Object.getPrototypeOf(a) === Object.prototype) {  // modify only pure argument objects 'a' .. !
+            for (const key in a) {
                 if (!Object.getOwnPropertyDescriptor(a,key).get    // if 'key' is no getter ...
                     && key[0] !== '_'                                 // and no private property ... 
-                    && typeof a[key] === 'function') {                // and a function
+                    && typeof a[key] === 'function') {                // and a function ... make it a getter
                     Object.defineProperty(a, key, { get:a[key], enumerable:true, configurable:true, writabel:false });
                 }
+                if (typeof a[key] === 'string' && a[key][0] === '@') {  // referring values by neighbor id's
+                    const refidIdx = a[key].indexOf('.');
+                    const refid = refidIdx > 0 ? a[key].substr(1,refidIdx-1) : '';
+                    const refkey = refid ? a[key].substr(refidIdx+1) : '';
+                    const refcmd = refid ? () => this.commands.find((cmd) => cmd.a && cmd.a.id === refid) : undefined;
+
+                    if (refcmd)
+                        Object.defineProperty(a, key, { 
+                            get: function() {
+                                const rc = refcmd();
+                                return  rc && (refkey in rc.a) ? rc.a[refkey] : 0;
+                            }, 
+                            enumerable: true, 
+                            configurable: true, 
+                            writabel: false 
+                        });
+                }
+            }
             if (g2.prototype[c].prototype) Object.setPrototypeOf(a, g2.prototype[c].prototype);
         }
         this.commands.push(arguments[0]);
@@ -432,7 +452,9 @@ g2.prototype = {
 
 // statics
 g2.defaultStyle = {fs:'transparent',ls:'#000',lw:1,lc:"butt",lj:"miter",ld:[],ml:10,sh:[0,0],lsh:false,font:'14px serif',thal:'start',tval:'alphabetic'};
-g2.symbol = {};
+g2.symbol = {
+    unknown: g2().cir({r:12}).txt({str:'?',thal:'center',tval:'middle',font:'bold 20pt serif'})
+};
 g2.handler = function(ctx) {
     let hdl;
     for (let h of g2.handler.factory)
@@ -527,13 +549,17 @@ g2.canvasHdl.prototype = {
     },
     async exe(commands) {
         for (let cmd of commands) {
-            if (cmd.c && this[cmd.c]) {
+            if (cmd.c && this[cmd.c]) {         // explicit command name .. !
                 const rx = this[cmd.c](cmd.a);
                 if (rx && rx instanceof Promise) {
                     await rx;
                 }
-            } else if (cmd.a && 'g2' in cmd.a)
-                this.exe(cmd.a.g2().commands);
+            } else if (cmd.a) {                 // should be from 'ins' command
+                if (cmd.a.commands)                // cmd.a is a `g2` object, so directly execute its commands array.
+                    this.exe(cmd.a.commands);
+                if (cmd.a.g2)                      // cmd.a is an object offering a `g2` method, so call it and execute its returned commands array.
+                    this.exe(cmd.a.g2().commands);
+            }
         }
     },
     view({x=0,y=0,scl=1,cartesian=false}) {
@@ -783,6 +809,7 @@ g2.canvasHdl.prototype = {
         lc: (ctx) => ctx.lineCap,
         lj: (ctx) => ctx.lineJoin,
         ld: (ctx) => ctx.getLineDash(),
+        ldoff: (ctx) => ctx.lineDashOffset,
         ml: (ctx) => ctx.miterLimit,
         sh: (ctx) => [ctx.shadowOffsetX||0,ctx.shadowOffsetY||0,
                       ctx.shadowBlur||0,ctx.shadowColor||'black'],
@@ -797,6 +824,7 @@ g2.canvasHdl.prototype = {
         lc: (ctx,q) => { ctx.lineCap=q; },
         lj: (ctx,q) => { ctx.lineJoin=q; },
         ld: (ctx,q) => { ctx.setLineDash(q); },
+        ldoff: (ctx,q) => { ctx.lineDashOffset=q; },
         ml: (ctx,q) => { ctx.miterLimit=q; },
         sh: (ctx,q) => {
             if (q) {
