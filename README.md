@@ -55,22 +55,28 @@ See the [API Reference for g2](docs/api/g2.core.md) for details.
 
 Also see the [API Reference for g2.ext](docs/api/g2.ext.md) and the [API Reference for g2.mec](docs/api/g2.mec.md).
 
+Also available under
+ - [https://goessner.github.io/g2/api/g2.core](https://goessner.github.io/g2/api/g2.core)
+ - [https://goessner.github.io/g2/api/g2.ext](https://goessner.github.io/g2/api/g2.ext)
+ - [https://goessner.github.io/g2/api/g2.mec](https://goessner.github.io/g2/api/g2.mec)
+
+
+## Cheat Sheet
+Check out the single page [Cheat Sheet](docs/api/sheet.pdf).
+
+Also available under [https://goessner.github.io/g2/api/sheet.pdf](https://goessner.github.io/g2/api/sheet.pdf)
 
 ## GitCDN
-Use the link [https://goessner.github.io/g2/g2.js](https://goessner.github.io/g2/g2.js)
+Use the link [https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js](https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js)
 for getting the latest commit as a raw file.
 
 In HTML use ...
 ```html
-<script src="https://goessner.github.io/g2/g2.js"></script>
+<script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
 ```
 
 ### Tests
 Tests are found on the [Github Page](https://goessner.github.io/g2/)
-
-## Cheat Sheet
-Check out the single page [Cheat Sheet](docs/api/cheatsheet.pdf).
-
 
 # License
 g<sup>2</sup> is licensed under the terms of the MIT License.
