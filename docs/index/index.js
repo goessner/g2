@@ -147,24 +147,24 @@ new Test('img6',
 `g2().img({uri:'img/imageTst.png', x: 10, y: 10 , b: 100, h: 50, w: 0.5})
   .rec({x: 10, y: 10, b: 100, h: 50})`),
 
-new Test('img8',
+new Test('img7',
 `g2()
   .beg({x: 10, y: 60, w:0.5 })
   .img({uri:'img/imageTst.png', x: 0, y: -50, b: 100, h: 50, w: 0})
   .end()
   .rec({x: 10, y: 10, b: 100, h: 50})`),
 
-new Test('img9',
+new Test('img8',
 `g2().img({uri:'img/imageTst.png', y: 10, x: 10, scl: 0.5})`),
 
-new Test('img14',
+new Test('img9',
 `g2().img({uri:'img/imageTst.png', x: 10, y: 10, dx: 100, dy: 100, h: 60})`),
 
-new Test('img16',
+new Test('img10',
 `g2().view({cartesian:true})
   .img({uri:'img/imageTst.png'})`),
 
-new Test('img18',
+new Test('img11',
 `g2().view({cartesian:true})
   .img({uri:'img/imageTst.png', x: 10, y: 10, scl:.4})
   .img({uri:'img/imageTst.png', x: 80, y: 50, scl:.4})
