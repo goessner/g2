@@ -580,7 +580,7 @@ g2.pntItrOf = function(pts) {
  * Similar to 'Array.prototype.findIndex', only working reverse.
  * @private
  */
-g2.getCmdIdx = function(cmds,callbk) {
+g2.cmdIdxBy = function(cmds,callbk) {
     for (let i = cmds.length-1; i >= 0; i--)
         if (callbk(cmds[i],i,cmds))
             return i;

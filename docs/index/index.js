@@ -149,9 +149,7 @@ new Test('img6',
 
 new Test('img7',
 `g2()
-  .beg({x: 10, y: 60, w:0.5 })
-  .img({uri:'img/imageTst.png', x: 0, y: -50, b: 100, h: 50, w: 0})
-  .end()
+  .img({uri:'img/imageTst.png', x: 10, yoff: -50, y: 60, b: 100, h: 50, w: 0.5})
   .rec({x: 10, y: 10, b: 100, h: 50})`),
 
 new Test('img8',
@@ -169,6 +167,18 @@ new Test('img11',
   .img({uri:'img/imageTst.png', x: 10, y: 10, scl:.4})
   .img({uri:'img/imageTst.png', x: 80, y: 50, scl:.4})
   .img({uri:'img/imageTst.png', x: 160, y: 100, scl:.4})`),
+
+new Test('img12',
+`g2().img({uri:'img/imageTst.png', x: 10, y: 10, b: 200, h: 100, sx: 10, sy: 10, w: 0.5})
+    .beg({x: 10, y: 10, w: 0.5})
+    .rec({b: 200, h: 100})
+    .end()`),
+
+new Test('img13',
+`g2().img({uri:'img/imageTst.png', x: 50, y: 50, b:140, h:65, xoff: 10, yoff: 10, w:0.5})
+    .beg({x:50, y:50, w:0.5})
+    .rec({b: 150, h: 75})
+    .end()`),
 
 new Test('beg-end',
 `g2().beg({x:70,y:30,w:0.2,scl:2,ls:'#666',fs:'orange',lw:3,lc:'round',lj:'round'})
