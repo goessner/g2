@@ -54,8 +54,8 @@ g2.symbol.dashdot = [25,6.5,2,6.5];
 g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
 
 /**
- * Flatten object properties (evaluate getters)
- */
+* Flatten object properties (evaluate getters)
+*/
 g2.flatten = function(obj) {
     const args = Object.create(null); // important !
     for (let p in obj)
@@ -88,11 +88,11 @@ g2.labelIfc = {
             let val = this[s];
             val = Number.isInteger(val) ? val 
                 : Number(val).toFixed(Math.max(g2.symbol.labelSignificantDigits-Math.log10(val),0));
-           
+
             s = `${val}${s === 'angle' ? "°" : ""}`;
         }
         return s;
-    },
+},
     drawLabel(g) {
         const lbl = this.label;
         const font = lbl.font||g2.defaultStyle.font;
@@ -109,7 +109,7 @@ g2.labelIfc = {
                 thal: "center", tval: "middle",
                 fs: lbl.fs||'black', font:lbl.font });
         return g;
-    }
+}
 }
 
 g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
@@ -123,7 +123,7 @@ g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
         return !this.label ? false 
                            : () => g2().cir(g2.flatten(this))      // hand object stripped from `g2`, 
                                        .ins((g)=>this.drawLabel(g));  // avoiding infinite recursion !
-    },
+},
     pointAt(loc) {
         const Q = Math.SQRT2/2;
         const LOC = {c:[0,0],e:[1,0],ne:[Q,Q],n:[0,1],nw:[-Q,Q],w:[-1,0],sw:[-Q,-Q],s:[0,-1],se:[Q,-Q]};
@@ -134,11 +134,11 @@ g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
             y: this.y + q[1]*this.r,
             nx:  q[0],
             ny:  q[1] };
-    },
+},
     hit({x,y,eps}) {
         return this.isSolid ? g2.isPntInCir({x,y},this,eps)
                             : g2.isPntOnCir({x,y},this,eps);
-    },
+},
     drag({dx,dy}) { this.x += dx; this.y += dy },
 });
 
@@ -161,7 +161,7 @@ g2.prototype.lin.prototype = g2.mix(g2.labelIfc, {
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     get g2() {      // dynamically switch existence of method via getter ... !
         return !this.label ? false : () => g2().lin(g2.flatten(this)).ins((g)=>this.drawLabel(g));
-    },
+},
 
     pointAt(loc) {
         let t = loc==="beg" ? 0
@@ -177,14 +177,14 @@ g2.prototype.lin.prototype = g2.mix(g2.labelIfc, {
             nx: len ?  dy/len :  0,
             ny: len ? -dx/len : -1
        };
-    },
+},
     hit({x,y,eps}) {
         return g2.isPntOnLin({x,y},{x:this.x1,y:this.y1},{x:this.x2,y:this.y2},eps);
-    },
+},
     drag({dx,dy}) {
         this.x1 += dx; this.x2 += dx;
         this.y1 += dy; this.y2 += dy;
-    }
+}
 });
 
 g2.prototype.rec.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
@@ -194,7 +194,7 @@ g2.prototype.rec.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false; },
     get g2() {      // dynamically switch existence of method via getter ... !
         return !this.label ? false : () => g2().rec(g2.flatten(this)).ins((g)=>this.drawLabel(g));
-    },
+},
     lbloc: 'c',
     pointAt(loc) {
         const LOC = { c:[0,0],e:[1,0],ne:[0.95,0.95],n:[0,1],nw:[-0.95,0.95],w:[-1,0],sw:[-0.95,-0.95],s:[0,-1],se:[0.95,-0.95] };
@@ -204,11 +204,11 @@ g2.prototype.rec.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
             y: this.y + (1 + q[1])*this.h/2,
             nx:  q[0],
             ny:  q[1] };
-    },
+},
     hit({x,y,eps}) {
         return this.isSolid ? g2.isPntInBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps)
                             : g2.isPntOnBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps);
-    },
+},
     drag({dx,dy}) { this.x += dx; this.y += dy }
 });
 
@@ -219,7 +219,7 @@ g2.prototype.arc.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     get g2() {      // dynamically switch existence of method via getter ... !
         return !this.label ? false : () => g2().arc(g2.flatten(this)).ins((g)=>this.drawLabel(g));
-    },
+},
     lbloc: 'mid',
     pointAt(loc) {
         let t = loc==="beg" ? 0
@@ -234,21 +234,21 @@ g2.prototype.arc.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
             nx: cang,
             ny: sang
        };
-    },
+},
     hit({x,y,eps}) { return g2.isPntOnArc({x,y},this,eps) },
     drag({dx,dy}) { this.x += dx; this.y += dy; },
 });
 
 /**
- * Draw interactive handle.
- * @method
- * @returns {object} g2
- * @param {object} - handle object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().hdl({x:100,y:80})  // Draw handle.
- */
+* Draw interactive handle.
+* @method
+* @returns {object} g2
+* @param {object} - handle object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().hdl({x:100,y:80})  // Draw handle.
+*/
 g2.prototype.hdl = function(args) { return this.addCommand({c:'hdl',a:args}); }
 g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
     r: 5,
@@ -261,17 +261,17 @@ g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
         const {x,y,r,b=4,shape='cir',ls='black',fs='#ccc',sh} = this;
         return shape === 'cir' ? g2().cir({x,y,r,ls,fs,sh}).ins((g)=>this.label && this.drawLabel(g))
                                : g2().rec({x:x-b,y:y-b,b:2*b,h:2*b,ls,fs,sh}).ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 });
 
 /**
- * Node symbol.
- * @constructor
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().nod({x:10,y:10})
+* Node symbol.
+* @constructor
+* @param {object} - symbol arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().nod({x:10,y:10})
 */
 
 g2.prototype.nod = function(args) { return this.addCommand({c:'nod',a:args}); }
@@ -284,19 +284,19 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     g2() {      // in contrast to `g2.prototype.cir.prototype`, `g2()` is called always !
         return g2().cir(g2.flatten(this))
                    .ins((g)=>this.label && this.drawLabel(g))
-    }
+}
 });
 
 /**
- * Pole symbol.
- * @constructor
- * @returns {object} g2
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().pol({x:10,y:10})
- */
+* Pole symbol.
+* @constructor
+* @returns {object} g2
+* @param {object} - symbol arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().pol({x:10,y:10})
+*/
 g2.prototype.pol = function (args) { return this.addCommand({c:'pol',a:args}); }
 g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
@@ -306,20 +306,20 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .cir({r:2.5,fs:'@ls',ls:'transparent'})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 /**
- * Ground symbol.
- * @constructor
- * @param {object} - arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().gnd({x:10,y:10})
+* Ground symbol.
+* @constructor
+* @param {object} - arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().gnd({x:10,y:10})
 */
- g2.prototype.gnd = function (args) { return this.addCommand({c:'gnd',a:args}); }
- g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
+g2.prototype.gnd = function (args) { return this.addCommand({c:'gnd',a:args}); }
+g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
      g2() {
         return g2()
             .beg(g2.flatten(this))
@@ -333,7 +333,7 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .fill({fs:g2.symbol.nodcolor})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 g2.prototype.nodfix = function (args) { return this.addCommand({c:'nodfix',a:args}); }
@@ -349,16 +349,16 @@ g2.prototype.nodfix.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .cir({x:0,y:0,r:this.r})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 /**
- * @method
- * @returns {object} g2
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().view({cartesian:true})
+* @method
+* @returns {object} g2
+* @param {object} - symbol arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().view({cartesian:true})
  *     .nodflt({x:10,y:10})
 */
 g2.prototype.nodflt = function (args) { return this.addCommand({c:'nodflt',a:args}); }
@@ -376,21 +376,21 @@ g2.prototype.nodflt.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:g2.symbol.nodcolor,lw:2})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 /**
- * Draw vector arrow.
- * @method
- * @returns {object} g2
- * @param {object} - vector arguments object.
- * @property {number} x1 - start x coordinate.
- * @property {number} y1 - start y coordinate.
- * @property {number} x2 - end x coordinate.
- * @property {number} y2 - end y coordinate.
- * @example
- * g2().vec({x1:50,y1:20,x2:250,y2:120})
- */
+* Draw vector arrow.
+* @method
+* @returns {object} g2
+* @param {object} - vector arguments object.
+* @property {number} x1 - start x coordinate.
+* @property {number} y1 - start y coordinate.
+* @property {number} x2 - end x coordinate.
+* @property {number} y2 - end y coordinate.
+* @example
+* g2().vec({x1:50,y1:20,x2:250,y2:120})
+*/
 g2.prototype.vec = function vec(args) { return this.addCommand({c:'vec',a:args}); }
 g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
@@ -406,23 +406,54 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype,{
                 .use({grp:arrowHead,x:r,y:0})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 /**
- * Linear Dimension
- * @method
- * @returns {object} g2
- * @param {object} - dimension arguments object.
- * @property {number} x1 - start x coordinate.
- * @property {number} y1 - start y coordinate.
- * @property {number} x2 - end x coordinate.
- * @property {number} y2 - end y coordinate.
- * @property {number} off - offset.
- * @property {boolean} [inside=true] - draw dimension arrows between or outside of ticks.
- * @example
- *  g2().dim({x1:60,y1:40,x2:190,y2:120})
- */
+* Arc as Vector
+* @method
+* @returns {object} g2
+* @param {object} - angular dimension arguments.
+* @property {number} x - start x coordinate.
+* @property {number} y - start y coordinate.
+* @property {number} r - radius
+* @property {number} [w=0] - start angle (in radian).
+* @property {number} [dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
+ *                                       right handed (cartesian) coordinate system.
+* @example
+* g2().avec({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
+*/
+g2.prototype.avec = function adim(args) { return this.addCommand({c:'avec',a:args}); }
+g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
+    g2() {
+        const {x,y,r,w,dw,lw=1,lc='round',lj='round',ls,fs=ls||"#000",label} = this;
+        const b = 3*(1 + lw) > r ? r/3 : (1 + lw), bw = 5*b/r;
+        const arrowHead = () => g2().p().m({x:0,y:2*b}).l({x:0,y:-2*b}).m({x:0,y:0}).l({x:-5*b,y:b})
+                                    .a({dw:-Math.PI/3,x:-5*b,y:-b}).z().drw({ls,fs});
+
+        return g2()
+            .beg({x,y,w,ls,lw,lc,lj})
+                .arc({r,w:0,dw})
+                .use({grp:arrowHead,x:r*Math.cos(dw),y:r*Math.sin(dw),w:(dw > 0 ? dw+Math.PI/2-bw/2 : dw-Math.PI/2+bw/2)})
+            .end()
+            .ins((g)=>label && this.drawLabel(g));
+}
+});
+
+/**
+* Linear Dimension
+* @method
+* @returns {object} g2
+* @param {object} - dimension arguments object.
+* @property {number} x1 - start x coordinate.
+* @property {number} y1 - start y coordinate.
+* @property {number} x2 - end x coordinate.
+* @property {number} y2 - end y coordinate.
+* @property {number} off - offset.
+* @property {boolean} [inside=true] - draw dimension arrows between or outside of ticks.
+* @example
+*  g2().dim({x1:60,y1:40,x2:190,y2:120})
+*/
 g2.prototype.dim = function dim(args) { return this.addCommand({c:'dim', a:args}); }
 g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
     pointAt(loc) {
@@ -432,7 +463,7 @@ g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
             pnt.y += this.off*pnt.ny;
         }
         return pnt;
-    },
+},
     g2() {
         const {x1,y1,x2,y2,lw=1,lc='round',lj='round',off=0,inside=true,ls,fs=ls||"#000",label} = this;
         const dx = x2-x1, dy = y2-y1, r = Math.hypot(dx,dy);
@@ -446,25 +477,25 @@ g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
                .use({grp:arrowHead,x:0,y:0,w:(inside?Math.PI:0)})
             .end()
             .ins((g)=>label && this.drawLabel(g));
-    }
+}
 });
 
 /**
- * Angular dimension
- * @method
- * @returns {object} g2
- * @param {object} - angular dimension arguments.
- * @property {number} x - start x coordinate.
- * @property {number} y - start y coordinate.
- * @property {number} r - radius
- * @property {number} [w=0] - start angle (in radian).
- * @property {number} [dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
+* Angular dimension
+* @method
+* @returns {object} g2
+* @param {object} - angular dimension arguments.
+* @property {number} x - start x coordinate.
+* @property {number} y - start y coordinate.
+* @property {number} r - radius
+* @property {number} [w=0] - start angle (in radian).
+* @property {number} [dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
  *                                       right handed (cartesian) coordinate system.
- * @property {boolean} [outside=false] - draw dimension arrows outside of ticks.
- * @depricated {boolean} [inside] - draw dimension arrows between ticks.
- * @example
- * g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
- */
+* @property {boolean} [outside=false] - draw dimension arrows outside of ticks.
+* @depricated {boolean} [inside] - draw dimension arrows between ticks.
+* @example
+* g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
+*/
 g2.prototype.adim = function adim(args) { return this.addCommand({c:'adim',a:args}); }
 g2.prototype.adim.prototype = g2.mix(g2.prototype.arc.prototype, {
     g2() {
@@ -482,32 +513,19 @@ g2.prototype.adim.prototype = g2.mix(g2.prototype.arc.prototype, {
                 .use({grp:arrowHead,x:r*Math.cos(dw),y:r*Math.sin(dw),w:(!outside && dw > 0 || outside && dw < 0 ? dw+Math.PI/2-bw/2 : dw-Math.PI/2+bw/2)})
             .end()
             .ins((g)=>label && this.drawLabel(g));
-/*
-            .vec({
-                x1:args.inside ? args.r-.15:args.r-3.708,
-                y1:args.inside?1:24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
-            .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
-            .end()
-            .beg({x:args.x,y:args.y,w:args.w+args.dw})
-            .vec({
-                x1:args.inside ? args.r-.15:args.r-3.708,
-                y1:args.inside?-1:-24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
-            .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
-            .end();
-*/
-    }
+}
 });
 
 /**
- * Origin symbol
- * @constructor
- * @returns {object} g2
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @property {number} w - angle in radians.
- * @example
- * g2().view({cartesian:true})
+* Origin symbol
+* @constructor
+* @returns {object} g2
+* @param {object} - symbol arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @property {number} w - angle in radians.
+* @example
+* g2().view({cartesian:true})
  *     .origin({x:10,y:10})
 */
 g2.prototype.origin = function (args) { return this.addCommand({c:'origin',a:args}); }
@@ -522,7 +540,7 @@ g2.prototype.origin.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .cir({x:0,y:0,r:lw+1,fs:'#ccc'})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 g2.prototype.ply.prototype = {
@@ -579,16 +597,14 @@ g2.prototype.ply.prototype = {
             dx: len2 ? dx/len2 : 1,
             dy: len2 ? dy/len2 : 0
         };
-    },
+},
     hit({x,y,eps}) {
         return this.isSolid ? g2.isPntInPly({x:x-this.x,y:y-this.y},this,eps)   // translational transformation only .. at current .. !
                             : g2.isPntOnPly({x:x-this.x,y:y-this.y},this,eps);
-    },
+},
     drag({dx,dy}) { this.x += dx; this.y += dy; }
 }
 
-// use is currently not transformed
-/*
 g2.prototype.use.prototype = {
     // p vector notation !
     get p() { return {x:this.x,y:this.y}; },  // relevant if 'p' is *not* explicite given. 
@@ -598,36 +614,37 @@ g2.prototype.use.prototype = {
     set y(q) { if (Object.getOwnPropertyDescriptor(this,'p')) this.p.y = q; },
 
     isSolid: false,
+/*
     hit(at) {
         for (const cmd of this.grp.commands) {
             if (cmd.a.hit && cmd.a.hit(at))
                 return true;
         }
         return false;
-    },
+},
 
     pointAt: g2.prototype.cir.prototype.pointAt,
-};
 */
+};
 // complex macros / add prototypes to argument objects
 
 /**
- * Draw spline by points.
- * Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).
- * Using iterator function for getting points from array by index.
- * It must return current point object {x,y} or object {done:true}.
- * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
- * array of [[x,y],...] arrays or array of [{x,y},...] objects.
- * @see https://pomax.github.io/bezierinfo
- * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
- * @method
- * @returns {object} g2
- * @param {object} - spline arguments object.
- * @property {object[] | number[][] | number[]} pts - array of points.
- * @property {bool} [closed=false] - closed spline.
- * @example
- * g2().spline({pts:[100,50,50,150,150,150,100,50]})
- */
+* Draw spline by points.
+* Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).
+* Using iterator function for getting points from array by index.
+* It must return current point object {x,y} or object {done:true}.
+* Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
+* array of [[x,y],...] arrays or array of [{x,y},...] objects.
+* @see https://pomax.github.io/bezierinfo
+* @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
+* @method
+* @returns {object} g2
+* @param {object} - spline arguments object.
+* @property {object[] | number[][] | number[]} pts - array of points.
+* @property {bool} [closed=false] - closed spline.
+* @example
+* g2().spline({pts:[100,50,50,150,150,150,100,50]})
+*/
 g2.prototype.spline = function spline({pts,closed,x,y,w}) {
     arguments[0]._itr = g2.pntItrOf(pts);
     return this.addCommand({c:'spline',a:arguments[0]});
@@ -682,33 +699,33 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
             if (istrf) gbez.end();
         }
         return gbez;
-    }
+}
 })
 
 /**
- * Add label to certain elements.
- * Deprecated !!
- * Please note that cartesian flag is necessary.
- * @method
- * @returns {object} g2
- * @param {object} - label arguments object.
- * @property {string} str - label text
- * @property {number | string} loc - label location depending on referenced element. <br>
+* Add label to certain elements.
+* Deprecated !!
+* Please note that cartesian flag is necessary.
+* @method
+* @returns {object} g2
+* @param {object} - label arguments object.
+* @property {string} str - label text
+* @property {number | string} loc - label location depending on referenced element. <br>
  *                     'c': centered, wrt. rec, cir, arc <br>
  *                     'beg','mid', 'end', wrt. lin <br>
  *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
- * @property {number} off - offset distance [optional].
- * @example
- * g2().view({cartesian:true})
+* @property {number} off - offset distance [optional].
+* @example
+* g2().view({cartesian:true})
  *     .cir({x:10,y:10,r:5})
  *     .label({str:'hello',loc:'s',off:10})
- */
+*/
 g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding label to ...
     if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({c:'label', a: arguments[0]});
-    }
+}
     return this;
 }
 g2.prototype.label.prototype = {
@@ -742,33 +759,33 @@ g2.prototype.label.prototype = {
             });
         }
         return label;
-    }
+}
 }
 
 /**
- * Draw marker on line element.
- * Deprecated !!
- * @method
- * @returns {object} g2
- * @param {object} - Marker arguments object.
- * @property {object | string} mrk - `g2` object or `name` of mark in `symbol` namespace.
- * @property {number | string | number[] | string[]} loc - line location ['beg','end',0.1,0.9,'mid',...].<br>
- *
- * @property {int} [dir=0] - Direction:<br>
+* Draw marker on line element.
+* Deprecated !!
+* @method
+* @returns {object} g2
+* @param {object} - Marker arguments object.
+* @property {object | string} mrk - `g2` object or `name` of mark in `symbol` namespace.
+* @property {number | string | number[] | string[]} loc - line location ['beg','end',0.1,0.9,'mid',...].<br>
+*
+* @property {int} [dir=0] - Direction:<br>
  *                   -1 : negative tangent direction<br>
  *                    0 : no orientation (rotation)<br>
  *                    1 : positive tangent direction
- * @example
- * g2().lin({x1:10,y1:10,x2:100,y2:10})
+* @example
+* g2().lin({x1:10,y1:10,x2:100,y2:10})
  *     .mark({mrk:"tick",loc:0.75,dir:1})
- *
- */
+*
+*/
 g2.prototype.mark = function mark({mrk,loc,dir,fs,ls}) {
     let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding mark to ...
     if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({c:'mark', a: arguments[0]});
-    }
+}
     return this;
 }
 g2.prototype.mark.prototype = {
@@ -782,7 +799,7 @@ g2.prototype.mark.prototype = {
             ls:ls || elem.ls || 'black',
             fs:fs || ls || elem.ls || 'black'
         }
-    },
+},
     g2() {
         let {mrk,loc,dir,fs,ls} = this,
             elem = this._refelem.a,
@@ -793,5 +810,5 @@ g2.prototype.mark.prototype = {
         else
             marks.use(this.markAt(elem,loc,mrk,dir,ls,fs));
         return marks;
-    }
+}
 }
