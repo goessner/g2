@@ -1,0 +1,38 @@
+<html>
+<head>
+<title>g2 handles</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="c" width="601" height="401" style="border:1px solid black;"></canvas>
+<script src="../bin/canvasinteractor.js"></script>
+<script src="../src/g2.core.js"></script>
+<script src="../src/g2.lib.js"></script>
+<script src="../src/g2.ext.js"></script>
+<script src="../src/g2.selector.js"></script>
+<script>
+const ctx = document.getElementById('c').getContext('2d');
+const interactor = canvasInteractor.create(ctx, {x:300,y:200,cartesian:true});
+const selector = g2.selector(interactor.evt);  // sharing 'evt' object ... !
+
+const p1 = {x:0,y:0,shape:'sqr',label:'A'}, p2 = {x:-100,y:50,label:{str:'B',loc:'nw'}}, p3 = {x:-200,y:0}, p4 = {x:-150,y:0};
+const g = g2().clr()                           // important with 'interaction'
+              .view(interactor.view)           // view sharing ... !
+              .grid()
+              .lin({p1,p2,label:{str:"@len"}})
+              .cir({p:p3,r:()=>Math.hypot(p3.x-p4.x,p3.y-p4.y),fs:'orange'})
+              .hdl(p1)
+              .hdl(p2)
+              .hdl(p3)
+              .hdl(p4)
+
+interactor.on('tick', (e) => { g.exe(selector).exe(ctx); })
+          .on('pan',  (e) => { interactor.view.x += e.dx; interactor.view.y += e.dy; })
+          .on('drag', (e) => { 
+              if (selector.selection && selector.selection.drag) 
+                  selector.selection.drag({x:e.xusr,y:e.yusr,dx:e.dxusr,dy:e.dyusr,mode:'drag'});
+              })
+          .startTimer();
+</script>
+</body>
+</html>

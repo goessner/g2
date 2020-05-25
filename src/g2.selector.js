@@ -33,23 +33,23 @@ g2.selector.prototype = {
             elm = this.hit(commands[i-1].a)
     },
     selectable(elm) {
-        return elm && elm.hit;
+        return elm && elm.dragable && elm.hit;
     },
     hit(elm) {
         if (!this.evt.inside                                   // pointer not inside of canvas ..
          || !this.selectable(elm) )                            // no selectable elm ..
             return false;
 
-        if (!elm.state && this.elementHit(elm)) {                // no mode
+        if (!elm.state && this.elementHit(elm) && elm.dragable) {  // no mode
             if (!this.selection || this.selection && !(this.selection.state & g2.DRAG)) {
                 if (this.selection) this.selection.state ^= g2.OVER;
                 this.selection = elm;
-                elm.state = g2.OVER;                              // enter OVER mode ..
+                elm.state = g2.OVER;                           // enter OVER mode ..
                 this.evt.hit = true;
             }
         }
-        else if (elm.state & g2.DRAG) {                               // in DRAG mode
-            if (!this.evt.btn)                                        // leave DRAG mode ..
+        else if (elm.state & g2.DRAG) {                        // in DRAG mode
+            if (!this.evt.btn)                                 // leave DRAG mode ..
                 this.elementDragEnd(elm);
         }
         else if (elm.state & g2.OVER) {                               // in OVER mode
@@ -61,6 +61,7 @@ g2.selector.prototype = {
             else if (this.evt.btn)                                    // enter DRAG mode
                 this.elementDragBeg(elm);
         }
+
         return elm.state && elm;                                      // we definitely have a valid elm here ... 
     },                                                                // ... but only return it depending on its state. 
     elementDragBeg(elm) {

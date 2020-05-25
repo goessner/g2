@@ -2,12 +2,12 @@
 "use strict"
 
 /**
- * g2.core (c) 2013-19 Stefan Goessner
+ * g2.core (c) 2013-20 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
  * @typedef {g2}
- * @param {object} [opts] Custom options object. It is simply copied into the 'g2' instance, but not used from the g2 kernel.
+ * @param {object} [opts] Custom options object.
  * @description Create a 2D graphics command queue object. Call without using 'new'.
  * @returns {g2}
  * @example
@@ -367,7 +367,7 @@ g2.prototype = {
      * g2().p()             // Begin path.
      *     .m({x:0,y:50})   // Move to point.
      *     .l({x:300,y:0})  // Line segment to point.
-     *     .l(x:400,y:100}) // ...
+     *     .l({x:400,y:100}) // ...
      *     .stroke()        // Stroke path.
      */
     l({x,y}) { return this.addCommand({c:'l',a:arguments[0]}); },
@@ -420,7 +420,7 @@ g2.prototype = {
      * @example
      * g2().p()            // Begin path.
      *     .m({x:50,y:50})       // Move to point.
-     *     .a({dw:2,x:300,y:100})   // Create cubic bezier curve.
+     *     .a({dw:2,x:300,y:100})   // Create arc segment.
      *     .stroke()       // Stroke path.
      *     .exe(ctx);      // Render to canvas context.
      */
@@ -507,8 +507,8 @@ g2.prototype = {
         if (a && Object.getPrototypeOf(a) === Object.prototype) {  // modify only pure argument objects 'a' .. !
             for (const key in a) {
                 if (!Object.getOwnPropertyDescriptor(a,key).get    // if 'key' is no getter ...
-                    && key[0] !== '_'                                 // and no private property ... 
-                    && typeof a[key] === 'function') {                // and a function ... make it a getter
+                    && key[0] !== '_'                              // and no private property ... 
+                    && typeof a[key] === 'function') {             // and a function ... make it a getter
                     Object.defineProperty(a, key, { get:a[key], enumerable:true, configurable:true, writabel:false });
                 }
                 if (typeof a[key] === 'string' && a[key][0] === '@') {  // referring values by neighbor id's
@@ -539,7 +539,7 @@ g2.prototype = {
 // statics
 g2.defaultStyle = {fs:'transparent',ls:'#000',lw:1,lc:"butt",lj:"miter",ld:[],ml:10,sh:[0,0],lsh:false,font:'14px serif',thal:'start',tval:'alphabetic'};
 g2.symbol = {
-    unknown: g2().cir({r:12}).txt({str:'?',thal:'center',tval:'middle',font:'bold 20pt serif'})
+    unknown: g2().cir({r:12,fs:'orange'}).txt({str:'?',thal:'center',tval:'middle',font:'bold 20pt serif'})
 };
 g2.handler = function(ctx) {
     let hdl;
@@ -589,8 +589,18 @@ g2.cmdIdxBy = function(cmds,callbk) {
 
 /**
  * Replacement for Object.assign, as it does not assign getters and setter properly ...
+ * See https://github.com/tc39/proposal-object-getownpropertydescriptors
  * See https://medium.com/@benastontweet/mixins-in-javascript-700ec81f5e5c
+ * Shallow copy of prototypes (think interfaces)
+ * @private
  */
+g2.mix = function mix(...protos) {
+    let mixture = {};
+    for (const p of protos)
+        mixture = Object.defineProperties(mixture, Object.getOwnPropertyDescriptors(p));
+    return mixture;
+}
+/* deprecated */
 g2.mixin = function mixin(obj, ...protos) {
     protos.forEach(p => {
         Object.keys(p).forEach(k => {
@@ -601,7 +611,7 @@ g2.mixin = function mixin(obj, ...protos) {
 }
 
 /**
- * Copy properties, even as getters .. a useful fraction of the above ..
+ * Copy properties, even as getters .. a useful part of the above ..
  * @private
  */
 g2.cpyProp = function(from,fromKey,to,toKey) { Object.defineProperty(to, toKey, Object.getOwnPropertyDescriptor(from, fromKey)); }
@@ -674,12 +684,14 @@ g2.canvasHdl.prototype = {
         ctx.clearRect(0,0,b||ctx.canvas.width,h||ctx.canvas.height);
         ctx.restore();
     },
-    cir({x=0,y=0,r}) {
+    cir({r}) {
+        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
         this.ctx.beginPath();
         this.ctx.arc(x||0,y||0,Math.abs(r),0,2*Math.PI,true);
         this.drw(arguments[0]);
     },
-    arc({x=0,y=0,r,w=0,dw=2*Math.PI}) {
+    arc({r,w=0,dw=2*Math.PI}) {
+        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
         if (Math.abs(dw) > Number.EPSILON && Math.abs(r) > Number.EPSILON) {
             this.ctx.beginPath();
             this.ctx.arc(x,y,Math.abs(r),w,w+dw,dw<0);
@@ -693,28 +705,30 @@ g2.canvasHdl.prototype = {
         }
     //  else  // nothing to draw with r === 0
     },
-    ell({x=0,y=0,rx,ry,w=0,dw=2*Math.PI,rot=0}) {
+    ell({rx,ry,w=0,dw=2*Math.PI,rot=0}) {
+        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
         this.ctx.beginPath();
         this.ctx.ellipse(x,y,Math.abs(rx),Math.abs(ry),rot,w,w+dw,dw<0);
         this.drw(arguments[0]);
     },
-    rec({x=0,y=0,b,h}) {
-        let tmp = this.setStyle(arguments[0]);
+    rec({b,h}) {
+        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
+        const tmp = this.setStyle(arguments[0]);
         this.ctx.fillRect(x,y,b,h);
         this.ctx.strokeRect(x,y,b,h);
         this.resetStyle(tmp);
     },
-    lin({x1=0,y1=0,x2,y2}) {
-        let ctx = this.ctx;
-        ctx.beginPath();
-        ctx.moveTo(x1,y1);
-        ctx.lineTo(x2,y2);
-        this.stroke(arguments[0]);
+    lin(args) {
+        this.ctx.beginPath();
+        this.ctx.moveTo(args.p1 && args.p1.x || args.x1 || 0, args.p1 && args.p1.y || args.y1 || 0);
+        this.ctx.lineTo(args.p2 && args.p2.x || args.x2 || 0, args.p2 && args.p2.y || args.y2 || 0);
+        this.stroke(args);
     },
-    ply: function({pts,closed,x=0,y=0,w=0,_itr}) {
+    ply: function({pts,closed,w=0,_itr}) {
         if (_itr && _itr.len) {
+            const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
             let p, i, len = _itr.len, istrf = !!(x || y || w), cw, sw;
-            if (istrf) this.setTrf([cw=(w?Math.cos(w):1),sw=(w?Math.sin(w):0),-sw,cw,x||0,y||0]);
+            if (istrf) this.setTrf([cw=(w?Math.cos(w):1),sw=(w?Math.sin(w):0),-sw,cw,x,y]);
             this.ctx.beginPath();
             this.ctx.moveTo((p=_itr(0)).x,p.y);
             for (i=1; i < len; i++)
@@ -727,13 +741,14 @@ g2.canvasHdl.prototype = {
         }
         return 0;
     },
-    txt({str,x=0,y=0,w=0,unsizable}) {
-        let tmp = this.setStyle(arguments[0]),
+    txt({str,w=0/*,unsizable*/}) {
+        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
+        const tmp = this.setStyle(arguments[0]),
             sw = w ? Math.sin(w) : 0,
             cw = w ? Math.cos(w) : 1,
             trf = this.isCartesian ? [cw,sw,sw,-cw,x,y]
                                    : [cw,sw,-sw,cw,x,y];
-        this.setTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
+        this.setTrf(trf);  // this.setTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
         if (this.ctx.fillStyle === 'rgba(0, 0, 0, 0)') {
             this.ctx.fillStyle = this.ctx.strokeStyle;
             tmp.fs = 'transparent';
@@ -788,21 +803,17 @@ g2.canvasHdl.prototype = {
         }
         return img;
     },
-    async img({uri,x=0,y=0,b,h,sx=0,sy=0,sb,sh,xoff=0,yoff=0,w=0,scl=1}) {
+    async img({uri,b,h,sx=0,sy=0,sb,sh,xoff=0,yoff=0,w=0,scl=1}) {
+        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
         const img_ = await this.loadImage(uri);
+        b = (b || img_.width ) * scl;
+        h = (h || img_.height) * scl;
         this.ctx.save();
-        const cart = this.isCartesian ? -1 : 1;
-        sb = sb || img_.width;
-        b = b || img_.width;
-        sh = (sh || img_.height);
-        h = (h || img_.height)*cart;
-        yoff*=cart;
-        w*=cart;
-        y = this.isCartesian ? -(y/scl)+sy : y/scl;
-        const [cw,sw] = [Math.cos(w), Math.sin(w)];
-        this.ctx.scale(scl, scl*cart);
-        this.ctx.transform(cw, sw, -sw, cw,x/scl,y);
-        this.ctx.drawImage(img_,sx,sy,sb,sh,xoff,yoff,b,h);
+        if(this.isCartesian) this.ctx.scale(1,-1);
+        this.ctx.translate(x,this.isCartesian ? -y : y);
+        this.ctx.rotate(this.isCartesian ? -w : w);
+        this.ctx.drawImage(img_,xoff,yoff,dx||img_.width,dy||img_.height,
+                    0,this.isCartesian ? -h:0,b,h);
         this.ctx.restore();
     },
     use({grp}) {
@@ -810,7 +821,8 @@ g2.canvasHdl.prototype = {
         this.exe(grp.commands);
         this.end();
     },
-    beg({x=0,y=0,w=0,scl=1,matrix,unsizable}={}) {
+    beg({w=0,scl=1,matrix/*,unsizable*/}={}) {
+        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
         let trf = matrix;
         if (!trf) {
             let ssw, scw;
@@ -819,7 +831,7 @@ g2.canvasHdl.prototype = {
             trf = [scw,ssw,-ssw,scw,x,y];
         }
         this.pushStyle(arguments[0]);
-        this.pushTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
+        this.pushTrf(trf);  // this.pushTrf(unsizable ? this.concatTrf(this.unscaleTrf({x,y}),trf) : trf);
     },
     end() {
         this.popTrf();
@@ -831,7 +843,8 @@ g2.canvasHdl.prototype = {
     l({x,y}) { this.ctx.lineTo(x,y); },
     q({x,y,x1,y1}) { this.ctx.quadraticCurveTo(x1,y1,x,y); },
     c({x,y,x1,y1,x2,y2}) { this.ctx.bezierCurveTo(x1,y1,x2,y2,x,y); },
-    a({x,y,dw,k,phi,_xp,_yp}) {  // todo: fix elliptical arc bug ...
+    a({dw,k,phi,_xp,_yp}) {  // todo: fix elliptical arc bug ...
+        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
         if (k === undefined) k = 1;  // ratio r1/r2
         if (Math.abs(dw) > Number.EPSILON) {
             if (k === 1) { // circular arc ...
@@ -1036,7 +1049,7 @@ g2.canvasHdl.prototype = {
 }
 
 // utils
-
+// deprecated -- remove both !!!
 g2.zoomView = function({scl,x,y}) { return { scl, x:(1-scl)*x, y:(1-scl)*y } }
 // fn argument must be a function with (optional) timestamp 't' as single argument
 // returning true to continue or false to stop RAF.

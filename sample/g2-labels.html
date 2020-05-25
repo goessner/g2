@@ -1,0 +1,33 @@
+<html>
+<head>
+<title>g2 labels</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="c" width="601" height="401" style="border:1px solid black;"></canvas>
+<script src="../src/g2.core.js"></script>
+<script src="../src/g2.lib.js"></script>
+<script src="../src/g2.ext.js"></script>
+<script>
+const p1 = {x:100,y:0}, p2 = {x:100,y:100}, p3 = {x:0,y:100}, p4 = {x:-100,y:0}, p5 = {x:-100,y:100},
+      p6 = {x:200,y:0}, p7 =  {x:-200,y:0}, p8 = {x:200,y:100}, p9 = {x:-200,y:100}, 
+      p10 = {x:-200,y:-100}
+const g = g2().view({x:300,y:200,cartesian:true})
+              .grid()
+              .cir({p:p4,r:10,fs:'lightgreen',label:'cir'})
+              .nod({fs:'orange',label:'nod'})
+              .pol({p:p6,label:'pol'})
+              .gnd({p:p8,label:'gnd'})
+              .nodfix({p:p1,w:-Math.PI/2,label:'nodfix'})
+              .nodflt({p:p10,label:'nodflt'})
+              .origin({p:p9,lw:2,label:'origin'})
+              .lin({p1:p3,p2,lw:2,ls:'navy',label:'lin'})
+              .rec({p:p5,b:80,h:40,lw:2,ls:'navy',fs:'tan',label:'rec'})
+              .arc({p:p7,r:40,dw:Math.PI*2/3,lw:2,ls:'darkslategray',fs:'gold',label:'arc'})
+              .vec({p1:{x:-100,y:-100},p2:{x:0,y:-100},lw:4,ls:'maroon',ld:[15,5],label:'vec'})
+              .dim({p1:{x:50,y:-100},p2:{x:150,y:-100},off:60,lw:1.5,ls:'purple',fs:'snow',label:'dim'})
+              .adim({p:{x:200,y:-100},r:40,w:-Math.PI/3,dw:3*Math.PI/2,lw:1.5,outside:true,ls:'darkgreen',fs:'snow',label:{str:'adim',off:-1}})
+              .exe(document.getElementById('c').getContext('2d'))
+</script>
+</body>
+</html>

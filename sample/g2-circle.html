@@ -1,0 +1,45 @@
+<html>
+<head>
+<title>g2 ellipse</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="c" width="601" height="401" style="border:1px solid black;"></canvas>
+<script src="../bin/canvasinteractor.js"></script>
+<script src="../src/g2.core.js"></script>
+<script src="../src/g2.lib.js"></script>
+<script src="../src/g2.ext.js"></script>
+<script src="../src/g2.selector.js"></script>
+<script>
+const sin = Math.sin, cos = Math.cos, atan2 = Math.atan2;
+const ctx = document.getElementById('c').getContext('2d');
+const interactor = canvasInteractor.create(ctx, {x:300,y:200,cartesian:true});
+const selector = g2.selector(interactor.evt);  // sharing 'evt' object ... !
+const h = 40, n = 5;
+const hdl = {x:200,y:0,r:5,fs:'orange',dragable:true};
+const g = g2().clr()                           // important with 'interaction'
+              .view(interactor.view)           // view sharing ... !
+              .grid()
+              .cir({x:0,y:0,r:60,fs:'lightgreen',dragable:true,label:{str:"hegTo",loc:"ne",off:2,border:true}})
+
+interactor.on('tick', (e) => { g.exe(selector).exe(ctx); })
+          .on('pan',  (e) => { interactor.view.x += e.dx; interactor.view.y += e.dy; })
+          .on('drag', (e) => { 
+              if (selector.selection && selector.selection.drag) 
+                  selector.selection.drag({x:e.xusr,y:e.yusr,dx:e.dxusr,dy:e.dyusr,mode:'drag'});
+              })
+          .startTimer();
+//g.exe(ctx);
+/*
+function constraining() {
+    const r = {x:hdl.x, y:hdl.y};
+    const kappa = ell.ry/ell.rx;
+    const f  = (th) => r.x*sin(th) + p.y*cos(th) - R*(1+kap**2)*sin(th)*cos(th);
+    const fd = (th) => r.x*sin(th) + p.y*cos(th) - R*(1+kap**2)*sin(th)*cos(th);
+
+
+}
+*/
+</script>
+</body>
+</html>

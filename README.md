@@ -12,7 +12,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 ## Main features
 
 * Fast and lightweight graphics command queue builder.
-* Adressing HTML canvas 2D context as the default renderer.
+* Addressing HTML canvas 2D context as the default renderer.
 * Generating SVG output using an [addon library](https://github.com/goessner/g2-svg).
 * Method chaining.
 * Support of cartesian coordinates.
