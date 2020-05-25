@@ -16,11 +16,11 @@ const ctx = document.getElementById('c').getContext('2d');
 const interactor = canvasInteractor.create(ctx, {x:300,y:200,cartesian:true});
 const selector = g2.selector(interactor.evt);  // sharing 'evt' object ... !
 const h = 40, n = 5;
-const hdl = {x:200,y:0,r:5,fs:'orange',dragable:true};
+const hdl = {x:200,y:0,r:5,fs:'orange',draggable:true};
 const g = g2().clr()                           // important with 'interaction'
               .view(interactor.view)           // view sharing ... !
               .grid()
-              .cir({x:0,y:0,r:60,fs:'lightgreen',dragable:true,label:{str:"hegTo",loc:"ne",off:2,border:true}})
+              .cir({x:0,y:0,r:60,fs:'lightgreen',draggable:true,label:{str:"hegTo",loc:"ne",off:2,border:true}})
 
 interactor.on('tick', (e) => { g.exe(selector).exe(ctx); })
           .on('pan',  (e) => { interactor.view.x += e.dx; interactor.view.y += e.dy; })

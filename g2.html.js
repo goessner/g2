@@ -1579,7 +1579,7 @@ g2.prototype.hdl = function(args) { return this.addCommand({c:'hdl',a:args}); }
 g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
     r: 5,
     isSolid: true,
-    dragable: true,
+    draggable: true,
     lbloc: 'se',
     get lsh() { return this.state & g2.OVER; },
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
@@ -2667,14 +2667,14 @@ g2.selector.prototype = {
             elm = this.hit(commands[i-1].a)
     },
     selectable(elm) {
-        return elm && elm.dragable && elm.hit;
+        return elm && elm.draggable && elm.hit;
     },
     hit(elm) {
         if (!this.evt.inside                                   // pointer not inside of canvas ..
          || !this.selectable(elm) )                            // no selectable elm ..
             return false;
 
-        if (!elm.state && this.elementHit(elm) && elm.dragable) {  // no mode
+        if (!elm.state && this.elementHit(elm) && elm.draggable) {  // no mode
             if (!this.selection || this.selection && !(this.selection.state & g2.DRAG)) {
                 if (this.selection) this.selection.state ^= g2.OVER;
                 this.selection = elm;

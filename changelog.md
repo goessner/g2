@@ -6,13 +6,13 @@
 * unknown symbol name with `use` results in drawing unknown symbol instead of runtime error.
 * `{ldoff}` as linedash offset style property for line dash animation added. `
 * Implicite element selecting and dragging capability removed.
-* Boolean `{dragable}` property added, for explicitly indicating dragable elements.
+* Boolean `{draggable}` property added, for explicitly indicating draggable elements.
 ### `g2.ext.js`
 * code cleanup.
 * `label` element deprecated.
 * `mark` element deprecated.
 * `label` property for most element types introduced.
-* Handle element `hdl` with default `{dragable:true}` property added.
+* Handle element `hdl` with default `{draggable:true}` property added.
 * `nod, nodfix, nodflt, pol, gnd, vec, dim, adim, origin` elements moved/ported from `g2.mec.js`.
 ### `g2.io.js`
 * works again.

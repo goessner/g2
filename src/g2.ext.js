@@ -253,7 +253,7 @@ g2.prototype.hdl = function(args) { return this.addCommand({c:'hdl',a:args}); }
 g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
     r: 5,
     isSolid: true,
-    dragable: true,
+    draggable: true,
     lbloc: 'se',
     get lsh() { return this.state & g2.OVER; },
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },

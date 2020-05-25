@@ -17,7 +17,7 @@ const selector = g2.selector(interactor.evt);  // sharing 'evt' object ... !
 const g = g2().clr()                           // important with 'interaction'
               .view(interactor.view)           // view sharing ... !
               .grid()
-              .cir({x:0,y:0,r:30,fs:'orange',dragable:true})
+              .cir({x:0,y:0,r:30,fs:'orange',draggable:true})
               .cir({x:-100,y:0,r:30,fs:'orange'});
 
 interactor.on('tick', (e) => { g.exe(selector).exe(ctx); })
