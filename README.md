@@ -67,12 +67,11 @@ Check out the single page [Cheat Sheet](docs/api/sheet.pdf).
 Also available under [https://goessner.github.io/g2/api/sheet.pdf](https://goessner.github.io/g2/api/sheet.pdf)
 
 ## GitCDN
-Use the link [https://goessner.github.io/g2/g2.js](https://goessner.github.io/g2/g2.js)
-for getting the latest commit as a raw file.
+Use the link [https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js](https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js) for getting the latest commit as a raw file.
 
 In HTML use ...
 ```html
-<script src="https://goessner.github.io/g2/g2.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js"></script>
 ```
 
 ### Tests
