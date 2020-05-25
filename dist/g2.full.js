@@ -1063,96 +1063,7 @@ g2.render = function render(fn) {
 
 // use it with node.js ... ?
 if (typeof module !== 'undefined') module.exports = g2;
-/**
- * g2.io (c) 2017-18 Stefan Goessner
- * @license MIT License
- */
-"use strict";
 
-g2.io = function() {
-   if (this instanceof g2.io) {
-      this.model = null;
-      this.grpidx = 0;
-      return this;
-   }
-   return g2.io.apply(Object.create(g2.io.prototype));
-};
-g2.handler.factory.push((ctx) => ctx instanceof g2.io ? ctx : false);
-
-g2.io.parseGrp = function(model, id, onErr) {
-    let g;
-    onErr = onErr || console.error;
-    if (id in model) {
-        g = g2({id});
-        for (let cmd of model[id]) {
-            if (cmd.c === 'use') {
-                cmd.a.grp = g2.io.parseGrp(model, cmd.a.grp);
-                g[cmd.c](cmd.a);
-            }
-            else if (g[cmd.c])
-                cmd.a ? g[cmd.c](cmd.a) : g[cmd.c]();
-            else  // invalid g2 command !
-               onErr(`g2.io: Unable to handle command '${cmd.c}'`)
-        }
-        return g;
-    }
-    else if (id in g2.symbol)
-        return g2.symbol[id];
-    else
-        onErr(`g2.io: Unable to find group with id '${id}'!`);
-    return false;
-}
-
-g2.io.prototype = {
-    init: function(grp,style) {
-        this.model = {'main':[]};
-        this.curgrp = this.model.main;
-        this.grpidx = 0;
-        return true; 
-    },
-    exe: function(commands) {
-        for (let cmd of commands) {
-            if (this[cmd.c])
-                cmd.a ? this[cmd.c](cmd.a) : this[cmd.c]();
-            else
-                this.out(cmd.c,cmd.a);
-        }
-    },
-    out: function(c,a) {
-        if (a) {
-            let args = {};
-            Object.keys(a).forEach(k => {
-                if (k[0] !== '_')  // no private key ...
-                    args[k] = a[k];
-            });
-            this.curgrp.push({c:c,a:args});
-        }
-        else
-            this.curgrp.push({c:c});
-    },
-    stringify: function(space) { return space ? JSON.stringify(this.model,null,space) : JSON.stringify(this.model); },
-    toString: function() { return JSON.stringify(this.model); },
-
-    // customized commands ...
-    use: function(args) {
-        let grp = args.grp instanceof g2 ? args.grp
-                : typeof args.grp === 'string' && g2.symbol.includes(args.grp) ? g2.symbol[args.grp]
-                : null;
-        if (grp) {
-            if (!grp.id) grp.id = `$grp${++this.grpidx}`;
-            if (!(grp.id in this.model)) { // meet first time ..
-                let curgrp = this.curgrp;
-                this.curgrp = this.model[grp.id] = [];
-                for (let command of grp.commands)
-                    this.out(command.c,command.a);
-                this.curgrp = curgrp;
-            }
-            args.grp = grp.id;
-
-            this.out("use", args);
-        }
-    }
-}
 /**
  * g2.lib (c) 2013-17 Stefan Goessner
  * geometric constants and higher functions
@@ -1324,7 +1235,8 @@ g2 = Object.assign(g2, {
 
         return {x:x0,y:y0,r:r,w:Math.atan2(dy01,dx01),dw};
     }
-})/**
+})
+/**
  * g2.ext (c) 2015-20 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
@@ -1380,8 +1292,8 @@ g2.symbol.dashdot = [25,6.5,2,6.5];
 g2.symbol.labelSignificantDigits = 3;  //  0.1234 => 0.123,  0.01234 => 0.0123, 1.234 => 1.23, 12.34 => 12.3, 123.4 => 123, 1234 => 1234
 
 /**
- * Flatten object properties (evaluate getters)
- */
+* Flatten object properties (evaluate getters)
+*/
 g2.flatten = function(obj) {
     const args = Object.create(null); // important !
     for (let p in obj)
@@ -1414,11 +1326,11 @@ g2.labelIfc = {
             let val = this[s];
             val = Number.isInteger(val) ? val 
                 : Number(val).toFixed(Math.max(g2.symbol.labelSignificantDigits-Math.log10(val),0));
-           
-            s = `${val}${s === 'angle' ? "°" : ""}`;
+
+            s = `${val}${s === 'angle' ? "┬░" : ""}`;
         }
         return s;
-    },
+},
     drawLabel(g) {
         const lbl = this.label;
         const font = lbl.font||g2.defaultStyle.font;
@@ -1435,7 +1347,7 @@ g2.labelIfc = {
                 thal: "center", tval: "middle",
                 fs: lbl.fs||'black', font:lbl.font });
         return g;
-    }
+}
 }
 
 g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
@@ -1449,7 +1361,7 @@ g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
         return !this.label ? false 
                            : () => g2().cir(g2.flatten(this))      // hand object stripped from `g2`, 
                                        .ins((g)=>this.drawLabel(g));  // avoiding infinite recursion !
-    },
+},
     pointAt(loc) {
         const Q = Math.SQRT2/2;
         const LOC = {c:[0,0],e:[1,0],ne:[Q,Q],n:[0,1],nw:[-Q,Q],w:[-1,0],sw:[-Q,-Q],s:[0,-1],se:[Q,-Q]};
@@ -1460,11 +1372,11 @@ g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
             y: this.y + q[1]*this.r,
             nx:  q[0],
             ny:  q[1] };
-    },
+},
     hit({x,y,eps}) {
         return this.isSolid ? g2.isPntInCir({x,y},this,eps)
                             : g2.isPntOnCir({x,y},this,eps);
-    },
+},
     drag({dx,dy}) { this.x += dx; this.y += dy },
 });
 
@@ -1487,7 +1399,7 @@ g2.prototype.lin.prototype = g2.mix(g2.labelIfc, {
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     get g2() {      // dynamically switch existence of method via getter ... !
         return !this.label ? false : () => g2().lin(g2.flatten(this)).ins((g)=>this.drawLabel(g));
-    },
+},
 
     pointAt(loc) {
         let t = loc==="beg" ? 0
@@ -1503,14 +1415,14 @@ g2.prototype.lin.prototype = g2.mix(g2.labelIfc, {
             nx: len ?  dy/len :  0,
             ny: len ? -dx/len : -1
        };
-    },
+},
     hit({x,y,eps}) {
         return g2.isPntOnLin({x,y},{x:this.x1,y:this.y1},{x:this.x2,y:this.y2},eps);
-    },
+},
     drag({dx,dy}) {
         this.x1 += dx; this.x2 += dx;
         this.y1 += dy; this.y2 += dy;
-    }
+}
 });
 
 g2.prototype.rec.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
@@ -1520,7 +1432,7 @@ g2.prototype.rec.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false; },
     get g2() {      // dynamically switch existence of method via getter ... !
         return !this.label ? false : () => g2().rec(g2.flatten(this)).ins((g)=>this.drawLabel(g));
-    },
+},
     lbloc: 'c',
     pointAt(loc) {
         const LOC = { c:[0,0],e:[1,0],ne:[0.95,0.95],n:[0,1],nw:[-0.95,0.95],w:[-1,0],sw:[-0.95,-0.95],s:[0,-1],se:[0.95,-0.95] };
@@ -1530,11 +1442,11 @@ g2.prototype.rec.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
             y: this.y + (1 + q[1])*this.h/2,
             nx:  q[0],
             ny:  q[1] };
-    },
+},
     hit({x,y,eps}) {
         return this.isSolid ? g2.isPntInBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps)
                             : g2.isPntOnBox({x,y},{x:this.x+this.b/2,y:this.y+this.h/2,b:this.b/2,h:this.h/2},eps);
-    },
+},
     drag({dx,dy}) { this.x += dx; this.y += dy }
 });
 
@@ -1545,7 +1457,7 @@ g2.prototype.arc.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
     get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
     get g2() {      // dynamically switch existence of method via getter ... !
         return !this.label ? false : () => g2().arc(g2.flatten(this)).ins((g)=>this.drawLabel(g));
-    },
+},
     lbloc: 'mid',
     pointAt(loc) {
         let t = loc==="beg" ? 0
@@ -1560,21 +1472,21 @@ g2.prototype.arc.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
             nx: cang,
             ny: sang
        };
-    },
+},
     hit({x,y,eps}) { return g2.isPntOnArc({x,y},this,eps) },
     drag({dx,dy}) { this.x += dx; this.y += dy; },
 });
 
 /**
- * Draw interactive handle.
- * @method
- * @returns {object} g2
- * @param {object} - handle object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().hdl({x:100,y:80})  // Draw handle.
- */
+* Draw interactive handle.
+* @method
+* @returns {object} g2
+* @param {object} - handle object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().hdl({x:100,y:80})  // Draw handle.
+*/
 g2.prototype.hdl = function(args) { return this.addCommand({c:'hdl',a:args}); }
 g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
     r: 5,
@@ -1587,17 +1499,17 @@ g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
         const {x,y,r,b=4,shape='cir',ls='black',fs='#ccc',sh} = this;
         return shape === 'cir' ? g2().cir({x,y,r,ls,fs,sh}).ins((g)=>this.label && this.drawLabel(g))
                                : g2().rec({x:x-b,y:y-b,b:2*b,h:2*b,ls,fs,sh}).ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 });
 
 /**
- * Node symbol.
- * @constructor
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().nod({x:10,y:10})
+* Node symbol.
+* @constructor
+* @param {object} - symbol arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().nod({x:10,y:10})
 */
 
 g2.prototype.nod = function(args) { return this.addCommand({c:'nod',a:args}); }
@@ -1610,19 +1522,19 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     g2() {      // in contrast to `g2.prototype.cir.prototype`, `g2()` is called always !
         return g2().cir(g2.flatten(this))
                    .ins((g)=>this.label && this.drawLabel(g))
-    }
+}
 });
 
 /**
- * Pole symbol.
- * @constructor
- * @returns {object} g2
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().pol({x:10,y:10})
- */
+* Pole symbol.
+* @constructor
+* @returns {object} g2
+* @param {object} - symbol arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().pol({x:10,y:10})
+*/
 g2.prototype.pol = function (args) { return this.addCommand({c:'pol',a:args}); }
 g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
@@ -1632,20 +1544,20 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .cir({r:2.5,fs:'@ls',ls:'transparent'})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 /**
- * Ground symbol.
- * @constructor
- * @param {object} - arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().gnd({x:10,y:10})
+* Ground symbol.
+* @constructor
+* @param {object} - arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().gnd({x:10,y:10})
 */
- g2.prototype.gnd = function (args) { return this.addCommand({c:'gnd',a:args}); }
- g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
+g2.prototype.gnd = function (args) { return this.addCommand({c:'gnd',a:args}); }
+g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
      g2() {
         return g2()
             .beg(g2.flatten(this))
@@ -1659,7 +1571,7 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .fill({fs:g2.symbol.nodcolor})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 g2.prototype.nodfix = function (args) { return this.addCommand({c:'nodfix',a:args}); }
@@ -1675,16 +1587,16 @@ g2.prototype.nodfix.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .cir({x:0,y:0,r:this.r})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 /**
- * @method
- * @returns {object} g2
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().view({cartesian:true})
+* @method
+* @returns {object} g2
+* @param {object} - symbol arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @example
+* g2().view({cartesian:true})
  *     .nodflt({x:10,y:10})
 */
 g2.prototype.nodflt = function (args) { return this.addCommand({c:'nodflt',a:args}); }
@@ -1702,21 +1614,21 @@ g2.prototype.nodflt.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .lin({x1:-9,y1:-15.5,x2:9,y2:-15.5,ls:g2.symbol.nodcolor,lw:2})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 /**
- * Draw vector arrow.
- * @method
- * @returns {object} g2
- * @param {object} - vector arguments object.
- * @property {number} x1 - start x coordinate.
- * @property {number} y1 - start y coordinate.
- * @property {number} x2 - end x coordinate.
- * @property {number} y2 - end y coordinate.
- * @example
- * g2().vec({x1:50,y1:20,x2:250,y2:120})
- */
+* Draw vector arrow.
+* @method
+* @returns {object} g2
+* @param {object} - vector arguments object.
+* @property {number} x1 - start x coordinate.
+* @property {number} y1 - start y coordinate.
+* @property {number} x2 - end x coordinate.
+* @property {number} y2 - end y coordinate.
+* @example
+* g2().vec({x1:50,y1:20,x2:250,y2:120})
+*/
 g2.prototype.vec = function vec(args) { return this.addCommand({c:'vec',a:args}); }
 g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
@@ -1732,23 +1644,54 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype,{
                 .use({grp:arrowHead,x:r,y:0})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 /**
- * Linear Dimension
- * @method
- * @returns {object} g2
- * @param {object} - dimension arguments object.
- * @property {number} x1 - start x coordinate.
- * @property {number} y1 - start y coordinate.
- * @property {number} x2 - end x coordinate.
- * @property {number} y2 - end y coordinate.
- * @property {number} off - offset.
- * @property {boolean} [inside=true] - draw dimension arrows between or outside of ticks.
- * @example
- *  g2().dim({x1:60,y1:40,x2:190,y2:120})
- */
+* Arc as Vector
+* @method
+* @returns {object} g2
+* @param {object} - angular dimension arguments.
+* @property {number} x - start x coordinate.
+* @property {number} y - start y coordinate.
+* @property {number} r - radius
+* @property {number} [w=0] - start angle (in radian).
+* @property {number} [dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
+ *                                       right handed (cartesian) coordinate system.
+* @example
+* g2().avec({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
+*/
+g2.prototype.avec = function adim(args) { return this.addCommand({c:'avec',a:args}); }
+g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
+    g2() {
+        const {x,y,r,w,dw,lw=1,lc='round',lj='round',ls,fs=ls||"#000",label} = this;
+        const b = 3*(1 + lw) > r ? r/3 : (1 + lw), bw = 5*b/r;
+        const arrowHead = () => g2().p().m({x:0,y:2*b}).l({x:0,y:-2*b}).m({x:0,y:0}).l({x:-5*b,y:b})
+                                    .a({dw:-Math.PI/3,x:-5*b,y:-b}).z().drw({ls,fs});
+
+        return g2()
+            .beg({x,y,w,ls,lw,lc,lj})
+                .arc({r,w:0,dw})
+                .use({grp:arrowHead,x:r*Math.cos(dw),y:r*Math.sin(dw),w:(dw > 0 ? dw+Math.PI/2-bw/2 : dw-Math.PI/2+bw/2)})
+            .end()
+            .ins((g)=>label && this.drawLabel(g));
+}
+});
+
+/**
+* Linear Dimension
+* @method
+* @returns {object} g2
+* @param {object} - dimension arguments object.
+* @property {number} x1 - start x coordinate.
+* @property {number} y1 - start y coordinate.
+* @property {number} x2 - end x coordinate.
+* @property {number} y2 - end y coordinate.
+* @property {number} off - offset.
+* @property {boolean} [inside=true] - draw dimension arrows between or outside of ticks.
+* @example
+*  g2().dim({x1:60,y1:40,x2:190,y2:120})
+*/
 g2.prototype.dim = function dim(args) { return this.addCommand({c:'dim', a:args}); }
 g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
     pointAt(loc) {
@@ -1758,7 +1701,7 @@ g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
             pnt.y += this.off*pnt.ny;
         }
         return pnt;
-    },
+},
     g2() {
         const {x1,y1,x2,y2,lw=1,lc='round',lj='round',off=0,inside=true,ls,fs=ls||"#000",label} = this;
         const dx = x2-x1, dy = y2-y1, r = Math.hypot(dx,dy);
@@ -1772,25 +1715,25 @@ g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
                .use({grp:arrowHead,x:0,y:0,w:(inside?Math.PI:0)})
             .end()
             .ins((g)=>label && this.drawLabel(g));
-    }
+}
 });
 
 /**
- * Angular dimension
- * @method
- * @returns {object} g2
- * @param {object} - angular dimension arguments.
- * @property {number} x - start x coordinate.
- * @property {number} y - start y coordinate.
- * @property {number} r - radius
- * @property {number} [w=0] - start angle (in radian).
- * @property {number} [dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
+* Angular dimension
+* @method
+* @returns {object} g2
+* @param {object} - angular dimension arguments.
+* @property {number} x - start x coordinate.
+* @property {number} y - start y coordinate.
+* @property {number} r - radius
+* @property {number} [w=0] - start angle (in radian).
+* @property {number} [dw=Math.PI/2] - angular range in radian. In case of positive values it is running counterclockwise with
  *                                       right handed (cartesian) coordinate system.
- * @property {boolean} [outside=false] - draw dimension arrows outside of ticks.
- * @depricated {boolean} [inside] - draw dimension arrows between ticks.
- * @example
- * g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
- */
+* @property {boolean} [outside=false] - draw dimension arrows outside of ticks.
+* @depricated {boolean} [inside] - draw dimension arrows between ticks.
+* @example
+* g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
+*/
 g2.prototype.adim = function adim(args) { return this.addCommand({c:'adim',a:args}); }
 g2.prototype.adim.prototype = g2.mix(g2.prototype.arc.prototype, {
     g2() {
@@ -1808,32 +1751,19 @@ g2.prototype.adim.prototype = g2.mix(g2.prototype.arc.prototype, {
                 .use({grp:arrowHead,x:r*Math.cos(dw),y:r*Math.sin(dw),w:(!outside && dw > 0 || outside && dw < 0 ? dw+Math.PI/2-bw/2 : dw-Math.PI/2+bw/2)})
             .end()
             .ins((g)=>label && this.drawLabel(g));
-/*
-            .vec({
-                x1:args.inside ? args.r-.15:args.r-3.708,
-                y1:args.inside?1:24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
-            .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
-            .end()
-            .beg({x:args.x,y:args.y,w:args.w+args.dw})
-            .vec({
-                x1:args.inside ? args.r-.15:args.r-3.708,
-                y1:args.inside?-1:-24.723,x2:args.r,y2:0,fs:args.fs,ls:args.ls,lw:args.lw,fixed:30})
-            .lin({x1:args.r-3.5,y1:0,x2:args.r+3.5,y2:0,fs:args.fs,ls:args.ls,lw:args.lw})
-            .end();
-*/
-    }
+}
 });
 
 /**
- * Origin symbol
- * @constructor
- * @returns {object} g2
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @property {number} w - angle in radians.
- * @example
- * g2().view({cartesian:true})
+* Origin symbol
+* @constructor
+* @returns {object} g2
+* @param {object} - symbol arguments object.
+* @property {number} x - x-value center.
+* @property {number} y - y-value center.
+* @property {number} w - angle in radians.
+* @example
+* g2().view({cartesian:true})
  *     .origin({x:10,y:10})
 */
 g2.prototype.origin = function (args) { return this.addCommand({c:'origin',a:args}); }
@@ -1848,7 +1778,7 @@ g2.prototype.origin.prototype = g2.mix(g2.prototype.nod.prototype, {
                 .cir({x:0,y:0,r:lw+1,fs:'#ccc'})
             .end()
             .ins((g)=>this.label && this.drawLabel(g));
-    }
+}
 })
 
 g2.prototype.ply.prototype = {
@@ -1905,16 +1835,14 @@ g2.prototype.ply.prototype = {
             dx: len2 ? dx/len2 : 1,
             dy: len2 ? dy/len2 : 0
         };
-    },
+},
     hit({x,y,eps}) {
         return this.isSolid ? g2.isPntInPly({x:x-this.x,y:y-this.y},this,eps)   // translational transformation only .. at current .. !
                             : g2.isPntOnPly({x:x-this.x,y:y-this.y},this,eps);
-    },
+},
     drag({dx,dy}) { this.x += dx; this.y += dy; }
 }
 
-// use is currently not transformed
-/*
 g2.prototype.use.prototype = {
     // p vector notation !
     get p() { return {x:this.x,y:this.y}; },  // relevant if 'p' is *not* explicite given. 
@@ -1924,36 +1852,37 @@ g2.prototype.use.prototype = {
     set y(q) { if (Object.getOwnPropertyDescriptor(this,'p')) this.p.y = q; },
 
     isSolid: false,
+/*
     hit(at) {
         for (const cmd of this.grp.commands) {
             if (cmd.a.hit && cmd.a.hit(at))
                 return true;
         }
         return false;
-    },
+},
 
     pointAt: g2.prototype.cir.prototype.pointAt,
-};
 */
+};
 // complex macros / add prototypes to argument objects
 
 /**
- * Draw spline by points.
- * Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).
- * Using iterator function for getting points from array by index.
- * It must return current point object {x,y} or object {done:true}.
- * Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
- * array of [[x,y],...] arrays or array of [{x,y},...] objects.
- * @see https://pomax.github.io/bezierinfo
- * @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
- * @method
- * @returns {object} g2
- * @param {object} - spline arguments object.
- * @property {object[] | number[][] | number[]} pts - array of points.
- * @property {bool} [closed=false] - closed spline.
- * @example
- * g2().spline({pts:[100,50,50,150,150,150,100,50]})
- */
+* Draw spline by points.
+* Implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).
+* Using iterator function for getting points from array by index.
+* It must return current point object {x,y} or object {done:true}.
+* Default iterator expects sequence of x/y-coordinates as a flat array [x,y,...],
+* array of [[x,y],...] arrays or array of [{x,y},...] objects.
+* @see https://pomax.github.io/bezierinfo
+* @see https://de.wikipedia.org/wiki/Kubisch_Hermitescher_Spline
+* @method
+* @returns {object} g2
+* @param {object} - spline arguments object.
+* @property {object[] | number[][] | number[]} pts - array of points.
+* @property {bool} [closed=false] - closed spline.
+* @example
+* g2().spline({pts:[100,50,50,150,150,150,100,50]})
+*/
 g2.prototype.spline = function spline({pts,closed,x,y,w}) {
     arguments[0]._itr = g2.pntItrOf(pts);
     return this.addCommand({c:'spline',a:arguments[0]});
@@ -2008,33 +1937,33 @@ g2.prototype.spline.prototype = g2.mixin({},g2.prototype.ply.prototype,{
             if (istrf) gbez.end();
         }
         return gbez;
-    }
+}
 })
 
 /**
- * Add label to certain elements.
- * Deprecated !!
- * Please note that cartesian flag is necessary.
- * @method
- * @returns {object} g2
- * @param {object} - label arguments object.
- * @property {string} str - label text
- * @property {number | string} loc - label location depending on referenced element. <br>
+* Add label to certain elements.
+* Deprecated !!
+* Please note that cartesian flag is necessary.
+* @method
+* @returns {object} g2
+* @param {object} - label arguments object.
+* @property {string} str - label text
+* @property {number | string} loc - label location depending on referenced element. <br>
  *                     'c': centered, wrt. rec, cir, arc <br>
  *                     'beg','mid', 'end', wrt. lin <br>
  *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
- * @property {number} off - offset distance [optional].
- * @example
- * g2().view({cartesian:true})
+* @property {number} off - offset distance [optional].
+* @example
+* g2().view({cartesian:true})
  *     .cir({x:10,y:10,r:5})
  *     .label({str:'hello',loc:'s',off:10})
- */
+*/
 g2.prototype.label = function label({str,loc,off,fs,font,fs2}) {
     let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding label to ...
     if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({c:'label', a: arguments[0]});
-    }
+}
     return this;
 }
 g2.prototype.label.prototype = {
@@ -2049,7 +1978,7 @@ g2.prototype.label.prototype = {
 
             if (str[0] === "@" && (s=this._refelem.a[str.substr(1)]) !== undefined)   // expect 's' as string convertable to a number ...
                 str = "" + (Number.isInteger(+s) ? +s : Number(s).toFixed(Math.max(g2.symbol.labelSignificantDigits-Math.log10(s),0)))  // use at least 3 significant digits after decimal point.
-                         + (str.substr(1) === "angle" ? "°" : "");
+                         + (str.substr(1) === "angle" ? "┬░" : "");
             n = str.length;
             if (tanlen > Number.EPSILON) {
                 diag = Math.hypot(p.dx,n*p.dy);
@@ -2068,33 +1997,33 @@ g2.prototype.label.prototype = {
             });
         }
         return label;
-    }
+}
 }
 
 /**
- * Draw marker on line element.
- * Deprecated !!
- * @method
- * @returns {object} g2
- * @param {object} - Marker arguments object.
- * @property {object | string} mrk - `g2` object or `name` of mark in `symbol` namespace.
- * @property {number | string | number[] | string[]} loc - line location ['beg','end',0.1,0.9,'mid',...].<br>
- *
- * @property {int} [dir=0] - Direction:<br>
+* Draw marker on line element.
+* Deprecated !!
+* @method
+* @returns {object} g2
+* @param {object} - Marker arguments object.
+* @property {object | string} mrk - `g2` object or `name` of mark in `symbol` namespace.
+* @property {number | string | number[] | string[]} loc - line location ['beg','end',0.1,0.9,'mid',...].<br>
+*
+* @property {int} [dir=0] - Direction:<br>
  *                   -1 : negative tangent direction<br>
  *                    0 : no orientation (rotation)<br>
  *                    1 : positive tangent direction
- * @example
- * g2().lin({x1:10,y1:10,x2:100,y2:10})
+* @example
+* g2().lin({x1:10,y1:10,x2:100,y2:10})
  *     .mark({mrk:"tick",loc:0.75,dir:1})
- *
- */
+*
+*/
 g2.prototype.mark = function mark({mrk,loc,dir,fs,ls}) {
     let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a}); // find reference index of previous element adding mark to ...
     if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({c:'mark', a: arguments[0]});
-    }
+}
     return this;
 }
 g2.prototype.mark.prototype = {
@@ -2108,7 +2037,7 @@ g2.prototype.mark.prototype = {
             ls:ls || elem.ls || 'black',
             fs:fs || ls || elem.ls || 'black'
         }
-    },
+},
     g2() {
         let {mrk,loc,dir,fs,ls} = this,
             elem = this._refelem.a,
@@ -2119,8 +2048,9 @@ g2.prototype.mark.prototype = {
         else
             marks.use(this.markAt(elem,loc,mrk,dir,ls,fs));
         return marks;
-    }
 }
+}
+
 /**
  * g2.mec (c) 2013-18 Stefan Goessner
  * @author Stefan Goessner
@@ -2632,460 +2562,493 @@ g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
             .end();
     }
 })
+
+"use strict"
+
 /**
- * g2.selector.js (c) 2018 Stefan Goessner
- * @file selector for `g2` elements.
+ * g2.chart (c) 2015-18 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
+ * @requires g2.core.js
+ * @requires g2.ext.js
+ * @typedef g2
+ * @returns {object} chart
+ * @param {object} args - Chart arguments object or
+ * @property {float} x - x-position of lower left corner of chart rectangle.
+ * @property {float} y - y-position of lower left corner of chart rectangle.
+ * @property {float} [b=150] - width of chart rectangle.
+ * @property {float} [h=100] - height of chart rectangle.
+ * @property {string} [ls] - border color.
+ * @property {string} [fs] - fill color.
+ * @property {(string|object)} [title] - chart title.
+ * @property {string} [title.text] - chart title text string.
+ * @property {float} [title.offset=0] - chart title vertical offset.
+ * @property {object} [title.style] - chart title style.
+ * @property {string} [title.style.font=14px serif] - chart title font.
+ * @property {string} [title.style.thal=center] - chart title horizontal align.
+ * @property {string} [title.style.tval=bottom] - chart title vertical align.
+ * @property {array} [funcs=[]] - array of dataset `data` and/or function `fn` objects.
+ * @property {object} [funcs[item]] - dataset or function object.
+ * @property {array} [funcs[item].data] - data points as flat array `[x,y,..]`, array of point arrays `[[x,y],..]` or array of point objects `[{x,y},..]`.
+ * @property {function} [funcs[item].fn] - function `y = f(x)` recieving x-value returning y-value.
+ * @property {float} [funcs[item].dx] - x increment to apply to function `fn`. Ignored with data points.
+ * @property {boolean} [funcs[item].fill] - fill region between function graph and x-origin line.
+ * @property {boolean} [funcs[item].dots] - place circular dots at data points (Avoid with `fn`s).
+ * @property {boolean|object} [xaxis=false] - x-axis.
+ * @property {boolean|object} [xaxis.grid=false] - x-axis grid lines.
+ * @property {string} [xaxis.grid.ls] - x-axis grid line style (color).
+ * @property {string} [xaxis.grid.lw] - x-axis grid line width.
+ * @property {string} [xaxis.grid.ld] - x-axis grid line dash style.
+ * @property {boolean} [xaxis.line=true] - display x-axis base line.
+ * @property {boolean} [xaxis.origin=false] - display x-axis origin line.
+ * @property {boolean|object} [yaxis=false] - y-axis.
+ * @property {boolean|object} [yaxis.grid=false] - y-axis grid lines.
+ * @property {string} [yaxis.grid.ls] - y-axis grid line style color.
+ * @property {string} [yaxis.grid.lw] - y-axis grid line width.
+ * @property {string} [yaxis.grid.ld] - y-axis grid line dash style.
+ * @property {boolean} [yaxis.line=true] - display y-axis base line.
+ * @property {boolean} [yaxis.origin=false] - display y-axis origin line.
+ * @property {float} [xmin] - minimal x-axis value. If not given it is calculated from chart data values.
+ * @property {float} [xmax] - maximal x-axis value. If not given it is calculated from chart data values.
+ * @property {float} [ymin] - minimal y-axis value. If not given it is calculated from chart data values.
+ * @property {float} [ymax] - maximal y-axis value. If not given it is calculated from chart data values.
  */
-/* jshint -W014 */
-
-/**
- * Extensions.
- * (Requires cartesian coordinate system)
- * @namespace
- */
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
-
-// extend prototypes for argument objects
-g2.selector = function(evt) {             
-    if (this instanceof g2.selector) {
-        this.selection = false;
-        this.evt = evt;                 // sharing evt object with canvasInteractor as owner ... important !
-        return this;
-    }
-    return g2.selector.apply(Object.create(g2.selector.prototype), arguments);
-};
-g2.handler.factory.push((ctx) => ctx instanceof g2.selector ? ctx : false);
-
-// g2.selector.state = ['NONE','OVER','DRAG','OVER+DRAG','EDIT','OVER+EDIT'];
-
-g2.selector.prototype = {
-    init(grp) { return true; },
-    exe(commands) {
-        for (let elm=false, i=commands.length; i && !elm; i--)  // stop after first hit .. starting from list end !
-            elm = this.hit(commands[i-1].a)
-    },
-    selectable(elm) {
-        return elm && elm.draggable && elm.hit;
-    },
-    hit(elm) {
-        if (!this.evt.inside                                   // pointer not inside of canvas ..
-         || !this.selectable(elm) )                            // no selectable elm ..
-            return false;
-
-        if (!elm.state && this.elementHit(elm) && elm.draggable) {  // no mode
-            if (!this.selection || this.selection && !(this.selection.state & g2.DRAG)) {
-                if (this.selection) this.selection.state ^= g2.OVER;
-                this.selection = elm;
-                elm.state = g2.OVER;                           // enter OVER mode ..
-                this.evt.hit = true;
-            }
-        }
-        else if (elm.state & g2.DRAG) {                        // in DRAG mode
-            if (!this.evt.btn)                                 // leave DRAG mode ..
-                this.elementDragEnd(elm);
-        }
-        else if (elm.state & g2.OVER) {                               // in OVER mode
-            if (!this.elementHit(elm)) {                              // leave OVER mode ..
-                elm.state ^= g2.OVER;
-                this.evt.hit = false;
-                this.selection = false;
-            }
-            else if (this.evt.btn)                                    // enter DRAG mode
-                this.elementDragBeg(elm);
-        }
-
-        return elm.state && elm;                                      // we definitely have a valid elm here ... 
-    },                                                                // ... but only return it depending on its state. 
-    elementDragBeg(elm) {
-        elm.state |= g2.DRAG;
-        if (elm.dragBeg) elm.dragBeg(e);
-    },
-    elementDragEnd(elm) {
-        elm.state ^= (g2.OVER | g2.DRAG);
-        this.selection = false;
-        if (elm.dragEnd) elm.dragEnd(e);
-    },
-    elementHit(elm) {
-        return elm.hit && elm.hit({x:this.evt.xusr,y:this.evt.yusr,eps:this.evt.eps});
-    }
-};
-/**
- * canvasInteractor.js (c) 2018 Stefan Goessner
- * @file interaction manager for html `canvas`.
- * @author Stefan Goessner
- * @license MIT License
- */
-/* jshint -W014 */
-// Managing multiple canvases per static interactor as singleton ... 
-// .. using a single requestAnimationFrame loop !
-const canvasInteractor = {
-    create() {
-        const o = Object.create(this.prototype);
-        o.constructor.apply(o,arguments); 
-        return o; 
-    },
-    // global static tickTimer properties
-    fps: '?',
-    fpsOrigin: 0,
-    frames: 0,
-    rafid: 0,
-    instances: [],
-    // global static timer methods
-    tick(time) {
-        canvasInteractor.fpsCount(time);
-        for (const instance of canvasInteractor.instances) {
-            instance.notify('tick',{t:time,dt:(time-instance.t)/1000,dirty:instance.dirty});  // notify listeners .. 
-            instance.t = time;
-            instance.dirty = false;
-        }
-        canvasInteractor.rafid = requestAnimationFrame(canvasInteractor.tick);   // request next animation frame ...
-    },
-    add(instance) {
-        canvasInteractor.instances.push(instance);
-        if (canvasInteractor.instances.length === 1)  // first instance added ...
-            canvasInteractor.tick(canvasInteractor.fpsOrigin = performance.now());
-    },
-    remove(instance) {
-        canvasInteractor.instances.splice(canvasInteractor.instances.indexOf(instance),1);
-        if (canvasInteractor.instances.length === 0)   // last instance removed ...
-            cancelAnimationFrame(canvasInteractor.rafid);
-    },
-    fpsCount(time) {
-        if (time - canvasInteractor.fpsOrigin > 1000) {  // one second interval reached ...
-            const fps = ~~(canvasInteractor.frames*1000/(time - canvasInteractor.fpsOrigin) + 0.5); // ~~ as Math.floor()
-            if (fps !== canvasInteractor.fps)
-                for (const instance of canvasInteractor.instances)
-                    instance.notify('fps',canvasInteractor.fps=fps);
-            canvasInteractor.fpsOrigin = time;
-            canvasInteractor.frames = 0;
-        }
-        canvasInteractor.frames++;
-    },
-
-    prototype: {
-        constructor(ctx, {x,y,scl,cartesian}) {
-            // canvas interaction properties
-            this.ctx = ctx;
-            this.view = {x:x||0,y:y||0,scl:scl||1,cartesian:cartesian||false};
-            this.evt = {
-                type: false,
-                basetype: false,
-                x: -2, y:-2,
-                xi: 0, yi:0,
-                dx: 0, dy: 0,
-                btn: 0,
-                xbtn: 0, ybtn: 0,
-                xusr: -2, yusr: -2,
-                dxusr: 0, dyusr: 0,
-                delta: 0,
-                inside: false,
-                hit: false,  // something hit by pointer ...
-                dscl: 1,     // for zooming ...
-                eps: 5       // some pixel tolerance ...
-            };
-            this.dirty = true;
-            // event handler registration
-            const canvas = ctx.canvas;
-            canvas.addEventListener("pointermove", this, false);
-            canvas.addEventListener("pointerdown", this, false);
-            canvas.addEventListener("pointerup", this, false);
-            canvas.addEventListener("pointerenter", this, false);
-            canvas.addEventListener("pointerleave", this, false);
-            canvas.addEventListener("wheel", this, false);
-            canvas.addEventListener("pointercancel", this, false);
-        },
-        deinit() {
-            const canvas = this.ctx.canvas;
-
-            canvas.removeEventListener("pointermove", this, false);
-            canvas.removeEventListener("pointerdown", this, false);
-            canvas.removeEventListener("pointerup", this, false);
-            canvas.removeEventListener("pointerenter", this, false);
-            canvas.removeEventListener("pointerleave", this, false);
-            canvas.removeEventListener("wheel", this, false);
-            canvas.removeEventListener("pointercancel", this, false);
-
-            this.endTimer();
-
-            delete this.signals;
-            delete this.evt;
-            delete this.ctx;
-
-            return this;
-        },
-        // canvas interaction interface
-        handleEvent(e) {
-            if (e.type in this && (e.isPrimary || e.type === 'wheel')) {  // can I handle events of type e.type .. ?
-                const bbox = e.target.getBoundingClientRect && e.target.getBoundingClientRect() || {left:0, top:0},
-                      x = e.clientX - Math.floor(bbox.left),
-                      y = e.clientY - Math.floor(bbox.top),
-                      btn = e.buttons !== undefined ? e.buttons : e.button || e.which;
-
-                this.evt.type = e.type;
-                this.evt.basetype = e.type;  // obsolete now ... ?
-                this.evt.xi = this.evt.x;    // interim coordinates ...
-                this.evt.yi = this.evt.y;    // ... of previous event.
-                this.evt.dx = this.evt.dy = 0;
-                this.evt.x = x;
-                this.evt.y = this.view.cartesian ? this.ctx.canvas.height - y : y;
-                this.evt.xusr = (this.evt.x - this.view.x)/this.view.scl;
-                this.evt.yusr = (this.evt.y - this.view.y)/this.view.scl;
-                this.evt.dxusr = this.evt.dyusr = 0;
-                this.evt.dbtn = btn - this.evt.btn;
-                this.evt.btn = btn;
-                this.evt.delta = Math.max(-1,Math.min(1,e.deltaY||e.wheelDelta)) || 0;
-
-                if (this.isDefaultPreventer(e.type))
-                    e.preventDefault();
-                this[e.type]();  // handle specific event .. !
-                this.notify(this.evt.type,this.evt);  // .. tell the world .. !
-            }
-            else
-                console.log(e)
-        },
-        pointermove() {
-            this.evt.dx = this.evt.x - this.evt.xi;
-            this.evt.dy = this.evt.y - this.evt.yi;
-            if (this.evt.btn === 1) {    // pointerdown state ...
-                this.evt.dxusr = this.evt.dx/this.view.scl;  // correct usr coordinates ...
-                this.evt.dyusr = this.evt.dy/this.view.scl;
-                this.evt.xusr -= this.evt.dxusr;  // correct usr coordinates ...
-                this.evt.yusr -= this.evt.dyusr;
-                if (!this.evt.hit) {      // let outer app perform panning ...
-                    this.evt.type = 'pan';
-                }
-                else
-                    this.evt.type = 'drag';
-            }
-            // view, geometry or graphics might be modified ...
-            this.dirty = true;
-        },
-        pointerdown() { 
-            this.evt.xbtn = this.evt.x;
-            this.evt.ybtn = this.evt.y;
-        },
-        pointerup() { 
-            this.evt.type = this.evt.x===this.evt.xbtn && this.evt.y===this.evt.ybtn ? 'click' : 'pointerup';
-            this.evt.xbtn = this.evt.x;
-            this.evt.ybtn = this.evt.y;
-        },
-        pointerleave() { 
-            this.evt.inside = false;
-        },
-        pointerenter() { 
-            this.evt.inside = true;
-        },
-        wheel() {
-            this.evt.dscl = this.evt.delta>0?8/10:10/8;
-            this.evt.eps /= this.evt.dscl;
-            this.dirty = true;
-        },
-        isDefaultPreventer(type) {
-            return ['pointermove','pointerdown','pointerup','wheel'].includes(type);
-        },
-        pntToUsr: function(p) { 
-            let vw = this.view; 
-            p.x = (p.x - vw.x)/vw.scl; 
-            p.y = (p.y - vw.y)/vw.scl; 
-            return p; 
-        },
-        // tickTimer interface
-        startTimer() {  // shouldn't there be a global startTimer method ?
-            canvasInteractor.add(this);
-            this.notify('timerStart',this);                    // notify potential listeners .. 
-            return this;
-        },
-        endTimer() {
-            this.notify('timerEnd',this.t/1000);              // notify potential listeners .. 
-            canvasInteractor.remove(this);      
-            return this;
-        },
-        // observable interface
-        notify(key,val) {
-            if (this.signals && this.signals[key]) 
-                for (let hdl of this.signals[key]) 
-                    hdl(val);
-            return this;
-        },
-        on(key,handler) {   // support array of keys as first argument.
-            if (Array.isArray(key))
-                for (let k of key) 
-                    this.on(k,handler);
-            else
-                ((this.signals || (this.signals = {})) && this.signals[key] || (this.signals[key]=[])).push(handler);
-            
-            return this;
-        },
-        remove(key,handler) {
-            const idx = (this.signals && this.signals[key]) ? this.signals[key].indexOf(handler) : -1;
-            if (idx >= 0)
-                this.signals[key].splice(idx,1);
-        }
-    }
-};
-/**
- * g2.element.js (c) 2019-20 Stefan Goessner
- * @license MIT License
- */
-"use strict";
-
-class G2Element extends HTMLElement {
-    static get observedAttributes() {
-        return ['width', 'height','cartesian','grid', 'x0', 'y0', 'darkmode', 'interactive','background'];
-    }
-
-    constructor() {
-        super();
-        this._root = this.attachShadow({ mode:'open' });
-    }
-
-    get width() { return +this.getAttribute('width') || 301; }
-    set width(q) { if (q) this.setAttribute('width',q); }
-    get height() { return +this.getAttribute('height') || 201; }
-    set height(q) { if (q) this.setAttribute('height',q); }
-    get x0() { return (+this.getAttribute('x0')) || 0; }
-    set x0(q) { if (q) this.setAttribute('x0',q); }
-    get y0() { return (+this.getAttribute('y0')) || 0; }
-    set y0(q) { if (q) this.setAttribute('y0',q); }
-    get cartesian() { return this.hasAttribute('cartesian'); }
-    set cartesian(q) { q ? this.setAttribute('cartesian','') : this.removeAttribute('cartesian'); }
-    get grid() { return this.hasAttribute('grid') || false; }
-    set grid(q) { q ? this.setAttribute('grid','') : this.removeAttribute('grid'); }
-    get darkmode() { return this.hasAttribute('darkmode') || false; }
-    get interactive() { return this.hasAttribute('interactive') || false; }
-    get background() { return this.getAttribute('background') || false; }
-    get g() { return this._g; }
-    get canvas() { return  this._ctx && this._ctx.canvas || false }
-    get readyState() { return !!this._g; }
-
-    update() { 
-        if (!this.interactive && this._g && this._ctx) 
-            this._g.exe(this._ctx); 
-    }
-
-    init() {
-        const state = {x:this.x0,y:this.y0,cartesian:this.cartesian};
-        // add shadow dom
-        this._root.innerHTML = G2Element.template({width:this.width,height:this.height,darkmode:this.darkmode});
-        // cache elements of shadow dom
-        this._logview = this._root.getElementById('logview');
-        // set up canvas context 
-        this._ctx = this._root.getElementById('cnv').getContext('2d');
-        // set up canvas background 
-        if (this.background && G2Element[this.background])
-            this._ctx.canvas.style.backgroundImage = 'url('+G2Element[this.background]+')';
-        // set up canvas interactor 
-        if (this.interactive) {
-            this._interactor = canvasInteractor.create(this._ctx, state);
-            this._selector = g2.selector(this._interactor.evt);
-            this._interactor.on('tick', e => this.ontick(e))
-                            .on('pan', e => this.onpan(e))
-                            .on('drag', e => this.ondrag(e))
-                            .on('wheel', e => this.onwheel(e));
-        }
-        this._g = g2().clr().view(this.interactive && this._interactor.view || state);
-        if (this.grid) this._g.grid({color:this.darkmode?'#999':'#ccc'});
-        this.initContent(this.innerHTML.trim(), e => this.log(e));
-        if (this.interactive)
-            this._interactor.startTimer();
-        else    // no tick timer .. !
-            this._g.exe(this._ctx);
-        this.dispatchEvent(new CustomEvent('init'));
-    }
-    initContent(content, onErr) {
-        if (!content) return;
-        try { 
-            content = JSON.parse(content);                      // is valid JSON string ?
-            content = g2.io.parseGrp(content, 'main', onErr);   // is valid g2 json string
-            if (content && content.commands) {                  // content is a valid g2 object.
-                this._g.commands.push(...content.commands);     // inject commands of `main` group ...
-            }                                                   // ... into `_g` with a little brute force.
-        }
-        catch(e) {
-            const w = this.width, h = this.height, x0 = this.x0, y0 = this.y0, dx = w/20, dy = h/20,
-                  x = q => q*w-x0, y = q => q*h-y0;
-
-            content = g2({id:'main'}).stroke({"d":`M${x(0.05)},${y(0.05)} ${x(0.45)},${y(0.45)}M${x(0.55)},${y(0.55)} ${x(0.95)},${y(0.95)}M${x(0.05)},${y(0.95)} ${x(0.45)},${y(0.55)}M${x(0.55)},${y(0.45)} ${x(0.95)},${y(0.05)}`,lw:10,ls:"red",lc:"round"});
-            this._g.ins(content);
-            onErr(e.message);
-        }
-        return !!content;
-    }
-    deinit() {
-        delete this._selector;
-        if (this.interactive) {
-            delete this._interactor.deinit();
-            delete this._interactor;
-            delete this._selector;
-        }
-        delete this._g;
-        // delete cached data
-        delete this._ctx;
-    }
-    log(str) { 
-        this._logview.innerHTML += str; 
-    }
-
-    ontick(e) {
-        this.dispatchEvent(new CustomEvent('tick'));
-        if (this.interactive)
-            this._g.exe(this._selector);
-        this._g.exe(this._ctx);
-    }
-    onpan(e) { 
-        this._interactor.view.x = this.x0 += e.dx;
-        this._interactor.view.y = this.y0 += e.dy;
-    }
-    ondrag(e) {    // only modify selected geometry here .. do not redraw .. !
-        if (this._selector.selection && this._selector.selection.drag) {
-            this._selector.selection.drag({x:e.xusr,y:e.yusr,dx:e.dxusr,dy:e.dyusr,mode:'drag'});
-            this.dispatchEvent(new CustomEvent('drag'));
-        }
-    }
-    onwheel(e) {
-        this._interactor.view.x = e.x + e.dscl*(this._interactor.view.x - e.x);
-        this._interactor.view.y = e.y + e.dscl*(this._interactor.view.y - e.y);
-        this._interactor.view.scl *= e.dscl;
-    }
-
-    on(hdl,fn) { }
-
-    // standard lifecycle callbacks
-    // https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements
-    connectedCallback() {
-        this.init();
-    }
-    disconnectedCallback() {
-        this.deinit();
-    }
-    attributeChangedCallback(name, oldval, val) {
-        if (this._root && this._root.getElementById('cnv')) {
-            if (name === 'width') {  // todo: preserve minimum width
-                this._root.getElementById('cnv').setAttribute('width',val);
-                this._root.querySelector('.status').style.width = val+'px';
-            }
-            if (name === 'height')   // todo: preserve minimum height
-                this._root.getElementById('cnv').setAttribute('height',val);
-        }
-    }
-
-    static template({width,height,darkmode}) {
-return `
-<style>
-    #cnv {
-        background-color:${darkmode?'#777':'#eee'};
-        touch-action: none;
-    }
-</style>
-<div style="width:${width};">
-<canvas id="cnv" width="${width}" height="${height}" touch-action="none"></canvas><br>
-<pre id="logview"></pre>
-</div>
-`
-    }
-
-    static get paper() { return " data:image/png;base64,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"; }
+g2.prototype.chart = function chart({x,y,b,h,style,title,funcs,xaxis,xmin,xmax,yaxis,ymin,ymax}) {
+    return this.addCommand({c:'chart',a:arguments[0]});
 }
-customElements.define('g-2', G2Element);
+g2.prototype.chart.prototype = {
+    g2() {
+        const g = g2(),
+              funcs = this.get('funcs'),
+              title = this.title && this.get('title');
+
+        if (!this.b) this.b = this.defaults.b;
+        if (!this.h) this.h = this.defaults.h;
+        // initialize function graphs (only once ...)
+        if (funcs && funcs.length) {  // init all funcs ...
+            const tmp = [
+                this.xmin===undefined,
+                this.xmax===undefined,
+                this.ymin===undefined,
+                this.ymax===undefined
+            ];
+            funcs.forEach(f => this.initFunc(f,...tmp));
+        }
+        // if (this.xaxis)
+        this.xAxis = this.autoAxis(this.get('xmin'),this.get('xmax'),0,this.b);
+        // if (this.yaxis)
+        this.yAxis = this.autoAxis(this.get('ymin'),this.get('ymax'),0,this.h);
+
+        // draw background & border ...
+        g.rec({
+            x:this.x,y:this.y,b:this.b,h:this.h,
+            fs:this.get("fs"),ls:this.get("ls")
+        });
+
+        // draw title & axes ...
+        g.beg(Object.assign({x:this.x,y:this.y,lw:1}, this.defaults.style,this.style));
+
+        if (title)
+            g.txt(Object.assign({
+                str: this.title && this.title.text || this.title,
+                x: this.get('b')/2,
+                y: this.get('h') + this.get("title","offset"),
+                w: 0
+                }, this.defaults.title.style,
+                (this.title && this.title.style || {})
+            ));
+        if (this.xaxis) this.drawXAxis(g);
+        if (this.yaxis) this.drawYAxis(g);
+
+        g.end();
+
+        // draw funcs ...
+        if (funcs)
+            funcs.forEach((fnc,i) => { this.drawFunc(g,fnc,this.defaults.colors[i%this.defaults.colors.length]); });
+
+        return g;
+    },
+    /**
+     * Initialize chart function.
+     * @private
+     */
+    initFunc(fn,setXmin,setXmax,setYmin,setYmax) {
+        // Install func iterator.
+        let itr;
+        if (fn.data && fn.data.length) { // data must have a polyline conform array structure
+            itr = fn.itr = g2.pntItrOf(fn.data);  // get iterator ...
+        }
+        else if (fn.fn && fn.dx) {
+            const xmin = +this.xmin || this.defaults.xmin;
+            const xmax = +this.xmax || this.defaults.xmax;
+            itr = fn.itr = (i) => { let x = xmin + i*fn.dx; return { x:x, y:fn.fn(x) }; }
+            itr.len = (xmax - xmin)/fn.dx + 1;
+        }
+        // Get func's bounding box
+        if (itr && (setXmin || setXmax || setYmin || setYmax)) {
+            const xarr = [];
+            const yarr = [];
+            for (let i=0; i < itr.len; ++i) {
+                xarr.push(itr(i).x);
+                yarr.push(itr(i).y);
+            }
+            if (setXmin) {
+                const xmin = Math.min(...xarr);
+                if (!this.xmin || xmin < this.xmin) this.xmin = xmin;
+            }
+            if (setXmax) {
+                const xmax = Math.max(...xarr);
+                if (!this.xmax || xmax > this.xmax) this.xmax = xmax;
+            }
+            if (setYmin) {
+                const ymin = Math.min(...yarr);
+                if (!this.ymin || ymin < this.ymin) this.ymin = ymin;
+            }
+            if (setYmax) {
+                const ymax = Math.max(...yarr);
+                if (!this.ymax || ymax > this.ymax) this.ymax = ymax;
+            }
+
+            if (fn.color && typeof fn.color === "number") // color index [0..n]
+                fn.color = this.defaults.colors[fn.color % this.defaults.colors.length];
+        }
+    },
+    autoAxis(zmin,zmax,tmin,tmax) {
+        let base = 2, exp = 1, eps = Math.sqrt(Number.EPSILON),
+            Dz = zmax - zmin || 1,      // value range
+            Dt = tmax - tmin || 1,      // area range
+            scl = Dz > eps ? Dt/Dz : 1, // scale [usr]->[pix]
+            dz = base*Math.pow(10,exp), // tick size [usr]
+            dt = Math.floor(scl*dz),    // tick size [pix]
+            N,                          // # segments
+            dt01,                       // reminder segment
+            i0, j0, jth, t0, res;
+
+        while (dt < 14 || dt > 35) {
+            if (dt < 14) {
+                if      (base == 1) base = 2;
+                else if (base == 2) base = 5;
+                else if (base == 5) { base = 1; exp++; }
+            }
+            else { // dtick > 35
+                if      (base == 1) { base = 5; exp--; }
+                else if (base == 2) base = 1;
+                else if (base == 5) base = 2;
+            }
+            dz = base*Math.pow(10,exp);
+            dt = scl*dz;
+        }
+        i0 = (scl*Math.abs(zmin) + eps/2)%dt < eps
+           ? Math.floor(zmin/dz)
+           : Math.floor(zmin/dz) + 1;
+        let z0 = i0*dz;
+        t0 = Math.round(scl*(z0 - zmin));
+        // console.log("Dt="+Dt+",N="+(Dt - t0)/ dt)
+        // console.log("DT="+Dt+",N="+(Dt - t0)/ dt)
+        N = Math.floor((Dt - t0)/ dt) + 1;
+        j0 = base % 2 && i0 % 2 ? i0 + 1 : i0;
+        jth = exp === 0 && N < 11 ? 1 : base===2 && N > 9 ? 5 : 2;
+
+        return {
+            zmin,               // min usr value
+            zmax,               // max usr value
+            base,               // one of [1,2,5]
+            exp,                // 10^exp
+            scl,                // scale [usr]->[pix]
+            dt,                 // tick range [pix]
+            dz,                 // tick range [usr]
+            N,                  // # of ticks
+            t0,                 // start tick position [pix]
+            z0,                 // start tick position [usr]
+            i0,                 // first tick index relative to tick origin (can be negative)
+            j0,                 // first labeled tick
+            jth,                // # of ticks between two major ticks
+            itr(i) {            // tick iterator
+                return { t: this.t0 + i*this.dt,
+                    z: parseFloat((this.z0 + i*this.dz).toFixed(Math.abs(this.exp))),
+                    maj: (this.j0 - this.i0 + i)%this.jth === 0 };
+            }
+        }
+    },
+    /**
+     * Draw x-axis.
+     * @private
+     */
+    drawXAxis(g) {
+        let tick,
+            showgrid = this.xaxis && this.xaxis.grid,
+            gridstyle = showgrid && Object.assign({}, this.defaults.xaxis.grid, this.xaxis.grid),
+            showaxis = this.xaxis || this.xAxis,
+            axisstyle = showaxis && Object.assign({}, this.defaults.xaxis.style, this.defaults.xaxis.labels.style, (this.xaxis && this.xaxis.style || {}) ),
+            showline = showaxis && this.get("xaxis","line"),
+            showlabels = this.xAxis && showaxis && this.get("xaxis","labels"),
+            showticks = this.xAxis && showaxis && this.get("xaxis","ticks"),
+            ticklen = showticks ? this.get("xaxis","ticks","len") : 0,
+            showorigin = showaxis && this.get("xaxis","origin"),
+            title = this.xaxis && (this.get("xaxis","title","text") || this.xaxis.title) || '';
+        // console.log(this.xAxis)
+        // draw tick/grid lines
+        g.beg(axisstyle);
+        for (let i=0; i<this.xAxis.N; i++) {
+            tick = this.xAxis.itr(i);
+            if (showgrid)  g.lin(Object.assign({x1:tick.t,y1:0,x2:tick.t,y2:this.h }, gridstyle));
+            if (showticks) g.lin({x1:tick.t,y1:tick.maj ? ticklen : 2/3*ticklen,x2:tick.t,y2:tick.maj ? -ticklen : -2/3*ticklen});
+            if (showlabels && tick.maj)  // add label
+                g.txt(Object.assign({
+                    str: parseFloat(tick.z),
+                    x: tick.t,
+                    y: -(this.get("xaxis","ticks","len")+this.get("xaxis","labels","offset")),
+                    w: 0
+                }, (this.get("xaxis","labels","style") || {}) ));
+        }
+        if (showline)
+            g.lin({y1:0,y2:0,x1:0,x2:this.b});
+        if (showorigin && this.xmin <= 0 && this.xmax >= 0)
+            g.lin({x1:-this.xAxis.zmin*this.xAxis.scl,y1:0,x2:-this.xAxis.zmin*this.xAxis.scl,y2:this.h});  // origin line emphasized ...
+        if (title)
+            g.txt(Object.assign({
+                str:title.text || title,
+                x:this.b/2,
+                y:-(  this.get("xaxis","title","offset")
+                  +(showticks  && this.get("xaxis","ticks","len") || 0)
+                  +(showlabels && this.get("xaxis","labels","offset") || 0)
+                  +(showlabels && parseFloat(this.get("xaxis","labels","style","font")) || 0)),
+                w:0
+            }, (this.get('xaxis','title','style'))));
+        g.end();
+    },
+    /**
+     * Draw y-axis.
+     * @private
+     */
+    drawYAxis(g) {
+        let tick,
+            showgrid = this.yaxis && this.yaxis.grid,
+            gridstyle = showgrid && Object.assign({}, this.defaults.yaxis.grid,this.yaxis.grid),
+            showaxis = this.yaxis || this.yAxis,
+            axisstyle = showaxis && Object.assign({},this.defaults.yaxis.style, this.defaults.yaxis.labels.style, (this.yaxis && this.yaxis.style || {})),
+            showline = showaxis && this.get("yaxis","line"),
+            showlabels = this.yAxis && showaxis && this.get("yaxis","labels"),
+            showticks = this.yAxis && showaxis && this.get("yaxis","ticks"),
+            ticklen = showticks ? this.get("yaxis","ticks","len") : 0,
+            showorigin = showaxis && this.get("yaxis","origin"),
+            title = this.yaxis && (this.get("yaxis","title","text") || this.yaxis.title) || '';
+
+        // draw tick/grid lines
+        g.beg(axisstyle);
+        for (let i=0; i<this.yAxis.N; i++) {
+            tick = this.yAxis.itr(i);
+            if (i && showgrid)  g.lin(Object.assign({y1:tick.t,x2:this.b,x1:0,y2:tick.t},gridstyle));
+            if (showticks) g.lin({y1:tick.t,x2:tick.maj ? -ticklen : -2/3*ticklen,y2:tick.t,y2:tick.t,x1:tick.maj ? ticklen : 2/3*ticklen});
+            if (showlabels && tick.maj)  // add label
+                g.txt(Object.assign({
+                    str: parseFloat(tick.z),
+                    x: -(this.get("yaxis","ticks","len")+this.get("yaxis","labels","offset")),
+                    y: tick.t,
+                    w: Math.PI/2
+                }, this.get("yaxis","labels","style") ));
+        }
+        if (showline)
+            g.lin({y1:0,x1:0,x2:0,y2:this.h});
+        if (showorigin && this.ymin <= 0 && this.ymax >= 0)
+            g.lin({x1:0,y1:-this.yAxis.zmin*this.yAxis.scl,x2:this.b,y2:-this.yAxis.zmin*this.yAxis.scl});  // origin line emphasized ...
+        if (title)
+            g.txt(Object.assign({
+                str: title.text || title,
+                x:-(  this.get("yaxis","title","offset")
+                  +(showticks  && this.get("yaxis","ticks","len") || 0)
+                  +(showlabels && this.get("yaxis","labels","offset") || 0)
+                  +(showlabels && parseFloat(this.get("yaxis","labels","style","font")) || 0)),
+                y:this.h/2,
+                w:Math.PI/2
+            }, (this.get('yaxis','title','style'))));
+        g.end();
+    },
+    /**
+     * Draw chart function.
+     * @private
+     */
+    drawFunc(g,fn,defaultcolor) {
+        let itr = fn.itr;
+
+        if (itr) {
+            let fill = fn.fill || fn.style && fn.style.fs && fn.style.fs !== "transparent",
+                color = fn.color = fn.color || fn.style && fn.style.ls || defaultcolor,
+                plydata = [],
+                args = Object.assign({
+                    pts:plydata,
+                    closed:false,
+                    ls:color,
+                    fs:(fill?g2.color.rgbaStr(color,0.125):'transparent'),
+                    lw:1
+                }, fn.style);
+
+            if (fill)  // start from base line (y=0)
+                plydata.push(this.pntOf({x:itr(0).x,y:0}));
+            for (let i=0, n=itr.len; i<n; i++)
+                plydata.push(this.pntOf(itr(i)));
+            if (fill)  // back to base line (y=0)
+                plydata.push(this.pntOf({x:itr(itr.len-1).x,y:0}));
+            if (fn.spline && g.spline)
+                g.spline(args);
+            else
+                g.ply(args);
+            if (fn.dots) {
+                g.beg({fs:"snow"});
+                for (var i=0; i<plydata.length; i++)
+                    g.cir(Object.assign({}, plydata[i], { r:2,lw:1 }));
+                g.end();
+            }
+        }
+    },
+    /**
+     * Point in canvas coordinates of xy values in chart area.
+     * Result is trimmed to chart area region limits.
+     * TODO: implement true polygon clipping against window ... !
+     * @returns {object} point.
+     * @param {object} xy xy values in chart area.
+     */
+    pntOf: function(xy) {
+        return { x: this.x + Math.max(Math.min((xy.x - this.xAxis.zmin)*this.xAxis.scl,this.b),0),
+                 y: this.y + Math.max(Math.min((xy.y - this.yAxis.zmin)*this.yAxis.scl,this.h),0) };
+    },
+    /**
+      * Get nested chart property either as custom property or as default property.
+      * @private
+      */
+    get(n1,n2,n3,n4) {
+        const loc = n4 ? this[n1] && this[n1][n2] && this[n1][n2][n3] && this[n1][n2][n3][n4]
+                       : n3 ? this[n1] && this[n1][n2] && this[n1][n2][n3]
+                            : n2 ? this[n1] && this[n1][n2]
+                                 : n1 ? this[n1]
+                                      : undefined,
+            dflts = this.defaults;
+        return loc !== undefined
+             ? loc
+             : n4 ? dflts[n1] && dflts[n1][n2] && dflts[n1][n2][n3] && dflts[n1][n2][n3][n4]
+                  : n3 ? dflts[n1] && dflts[n1][n2] && dflts[n1][n2][n3]
+                       : n2 ? dflts[n1] && dflts[n1][n2]
+                            : n1 ? dflts[n1]
+                                 : undefined;
+    },
+    // default properties
+    defaults: {
+        x: 0,
+        y: 0,
+        xmin: 0, xmax: 1,
+        ymin: 0, ymax: 1,
+        b: 150,
+        h: 100,
+        ls:"transparent",
+        fs:"#efefef",
+        color: false,
+        colors: [
+            "#426F42", /*medium seagreen*/
+            "#8B2500", /*orange red 4*/
+            "#23238E", /*navy*/
+            "#5D478B"  /*medium purple 4*/
+        ],
+        title: {
+            text: '',
+            offset: 3,
+            style: { font:"16px serif", fs:"black", thal:"center", tval:"bottom" }
+        },
+        funcs: [],
+        /*
+        func: {
+            style: { lw:1, fs:"transparent" },
+            // s. https://web.njit.edu/~kevin/rgb.txt.html
+        },
+        */
+        xaxis: {
+            fill: false,
+            line: true,
+            style: { ls:"#888", thal:"center", tval:"top", fs:"black" },
+            origin: false,
+            title: {
+                text: null,
+                offset: 1,
+                style: { font:"12px serif", fs:"black" },
+            },
+            ticks: { len: 6 },
+            grid: { ls:"#ddd", ld:[] },
+            labels: {
+                loc: "auto",    // "auto" | [2,4,6] | [{v:3.14,s:"pi"},{v:6.28,s:"2*pi"}]
+                offset: 1,
+                style: { font:"11px serif", fs:"black" },
+            }
+        },
+        yaxis: {
+            line: true,
+            style: { ls:"#888", thal:"center", tval:"bottom", fs:"black"  },
+            origin: false,
+            title: {
+                text: null,
+                offset: 2,
+                style: { font:"12px serif", fs:"black" },
+            },
+            ticks: { len: 6 },
+            grid: { ls:"#ddd", ld:[] },
+            labels: {
+                loc: "auto",    // "auto" | [2,4,6] | [{v:3.14,s:"pi"},{v:6.28,s:"2*pi"}]
+                offset: 1,
+                style: { font:"11px serif", fs:"black" },
+            }
+        }
+    }
+}
+
+g2.color = {
+    // convert to object {r,g,b,a}
+    rgba(color,alpha) {
+        let res;
+        alpha = alpha !== undefined ? alpha : 1;
+        // color name ?
+        if (color === "transparent")
+            return {r:0,g:0,b:0,a:0};
+        if (color in g2.color.names)
+            color = "#" + g2.color.names[color];
+        // #rrggbb
+        if (res = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color))
+            return {r:parseInt(res[1], 16), g:parseInt(res[2], 16), b:parseInt(res[3], 16), a:alpha};
+        // Look for #rgb
+        if (res = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color))
+            return {r:parseInt(res[1] + res[1], 16), g:parseInt(res[2] + res[2], 16), b:parseInt(res[3] + res[3], 16), a:alpha};
+        // rgb(rrr,ggg,bbb)
+        if (res = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color))
+            return {r:parseInt(res[1]), g:parseInt(res[2]), b:parseInt(res[3]), a:alpha};
+        // rgba(rrr,ggg,bbb,a)
+        if (res = /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(color))
+            return {r:parseInt(res[1]), g:parseInt(res[2]), b:parseInt(res[3]),a:(alpha!==undefined?alpha:parseFloat(res[4]))};
+        // rgb(rrr%,ggg%,bbb%)
+        if (res = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(color))
+            return {r:parseFloat(res[1]) * 2.55, g:parseFloat(res[2]) * 2.55, b:parseFloat(result[3]) * 2.55, a:alpha};
+    },
+    rgbaStr(color,alpha) {
+        const c = g2.color.rgba(color,alpha);
+        return "rgba("+c.r+","+c.g+","+c.b+","+c.a+")";
+    },
+    names: {
+        aliceblue: 'f0f8ff', antiquewhite: 'faebd7', aqua: '00ffff', aquamarine: '7fffd4', azure: 'f0ffff', beige: 'f5f5dc', bisque: 'ffe4c4', black: '000000',
+        blanchedalmond: 'ffebcd', blue: '0000ff', blueviolet: '8a2be2', brown: 'a52a2a', burlywood: 'deb887', cadetblue: '5f9ea0', chartreuse: '7fff00',
+        chocolate: 'd2691e', coral: 'ff7f50', cornflowerblue: '6495ed', cornsilk: 'fff8dc', crimson: 'dc143c', cyan: '00ffff', darkblue: '00008b', darkcyan: '008b8b',
+        darkgoldenrod: 'b8860b', darkgray: 'a9a9a9', darkgreen: '006400', darkkhaki: 'bdb76b', darkmagenta: '8b008b', darkolivegreen: '556b2f', darkorange: 'ff8c00',
+        darkorchid: '9932cc', darkred: '8b0000', darksalmon: 'e9967a', darkseagreen: '8fbc8f', darkslateblue: '483d8b', darkslategray: '2f4f4f', darkturquoise: '00ced1',
+        darkviolet: '9400d3', deeppink: 'ff1493', deepskyblue: '00bfff', dimgray: '696969', dodgerblue: '1e90ff', feldspar: 'd19275', firebrick: 'b22222',
+        floralwhite: 'fffaf0', forestgreen: '228b22', fuchsia: 'ff00ff', gainsboro: 'dcdcdc', ghostwhite: 'f8f8ff', gold: 'ffd700', goldenrod: 'daa520', gray: '808080',
+        green: '008000', greenyellow: 'adff2f', honeydew: 'f0fff0', hotpink: 'ff69b4', indianred : 'cd5c5c', indigo : '4b0082', ivory: 'fffff0', khaki: 'f0e68c',
+        lavender: 'e6e6fa', lavenderblush: 'fff0f5', lawngreen: '7cfc00', lemonchiffon: 'fffacd', lightblue: 'add8e6', lightcoral: 'f08080', lightcyan: 'e0ffff',
+        lightgoldenrodyellow: 'fafad2', lightgrey: 'd3d3d3', lightgreen: '90ee90', lightpink: 'ffb6c1', lightsalmon: 'ffa07a', lightseagreen: '20b2aa',
+        lightskyblue: '87cefa', lightslateblue: '8470ff', lightslategray: '778899', lightsteelblue: 'b0c4de', lightyellow: 'ffffe0', lime: '00ff00', limegreen: '32cd32',
+        linen: 'faf0e6', magenta: 'ff00ff', maroon: '800000', mediumaquamarine: '66cdaa', mediumblue: '0000cd', mediumorchid: 'ba55d3', mediumpurple: '9370d8',
+        mediumseagreen: '3cb371', mediumslateblue: '7b68ee', mediumspringgreen: '00fa9a', mediumturquoise: '48d1cc', mediumvioletred: 'c71585', midnightblue: '191970',
+        mintcream: 'f5fffa', mistyrose: 'ffe4e1', moccasin: 'ffe4b5', navajowhite: 'ffdead', navy: '000080', oldlace: 'fdf5e6', olive: '808000', olivedrab: '6b8e23',
+        orange: 'ffa500', orangered: 'ff4500', orchid: 'da70d6', palegoldenrod: 'eee8aa', palegreen: '98fb98', paleturquoise: 'afeeee', palevioletred: 'd87093',
+        papayawhip: 'ffefd5', peachpuff: 'ffdab9', peru: 'cd853f', pink: 'ffc0cb', plum: 'dda0dd', powderblue: 'b0e0e6', purple: '800080', rebeccapurple:'663399',
+        red: 'ff0000', rosybrown: 'bc8f8f', royalblue: '4169e1', saddlebrown: '8b4513', salmon: 'fa8072', sandybrown: 'f4a460', seagreen: '2e8b57', seashell: 'fff5ee',
+        sienna: 'a0522d', silver: 'c0c0c0', skyblue: '87ceeb', slateblue: '6a5acd', slategray: '708090', snow: 'fffafa', springgreen: '00ff7f', steelblue: '4682b4',
+        tan: 'd2b48c', teal: '008080', thistle: 'd8bfd8', tomato: 'ff6347', turquoise: '40e0d0', violet: 'ee82ee', violetred: 'd02090', wheat: 'f5deb3', white: 'ffffff',
+        whitesmoke: 'f5f5f5', yellow: 'ffff00', yellowgreen: '9acd32'
+    }
+}
+
