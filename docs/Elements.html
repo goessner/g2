@@ -1,0 +1,176 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
+<meta name="description" content="Elements">
+<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+<meta name="keywords" content="">
+<title>Elements</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+
+<link rel="stylesheet" href="./theme/styles.css">
+</head>
+<body>
+<header>
+  <a href="./index.html" class="left">My Site</a>
+  <a href="./about.html" class="right">About</a>
+</header>
+<main>
+<p>Element commands are higher level commands. The following elements are supported by <em>g2</em>.</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th style="text-align:center">Canvas</th>
+<th style="text-align:center">SVG</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lin({x1,y1,x2,y2})</code></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><code>line</code></td>
+<td>Line element by start and end point.</td>
+</tr>
+<tr>
+<td><code>rec({x,y,b,h})</code></td>
+<td style="text-align:center"><code>rect</code></td>
+<td style="text-align:center"><code>rect</code></td>
+<td>Rectangle element by anchor point, width and height.</td>
+</tr>
+<tr>
+<td><code>cir({x,y,r})</code></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><code>circle</code></td>
+<td>Circle element by center point and radius.</td>
+</tr>
+<tr>
+<td><code>arc({x,y,r,w,dw})</code></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td>Arc element by center point, radius, start angle [radians] and angular range [radians].</td>
+</tr>
+<tr>
+<td><code>ply({pts,closed,x,y,w})</code></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><code>polygon</code></td>
+<td>Polyline element by points array, closed mode [boolean] and iterator function.</td>
+</tr>
+<tr>
+<td><code>txt({str,x,y,w})</code></td>
+<td style="text-align:center"><code>fillText</code></td>
+<td style="text-align:center"><code>text</code></td>
+<td>Text element by string, anchor point, angle and style object.</td>
+</tr>
+<tr>
+<td><code>img({uri,x,y,b,h,</code><br><code>    xoff,yoff,dx,dy})</code></td>
+<td style="text-align:center"><code>drawImage</code></td>
+<td style="text-align:center"><code>image</code></td>
+<td>Image element by URI, anchor point, width, height, offset and range.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ply-element"><code>ply</code> Element</h4>
+<p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ply" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ply">See the API Reference</a></p>
+<p>The <code>ply</code> command expects an object with a <code>pts</code> property.
+This property can have different formats, for each of which there must be provided an individual
+array iterator. <em>g2</em> implements three standard iterators:</p>
+<table>
+<thead>
+<tr>
+<th>Property Format</th>
+<th>comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{pts:[x1,y1,x2,y2,...,xn,yn]}</code></td>
+<td>Flat array of <code>x</code> and <code>y</code> values [default].</td>
+</tr>
+<tr>
+<td><code>{pts:[[x1,y1],[x2,y2],...,[xn,yn]]}</code></td>
+<td>Array of arrays of <code>x</code> and <code>y</code> values.</td>
+</tr>
+<tr>
+<td><code>{pts:[{x:x1,y:y1},{x:x2,y:y2},...,{x:xn,y:yn}]}</code></td>
+<td>Array of objects with <code>x</code> and <code>y</code> members.</td>
+</tr>
+</tbody>
+</table>
+<p>Another property of <code>ply</code> is <code>closed</code> which can have boolean values <code>true</code> and <code>false</code>.</p>
+<pre><code class="code-line language-javascript"><div>    <span class="hljs-keyword">const</span> style={<span class="hljs-attr">ls</span>:<span class="hljs-string">"red"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"ddd"</span>};
+    g2().ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>,<span class="hljs-number">40</span>,<span class="hljs-number">70</span>,<span class="hljs-number">60</span>,<span class="hljs-number">30</span>,<span class="hljs-number">90</span>,<span class="hljs-number">80</span>],...style})
+        .ply({<span class="hljs-attr">pts</span>:[[<span class="hljs-number">110</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">140</span>,<span class="hljs-number">70</span>],[<span class="hljs-number">160</span>,<span class="hljs-number">30</span>],[<span class="hljs-number">190</span>,<span class="hljs-number">80</span>]],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,...style})
+        .exe(ctx);
+</div></code></pre>
+<p><img src="img/ply.png" alt="ply Element" class="loading" id="image-hash-1d7b8cda96bd9757dd16f7477b81fc54de50591564743e261b45e78357f8553f"></p>
+<p><code>ply</code> is also a convenient method for traces or paths to be drawn.
+Just fill an array in the appropriate format and render it.</p>
+<pre><code class="code-line language-js"><div><span class="hljs-keyword">const</span> arr = []; <span class="hljs-comment">// array to be filled</span>
+<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;      <span class="hljs-comment">// iterator</span>
+<span class="hljs-keyword">let</span> forward = <span class="hljs-literal">true</span>;
+(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+    i+=<span class="hljs-number">0.5</span>;
+    <span class="hljs-comment">// Fill array with values when going forward</span>
+    forward ? arr.push({<span class="hljs-attr">x</span>: <span class="hljs-built_in">Math</span>.cos(<span class="hljs-built_in">Math</span>.PI * i / <span class="hljs-number">60</span> ) * <span class="hljs-number">40</span>, <span class="hljs-attr">y</span>: <span class="hljs-built_in">Math</span>.sin(<span class="hljs-built_in">Math</span>.PI * i / <span class="hljs-number">20</span>) * <span class="hljs-number">40</span>}) 
+    <span class="hljs-comment">// And remove values otherwise</span>
+            : arr.shift();
+    <span class="hljs-comment">// Toggle direction when path closes</span>
+    <span class="hljs-keyword">if</span> (arr.length === <span class="hljs-number">240</span> || arr.length === <span class="hljs-number">0</span>) {
+        forward = !forward;
+    }
+    g2().del()
+        .clr()
+        .view({<span class="hljs-attr">x</span>: <span class="hljs-number">75</span>,<span class="hljs-attr">y</span>: <span class="hljs-number">50</span>})
+        .ply({<span class="hljs-attr">pts</span>:arr,<span class="hljs-attr">ls</span>:<span class="hljs-string">'blue'</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>}) <span class="hljs-comment">// render this array.</span>
+        .exe(ctx);
+    requestAnimationFrame(render);
+})();
+</div></code></pre>
+<p><img src="img/ply.gif" alt="ply Animation" class="loading" id="image-hash-debbe424d1ef46d4954d5dfa04eb6927b4dac853c4627be0ebfc91997dfb023a"></p>
+<h3 id="text">Text</h3>
+<p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+txt" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+txt">See the API Reference</a></p>
+<p>Text is supported by the <code>txt</code> command. One property of <code>txt</code>, <code>str</code> specifies the text string. The next two
+<code>x</code> and <code>y</code> determine the anchor position of the text element. <code>w</code> describes the rotation angle and
+the last <code>style</code> argument is an object containing individual text and font style information. That
+style properties have priority over previously defined properties, but do not overwrite them.</p>
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> style={<span class="hljs-attr">ls</span>:<span class="hljs-string">"red"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"ddd"</span>};
+      g2().txt({<span class="hljs-attr">str</span>:<span class="hljs-string">"Hello world"</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">w</span>:<span class="hljs-number">-0.15</span>,<span class="hljs-attr">font</span>:<span class="hljs-string">"32px cursive"</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">'rebeccapurple'</span>})
+          .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">"default style"</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">210</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">40</span>})
+          .exe(ctx);
+</div></code></pre>
+<p><img src="img/txt.png" alt="txt Element" class="loading" id="image-hash-122a237addd0283996004518e055bc4d45f039ad46b8fc6bbdedda716dff3161"></p>
+<h3 id="images">Images</h3>
+<p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+img" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+img">See the API Reference</a></p>
+<p>Images can be inserted by the <code>img</code> command. One property, <code>uri</code>, is the URI of the image, which
+can also be a  <em>data:url</em>. <code>img</code> has a lot of properties for the desired representation of the
+image. <code>x,y</code> define the position of the upper left corner, <code>b,h</code> the breath and height,
+<code>xoff, yoff</code> create an offset, <code>sb,sh</code> a region for the image and <code>sx, sy</code> may crop the image.
+It can be scaled with <code>scl</code>.</p>
+<p>Images are rendered asynchronously. The command queue stops when the image is to be drawn and continues after that.
+If more than one command queue is issued on one context, it may happen that the order of drawings is inconsistent.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"250px"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"500px"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"../../g2/src/g2.core.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>);
+    <span class="hljs-keyword">const</span> photo = <span class="hljs-string">"../img/photo.jpg"</span>;
+
+    g2().img({<span class="hljs-attr">uri</span>:photo,<span class="hljs-attr">b</span>:<span class="hljs-number">500</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">250</span>})
+        .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">30</span>})
+        .exe(ctx);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="img/img.png" alt="pre" class="loading" id="image-hash-70500b3f581c677ce7210df5937b230bcdc4a5af11bf0e0ab5b1b3ea713dcb19"></p>
+<p>If an image can not be loaded, it will be replaced by a broken-image symbol:</p>
+<p><img src="img/broken_image.png" alt="broken" class="loading" id="image-hash-1e72890d9e25c05a09a4ecce36525115462f7ca7e0bceae67e59ffed2a042f63"></p>
+
+</main>
+<footer>
+  <span class="left">&copy; My Site</span>
+  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
+  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+</footer>
+</body>
+</html>

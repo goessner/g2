@@ -1,0 +1,141 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
+<meta name="description" content="Insert">
+<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+<meta name="keywords" content="">
+<title>Insert</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+
+<link rel="stylesheet" href="./theme/styles.css">
+</head>
+<body>
+<header>
+  <a href="./index.html" class="left">My Site</a>
+  <a href="./about.html" class="right">About</a>
+</header>
+<main>
+<p><em>g2</em> is capable of embedding code into the command queue via the <code>ins()</code> method.</p>
+<p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ins" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ins">See the API Reference</a></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ins(fn)</code></td>
+<td>Embed functions into <em>g2</em> queue.</td>
+</tr>
+</tbody>
+</table>
+<p>There are two use cases of <code>ins</code>:</p>
+<ul>
+<li>call a function</li>
+<li>use an object's <em>g2</em> method</li>
+</ul>
+<ol>
+<li><code>g.ins(()=&gt;{})</code>... the function as argument is invoked immediately at 'define time'.
+It has no effect at 'run time'.</li>
+<li><code>g.ins((g)=&gt;{})</code>... the function as argument is invoked using the current <em>g2</em> instance as parameter immediately at 'define time', it has no effect at 'run time'.
+The <em>g2</em> commands are _inplace appended to the current <em>g2</em> instance.
+This effect substitutes the old <code>cpy</code>, which is now deprecated and removed.</li>
+<li><code>g.ins(obj)</code>... if the<code>obj</code> argument has a method called <em>g2</em>, it will be invoked at 'run time'. It will have no effect at 'define time'. This is how custom objects can be used in the command queue.</li>
+</ol>
+<p><em>Note: Avoid invoking arbitrary javascript snippets in <code>ins</code> argument list, as the results may have side effects.</em></p>
+<p><code>ins()</code> has no limits in it's usage. You can modify your code relevant for the next rendering process via the <code>exe()</code> command.</p>
+<h3 id="manipulate-objects">Manipulate objects</h3>
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+    node = { <span class="hljs-attr">fill</span>:<span class="hljs-string">'lime'</span>, g2() {
+        <span class="hljs-keyword">return</span> g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">160</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:<span class="hljs-keyword">this</span>.fill,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">"gray"</span>]})}
+        };
+<span class="hljs-keyword">let</span>   color = <span class="hljs-string">'red'</span>;
+
+g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:color,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">"gray"</span>]})
+    .ins(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{color=<span class="hljs-string">'green'</span>})
+    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">80</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:color,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">"gray"</span>]})
+    .ins(<span class="hljs-function">(<span class="hljs-params">g</span>)=&gt;</span>g.cir({<span class="hljs-attr">x</span>:<span class="hljs-number">120</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">'orange'</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">"gray"</span>]}))
+    .ins(node)
+    .exe(ctx)
+</div></code></pre>
+<p><img src="img/circles.png" alt="circles" class="loading" id="image-hash-3a454442141aa12dcf6e60c31d73971d6a7e4146164897653dd4e2530c571ede"></p>
+<h3 id="view-transformation">View transformation</h3>
+<p>Via <code>ins()</code> modifying the current view state becomes much more elegant.
+Take a look at the example in <a href="./view" data-href="./view">View</a> for a direct comparison.</p>
+<pre><code class="code-line language-javascript"><div>worldview = {<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">1</span>},
+treeview = {<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">1</span>};
+
+world = g2().view(worldview)
+            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"skyblue"</span>})
+            .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">100</span>,<span class="hljs-number">40</span>,...],<span class="hljs-attr">fs</span>:<span class="hljs-string">"burlywood"</span>})
+            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"limegreen"</span>})
+
+tree = g2().view(treeview)
+            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">-5</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"brown"</span>})
+            .beg({<span class="hljs-attr">fs</span>:<span class="hljs-string">"forestgreen"</span>})
+            .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">10</span>})
+            ...
+            .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"transparent"</span>})
+            .end()
+
+g2().use({<span class="hljs-attr">grp</span>:world,<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>})
+    .use({<span class="hljs-attr">grp</span>:tree,<span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>})
+    .exe(ctx1)
+    .ins(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{treeview.scl = <span class="hljs-number">1.5</span>, treeview.x = <span class="hljs-number">50</span>, treeview.y = <span class="hljs-number">25</span>})
+    .exe(ctx2)
+    .ins(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{worldview.scl = <span class="hljs-number">1.5</span>, worldview.y = <span class="hljs-number">-50</span>})
+    .exe(ctx3)
+</div></code></pre>
+<p><img src="img/view-1.png" alt="view-1" class="loading" id="image-hash-66cc3981c5c1d2166edd159278a7c813cf52ae671df49d5e19f3ae4ef37ec204"> <img src="img/view-2.png" alt="view-2" class="loading" id="image-hash-bb1c97e211dfe48bb41bebc965da5ef2b138d03a9cb437e48d05534a296e65c0"> <img src="img/view-3.png" alt="view-3" class="loading" id="image-hash-75d19e999e9bf1c0c2576563c94eff9d7dbe3368ef3d5a72f62fb88b9aa8e43d"></p>
+<h3 id="conditional-rendering">Conditional Rendering</h3>
+<p><code>ins</code> is capable of invoking javascript. This characteristic can be easily used to manipulate the command queue to fit certain conditions. Read more about animations <a href="https://github.com/goessner/g2/wiki/animation" data-href="https://github.com/goessner/g2/wiki/animation">here</a></p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"550"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"100"</span> <span class="hljs-attr">position</span>=<span class="hljs-string">"absolute"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'g2.core.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+          g=g2();
+    <span class="hljs-keyword">let</span> r=<span class="hljs-number">40</span>,pi=<span class="hljs-built_in">Math</span>.PI,dphi=<span class="hljs-number">1</span>/<span class="hljs-number">20</span>*pi,dalpha=<span class="hljs-number">1</span>/<span class="hljs-number">100</span>,style={<span class="hljs-attr">fs</span>:<span class="hljs-string">"transparent"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">8</span>},
+        phi=<span class="hljs-number">0</span>, alpha=<span class="hljs-number">0.3</span>;
+        wheel = g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:r,...style})
+                    .lin({<span class="hljs-attr">x1</span>:<span class="hljs-number">-0.8</span>*r,<span class="hljs-attr">y1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">x2</span>:<span class="hljs-number">0.8</span>*r,<span class="hljs-attr">y2</span>:<span class="hljs-number">0</span>,...style})
+                    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"snow"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>});
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">rollingWheel</span>(<span class="hljs-params">g</span>) </span>{
+        <span class="hljs-keyword">let</span> r=<span class="hljs-number">40</span>,dphi=<span class="hljs-number">11</span>/<span class="hljs-number">20</span>*<span class="hljs-built_in">Math</span>.PI,style={<span class="hljs-attr">fs</span>:<span class="hljs-string">"transparent"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">8</span>},
+            wheel = g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:r,...style})
+                        .lin({<span class="hljs-attr">x1</span>:<span class="hljs-number">-0.8</span>*r,<span class="hljs-attr">y1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">x2</span>:<span class="hljs-number">0.8</span>*r,<span class="hljs-attr">y2</span>:<span class="hljs-number">0</span>,...style})
+                        .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"snow"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>});
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> alpha=<span class="hljs-number">0.3</span>,phi2=<span class="hljs-number">0</span>; alpha&lt;=<span class="hljs-number">1</span>&amp;&amp;phi&gt;phi2;alpha+=<span class="hljs-number">0.1</span>,phi2+=dphi)
+           g.use({<span class="hljs-attr">grp</span>:wheel,<span class="hljs-attr">x</span>:r*phi2,<span class="hljs-attr">y</span>:<span class="hljs-number">54</span>,<span class="hljs-attr">w</span>:phi2,<span class="hljs-attr">ls</span>:<span class="hljs-string">'rgba(0,0,0,'</span>+alpha*alpha*alpha+<span class="hljs-string">')'</span>});
+        <span class="hljs-keyword">return</span> g;
+     }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+      alpha+=dalpha;
+      phi+=dphi;
+      g.del()
+       .clr()
+       .grid()
+       .use({<span class="hljs-attr">grp</span>:wheel,<span class="hljs-attr">x</span>:r*phi,<span class="hljs-attr">y</span>:<span class="hljs-number">54</span>,<span class="hljs-attr">w</span>:phi,<span class="hljs-attr">ls</span>:<span class="hljs-string">'rgba(0,0,0,'</span>+alpha*alpha*alpha+<span class="hljs-string">')'</span>})
+       .ins(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{<span class="hljs-keyword">if</span>(r*phi&gt;<span class="hljs-number">154</span>*pi||r*phi&lt;=<span class="hljs-number">0</span>){dphi=-dphi,dalpha=-dalpha}})
+       .ins(rollingWheel(g))
+       .exe(ctx);
+      requestAnimationFrame(render)
+  }
+  render();
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="img/insert_anim.gif" alt="insert_anim" class="loading" id="image-hash-9f24228e4d20f3f565c283d7cb20bb479797873d21f207d0eb412189fc1d50c6"></p>
+
+</main>
+<footer>
+  <span class="left">&copy; My Site</span>
+  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
+  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+</footer>
+</body>
+</html>

@@ -1,9 +1,15 @@
-[![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/blob/master/LICENSE)
+ ---
+ "layout": "page",
+ "title": "g2",
+ "date": "2020-06-01",
+ "description": "microjam for g2",
+ "tags": []
+ ---
+
+ [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/blob/master/LICENSE)
 [![npm](https://img.shields.io/npm/v/g2d.svg)](https://npmjs.com/package/g2d)
 [![npm](https://img.shields.io/npm/dt/g2d.svg)](https://npmjs.com/package/g2d)
 [![no dependencies](https://img.shields.io/gemnasium/mathiasbynens/he.svg)](https://github.com/goessner/g2)
-
-# g<sup>2</sup>
 
 g<sup>2</sup> is a 2D graphics javascript library based on the [command pattern](http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript) 
 principle. Its main goal is to provide a simple API for users who want to generate 2D web graphics occasionally. 
@@ -12,7 +18,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 ## Main features
 
 * Fast and lightweight graphics command queue builder.
-* Adressing HTML canvas 2D context as the default renderer.
+* Addressing HTML canvas 2D context as the default renderer.
 * Generating SVG output using an [addon library](https://github.com/goessner/g2-svg).
 * Method chaining.
 * Support of cartesian coordinates.
@@ -39,38 +45,46 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 ![first](/docs/img/g2-first.png)
 
 ## Documentation
-  * [Getting started](../../wiki/getting-started)
-  * [Concepts](../../wiki/concepts)
-  * [Paths](../../wiki/paths)
-  * [Elements](../../wiki/elements)
-  * [State and Style](../../wiki/state-and-style)
-  * [Reuse](../../wiki/reuse)
-  * [View](../../wiki/view)
-  * [Insert](../../wiki/insert)
-  * [Animation](../../wiki/animation)
-  * [Interactivity](../../wiki/interactivity)
+  * [Getting started](getting-started.html)
+  * [Concepts](concepts.html)
+  * [Paths](paths.html)
+  * [Elements](elements.html)
+  * [State and Style](state-and-style.html)
+  * [Reuse](reuse.html)
+  * [View](view.html)
+  * [Insert](insert.html)
+  * [Animation](animation.html)
+  * [Interactivity](interactivity.html)
+  * [Extension: g2.ext](g2.ext.html)
+  * [Extension: g2.mec](g2.mec.html)
+  * [Extension: g2.chart](g2.chart.html)
 
 ## API Reference
 See the [API Reference for g2](docs/api/g2.core.md) for details.
 
 Also see the [API Reference for g2.ext](docs/api/g2.ext.md) and the [API Reference for g2.mec](docs/api/g2.mec.md).
 
+Also available under
+ - [https://goessner.github.io/g2/api/g2.core](https://goessner.github.io/g2/api/g2.core)
+ - [https://goessner.github.io/g2/api/g2.ext](https://goessner.github.io/g2/api/g2.ext)
+ - [https://goessner.github.io/g2/api/g2.mec](https://goessner.github.io/g2/api/g2.mec)
+
+
+## Cheat Sheet
+Check out the single page [Cheat Sheet](docs/api/sheet.pdf).
+
+Also available under [https://goessner.github.io/g2/api/sheet.pdf](https://goessner.github.io/g2/api/sheet.pdf)
 
 ## GitCDN
-Use the link [https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js](https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js)
-for getting the latest commit as a raw file.
+Use the link [https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js](https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js) for getting the latest commit as a raw file.
 
 In HTML use ...
 ```html
-<script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js"></script>
 ```
 
 ### Tests
-Tests are found on the [Github Page](https://goessner.github.io/g2/tests.html)
-
-## Cheat Sheet
-Check out the single page [Cheat Sheet](docs/api/cheatsheet.pdf).
-
+Tests are found on the [Github Page](https://goessner.github.io/g2/)
 
 # License
 g<sup>2</sup> is licensed under the terms of the MIT License.

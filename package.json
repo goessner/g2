@@ -25,6 +25,7 @@
     "url": "https://github.com/goessner/g2.git"
   },
   "license": "MIT",
+  "microjam": {},
   "devDependencies": {
     "concat": "^1.0.0",
     "jsdoc-to-markdown": "^1.3.2",

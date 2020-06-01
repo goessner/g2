@@ -1,0 +1,251 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
+<meta name="description" content="State-and-Style">
+<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+<meta name="keywords" content="">
+<title>State-and-Style</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+
+<link rel="stylesheet" href="./theme/styles.css">
+</head>
+<body>
+<header>
+  <a href="./index.html" class="left">My Site</a>
+  <a href="./about.html" class="right">About</a>
+</header>
+<main>
+<p><em>g2</em> allows styling of its commands.
+Color values are CSS colors as strings [hex colors, color names, rgb and rgba colors].
+You can also reference values from other style properties by their name via string <code>&quot;@name&quot;</code> (see example 2 below).</p>
+<p>Following style properties are supported:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fs</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;transparent&quot;</code></td>
+<td>Fill color.</td>
+</tr>
+<tr>
+<td><code>ls</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;black&quot;</code></td>
+<td>Stroke color.</td>
+</tr>
+<tr>
+<td><code>lw</code></td>
+<td style="text-align:center">float</td>
+<td><code>1</code></td>
+<td>Line width.</td>
+</tr>
+<tr>
+<td><code>lc</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;butt&quot;</code></td>
+<td>Line cap [<code>butt</code>, <code>round</code> and <code>square</code>].</td>
+</tr>
+<tr>
+<td><code>lj</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;miter&quot;</code></td>
+<td>Line join [<code>round</code>, <code>bevel</code> and <code>miter</code>].</td>
+</tr>
+<tr>
+<td><code>ml</code></td>
+<td style="text-align:center">float</td>
+<td><code>10</code></td>
+<td>Miter limit.</td>
+</tr>
+<tr>
+<td><code>ld</code></td>
+<td style="text-align:center">array</td>
+<td><code>[]</code></td>
+<td>Line dash array.</td>
+</tr>
+<tr>
+<td><code>sh</code></td>
+<td style="text-align:center">array</td>
+<td><code>[0,0,0,&quot;transparent&quot;]</code></td>
+<td>Shadow values array<br> [<code>x-offset</code>,<code>y-offset</code>,<code>blur</code>,<code>color</code>].</td>
+</tr>
+<tr>
+<td><code>thal</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;start&quot;</code></td>
+<td>Text horizontal alignment [<code>'start'</code>,<code>'end'</code>,<br><code>'left'</code>,<code>'right'</code>,<code>'center'</code>].</td>
+</tr>
+<tr>
+<td><code>tval</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;alphabetic&quot;</code></td>
+<td>Text vertical alignment [<code>'top'</code>,<code>'hanging'</code>,<br><code>'middle'</code>,<code>'alphabetic'</code>,<br><code>'ideographic'</code>,<code>'bottom'</code>].</td>
+</tr>
+<tr>
+<td><code>font</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;normal 14px serif&quot;</code></td>
+<td><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font" data-href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font">Font</a> <a href="https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font" data-href="https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font">styling</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="example">Example 1</h3>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"100"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"100"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'g2.core.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+          style={<span class="hljs-attr">ls</span>:<span class="hljs-string">"red"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"ddd"</span>};
+    g2().rec({<span class="hljs-attr">x</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">60</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">'maroon'</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">'khaki'</span>})
+        .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">75</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ld</span>:[<span class="hljs-number">6</span>,<span class="hljs-number">3</span>],<span class="hljs-attr">fs</span>:<span class="hljs-string">'orange'</span>})
+        .exe(ctx)
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="img/elemstyle.png" alt="element style" class="loading" id="image-hash-bc302306104eca0f960ad7b53516b8f1280052f4bb95ff1e3de4faa698237043"></p>
+<p><em>g2</em> also maintains a graphics state stack similar to the HTML canvas context.
+So It manages current transformations and global style properties.</p>
+<p>Following commands manipulate the state stack:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beg({styles})</code></td>
+<td>Save current state and set new transformation and style properties.</td>
+</tr>
+<tr>
+<td><code>end()</code></td>
+<td>Restore previous state while discarding current property values.</td>
+</tr>
+<tr>
+<td><code>use({grp,x,y,w,scl})</code></td>
+<td>Reuse commands stored in external <em>g2</em> object <code>g</code> while applying transformation and style properties from <code>args</code> to them.</td>
+</tr>
+</tbody>
+</table>
+<p>Transformation properties in <code>args</code> can be:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th style="text-align:center">Type</th>
+<th style="text-align:center">Default</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x</code></td>
+<td style="text-align:center">float</td>
+<td style="text-align:center"><code>0</code></td>
+<td>x translation value.</td>
+</tr>
+<tr>
+<td><code>y</code></td>
+<td style="text-align:center">float</td>
+<td style="text-align:center"><code>0</code></td>
+<td>y translation value.</td>
+</tr>
+<tr>
+<td><code>w</code></td>
+<td style="text-align:center">float</td>
+<td style="text-align:center"><code>0</code></td>
+<td>Rotation angle in radians. Positive values rotate counterclockwise.</td>
+</tr>
+<tr>
+<td><code>scl</code></td>
+<td style="text-align:center">float</td>
+<td style="text-align:center"><code>1</code></td>
+<td>scaling factor. Unified scaling only.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example">Example 2</h3>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"450"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"100"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'g2.core.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="vbscript">
+    <span class="hljs-keyword">const</span> ctx=document.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+        fs1={fs:<span class="hljs-string">"darkolivegreen"</span>,font:<span class="hljs-string">"24px serif"</span>},
+        fs2={fs:<span class="hljs-string">"steelblue"</span>,font:<span class="hljs-string">"30px serif"</span>},
+        fs3={...fs2,fs:<span class="hljs-string">"midnightblue"</span>};
+    g2().beg({fs:<span class="hljs-string">"gainsboro"</span>,ls:<span class="hljs-string">"firebrick"</span>,lw:<span class="hljs-number">3</span>,
+            thal:<span class="hljs-string">"center"</span>,tval:<span class="hljs-string">"middle"</span>})
+            .rec({x:<span class="hljs-number">20</span>,y:<span class="hljs-number">20</span>,b:<span class="hljs-number">80</span>,h:<span class="hljs-number">50</span>})
+            .txt({str:<span class="hljs-string">"one"</span>,x:<span class="hljs-number">60</span>,y:<span class="hljs-number">45</span>,...fs1})
+            .beg({y:<span class="hljs-number">-10</span>,fs:<span class="hljs-string">"darkseagreen"</span>,ls:<span class="hljs-string">"cadetblue"</span>,lw:<span class="hljs-number">5</span>})
+                .rec({x:<span class="hljs-number">120</span>,y:<span class="hljs-number">20</span>,b:<span class="hljs-number">80</span>,h:<span class="hljs-number">50</span>})
+                .txt({str:<span class="hljs-string">"two"</span>,x:<span class="hljs-number">160</span>,y:<span class="hljs-number">45</span>,...fs2})
+                .beg({ls:<span class="hljs-string">"@fs"</span>,fs:<span class="hljs-string">"cadetblue"</span>})
+                    .rec({x:<span class="hljs-number">220</span>,y:<span class="hljs-number">20</span>,b:<span class="hljs-number">80</span>,h:<span class="hljs-number">50</span>})
+                    .txt({str:<span class="hljs-string">"three"</span>,x:<span class="hljs-number">260</span>,y:<span class="hljs-number">45</span>,...fs3})
+                .<span class="hljs-keyword">end</span>()
+            .<span class="hljs-keyword">end</span>()
+            .rec({x:<span class="hljs-number">320</span>,y:<span class="hljs-number">20</span>,b:<span class="hljs-number">80</span>,h:<span class="hljs-number">50</span>})
+            .txt({str:<span class="hljs-string">"four"</span>,x:<span class="hljs-number">360</span>,y:<span class="hljs-number">45</span>,...fs1})
+        .<span class="hljs-keyword">end</span>()
+        .exe(ctx);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="img/beg.png" alt="beg Element" class="loading" id="image-hash-04d6ff93ca8231905f966dfef4a0bdcec811790c515991023df414fa3b6cb056"></p>
+<h3 id="example-yinyang">Example Yinyang</h3>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"100"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"100"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'g2.core.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+          pi = <span class="hljs-built_in">Math</span>.PI, dark = <span class="hljs-string">"#444"</span>, light = <span class="hljs-string">"#eee"</span>;
+    g2().beg({<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">fs</span>:light,<span class="hljs-attr">ls</span>:dark,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>})
+            .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>})
+            .beg({<span class="hljs-attr">fs</span>:<span class="hljs-string">"@ls"</span>})
+                .p()
+                .m({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>})
+                .a({<span class="hljs-attr">dw</span>:pi,<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>})
+                .a({<span class="hljs-attr">dw</span>:-pi,<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>})
+                .a({<span class="hljs-attr">dw</span>:-pi,<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>})
+                .z()
+                .fill()
+                .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-10</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>})
+                .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">ls</span>:light,<span class="hljs-attr">fs</span>:<span class="hljs-string">"@ls"</span>})
+            .end()
+        .end()
+        .exe(ctx);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="img/yinyang.png" alt="yinyang example" class="loading" id="image-hash-ede9173703aad45bad79f335c0aa386686d52ef40cf1e370ba6f0968b88a5c95"></p>
+<h3 id="fonts">Fonts</h3>
+<p>Fonts are manipulated throught the <code>font</code> property.
+<em>g2</em> utilizes css styling methods.</p>
+<p>Read more about font styling
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font" data-href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font">here</a>
+and
+<a href="https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font" data-href="https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font">here</a>:</p>
+<pre><code><code><div>For example, after the following statement:
+
+    context.font = 'italic 400 12px/2 Unknown Font, sans-serif';
+
+...the expression context.font would evaluate to the string &quot;italic 12px &quot;Unknown Font&quot;, sans-serif&quot;.
+The &quot;400&quot; font-weight doesn't appear because that is the default value.
+The line-height doesn't appear because it is forced to &quot;normal&quot;, the default value.
+</div></code></code></pre>
+<p>The <code>font</code> property accepts strings in the presented format.</p>
+
+</main>
+<footer>
+  <span class="left">&copy; My Site</span>
+  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
+  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+</footer>
+</body>
+</html>

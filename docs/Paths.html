@@ -1,0 +1,134 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
+<meta name="description" content="Paths">
+<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+<meta name="keywords" content="">
+<title>Paths</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+
+<link rel="stylesheet" href="./theme/styles.css">
+</head>
+<body>
+<header>
+  <a href="./index.html" class="left">My Site</a>
+  <a href="./about.html" class="right">About</a>
+</header>
+<main>
+<p>Path commands are low level commands. The names and parameters are adopted from SVG.
+See <a href="https://developer.mozilla.org/de/docs/Web/API/CanvasRenderingContext2D" data-href="https://developer.mozilla.org/de/docs/Web/API/CanvasRenderingContext2D">HTML canvas</a>
+and <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths" data-href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths">SVG</a> documentation for details.</p>
+<p>Click <a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+p" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+p">here</a> for the API
+Reference.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>HTML Canvas</th>
+<th>SVG</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>p()</code></td>
+<td><code>beginPath</code></td>
+<td><code>path</code></td>
+<td>Start a new path. Previous path commands are discarded.</td>
+</tr>
+<tr>
+<td><code>m({x,y})</code></td>
+<td><code>moveTo</code></td>
+<td><code>M</code></td>
+<td>Move to position</td>
+</tr>
+<tr>
+<td><code>l({x,y})</code></td>
+<td><code>lineTo</code></td>
+<td><code>L</code></td>
+<td>Create line segment</td>
+</tr>
+<tr>
+<td><code>q({x1,y1,x,y})</code></td>
+<td><code>quadraticCurveTo</code></td>
+<td><code>Q</code></td>
+<td>Create quadratic curve</td>
+</tr>
+<tr>
+<td><code>c({x1,y1,x2,y2,x,y})</code></td>
+<td><code>bezierCurveTo</code></td>
+<td><code>C</code></td>
+<td>Create cubic bézier curve</td>
+</tr>
+<tr>
+<td><code>a({dw,x,y})</code></td>
+<td><code>arcTo</code></td>
+<td><code>A</code></td>
+<td>Create arc segment</td>
+</tr>
+<tr>
+<td><code>z()</code></td>
+<td><code>closePath</code></td>
+<td><code>Z</code></td>
+<td>Close path</td>
+</tr>
+</tbody>
+</table>
+<p>Drawing a path works somewhat like a pen plotter. With <em>pen up</em> you can move to an arbitrary position.
+With <em>pen down</em> lines or curves can be drawn. The pen always has a <em>current position</em>.</p>
+<p><img src="img/arcs.png" alt="arcs" class="loading" id="image-hash-c5507aab52d3e87bca887282ed195bc449e48b932cdfea4dbe34758afc5f4c98"></p>
+<p>It might be worth to have a closer look at the compact and comfortable arc <code>a</code> command. The first
+parameter <code>dw</code> defines the angular region φ of the arc, which can be positive or negative.
+In case of φ = 0 a straight line is drawn. The amount of φ cannot get greater or equal to
+2π, which would represent a circle.
+You would rarely want to have a full circle inside of a path, but if you really do so, you might
+use two consecutive semicircles instead. The last two parameters <code>x</code> and <code>y</code> are the coordinates
+of the target point.</p>
+<p>When a path has been completely defined, it can be drawn by a single <code>stroke</code>, <code>fill</code> or <code>drw</code>
+command. Avoid invoking multiple drawing commands, f.e. <code>stroke</code> and <code>fill</code> following a path
+definition.
+It might work with a HTML canvas 2D renderer, but it won't work with SVG.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>HTML Canvas</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stroke({d})</code></td>
+<td><code>stroke</code></td>
+<td>Stroke the previously defined path.</td>
+</tr>
+<tr>
+<td><code>fill({d})</code></td>
+<td><code>fill</code></td>
+<td>Fill the previously defined path.</td>
+</tr>
+<tr>
+<td><code>drw({d})</code></td>
+<td><code>fill</code> and <code>stroke</code></td>
+<td>Fill and stroke the previously defined path in that order.</td>
+</tr>
+</tbody>
+</table>
+<p>An optional second argument <code>d</code> of <code>stroke</code>, <code>fill</code> or <code>drw</code> can be used to hand over an SVG path data string.
+In that case previously defined path commands are ignored.</p>
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> star = <span class="hljs-string">"M100,10L123.5,82.4L61,37.6L138,37.6L76.5,82.4Z"</span>;
+g2().drw({<span class="hljs-attr">d</span>:star,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"red"</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"orange"</span>})
+    .exe(ctx);
+</div></code></pre>
+<p><img src="img/star.png" alt="star" class="loading" id="image-hash-1f616e0d3934be63e03bdd751dd76a776597679ddc7a25917c2e9820acb28712"></p>
+
+</main>
+<footer>
+  <span class="left">&copy; My Site</span>
+  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
+  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+</footer>
+</body>
+</html>

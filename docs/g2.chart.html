@@ -1,0 +1,540 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
+<meta name="description" content="g2.chart">
+<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+<meta name="keywords" content="">
+<title>g2.chart</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+
+<link rel="stylesheet" href="./theme/styles.css">
+</head>
+<body>
+<header>
+  <a href="./index.html" class="left">My Site</a>
+  <a href="./about.html" class="right">About</a>
+</header>
+<main>
+<h1 id="g2chart">g2.chart</h1>
+<p><code>g2.chart</code> is an important brick for <a href="https://github.com/goessner/g2" data-href="https://github.com/goessner/g2"><code>g2.js</code></a> being an engineers and scientists graphics tool.
+<code>g2.chart</code> as a <a href="https://github.com/goessner/g2" data-href="https://github.com/goessner/g2"><code>g2</code></a> addon generates x/y-line charts only, but it does that very well.</p>
+<h3 id="example-first-chart">Example: first chart</h3>
+<p><img src="./img/chart_first.png" alt="g2 %amp; charts" class="loading" id="image-hash-1cb4454c5dd226023220a5a57b264ec2a7e5b3761d4a96f0469cd91c7e050b8f"></p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"250"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"175"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
+        .chart({<span class="hljs-attr">x</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">120</span>,
+            <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">data</span>:[<span class="hljs-number">-2</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,<span class="hljs-number">-2</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>],<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">dots</span>:<span class="hljs-literal">true</span>}],
+            <span class="hljs-attr">xaxis</span>:{},
+            <span class="hljs-attr">yaxis</span>:{},
+        })
+        .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>));
+  </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<h2 id="chart-usage">Chart usage</h2>
+<p><code>g2.chart</code> introduces a new <code>chart</code> command, which expects a single javascript object
+specifying the chart properties. In order to use it properly you need to set <code>g2</code>'s
+cartesian flag. You want to set the chart dimensions by specifying the lower left corner <code>x</code> and <code>y</code>
+as well as width <code>b</code> and height <code>h</code> of the rectangular chart area.
+Please note, that chart title, axis ticks, labels and titles are not included in that dimensions.</p>
+<p><img src="./img/chart_dimensions.png" alt="dimensions" class="loading" id="image-hash-64a6827ae0d17b274b89468e621480b9ca8c71deda57952ebbafd2cc618aea14"></p>
+<h2 id="chart-functions-range-and-style">Chart functions, range and style</h2>
+<p>Line charts display functional relations. These relations can be numerically represented via datasets or
+algebraically via functions. <code>g2.chart</code> offers both representations. A single chart can contain multiple
+functions and even mix numerical and algebraic forms.</p>
+<p>The chart x-value range is extracted from available datasets or must be explicitly specified. Its
+y-value range can be derived from both datasets and algebraic functions or - again - be explicitly
+set.</p>
+<h3 id="example-multiple-functions">Example: multiple functions</h3>
+<p><img src="./img/chart_sintan.png" alt="sintan" class="loading" id="image-hash-bda812e9211a03e337d4b146fa5b92dc310be5d4be3ba6dc4f799564a505f71b"></p>
+<pre><code class="code-line language-js"><div>g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
+    .chart({<span class="hljs-attr">x</span>:<span class="hljs-number">25</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">25</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">100</span>,
+            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">"sine + tan"</span>},
+            <span class="hljs-attr">xmin</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">2</span>*<span class="hljs-built_in">Math</span>.PI,
+            <span class="hljs-attr">ymin</span>:<span class="hljs-number">-3</span>,<span class="hljs-attr">ymax</span>:<span class="hljs-number">3</span>,
+            <span class="hljs-attr">funcs</span>:[
+              {<span class="hljs-attr">fn</span>:<span class="hljs-built_in">Math</span>.sin,<span class="hljs-attr">dx</span>:<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">30</span>,<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>},
+              {<span class="hljs-attr">fn</span>:<span class="hljs-built_in">Math</span>.tan,<span class="hljs-attr">dx</span>:<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">90</span>,<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}
+            ]})
+    .exe(ctx);
+</div></code></pre>
+<p>In this example the x-value range is explicitely set by <code>xmin</code> and <code>xmax</code>. It is valid then for all functions.
+The y-value range is also explicitely set by <code>ymin</code> and <code>ymax</code>. That is done here only, because
+the <code>tan</code>-function has singularities at odd multiples of <code>pi/2</code>. So its chart is  simply clipped to the
+desired range of <code>[-3,3]</code>.</p>
+<p>Please note that we didn't specify a color for displaying the functions in the last example. <code>g2.chart</code> provides a small set of
+default colors for sequentially assigning them to functions without explicite color definitions. If the
+<code>fill</code> property is set to <code>true</code>, the function chart is filled with respect to the <code>zero</code> x-axis using
+its semi-transparent function color.</p>
+<h3 id="example-axis-properties">Example: Axis properties</h3>
+<p><img src="./img/chart_sinaxis.png" alt="sin+axis" class="loading" id="image-hash-592ab4c80f53c382df236c1ff9a662c8a2b78e6abc3fe944182bed15dbd91bc2"></p>
+<pre><code class="code-line language-js"><div>g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
+    .chart({ <span class="hljs-attr">x</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">100</span>,
+             <span class="hljs-attr">title</span>:{ <span class="hljs-attr">text</span>:<span class="hljs-string">"sin(φ)"</span>},
+                     <span class="hljs-attr">xmin</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">2</span>*<span class="hljs-built_in">Math</span>.PI,
+                     <span class="hljs-attr">funcs</span>:[
+                       {<span class="hljs-attr">fn</span>:<span class="hljs-built_in">Math</span>.sin,<span class="hljs-attr">dx</span>:<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">30</span>,<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}
+                     ],
+                     <span class="hljs-attr">xaxis</span>: {
+                       <span class="hljs-attr">title</span>:<span class="hljs-string">"φ"</span>,
+                       <span class="hljs-attr">grid</span>:<span class="hljs-literal">true</span>
+                     },
+                     <span class="hljs-attr">yaxis</span>: {
+                       <span class="hljs-attr">title</span>:<span class="hljs-string">"sin(φ)"</span>,
+                       <span class="hljs-attr">origin</span>:<span class="hljs-literal">true</span>
+                     }
+                   })
+    .exe(ctx);
+</div></code></pre>
+<h2 id="chart-api">Chart API</h2>
+<p>After a chart object is created, we might want to interact with it then. So we would like to request
+canvas coordinates for certain chart area coordinates. There is a small API for supporting tasks like this.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Arguments</th>
+<th>Returns</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>valOf(pix)</code></td>
+<td><code>pix</code> canvas point</td>
+<td><code>object</code></td>
+<td>Point value in chart coordinates from point in canvas coordinates.</td>
+</tr>
+<tr>
+<td><code>pixOf(usr)</code></td>
+<td><code>usr</code> chart point</td>
+<td><code>object</code></td>
+<td>Point value in canvas coordinates from point in chart coordinates.</td>
+</tr>
+<tr>
+<td><code>trimPixOf(usr)</code></td>
+<td><code>usr</code> chart point</td>
+<td><code>object</code></td>
+<td>Point value in canvas coordinates from point in chart coordinates trimmed to chart area region limits.</td>
+</tr>
+<tr>
+<td><code>yOf(x)</code></td>
+<td><code>x</code> chart x-value</td>
+<td><code>float</code></td>
+<td>y-value in chart coordinates.</td>
+</tr>
+<tr>
+<td><code>drawMarkersAt(g,x)</code></td>
+<td><code>g</code> <code>g2</code> instance <code>x</code> chart x-value</td>
+<td><code>object</code></td>
+<td>Draw marker points in canvas coordinates to <code>g2</code> instance <code>g</code> according to x-value for all functions in chart.</td>
+</tr>
+</tbody>
+</table>
+<p>It is possible to place markers on chart functions after they are generated. For this we use a <code>g2</code> feature to transfer
+its prototype on objects which are given as parameters to <code>g2</code> commands.</p>
+<h3 id="example-chart-marker">Example: chart marker</h3>
+<p><img src="./img/chart_marker.png" alt="chart marker" class="loading" id="image-hash-f792aa71a09116f3dce0804cc552b68d9cb55cfa7f023dd9f4c10f6afaedc804"></p>
+<pre><code class="code-line language-js"><div>    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>);
+    <span class="hljs-keyword">const</span> chrt = { <span class="hljs-attr">x</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">100</span>,
+            <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">data</span>:[<span class="hljs-number">-1</span>,<span class="hljs-number">-2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>],<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}],
+            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">"marker on chart"</span>},
+            <span class="hljs-attr">xaxis</span>:{},
+            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">origin</span>:<span class="hljs-literal">true</span>}
+            };
+    g = g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>});
+    g.chart(chrt)
+     .exe(ctx);
+    g.nod({...chrt.pntOf({<span class="hljs-attr">x</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">1.33</span>})}).exe(ctx);
+</div></code></pre>
+<p>Those markers can be set interactively then.</p>
+<h3 id="example-interactive-chart">Example: interactive chart</h3>
+<p><img src="./img/chart_interactive.gif" alt="dynamic charts" class="loading" id="image-hash-ce0c30e99cbcc3a2412661a89311af4da1b29b60e2fad5f6c83b991e4ce6b59b"></p>
+<pre><code class="code-line language-javascript"><div>  <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+      range = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"range"</span>),
+      output = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"output"</span>),
+      chrt = {
+          <span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">150</span>,
+          <span class="hljs-attr">xmin</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">2</span>*<span class="hljs-built_in">Math</span>.PI,
+          <span class="hljs-attr">ymin</span>:<span class="hljs-number">-0.75</span>,<span class="hljs-attr">ymax</span>:<span class="hljs-number">0.75</span>,
+          <span class="hljs-attr">funcs</span>:[
+              {<span class="hljs-attr">fn</span>:<span class="hljs-built_in">Math</span>.sin,<span class="hljs-attr">dx</span>:<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">30</span>,<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>},
+              {<span class="hljs-attr">fn</span>:<span class="hljs-built_in">Math</span>.cos,<span class="hljs-attr">dx</span>:<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">30</span>,<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>},
+          ],
+          <span class="hljs-attr">title</span>:<span class="hljs-string">"sine + cosine (clipped)"</span>,
+          <span class="hljs-attr">xaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"phi"</span>},
+          <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"sin(phi)"</span>,<span class="hljs-attr">origin</span>:<span class="hljs-literal">true</span>}
+      };
+  <span class="hljs-keyword">let</span> phi = -<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>, mrk1,mrk2;
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+      g2().clr()
+          .view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
+          .chart(chrt)
+          .nod({...mrk1})
+          .nod({...mrk2})
+          .exe(ctx);
+  };
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setPhi</span>(<span class="hljs-params">e</span>) </span>{
+      output.value = range.value + <span class="hljs-string">"°"</span>;
+      phi = range.value/<span class="hljs-number">180</span>*<span class="hljs-built_in">Math</span>.PI;
+      mrk1 = chrt.pntOf({<span class="hljs-attr">x</span>:phi,<span class="hljs-attr">y</span>:<span class="hljs-built_in">Math</span>.sin(phi)});
+      mrk2 = chrt.pntOf({<span class="hljs-attr">x</span>:phi,<span class="hljs-attr">y</span>:<span class="hljs-built_in">Math</span>.cos(phi)});
+      render();
+  };
+  range.addEventListener(<span class="hljs-string">"input"</span>,setPhi,<span class="hljs-literal">false</span>);
+  render();
+</div></code></pre>
+<p>Markers can also get animated along simulation parameters.</p>
+<h3 id="example-animated-chart">Example: animated chart</h3>
+<p><img src="./img/chart_animated.gif" alt="dynamic charts" class="loading" id="image-hash-c943bac579d9e850be2c8035fad1c1ed5572eaa6ea6504683686c5e51febfe3d"></p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"501"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"301"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://gitcdn.xyz/repo/goessner/morphr/master/morphr.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+<span class="hljs-keyword">let</span> phi = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+        posChart = { 
+            <span class="hljs-attr">x</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-100</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">50</span>,
+            <span class="hljs-attr">xmin</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">1</span>,
+            <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">fn</span>:Morphr.quadratic, <span class="hljs-attr">dx</span>:<span class="hljs-number">0.02</span>, <span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}],
+            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"pos"</span>},
+            <span class="hljs-attr">xaxis</span>:{}
+        },
+        velChart = {
+            <span class="hljs-attr">x</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-40</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">60</span>,
+            <span class="hljs-attr">xmin</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">1</span>,
+            <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">fn</span>:<span class="hljs-function">(<span class="hljs-params">q</span>) =&gt;</span> { <span class="hljs-keyword">return</span> q &lt; <span class="hljs-number">0.5</span> ? <span class="hljs-number">4</span>*q : <span class="hljs-number">4</span> - <span class="hljs-number">4</span>*q }, <span class="hljs-attr">dx</span>:<span class="hljs-number">0.02</span>, <span class="hljs-attr">color</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}],
+            <span class="hljs-attr">xaxis</span>:<span class="hljs-literal">false</span>,
+            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"vel"</span>}
+        },
+        accChart = {
+            <span class="hljs-attr">x</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">70</span>,
+            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">"quadratic"</span>},
+            <span class="hljs-attr">xmin</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">1</span>,
+            <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">fn</span>:<span class="hljs-function">(<span class="hljs-params">q</span>) =&gt;</span> { <span class="hljs-keyword">return</span> q &lt; <span class="hljs-number">0.5</span> ? <span class="hljs-number">4</span> : <span class="hljs-number">-4</span> }, <span class="hljs-attr">dx</span>:<span class="hljs-number">0.005</span>, <span class="hljs-attr">color</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}],
+            <span class="hljs-attr">xaxis</span>:<span class="hljs-literal">false</span>,
+            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"acc"</span>}
+        },
+        g = g2().clr().view({<span class="hljs-attr">x</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
+            .chart(posChart)
+            .chart(velChart)
+            .chart(accChart)
+            .beg({<span class="hljs-attr">w</span>:<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> phi,<span class="hljs-attr">fs</span>:<span class="hljs-string">"papayawhip"</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"darkslategray"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>})
+            .lin({<span class="hljs-attr">x1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">x2</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y2</span>:<span class="hljs-number">0</span>})
+            .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">5</span>})
+            .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">5</span>})
+            .end(),
+        morphr = Morphr.create(<span class="hljs-number">4</span>,<span class="hljs-number">0</span>,<span class="hljs-string">"quadratic"</span>)               <span class="hljs-comment">// create and configure Morphr object ...</span>
+                    .register(<span class="hljs-function">(<span class="hljs-params">q</span>) =&gt;</span> { phi = q*<span class="hljs-number">2</span>*<span class="hljs-built_in">Math</span>.PI; })  <span class="hljs-comment">// rotate by 360° in 4 s.</span>
+                    .register(render)                         <span class="hljs-comment">// render to canvas</span>
+                    .start();                                 <span class="hljs-comment">// init ...</span>
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">const</span> q = phi/<span class="hljs-number">2</span>/<span class="hljs-built_in">Math</span>.PI;
+        g.exe(ctx);
+        g2().view({<span class="hljs-attr">x</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
+            .nod({...accChart.pntOf({<span class="hljs-attr">x</span>:q, <span class="hljs-attr">y</span>:accChart.funcs[<span class="hljs-number">0</span>].fn(q)})})
+            .nod({...velChart.pntOf({<span class="hljs-attr">x</span>:q, <span class="hljs-attr">y</span>:velChart.funcs[<span class="hljs-number">0</span>].fn(q)})})
+            .nod({...posChart.pntOf({<span class="hljs-attr">x</span>:q, <span class="hljs-attr">y</span>:posChart.funcs[<span class="hljs-number">0</span>].fn(q)})})
+            .exe(ctx);
+    }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<h2 id="chart-properties">Chart Properties</h2>
+<p>We can set some properties with x- and y-axis, as axis titles, grids and an explicite origin line.
+It is also possible to suppress automatically defined axis ticks and labels. Custom labels are
+not implemented at current.</p>
+<p>You can overwrite the the default values, if you are not comfortable with them.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x</code></td>
+<td><code>float</code></td>
+<td>-</td>
+<td>x position of chart area's lower left corner.</td>
+</tr>
+<tr>
+<td><code>y</code></td>
+<td><code>float</code></td>
+<td>-</td>
+<td>y position of chart area's lower left corner.</td>
+</tr>
+<tr>
+<td><code>b</code></td>
+<td><code>float</code></td>
+<td>-</td>
+<td>breadth / width of chart area.</td>
+</tr>
+<tr>
+<td><code>h</code></td>
+<td><code>float</code></td>
+<td>-</td>
+<td>height of chart area.</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>string</code> or <code>object</code></td>
+<td><code>null</code></td>
+<td>chart title string or object specifying title properties.</td>
+</tr>
+<tr>
+<td><code>title.text</code></td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>chart title string.</td>
+</tr>
+<tr>
+<td><code>title.offset</code></td>
+<td><code>float</code></td>
+<td><code>3</code></td>
+<td>vertical offset to chart area.</td>
+</tr>
+<tr>
+<td><code>title.style</code></td>
+<td><code>object</code></td>
+<td><code>{foc:&quot;black&quot;, foz:16, thal:&quot;center&quot;, tval:&quot;bottom&quot;}</code></td>
+<td>title style.</td>
+</tr>
+<tr>
+<td><code>funcs</code></td>
+<td><code>array</code></td>
+<td><code>[]</code></td>
+<td>array of dataset <code>data</code> and / or function <code>fn</code> objects.</td>
+</tr>
+<tr>
+<td><code>funcs[item]</code></td>
+<td><code>object</code></td>
+<td></td>
+<td>dataset and / or function object.</td>
+</tr>
+<tr>
+<td><code>funcs[item].data</code></td>
+<td><code>array</code></td>
+<td></td>
+<td>array of data points as flat array <code>[x,y,..]</code>, array of point arrays <code>[[x,y],..]</code> or array of point objects  <code>[{x,y},..]</code>.</td>
+</tr>
+<tr>
+<td><code>funcs[item].fn</code></td>
+<td><code>function</code></td>
+<td></td>
+<td>Function <code>y = f(x)</code> accepting x-value returning y-value.</td>
+</tr>
+<tr>
+<td><code>funcs[item].dx</code></td>
+<td><code>float</code></td>
+<td></td>
+<td>x increment to apply to function <code>fn</code>. Ignored with data points.</td>
+</tr>
+<tr>
+<td><code>funcs[item].fill</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Fill region between function polygon and x-origin line.</td>
+</tr>
+<tr>
+<td><code>funcs[item].dots</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>Place circular dots at data points. Better avoid with <code>fn</code>s.</td>
+</tr>
+<tr>
+<td><code>xaxis</code></td>
+<td><code>object</code></td>
+<td></td>
+<td>x-axis properties.</td>
+</tr>
+<tr>
+<td><code>xaxis.style</code></td>
+<td><code>object</code></td>
+<td><code>{ls:&quot;#888&quot;, thal:&quot;center&quot;, tval:&quot;top&quot;, foc:&quot;black&quot;}</code></td>
+<td>x-axis style.</td>
+</tr>
+<tr>
+<td><code>xaxis.title</code></td>
+<td><code>string</code> or <code>object</code></td>
+<td></td>
+<td>x-axis title string or object specifying title properties.</td>
+</tr>
+<tr>
+<td><code>xaxis.title.text</code></td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>x-axis title string.</td>
+</tr>
+<tr>
+<td><code>xaxis.title.offset</code></td>
+<td><code>float</code></td>
+<td><code>1</code></td>
+<td>vertical x-axis title string offset.</td>
+</tr>
+<tr>
+<td><code>xaxis.title.style</code></td>
+<td><code>object</code></td>
+<td><code>{foz:12}</code></td>
+<td>x-axis title style. Not specified properties are inherited from <code>xaxis.style</code>.</td>
+</tr>
+<tr>
+<td><code>xaxis.line</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>display x-axis base line.</td>
+</tr>
+<tr>
+<td><code>xaxis.origin</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>display x-axis origin line.</td>
+</tr>
+<tr>
+<td><code>xaxis.ticks</code></td>
+<td><code>object</code></td>
+<td></td>
+<td>display x-axis ticks. Set to <code>false</code> to suppress.</td>
+</tr>
+<tr>
+<td><code>xaxis.ticks.len</code></td>
+<td><code>float</code></td>
+<td><code>6</code></td>
+<td>x-axis major ticks length.</td>
+</tr>
+<tr>
+<td><code>xaxis.grid</code></td>
+<td><code>boolean</code> or <code>object</code></td>
+<td><code>false</code></td>
+<td>display x-axis grid using style object.</td>
+</tr>
+<tr>
+<td><code>xaxis.labels</code></td>
+<td><code>boolean</code> or <code>object</code></td>
+<td></td>
+<td>display x-axis labels.</td>
+</tr>
+<tr>
+<td><code>xaxis.labels.loc</code></td>
+<td><code>'auto'</code></td>
+<td><code>'auto'</code></td>
+<td>calculate x-axis labels automatically.</td>
+</tr>
+<tr>
+<td><code>xaxis.labels.offset</code></td>
+<td><code>float</code></td>
+<td><code>1</code></td>
+<td>vertical x-axis labels string offset.</td>
+</tr>
+<tr>
+<td><code>xaxis.labels.style</code></td>
+<td><code>object</code></td>
+<td><code>{foz:11}</code></td>
+<td>x-axis labels style. Not specified properties are inherited from <code>xaxis.style</code>.</td>
+</tr>
+<tr>
+<td><code>yaxis</code></td>
+<td><code>object</code></td>
+<td></td>
+<td>y-axis properties.</td>
+</tr>
+<tr>
+<td><code>yaxis.style</code></td>
+<td><code>object</code></td>
+<td><code>{ls:&quot;#888&quot;, thal:&quot;center&quot;, tval:&quot;bottom&quot;, foc:&quot;black&quot;}</code></td>
+<td>y-axis style.</td>
+</tr>
+<tr>
+<td><code>yaxis.title</code></td>
+<td><code>string</code> or <code>object</code></td>
+<td></td>
+<td>y-axis title string or object specifying title properties.</td>
+</tr>
+<tr>
+<td><code>yaxis.title.text</code></td>
+<td><code>string</code></td>
+<td><code>null</code></td>
+<td>y-axis title string.</td>
+</tr>
+<tr>
+<td><code>yaxis.title.offset</code></td>
+<td><code>float</code></td>
+<td><code>2</code></td>
+<td>horizontal y-axis title string offset.</td>
+</tr>
+<tr>
+<td><code>yaxis.title.style</code></td>
+<td><code>object</code></td>
+<td><code>{foz:12}</code></td>
+<td>y-axis title style. Not specified properties are inherited from <code>yaxis.style</code>.</td>
+</tr>
+<tr>
+<td><code>yaxis.line</code></td>
+<td><code>boolean</code></td>
+<td><code>true</code></td>
+<td>display y-axis base line.</td>
+</tr>
+<tr>
+<td><code>yaxis.origin</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+<td>display y-axis origin line.</td>
+</tr>
+<tr>
+<td><code>yaxis.ticks</code></td>
+<td><code>object</code></td>
+<td></td>
+<td>display y-axis ticks. Set to <code>false</code> to suppress.</td>
+</tr>
+<tr>
+<td><code>yaxis.ticks.len</code></td>
+<td><code>float</code></td>
+<td><code>6</code></td>
+<td>y-axis major ticks length.</td>
+</tr>
+<tr>
+<td><code>yaxis.grid</code></td>
+<td><code>boolean</code> or <code>object</code></td>
+<td><code>false</code></td>
+<td>display y-axis grid using style object.</td>
+</tr>
+<tr>
+<td><code>yaxis.labels</code></td>
+<td><code>boolean</code> or <code>object</code></td>
+<td></td>
+<td>display y-axis labels.</td>
+</tr>
+<tr>
+<td><code>yaxis.labels.loc</code></td>
+<td><code>'auto'</code></td>
+<td><code>'auto'</code></td>
+<td>calculate y-axis labels automatically.</td>
+</tr>
+<tr>
+<td><code>yaxis.labels.offset</code></td>
+<td><code>float</code></td>
+<td><code>1</code></td>
+<td>horizontal y-axis labels string offset.</td>
+</tr>
+<tr>
+<td><code>yaxis.labels.style</code></td>
+<td><code>object</code></td>
+<td><code>{foz:11}</code></td>
+<td>y-axis labels style. Not specified properties are inherited from <code>yaxis.style</code>.</td>
+</tr>
+</tbody>
+</table>
+
+</main>
+<footer>
+  <span class="left">&copy; My Site</span>
+  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
+  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+</footer>
+</body>
+</html>

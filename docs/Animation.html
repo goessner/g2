@@ -1,0 +1,133 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
+<meta name="description" content="Animation">
+<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+<meta name="keywords" content="">
+<title>Animation</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+
+<link rel="stylesheet" href="./theme/styles.css">
+</head>
+<body>
+<header>
+  <a href="./index.html" class="left">My Site</a>
+  <a href="./about.html" class="right">About</a>
+</header>
+<main>
+<p>Even though <em>g2</em> is no animation library, it is quite easy to animate graphics. We focus here on canvas based graphics
+as SVG has powerful inherent animation capabilities.</p>
+<p>For animation purposes <em>g2</em> offers two simple but important commands:</p>
+<table>
+<thead>
+<tr>
+<th>Method/Command</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>del()</code></td>
+<td>Delete the complete command queue. It is itself not a command but a method which is invoked immediately. Calling <code>del()</code> makes sense at the beginning of a command queue or after any <code>exe</code> command.</td>
+</tr>
+<tr>
+<td><code>clr({b,h})</code></td>
+<td>Clear the viewport (completely or just within range of {b,h}. Does so during each rendering process, as it is a command.</td>
+</tr>
+</tbody>
+</table>
+<p>Now to start with animation, we should be familiar with browsers <a href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame" data-href="https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame">window.requestAnimationframe</a>
+method, which gets a callback function as parameter.</p>
+<p>The most primitive way is to always create a new command queue in the callback function we have to provide.</p>
+<h3 id="example">Example</h3>
+<pre><code class="code-line language-javascript"><div>    <span class="hljs-keyword">const</span> g = g2(), x0 = <span class="hljs-number">50</span>, y0 = <span class="hljs-number">50</span>, r = <span class="hljs-number">40</span>, dphi = <span class="hljs-number">0.02</span>;
+    <span class="hljs-keyword">let</span> phi = <span class="hljs-number">0</span>;
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">const</span> x=x0+r*<span class="hljs-built_in">Math</span>.sin(phi),y=y0+r*<span class="hljs-built_in">Math</span>.cos(phi);
+        <span class="hljs-comment">// draw pendulum ...</span>
+        g.del()                                 <span class="hljs-comment">// delete all commands in the queue ...</span>
+        .clr()                                  <span class="hljs-comment">// clear the renderers viewport ...</span>
+        .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+        .lin({<span class="hljs-attr">x1</span>:x0,<span class="hljs-attr">y1</span>:y0,<span class="hljs-attr">x2</span>:x,<span class="hljs-attr">y2</span>:y,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>})      <span class="hljs-comment">// pendulum begins ..</span>
+        .cir({<span class="hljs-attr">x</span>:x0,<span class="hljs-attr">y</span>:y0,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})         <span class="hljs-comment">// .. and ends here.</span>
+        .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+        .exe(ctx);
+        phi += dphi;                            <span class="hljs-comment">// increment angle ...</span>
+        requestAnimationFrame(render);          <span class="hljs-comment">// requedst browser to call 'render' again ...</span>
+    }
+    render();                                   <span class="hljs-comment">// initial render call.</span>
+</div></code></pre>
+<p><img src="img/anim-1.gif" alt="anim-1" class="loading" id="image-hash-543baef808a9120e5a6d9a2f9478cfbfc1c30fbc3cdfbe44f4ed2ea36ef52093"></p>
+<p>The most important thing with animation is to always delete the command queue by <code>del</code>, as otherwise the queue array is
+ever growing - which is often not visible due to the <code>clr</code> command, but the execution gets jerky in the long run.</p>
+<p>Not using <code>clr</code> is not as criticle, because previous positions are permanently visible. Sometimes this is exactly
+what we want.</p>
+<p>Let's improve the previous example. We can identify <em>static</em> geometry - which does not move - and <em>dynamic</em> geometry.
+So it makes sense, to only redefine the moving part of the drawing.</p>
+<h3 id="example---enhanced">Example - Enhanced</h3>
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> pendulum = g2(), x0 = <span class="hljs-number">50</span>, y0 = <span class="hljs-number">50</span>, r = <span class="hljs-number">40</span>, dphi = <span class="hljs-number">0.02</span>;
+<span class="hljs-keyword">let</span> phi = <span class="hljs-number">0</span>;
+
+world = g2().clr()                              <span class="hljs-comment">// clear and then define static world</span>
+            .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+            .use({<span class="hljs-attr">grp</span>:pendulum})                <span class="hljs-comment">// reference pendulum here...</span>
+            .cir({<span class="hljs-attr">x</span>:x0,<span class="hljs-attr">y</span>:y0,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>})
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> x=x0+r*<span class="hljs-built_in">Math</span>.sin(phi),y=y0+r*<span class="hljs-built_in">Math</span>.cos(phi);
+
+    pendulum.del()                              <span class="hljs-comment">// rebuild pendulum...</span>
+            .lin({<span class="hljs-attr">x1</span>:x0,<span class="hljs-attr">y1</span>:y0,<span class="hljs-attr">x2</span>:x,<span class="hljs-attr">y2</span>:y,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>})  <span class="hljs-comment">// pendulum begins ..</span>
+            .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+    world.exe(ctx);
+    phi += dphi;
+    requestAnimationFrame(render);
+}
+render();
+</div></code></pre>
+<p>Static geometry is collected in a <em>g2</em> object which is defined only once initially while only referencing
+the moving parts. Dynamic geometry is then defined in one or more other <em>g2</em> objects and continuously rebuild
+in the render function. During animation the complete graphics command queue is repeatedly rendered via <code>exe</code>
+command. Please remember that drawing occurs completely at rendering time controlled by <code>exe</code> in a very compact
+time. So animation is very smooth, as <em>g2</em>'s command queue works like a back buffer.</p>
+<p>See <a href="https://github.com/goessner/g2/blob/master/sample/wiki-samples/clock.html" data-href="https://github.com/goessner/g2/blob/master/sample/wiki-samples/clock.html"><em>g2</em> clock</a> as another example using that technique.</p>
+<p>In fact the example above could be improved even more as the pendulum - as a rigid body - could be defined only once
+and then transformed via <code>use</code> to its current position each time step. One can also think about replacement of that
+<code>use</code> command with every frame in the command queue or even only replace its transform argument. But <em>g2</em> neither
+supports micro-manipulation of the command queue entries nor intends to do so.</p>
+<p>In a possible next optimization step we could render the static parts to an extra layer - another renderer context -
+which is drawn only once then.</p>
+<h3 id="example---timed-animation">Example - Timed Animation</h3>
+<p>Using <code>window.requestAnimationFrame</code> makes timed animation particularly easy. It passes a timestamp with every call
+to the callback function.</p>
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+        pendulum = g2(), x0 = <span class="hljs-number">50</span>, y0 = <span class="hljs-number">50</span>, r = <span class="hljs-number">40</span>, omega = <span class="hljs-number">1.5</span>,
+        world = g2().clr()
+                    .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+                    .use({<span class="hljs-attr">grp</span>:pendulum})
+                    .cir({<span class="hljs-attr">x</span>:x0,<span class="hljs-attr">y</span>:y0,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>});
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">time</span>) </span>{
+    <span class="hljs-keyword">const</span> t0 = render.first || (render.first = time),   <span class="hljs-comment">// memoize time at first call ...</span>
+            t = (time - t0)/<span class="hljs-number">1000</span>,
+            phi = <span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">3</span>*<span class="hljs-built_in">Math</span>.sin(omega*t),          <span class="hljs-comment">// oscillating equation...</span>
+            x=x0+r*<span class="hljs-built_in">Math</span>.sin(phi),y=y0+r*<span class="hljs-built_in">Math</span>.cos(phi);
+
+    pendulum.del()
+            .lin({<span class="hljs-attr">x1</span>:x0,<span class="hljs-attr">y1</span>:y0,<span class="hljs-attr">x2</span>:x,<span class="hljs-attr">y2</span>:y,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>})
+            .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+    world.exe(ctx);
+    requestAnimationFrame(render);
+}
+render();
+</div></code></pre>
+<p><img src="img/anim-3.gif" alt="anim-3" class="loading" id="image-hash-353cd24d9112ac2a2b3c8b62bc67f22ecf5b2499626685eb6a73fc2f43bb6616"></p>
+
+</main>
+<footer>
+  <span class="left">&copy; My Site</span>
+  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
+  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+</footer>
+</body>
+</html>

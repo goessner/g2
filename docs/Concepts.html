@@ -1,0 +1,213 @@
+<!doctype html>
+<html class="theme-dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
+<meta name="description" content="Concepts">
+<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+<meta name="keywords" content="">
+<title>Concepts</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+
+<link rel="stylesheet" href="./theme/styles.css">
+</head>
+<body>
+<header>
+  <a href="./index.html" class="left">My Site</a>
+  <a href="./about.html" class="right">About</a>
+</header>
+<main>
+<h3 id="introduction">Introduction</h3>
+<p><em>g2</em> is a 2D graphics library based on the <a href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript" data-href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript">command pattern</a>
+principle. It supports the building of a <a href="https://en.wikipedia.org/wiki/Command_queue" data-href="https://en.wikipedia.org/wiki/Command_queue">command queue</a>
+of graphics instructions for later addressing one or multiple concrete rendering contexts with
+an extra benefit of executing the commands in a compact time frame.</p>
+<p><em>g2</em> is intentionally doing exactly one thing - 2D graphics. It has no high level graphical objects,
+no user event handling and no animation or interaction capabilities inherently built in.
+<em>g2</em> is tiny and completely transparent.</p>
+<p>It is aimed at users as scientists and engineers who want an easy way to
+occasionally create some prototypal - static or interactive dynamic - 2D web based graphics.
+They want a small and high performant library with a simple and intuitive API fully documented
+on a single page cheat sheet. In fact <em>g2</em> is currently used for over a year in
+engineering education.</p>
+<h3 id="how-queue-processing-works">How Queue Processing Works</h3>
+<p>Let's look at a simple example drawing a triangle first.</p>
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> g = g2();                      <span class="hljs-comment">// create g2 command queue object.</span>
+
+g.p()                               <span class="hljs-comment">// begin path</span>
+      .m({<span class="hljs-attr">x</span>:<span class="hljs-number">10</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">10</span>})              <span class="hljs-comment">// first point</span>
+      .l({<span class="hljs-attr">x</span>:<span class="hljs-number">90</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">10</span>})              <span class="hljs-comment">// second point</span>
+      .l({<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">90</span>})              <span class="hljs-comment">// third point</span>
+  .z()                              <span class="hljs-comment">// close path</span>
+.drw({<span class="hljs-attr">ls</span>:<span class="hljs-string">"green"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"orange"</span>}) <span class="hljs-comment">// stroke and fill</span>
+.exe(ctx);                          <span class="hljs-comment">// finally render graphics addressing 'ctx'.</span>
+</div></code></pre>
+<p><img src="img/triangle.png" alt="star1" class="loading" id="image-hash-66a1b5172c1cd38b51bd36835f1b1541be52a29ddd1dd7db59d8ac8af3364dd4"></p>
+<p>There are only two objects <code>g2</code> and <code>ctx</code> involved. Both are nearly completely independent
+from each other. Only the last code line <code>exe</code> establishes a loose connection between them.</p>
+<p>With every invokation of a <code>g2</code> command method a function pointer
+is stored in <em>g2</em>'s command queue. Finally with the help of the <code>g2.exe</code> method the
+function pointers are resolved accordingly and handed
+over to a graphics context instance for rendering.</p>
+<p><img src="img/g2-concept.png" alt="g2 command queue" class="loading" id="image-hash-a6bae96c5a0348326846b573d0631758475d4a1e5ab1e2a2f5fb25e3d05189f7"></p>
+<p>The command queue is implemented as a simple array holding objects containing a
+function pointer and an optional arguments array. So the command queue of the example
+above, which is build at <em>compile time</em> - i.e. compiling the queue - looks like this:</p>
+<pre><code class="code-line language-javascript"><div>[ {<span class="hljs-attr">c</span>:g2.prototype.p},
+  {<span class="hljs-attr">c</span>:g2.prototype.m, <span class="hljs-attr">a</span>:{<span class="hljs-attr">x</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">10</span>}},
+  {<span class="hljs-attr">c</span>:g2.prototype.l, <span class="hljs-attr">a</span>:{<span class="hljs-attr">x</span>:<span class="hljs-number">90</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">10</span>}},
+  {<span class="hljs-attr">c</span>:g2.prototype.l, <span class="hljs-attr">a</span>:{<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">90</span>}},
+  {<span class="hljs-attr">c</span>:g2.prototype.z},
+  {<span class="hljs-attr">c</span>:g2.prototype.drw} ]
+</div></code></pre>
+<p>At <em>rendering time</em> the final <code>exe</code> command resolves with the knowledge of a concrete renderer
+instance type the function pointers to (here HTML canvas context &quot;2d&quot;):</p>
+<pre><code class="code-line language-javascript"><div>[ {<span class="hljs-attr">c</span>:CanvasRenderingContext2D.prototype.beginPath},
+  {<span class="hljs-attr">c</span>:CanvasRenderingContext2D.prototype.moveTo, <span class="hljs-attr">a</span>:[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>]},
+  {<span class="hljs-attr">c</span>:CanvasRenderingContext2D.prototype.lineTo, <span class="hljs-attr">a</span>:[<span class="hljs-number">90</span>,<span class="hljs-number">10</span>]},
+  {<span class="hljs-attr">c</span>:CanvasRenderingContext2D.prototype.lineTo, <span class="hljs-attr">a</span>:[<span class="hljs-number">50</span>,<span class="hljs-number">90</span>]},
+  {<span class="hljs-attr">c</span>:CanvasRenderingContext2D.prototype.closePath},
+  {<span class="hljs-attr">c</span>:g2.prototype.drw.c2d} ]
+</div></code></pre>
+<p>Applying this array of function pointers to a specific canvas context results in only very
+little additional runtime cost</p>
+<ul>
+<li>performing the loop</li>
+<li>resolving the function pointers</li>
+<li>possibly invoking wrapper functions</li>
+</ul>
+<p>and moderate additional memory cost (the queue) compared to directly
+invoking the canvas context methods, which would read here:</p>
+<pre><code class="code-line language-javascript"><div>ctx.beginPath();
+ctx.moveTo(<span class="hljs-number">10</span>,<span class="hljs-number">10</span>);
+ctx.lineTo(<span class="hljs-number">90</span>,<span class="hljs-number">10</span>);
+ctx.lineTo(<span class="hljs-number">50</span>,<span class="hljs-number">90</span>);
+ctx.closePath();
+ctx.fill(); ctx.stroke();   <span class="hljs-comment">// g2.prototype.drw</span>
+</div></code></pre>
+<p>Once you have successfully built a command queue, you can apply it repeatedly
+to one or multiple graphics contexts via its <code>exe</code>-method.</p>
+<h3 id="benefits">Benefits</h3>
+<p>So <em>g2</em> is not merely a thin wrapper around the canvas context. It is conceptually
+renderer agnostic and helps in</p>
+<ul>
+<li>collecting graphics commands in a queue for fast and compact rendering - possibly repeatedly -
+at a later time.</li>
+<li>decoupling the graphics commands from the renderer <em>instance</em> as well as abstracting away the renderer API.</li>
+<li>separating an applications <em>model</em> from its <em>view</em>.</li>
+</ul>
+<p>Let's elaborate these points a little more.</p>
+<h5 id="fast-rendering">Fast Rendering</h5>
+<p>Graphics intense applications like simulations and games often work with <em>back buffers</em> for
+improving the visual experience. A back buffer is a temporarily invisible graphics context
+used to draw on during a certain time frame. On completion that graphics context is made
+visible then. Intermediate flicker effects are minimized by this technique.
+A <em>g2</em> object, while at first collecting graphics commands and finally rendering them,
+is acting similar to a back buffer.</p>
+<h5 id="decoupling">Decoupling</h5>
+<p>A <em>g2</em> object is very loosely coupled with a graphics context. We can decide at the latest
+at rendering time, where to send the graphics commands stored in the queue to, or even
+send them to multiple different graphics contexts. Rendering the same graphics to a
+main window and in parallel to a small zoom-in window would be an example for this.</p>
+<p>With the help of an SVG interface library (which is additionally provided), the same
+graphics commands could be used to create SVG graphics. This is advantagous in non-graphical
+environments like <em>Node.js</em>.</p>
+<h5 id="separating-model-from-view">Separating Model from View</h5>
+<p>Assume a graphics application managing geometric shapes. The applications model will
+primarily consist of a container holding objects representing shapes.
+Discussing now the problem, how to render the shapes (the <em>view</em> in MVC) may lead
+to the demand, to strictly separate the model from the view. But then, who knows better
+how to draw a shape than the shape itself?</p>
+<pre><code class="code-line language-javascript"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span> </span>{
+    <span class="hljs-keyword">constructor</span>(x,y,r) {<span class="hljs-keyword">this</span>.x=x;<span class="hljs-keyword">this</span>.y=y;<span class="hljs-keyword">this</span>.r=r}
+    render(g) {g.cir(<span class="hljs-keyword">this</span>.x,<span class="hljs-keyword">this</span>.y,<span class="hljs-keyword">this</span>.r)}
+}
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rect</span> </span>{
+    <span class="hljs-keyword">constructor</span>(x,y,b,h) {<span class="hljs-keyword">this</span>.x=x;<span class="hljs-keyword">this</span>.y=y;<span class="hljs-keyword">this</span>.b=b;<span class="hljs-keyword">this</span>.h=h}
+    render(g) {g.rec(<span class="hljs-keyword">this</span>.x,<span class="hljs-keyword">this</span>.y,<span class="hljs-keyword">this</span>.w,<span class="hljs-keyword">this</span>.h)}
+}
+<span class="hljs-keyword">const</span> model = [<span class="hljs-keyword">new</span> Circle({<span class="hljs-attr">x</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">60</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>}),<span class="hljs-keyword">new</span> Rect({<span class="hljs-attr">x</span>:<span class="hljs-number">45</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">25</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">40</span>})],
+        g = g2().grid(),
+        ctx1 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'c1'</span>).getContext(<span class="hljs-string">'2d'</span>), <span class="hljs-comment">// view 1</span>
+        ctx2 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'c2'</span>).getContext(<span class="hljs-string">'2d'</span>); <span class="hljs-comment">// view 2</span>
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i <span class="hljs-keyword">of</span> model) {  <span class="hljs-comment">// build command queue of ...</span>
+    i.render(g);        <span class="hljs-comment">// ... model's shapes drawing commands.</span>
+}
+g.exe(ctx1);            <span class="hljs-comment">// render to view 1</span>
+g.exe(ctx2);            <span class="hljs-comment">// render to view 2</span>
+</div></code></pre>
+<p><img src="img/seperating.png" alt="ctx1" class="loading" id="image-hash-62eb049bc727674c8c4db4ce563307d933665e52f0b492621190e9fd13c3a02d"><img src="img/seperating.png" alt="ctx2" class="loading" id="image-hash-62eb049bc727674c8c4db4ce563307d933665e52f0b492621190e9fd13c3a02d"></p>
+<p>One or multiple lightweight <em>g2</em> objects may act here as neutral mediators
+between the model's shapes and the graphics context,
+as in: <em>&quot;Show me how to draw yourself, I will hand this recipe over to a
+suitable renderer later!&quot;</em></p>
+<h3 id="feature-details">Feature Details</h3>
+<p>The function call <code>g2()</code> works as a constructor <a href="http://javascript.crockford.com/prototypal.html" data-href="http://javascript.crockford.com/prototypal.html">without</a>
+<a href="http://www.2ality.com/2013/07/defending-constructors.html" data-href="http://www.2ality.com/2013/07/defending-constructors.html">requiring</a> <code>new</code>. The implementation
+concept is more <em>functional</em> than <em>object oriented</em>. <em>g2</em> inherently has
+no knowledge of the size of the graphical viewport - think of an infinite canvas in both dimensions -
+until rendering time.</p>
+<p><em>g2</em> basically supports</p>
+<ul>
+<li>method chaining.</li>
+<li>low level path commands with short names adopted from SVG.
+<ul>
+<li><code>p,m,l,q,c,a,z</code></li>
+</ul>
+</li>
+<li>higher level element commands.
+<ul>
+<li><code>rec,cir,lin,arc,ell,ply,img,txt</code></li>
+</ul>
+</li>
+<li>rendering commands.
+<ul>
+<li><code>stroke,fill,drw,clr,grid</code></li>
+</ul>
+</li>
+<li>state stack for style properties and transformations.
+<ul>
+<li><code>beg,end</code></li>
+</ul>
+</li>
+<li>managing the command queue.
+<ul>
+<li><code>cpy,del,dump</code></li>
+</ul>
+</li>
+<li>reuse of other <em>g2</em> objects.
+<ul>
+<li><code>use</code></li>
+</ul>
+</li>
+<li>render the command queue to a graphics context.
+<ul>
+<li><code>exe</code></li>
+</ul>
+</li>
+<li>viewport manipulation methods.
+<ul>
+<li><code>view</code></li>
+</ul>
+</li>
+<li>embedding javascript functions
+<ul>
+<li><code>ins</code></li>
+</ul>
+</li>
+<li>HTML canvas 2D interface.</li>
+</ul>
+<p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md">See the API Reference</a>.</p>
+<p>At current <em>g2</em> is considered feature complete.</p>
+<p>As it is very easily extensible, adding custom commands or build custom symbol libraries on top of <em>g2</em>
+is a nobrainer. Have a look at <a href="https://github.com/goessner/g2/wiki/g2.mec" data-href="https://github.com/goessner/g2/wiki/g2.mec">g2-mec</a> as an example.</p>
+
+</main>
+<footer>
+  <span class="left">&copy; My Site</span>
+  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
+  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+</footer>
+</body>
+</html>
