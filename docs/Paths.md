@@ -1,8 +1,11 @@
 ---
 "layout": "page",
-"title": "Paths",
+"title": "g2-Paths",
+"header": "Paths",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

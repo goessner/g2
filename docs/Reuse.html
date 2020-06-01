@@ -1,23 +1,44 @@
 <!doctype html>
-<html class="theme-dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
-<meta name="description" content="Reuse">
-<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
-<meta name="keywords" content="">
-<title>Reuse</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2-Reuse">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2-Reuse</title>
+  <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="./theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="./index.html" class="right">g²</a>
+  <a href="./Reuse.html" class="left">Reuse</a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
+<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
+<li><a href="paths.html" data-href="paths.html">Paths</a></li>
+<li><a href="elements.html" data-href="elements.html">Elements</a></li>
+<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
+<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
+<li><a href="view.html" data-href="view.html">View</a></li>
+<li><a href="insert.html" data-href="insert.html">Insert</a></li>
+<li><a href="animation.html" data-href="animation.html">Animation</a></li>
+<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
+<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
+<li><a href="tests.html" data-href="tests.html">Tests</a></li>
+</ul>
 
-<link rel="stylesheet" href="./theme/styles.css">
-</head>
-<body>
-<header>
-  <a href="./index.html" class="left">My Site</a>
-  <a href="./about.html" class="right">About</a>
-</header>
-<main>
-<p><code>g2</code> is capable of reusing pre-existing g2-objects via <code>use()</code>, <code>ins()</code> or simply as predefined command queue.</p>
+    </nav>
+    <article>
+  <p><code>g2</code> is capable of reusing pre-existing g2-objects via <code>use()</code>, <code>ins()</code> or simply as predefined command queue.</p>
 <ul>
 <li><code>use</code> command for <em>multiple reuse</em> with idividual transform and styling</li>
 <li><code>ins</code> method/command for <em>single (re)use</em> of command groups</li>
@@ -40,7 +61,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="use"><code>use</code></h3>
+<h3 id="use"><code>use</code> <a class="plnk" href="#use">#</a></h3>
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+use" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+use">See the API Reference</a></p>
 <p><code>use</code> references the command queue of another <em>g2</em> object. So any modifications of the commands of
 that referenced external object are fully transparent and thus visible in all <code>use</code>ing instances.
@@ -48,7 +69,7 @@ At rendering time the commands of the referenced <em>g2</em> are executed each t
 <code>exe</code> in referenced objects - the command queue will get executed from external.</p>
 <p>The transformation and style state of the refering object is passed over to the referenced <em>g2</em> object.
 Those style properties might get overwritten by the referenced object's own style values.</p>
-<h3 id="example">Example</h3>
+<h3 id="example">Example <a class="plnk" href="#example">#</a></h3>
 <pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> smiley = g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">5</span>})            <span class="hljs-comment">// set smiley origin in its center !</span>
                    .arc({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">w</span>:<span class="hljs-number">0.8</span>,<span class="hljs-attr">dw</span>:<span class="hljs-number">2</span>})
                    .beg({<span class="hljs-attr">fs</span>:<span class="hljs-string">"snow"</span>})    <span class="hljs-comment">// snow colored eyes.</span>
@@ -64,7 +85,7 @@ g2().use({<span class="hljs-attr">grp</span>:smiley,<span class="hljs-attr">x</s
 via <code>use</code> command. There is also a <code>g2.symbol</code> namespace. Symbols added to it can be handed over
 to <code>use</code> command by their name as in <code>use({grp:&quot;smiley&quot;})</code>.</p>
 <p>So if you want to reuse geometry more than once, consider using <code>use</code>!</p>
-<h3 id="example">Example 2</h3>
+<h3 id="example">Example 2 <a class="plnk" href="#example">#</a></h3>
 <pre><code class="code-line language-javascript"><div><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">rollingWheel</span>(<span class="hljs-params"></span>) </span>{
     <span class="hljs-keyword">const</span> r=<span class="hljs-number">40</span>,dphi=<span class="hljs-number">11</span>/<span class="hljs-number">20</span>*<span class="hljs-built_in">Math</span>.PI,style={<span class="hljs-attr">fs</span>:<span class="hljs-string">"transparent"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">8</span>},
           wheel = g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:r,...style})
@@ -87,7 +108,7 @@ to <code>use</code> command by their name as in <code>use({grp:&quot;smiley&quot
 and <code>use</code> will put its contents in its own command queue.</p>
 <p>But we can do even better than that. We slightly modify the previous example and hand over the
 main <em>g2</em> object to the service function.</p>
-<h3 id="example-2-enhanced">Example 2 Enhanced</h3>
+<h3 id="example-2-enhanced">Example 2 Enhanced <a class="plnk" href="#example-2-enhanced">#</a></h3>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"550"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"100"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'g2.core.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
@@ -109,7 +130,7 @@ main <em>g2</em> object to the service function.</p>
       .exe(ctx);
 </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
-<h3 id="example-2-with-ins">Example 2 with <code>ins</code></h3>
+<h3 id="example-2-with-ins">Example 2 with <code>ins</code> <a class="plnk" href="#example-2-with-ins">#</a></h3>
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ins" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ins">See the API Reference</a></p>
 <pre><code class="code-line language-html"><div>...
      g.grid()
@@ -117,7 +138,7 @@ main <em>g2</em> object to the service function.</p>
       .exe(ctx);
 <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
-<h3 id="example">Example 3</h3>
+<h3 id="example">Example 3 <a class="plnk" href="#example">#</a></h3>
 <p>Use is exceptionally useful if the same element is used over and over again</p>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c1"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">200,</span> <span class="hljs-attr">height</span>=<span class="hljs-string">200</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"border:1px solid black"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c2"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">200,</span> <span class="hljs-attr">height</span>=<span class="hljs-string">200</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"border:1px solid black"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
@@ -155,18 +176,19 @@ main <em>g2</em> object to the service function.</p>
 <p>Since the main <em>g2</em> object is returned, the <code>use</code> command recognizes that it has nothing
 to do - especially no copying, which is very efficient.</p>
 <p>So the <code>use</code> command allows easy integration of external functions into <em>g2</em>'s method chain.</p>
-<h3 id="predefined-command-queues">Predefined command queues</h3>
+<h3 id="predefined-command-queues">Predefined command queues <a class="plnk" href="#predefined-command-queues">#</a></h3>
 <p>Please note that predefined command queues can also be used without any manipulation of their styling,
 as shown in previous occasions.</p>
 <pre><code class="code-line language-javascript"><div>    <span class="hljs-keyword">const</span> block = g2().rec({<span class="hljs-attr">b</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"burlywood"</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"saddlebrown"</span>});
     block.exe(ctx);
 </div></code></pre>
 
-</main>
-<footer>
-  <span class="left">&copy; My Site</span>
-  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
-  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
-</footer>
-</body>
-</html>
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

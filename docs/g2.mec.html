@@ -1,30 +1,51 @@
 <!doctype html>
-<html class="theme-dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
-<meta name="description" content="g2.mec">
-<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
-<meta name="keywords" content="">
-<title>g2.mec</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2.mec">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2.mec</title>
+  <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="./theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="./index.html" class="right">g²</a>
+  <a href="./g2.mec.html" class="left">Extension: g2.mec</a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
+<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
+<li><a href="paths.html" data-href="paths.html">Paths</a></li>
+<li><a href="elements.html" data-href="elements.html">Elements</a></li>
+<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
+<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
+<li><a href="view.html" data-href="view.html">View</a></li>
+<li><a href="insert.html" data-href="insert.html">Insert</a></li>
+<li><a href="animation.html" data-href="animation.html">Animation</a></li>
+<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
+<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
+<li><a href="tests.html" data-href="tests.html">Tests</a></li>
+</ul>
 
-<link rel="stylesheet" href="./theme/styles.css">
-</head>
-<body>
-<header>
-  <a href="./index.html" class="left">g²</a>
-  <a href="./tests.html" class="right">Tests</a>
-</header>
-<main>
-<p><a href="https://github.com/goessner/g2/blob/master/LICENSE" data-href="https://github.com/goessner/g2/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" class="loading" id="image-hash-87c58b6a6945713c32081031287078eb8febd2260ee30432f4e591b0fb2ae4e2"></a>
+    </nav>
+    <article>
+  <p><a href="https://github.com/goessner/g2/blob/master/LICENSE" data-href="https://github.com/goessner/g2/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" class="loading" id="image-hash-87c58b6a6945713c32081031287078eb8febd2260ee30432f4e591b0fb2ae4e2"></a>
 <a href="https://www.npmjs.com/package/g2d-mec" data-href="https://www.npmjs.com/package/g2d-mec"><img src="https://img.shields.io/npm/v/g2d-mec.svg" alt="npm" class="loading" id="image-hash-38f9eb38f7abb26372370c59c1f30f834eb9684d99df2563e35fbead19e642ff"></a>
 <a href="https://www.npmjs.com/package/g2d-mec" data-href="https://www.npmjs.com/package/g2d-mec"><img src="https://img.shields.io/npm/dt/g2d-mec.svg" alt="npm" class="loading" id="image-hash-32d8fdedb668c35973aca1972bcfecdee126ffbf6b6a7f886bcdf89ba9334522"></a></p>
-<h1 id="g2mecjs">g2.mec.js</h1>
+<h1 id="g2mecjs">g2.mec.js <a class="plnk" href="#g2mecjs">#</a></h1>
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.mec.md" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.mec.md">See the API Reference</a></p>
-<h2 id="g2-extension-for-mechanical-applications">g2 extension for mechanical applications</h2>
+<h2 id="g2-extension-for-mechanical-applications">g2 extension for mechanical applications <a class="plnk" href="#g2-extension-for-mechanical-applications">#</a></h2>
 <p>Some of these elements use functions of <code>g2.ext</code>, so it is advisable to prepend <code>g2.ext</code> before using <code>g2.mec</code>.</p>
-<h3 id="mechanical-symbols">Mechanical Symbols</h3>
+<h3 id="mechanical-symbols">Mechanical Symbols <a class="plnk" href="#mechanical-symbols">#</a></h3>
 <p><img src="img/symbols.png" alt="img.symbols.mec" class="loading" id="image-hash-07ed6fbe2f3146fa1acc9b91c47111191d1cdee59446898c3708d77ba7487714"></p>
 <p>Since <code>g2.mec</code> is an extension for mechanical purposes, these symbols expect <code>g2</code> to be in <code>cartesian</code> mode.
 This is notable with <code>nodfix</code>, <code>nodflt</code> and <code>origin</code>, since they will be upside down if the <code>cartesian</code> mode is not set.</p>
@@ -75,7 +96,7 @@ This is notable with <code>nodfix</code>, <code>nodflt</code> and <code>origin</
 </tr>
 </tbody>
 </table>
-<h3 id="mechanical-elements">Mechanical Elements</h3>
+<h3 id="mechanical-elements">Mechanical Elements <a class="plnk" href="#mechanical-elements">#</a></h3>
 <p><code>g2.mec.js</code> also provides some mechanical elements.</p>
 <table>
 <thead>
@@ -178,7 +199,7 @@ This is notable with <code>nodfix</code>, <code>nodflt</code> and <code>origin</
 </tr>
 </tbody>
 </table>
-<h3 id="mechanical-styles">Mechanical Styles</h3>
+<h3 id="mechanical-styles">Mechanical Styles <a class="plnk" href="#mechanical-styles">#</a></h3>
 <p>There are some predefined colors, line styles and other constants.
 You can overwrite them, if you are not comfortable with it.</p>
 <table>
@@ -265,7 +286,7 @@ You can overwrite them, if you are not comfortable with it.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="truss-example">Truss Example</h3>
+<h3 id="truss-example">Truss Example <a class="plnk" href="#truss-example">#</a></h3>
 <p>You can see a simple truss below, composed from mechanical symbols and elements.</p>
 <p><img src="img/truss.png" alt="img.truss.mec" class="loading" id="image-hash-fe2205476dc0811bf7bd7c37e2b458cfec98388978655036fd8d234c94820096"></p>
 <pre><code class="code-line language-js"><div><span class="hljs-comment">// g2.mec truss example ...</span>
@@ -290,7 +311,7 @@ You can overwrite them, if you are not comfortable with it.</p>
             .nodflt({...E, <span class="hljs-attr">w</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>})
             .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>));
 </div></code></pre>
-<h3 id="truss-example-with-labels">Truss Example with Labels</h3>
+<h3 id="truss-example-with-labels">Truss Example with Labels <a class="plnk" href="#truss-example-with-labels">#</a></h3>
 <p>The truss example above can now be improved by adding labels.</p>
 <p><img src="img/truss-labels.png" alt="truss with labels" class="loading" id="image-hash-53d0817c952a38dbbcced9c13e927c41766618d219bc895cb1496bcaf1d7602c"></p>
 <pre><code class="code-line language-javascript"><div>  <span class="hljs-comment">// g2.mec truss example with labels ...</span>
@@ -334,11 +355,12 @@ You can overwrite them, if you are not comfortable with it.</p>
             .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>));
 </div></code></pre>
 
-</main>
-<footer>
-  <span class="left">&copy; goessner</span>
-  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
-  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
-</footer>
-</body>
-</html>
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

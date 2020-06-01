@@ -1,8 +1,11 @@
 ---
 "layout": "page",
-"title": "Insert",
+"title": "g2-Insert",
+"header": "Insert",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

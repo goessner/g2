@@ -1,8 +1,11 @@
 ---
 "layout": "page",
-"title": "Concepts",
+"header": "Concepts",
+"title": "g2-Concepts",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

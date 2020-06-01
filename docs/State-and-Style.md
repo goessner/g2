@@ -1,8 +1,11 @@
 ---
 "layout": "page",
-"title": "State-and-Style",
+"title": "g2-State and Style",
+"header": "State and Style",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

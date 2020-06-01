@@ -3,6 +3,8 @@
 "title": "Interactivity",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

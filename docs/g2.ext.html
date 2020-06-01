@@ -1,34 +1,55 @@
 <!doctype html>
-<html class="theme-dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
-<meta name="description" content="g2.ext">
-<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
-<meta name="keywords" content="">
-<title>g2.ext</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2.ext">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2.ext</title>
+  <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="./theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="./index.html" class="right">g²</a>
+  <a href="./g2.ext.html" class="left">Extension: g2.ext</a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
+<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
+<li><a href="paths.html" data-href="paths.html">Paths</a></li>
+<li><a href="elements.html" data-href="elements.html">Elements</a></li>
+<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
+<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
+<li><a href="view.html" data-href="view.html">View</a></li>
+<li><a href="insert.html" data-href="insert.html">Insert</a></li>
+<li><a href="animation.html" data-href="animation.html">Animation</a></li>
+<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
+<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
+<li><a href="tests.html" data-href="tests.html">Tests</a></li>
+</ul>
 
-<link rel="stylesheet" href="./theme/styles.css">
-</head>
-<body>
-<header>
-  <a href="./index.html" class="left">My Site</a>
-  <a href="./about.html" class="right">About</a>
-</header>
-<main>
-<h1 id="g2extjs">g2.ext.js</h1>
+    </nav>
+    <article>
+  <h1 id="g2extjs">g2.ext.js <a class="plnk" href="#g2extjs">#</a></h1>
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.ext.md" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.ext.md">See the API Reference</a></p>
-<h3 id="g2-extension-for-expanded-functionality">g2 extension for expanded functionality</h3>
+<h3 id="g2-extension-for-expanded-functionality">g2 extension for expanded functionality <a class="plnk" href="#g2-extension-for-expanded-functionality">#</a></h3>
 <p>g2.ext adds so functions which can be invoked on existing g2 elements, which is used in extensions like <code>label</code> and <code>mark</code>, aswell as in other extensions like <code>g2.mec.js</code>.</p>
-<h4 id="get-length-of-line-in-label">get length of line in label</h4>
+<h4 id="get-length-of-line-in-label">get length of line in label <a class="plnk" href="#get-length-of-line-in-label">#</a></h4>
 <pre><code class="code-line language-javascript"><div>    g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
         .lin({<span class="hljs-attr">x1</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">y1</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">x2</span>:<span class="hljs-number">90</span>,<span class="hljs-attr">y2</span>:<span class="hljs-number">90</span>,<span class="hljs-attr">ld</span>:[<span class="hljs-number">6</span>,<span class="hljs-number">3</span>]})
         .label({<span class="hljs-attr">str</span>:<span class="hljs-string">"@len"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">20</span>})
 </div></code></pre>
 <p><img src="./img/get-len.png" alt="label" class="loading" id="image-hash-9141d47d1bf4bbb2369af8f21d0add6154840531e6f810a5ba23df88af7de3a0"></p>
 <p>How label works is shown further down on this page.</p>
-<h3 id="splines">Splines</h3>
+<h3 id="splines">Splines <a class="plnk" href="#splines">#</a></h3>
 <p>g2.ext.js introduces a new method which draws splines by points by
 implementing a centripetal Catmull-Rom spline (thus avoiding cusps and self-intersections).</p>
 <p>The <code>spline</code> command expects an object with a <code>pts</code> property analogous to the
@@ -69,7 +90,7 @@ array iterator. <em>g2</em> implements three standard iterators which need not b
 <li><a href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline" data-href="https://en.wikipedia.org/wiki/Cubic_Hermite_spline">cubic hermite spline</a></li>
 <li><a href="https://pomax.github.io/bezierinfo/" data-href="https://pomax.github.io/bezierinfo/">bézier curves</a></li>
 </ul>
-<h3 id="labels">Labels</h3>
+<h3 id="labels">Labels <a class="plnk" href="#labels">#</a></h3>
 <p>If you want to add text to a geometric element, you can always use the basic <code>txt</code> element. However some
 element types support the smarter <code>label</code> element, which comes with a more intuitive relative positioning with respect
 to its nearest previous element. Reliable positioning requires always <em>cartesian</em> coordinates.</p>
@@ -146,7 +167,7 @@ or named locations.</p>
 <p>A numerical offset always means <em>outside</em> of closed shapes with regard to the specified point.
 With linear, polygonial and spline elements a positive value means <em>right of</em> and a negativ value means <em>left of</em>
 the line at the specified point. If there is no offset distance specified, the global <code>g2.State.labelOffset</code>'s value is taken. Please note, that cardinal locations are not sensitive to transformations.</p>
-<h3 id="markers">Markers</h3>
+<h3 id="markers">Markers <a class="plnk" href="#markers">#</a></h3>
 <p>Markers can be placed onto the outline of the previous element.</p>
 <table>
 <thead>
@@ -220,11 +241,12 @@ Linear elements provide parameterized numerical or named locations. The <code>sp
 </tbody>
 </table>
 
-</main>
-<footer>
-  <span class="left">&copy; My Site</span>
-  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
-  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
-</footer>
-</body>
-</html>
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

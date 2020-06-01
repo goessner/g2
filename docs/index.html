@@ -1,30 +1,51 @@
 <!doctype html>
-<html class="theme-dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
-<meta name="description" content="microjam for g2">
-<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
-<meta name="keywords" content="">
-<title>g2</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="microjam for g2">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2-Main page</title>
+  <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="./theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="./index.html" class="right">g²</a>
+  <a href="./index.html" class="left">Main Page</a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
+<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
+<li><a href="paths.html" data-href="paths.html">Paths</a></li>
+<li><a href="elements.html" data-href="elements.html">Elements</a></li>
+<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
+<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
+<li><a href="view.html" data-href="view.html">View</a></li>
+<li><a href="insert.html" data-href="insert.html">Insert</a></li>
+<li><a href="animation.html" data-href="animation.html">Animation</a></li>
+<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
+<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
+<li><a href="tests.html" data-href="tests.html">Tests</a></li>
+</ul>
 
-<link rel="stylesheet" href="./theme/styles.css">
-</head>
-<body>
-<header>
-  <a href="./index.html" class="left">g²</a>
-  <a href="./tests.html" class="right">Tests</a>
-</header>
-<main>
-<p><a href="https://github.com/goessner/g2/blob/master/LICENSE" data-href="https://github.com/goessner/g2/blob/master/LICENSE"><img src="http://img.shields.io/:license-mit-blue.svg" alt="License" class="loading" id="image-hash-cb8c759033bc31c921729840e63032051f485288df051dd65e26510033b4a59a"></a>
+    </nav>
+    <article>
+  <p><a href="https://github.com/goessner/g2/blob/master/LICENSE" data-href="https://github.com/goessner/g2/blob/master/LICENSE"><img src="http://img.shields.io/:license-mit-blue.svg" alt="License" class="loading" id="image-hash-cb8c759033bc31c921729840e63032051f485288df051dd65e26510033b4a59a"></a>
 <a href="https://npmjs.com/package/g2d" data-href="https://npmjs.com/package/g2d"><img src="https://img.shields.io/npm/v/g2d.svg" alt="npm" class="loading" id="image-hash-29db71e2397576ccd8281fa6a2f919ffc616cdb98e611d83191665a854e3c678"></a>
 <a href="https://npmjs.com/package/g2d" data-href="https://npmjs.com/package/g2d"><img src="https://img.shields.io/npm/dt/g2d.svg" alt="npm" class="loading" id="image-hash-033323fd14cc9dc36d34eedbf4450192f0223f95f1aa633977ce56330c29827c"></a>
 <a href="https://github.com/goessner/g2" data-href="https://github.com/goessner/g2"><img src="https://img.shields.io/gemnasium/mathiasbynens/he.svg" alt="no dependencies" class="loading" id="image-hash-9604be656a20d5b3763f7c40040dac97c6a49831aa2a7b982b68aa3bdb78bb97"></a></p>
 <p>g<sup>2</sup> is a 2D graphics javascript library based on the <a href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript" data-href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript">command pattern</a>
 principle. Its main goal is to provide a simple API for users who want to generate 2D web graphics occasionally.
 So the API is minimal and easy to understand. The library is tiny, fast and renderer agnostic.</p>
-<h2 id="main-features">Main features</h2>
+<h2 id="main-features">Main features <a class="plnk" href="#main-features">#</a></h2>
 <ul>
 <li>Fast and lightweight graphics command queue builder.</li>
 <li>Addressing HTML canvas 2D context as the default renderer.</li>
@@ -39,7 +60,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 <li>Tiny footprint by 5kB compressed (gzip).</li>
 <li>No dependency.</li>
 </ul>
-<h2 id="minimal-example">Minimal Example</h2>
+<h2 id="minimal-example">Minimal Example <a class="plnk" href="#minimal-example">#</a></h2>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"200"</span>, <span class="hljs-attr">height</span>=<span class="hljs-string">"100"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"g2.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
@@ -49,50 +70,35 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
         .exe(ctx);  <span class="hljs-comment">// draw to canvas.</span>
 </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
-<p><img src="/c:/Users/me/devel/HiWi/g2/docs/img/g2-first.png" alt="first" class="loading" id="image-hash-0ebb7a57a9d06a72d310ed432b761a952df26d29167df268bdf54d8a2f61cd6f"></p>
-<h2 id="documentation">Documentation</h2>
-<ul>
-<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
-<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
-<li><a href="paths.html" data-href="paths.html">Paths</a></li>
-<li><a href="elements.html" data-href="elements.html">Elements</a></li>
-<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
-<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
-<li><a href="view.html" data-href="view.html">View</a></li>
-<li><a href="insert.html" data-href="insert.html">Insert</a></li>
-<li><a href="animation.html" data-href="animation.html">Animation</a></li>
-<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
-<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
-<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
-<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
-</ul>
-<h2 id="api-reference">API Reference</h2>
-<p>See the <a href="docs/api/g2.core.md" data-href="docs/api/g2.core.md">API Reference for g2</a> for details.</p>
-<p>Also see the <a href="docs/api/g2.ext.md" data-href="docs/api/g2.ext.md">API Reference for g2.ext</a> and the <a href="docs/api/g2.mec.md" data-href="docs/api/g2.mec.md">API Reference for g2.mec</a>.</p>
+<p><img src="/c:/Users/me/devel/HiWi/g2/img/g2-first.png" alt="first" class="loading" id="image-hash-de61350976804b1ba72460962875958a5f15460849209f322d33d2f7f91ce6f6"></p>
+<h2 id="api-reference">API Reference <a class="plnk" href="#api-reference">#</a></h2>
+<p>See the <a href="api/g2.core.md" data-href="api/g2.core.md">API Reference for g2</a> for details.</p>
+<p>Also see the <a href="api/g2.ext.md" data-href="api/g2.ext.md">API Reference for g2.ext</a> and the <a href="api/g2.mec.md" data-href="api/g2.mec.md">API Reference for g2.mec</a>.</p>
 <p>Also available under</p>
 <ul>
 <li><a href="https://goessner.github.io/g2/api/g2.core" data-href="https://goessner.github.io/g2/api/g2.core">https://goessner.github.io/g2/api/g2.core</a></li>
 <li><a href="https://goessner.github.io/g2/api/g2.ext" data-href="https://goessner.github.io/g2/api/g2.ext">https://goessner.github.io/g2/api/g2.ext</a></li>
 <li><a href="https://goessner.github.io/g2/api/g2.mec" data-href="https://goessner.github.io/g2/api/g2.mec">https://goessner.github.io/g2/api/g2.mec</a></li>
 </ul>
-<h2 id="cheat-sheet">Cheat Sheet</h2>
+<h2 id="cheat-sheet">Cheat Sheet <a class="plnk" href="#cheat-sheet">#</a></h2>
 <p>Check out the single page <a href="docs/api/sheet.pdf" data-href="docs/api/sheet.pdf">Cheat Sheet</a>.</p>
 <p>Also available under <a href="https://goessner.github.io/g2/api/sheet.pdf" data-href="https://goessner.github.io/g2/api/sheet.pdf">https://goessner.github.io/g2/api/sheet.pdf</a></p>
-<h2 id="gitcdn">GitCDN</h2>
+<h2 id="gitcdn">GitCDN <a class="plnk" href="#gitcdn">#</a></h2>
 <p>Use the link <a href="https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js" data-href="https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js">https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js</a> for getting the latest commit as a raw file.</p>
 <p>In HTML use ...</p>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
-<h3 id="tests">Tests</h3>
+<h3 id="tests">Tests <a class="plnk" href="#tests">#</a></h3>
 <p>Tests are found on the <a href="https://goessner.github.io/g2/" data-href="https://goessner.github.io/g2/">Github Page</a></p>
-<h1 id="license">License</h1>
+<h1 id="license">License <a class="plnk" href="#license">#</a></h1>
 <p>g<sup>2</sup> is licensed under the terms of the MIT License.</p>
 
-</main>
-<footer>
-  <span class="left">&copy; goessner</span>
-  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
-  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
-</footer>
-</body>
-</html>
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

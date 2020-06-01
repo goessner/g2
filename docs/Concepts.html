@@ -1,23 +1,44 @@
 <!doctype html>
-<html class="theme-dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
-<meta name="description" content="Concepts">
-<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
-<meta name="keywords" content="">
-<title>Concepts</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2-Concepts">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2-Concepts</title>
+  <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="./theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="./index.html" class="right">g²</a>
+  <a href="./Concepts.html" class="left">Concepts</a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
+<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
+<li><a href="paths.html" data-href="paths.html">Paths</a></li>
+<li><a href="elements.html" data-href="elements.html">Elements</a></li>
+<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
+<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
+<li><a href="view.html" data-href="view.html">View</a></li>
+<li><a href="insert.html" data-href="insert.html">Insert</a></li>
+<li><a href="animation.html" data-href="animation.html">Animation</a></li>
+<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
+<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
+<li><a href="tests.html" data-href="tests.html">Tests</a></li>
+</ul>
 
-<link rel="stylesheet" href="./theme/styles.css">
-</head>
-<body>
-<header>
-  <a href="./index.html" class="left">My Site</a>
-  <a href="./about.html" class="right">About</a>
-</header>
-<main>
-<h3 id="introduction">Introduction</h3>
+    </nav>
+    <article>
+  <h3 id="introduction">Introduction <a class="plnk" href="#introduction">#</a></h3>
 <p><em>g2</em> is a 2D graphics library based on the <a href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript" data-href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#commandpatternjavascript">command pattern</a>
 principle. It supports the building of a <a href="https://en.wikipedia.org/wiki/Command_queue" data-href="https://en.wikipedia.org/wiki/Command_queue">command queue</a>
 of graphics instructions for later addressing one or multiple concrete rendering contexts with
@@ -30,7 +51,7 @@ occasionally create some prototypal - static or interactive dynamic - 2D web bas
 They want a small and high performant library with a simple and intuitive API fully documented
 on a single page cheat sheet. In fact <em>g2</em> is currently used for over a year in
 engineering education.</p>
-<h3 id="how-queue-processing-works">How Queue Processing Works</h3>
+<h3 id="how-queue-processing-works">How Queue Processing Works <a class="plnk" href="#how-queue-processing-works">#</a></h3>
 <p>Let's look at a simple example drawing a triangle first.</p>
 <pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> g = g2();                      <span class="hljs-comment">// create g2 command queue object.</span>
 
@@ -87,7 +108,7 @@ ctx.fill(); ctx.stroke();   <span class="hljs-comment">// g2.prototype.drw</span
 </div></code></pre>
 <p>Once you have successfully built a command queue, you can apply it repeatedly
 to one or multiple graphics contexts via its <code>exe</code>-method.</p>
-<h3 id="benefits">Benefits</h3>
+<h3 id="benefits">Benefits <a class="plnk" href="#benefits">#</a></h3>
 <p>So <em>g2</em> is not merely a thin wrapper around the canvas context. It is conceptually
 renderer agnostic and helps in</p>
 <ul>
@@ -97,14 +118,14 @@ at a later time.</li>
 <li>separating an applications <em>model</em> from its <em>view</em>.</li>
 </ul>
 <p>Let's elaborate these points a little more.</p>
-<h5 id="fast-rendering">Fast Rendering</h5>
+<h5 id="fast-rendering">Fast Rendering <a class="plnk" href="#fast-rendering">#</a></h5>
 <p>Graphics intense applications like simulations and games often work with <em>back buffers</em> for
 improving the visual experience. A back buffer is a temporarily invisible graphics context
 used to draw on during a certain time frame. On completion that graphics context is made
 visible then. Intermediate flicker effects are minimized by this technique.
 A <em>g2</em> object, while at first collecting graphics commands and finally rendering them,
 is acting similar to a back buffer.</p>
-<h5 id="decoupling">Decoupling</h5>
+<h5 id="decoupling">Decoupling <a class="plnk" href="#decoupling">#</a></h5>
 <p>A <em>g2</em> object is very loosely coupled with a graphics context. We can decide at the latest
 at rendering time, where to send the graphics commands stored in the queue to, or even
 send them to multiple different graphics contexts. Rendering the same graphics to a
@@ -112,7 +133,7 @@ main window and in parallel to a small zoom-in window would be an example for th
 <p>With the help of an SVG interface library (which is additionally provided), the same
 graphics commands could be used to create SVG graphics. This is advantagous in non-graphical
 environments like <em>Node.js</em>.</p>
-<h5 id="separating-model-from-view">Separating Model from View</h5>
+<h5 id="separating-model-from-view">Separating Model from View <a class="plnk" href="#separating-model-from-view">#</a></h5>
 <p>Assume a graphics application managing geometric shapes. The applications model will
 primarily consist of a container holding objects representing shapes.
 Discussing now the problem, how to render the shapes (the <em>view</em> in MVC) may lead
@@ -142,7 +163,7 @@ g.exe(ctx2);            <span class="hljs-comment">// render to view 2</span>
 between the model's shapes and the graphics context,
 as in: <em>&quot;Show me how to draw yourself, I will hand this recipe over to a
 suitable renderer later!&quot;</em></p>
-<h3 id="feature-details">Feature Details</h3>
+<h3 id="feature-details">Feature Details <a class="plnk" href="#feature-details">#</a></h3>
 <p>The function call <code>g2()</code> works as a constructor <a href="http://javascript.crockford.com/prototypal.html" data-href="http://javascript.crockford.com/prototypal.html">without</a>
 <a href="http://www.2ality.com/2013/07/defending-constructors.html" data-href="http://www.2ality.com/2013/07/defending-constructors.html">requiring</a> <code>new</code>. The implementation
 concept is more <em>functional</em> than <em>object oriented</em>. <em>g2</em> inherently has
@@ -203,11 +224,12 @@ until rendering time.</p>
 <p>As it is very easily extensible, adding custom commands or build custom symbol libraries on top of <em>g2</em>
 is a nobrainer. Have a look at <a href="https://github.com/goessner/g2/wiki/g2.mec" data-href="https://github.com/goessner/g2/wiki/g2.mec">g2-mec</a> as an example.</p>
 
-</main>
-<footer>
-  <span class="left">&copy; My Site</span>
-  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
-  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
-</footer>
-</body>
-</html>
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

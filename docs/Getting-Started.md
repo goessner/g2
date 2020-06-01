@@ -1,8 +1,11 @@
 ---
 "layout": "page",
-"title": "Getting-Started",
+"title": "g2-Getting started",
+"header": "Getting started",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

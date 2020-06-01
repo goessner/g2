@@ -1,8 +1,11 @@
  ---
  "layout": "page",
- "title": "g2",
+ "title": "g2-Main page",
+ "header": "Main Page",
  "date": "2020-06-01",
  "description": "microjam for g2",
+ "use": [ { "uri": "navigation.md" } ],
+ "permalink": "#",
  "tags": []
  ---
 
@@ -42,27 +45,12 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
         .exe(ctx);  // draw to canvas.
 </script>
 ```
-![first](/docs/img/g2-first.png)
-
-## Documentation
-  * [Getting started](getting-started.html)
-  * [Concepts](concepts.html)
-  * [Paths](paths.html)
-  * [Elements](elements.html)
-  * [State and Style](state-and-style.html)
-  * [Reuse](reuse.html)
-  * [View](view.html)
-  * [Insert](insert.html)
-  * [Animation](animation.html)
-  * [Interactivity](interactivity.html)
-  * [Extension: g2.ext](g2.ext.html)
-  * [Extension: g2.mec](g2.mec.html)
-  * [Extension: g2.chart](g2.chart.html)
+![first](/img/g2-first.png)
 
 ## API Reference
-See the [API Reference for g2](docs/api/g2.core.md) for details.
+See the [API Reference for g2](api/g2.core.md) for details.
 
-Also see the [API Reference for g2.ext](docs/api/g2.ext.md) and the [API Reference for g2.mec](docs/api/g2.mec.md).
+Also see the [API Reference for g2.ext](api/g2.ext.md) and the [API Reference for g2.mec](api/g2.mec.md).
 
 Also available under
  - [https://goessner.github.io/g2/api/g2.core](https://goessner.github.io/g2/api/g2.core)

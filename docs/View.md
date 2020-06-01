@@ -1,8 +1,11 @@
 ---
 "layout": "page",
-"title": "View",
+"title": "g2-View",
+"header": "View",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

@@ -1,23 +1,44 @@
 <!doctype html>
-<html class="theme-dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
-<meta name="description" content="Getting-Started">
-<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
-<meta name="keywords" content="">
-<title>Getting-Started</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2-Getting started">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2-Getting started</title>
+  <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="./theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="./index.html" class="right">g²</a>
+  <a href="./Getting-Started.html" class="left">Getting started</a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
+<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
+<li><a href="paths.html" data-href="paths.html">Paths</a></li>
+<li><a href="elements.html" data-href="elements.html">Elements</a></li>
+<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
+<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
+<li><a href="view.html" data-href="view.html">View</a></li>
+<li><a href="insert.html" data-href="insert.html">Insert</a></li>
+<li><a href="animation.html" data-href="animation.html">Animation</a></li>
+<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
+<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
+<li><a href="tests.html" data-href="tests.html">Tests</a></li>
+</ul>
 
-<link rel="stylesheet" href="./theme/styles.css">
-</head>
-<body>
-<header>
-  <a href="./index.html" class="left">My Site</a>
-  <a href="./about.html" class="right">About</a>
-</header>
-<main>
-<p>Let's start with a quick tour of g2.core's features and look at it by short examples.</p>
+    </nav>
+    <article>
+  <p>Let's start with a quick tour of g2.core's features and look at it by short examples.</p>
 <ul>
 <li><a href="#paths" data-href="#paths">Paths</a></li>
 <li><a href="#elements" data-href="#elements">Elements</a></li>
@@ -31,7 +52,7 @@
 </ul>
 <p>For a more thorough explanation please make use of the sidebar.</p>
 <p><a name="paths"></a></p>
-<h4 id="paths">Paths</h4>
+<h4 id="paths">Paths <a class="plnk" href="#paths">#</a></h4>
 <p>Path definitions are similar to canvas notation while using short SVG syntax.
 Note the simplicity of arc declarations.</p>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"200"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"200"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
@@ -60,7 +81,7 @@ Note the simplicity of arc declarations.</p>
 <p><img src="img/umbrella.png" alt="umbrella" class="loading" id="image-hash-834db51741548ebeb05554a5daba3076569f3ba2be960173d91ae1a62cb28df6"></p>
 <p>Read more about how paths are used <a href="../wiki/paths" data-href="../wiki/paths">here</a>.</p>
 <p><a name="elements"></a></p>
-<h4 id="elements">Elements</h4>
+<h4 id="elements">Elements <a class="plnk" href="#elements">#</a></h4>
 <p>Two consecutive commands <code>cir-txt</code> are building the command queue. Then these commands are executed
 addressing a particular canvas context.</p>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"100"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"100"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
@@ -75,7 +96,7 @@ addressing a particular canvas context.</p>
 <p><img src="img/hellocircle.png" alt="Hello circle" class="loading" id="image-hash-53403bd4341e58106c2ed27e6346055d5a39d09b4e05abca3762843e0bc01f94"></p>
 <p>Read more about how elements are used <a href="./elements" data-href="./elements">here</a>.</p>
 <p><a name="view"></a></p>
-<h4 id="view-transformation">View transformation</h4>
+<h4 id="view-transformation">View transformation <a class="plnk" href="#view-transformation">#</a></h4>
 <p>Once built, a graphics command queue can be used to address multiple renderers.
 Renderer instances can also be placed on top of each other.
 So <em>g2</em> supports a cheap layering technique. Please note the ability to use SVG path strings.</p>
@@ -98,7 +119,7 @@ So <em>g2</em> supports a cheap layering technique. Please note the ability to u
 <p><img src="img/star-1.png" alt="star1" class="loading" id="image-hash-9d32339193d162da4ca5c0022ad33a7defff8cd5b2c60482889d2409360e2a93"><img src="img/star-2.png" alt="star2" class="loading" id="image-hash-b061376d62e71bacfeb3e8587faa6406450edd853f69e9b3d277bd17352cc922"></p>
 <p>Read more about how the view is transformed <a href="./view" data-href="./view">here</a>.</p>
 <p><a name="reuse"></a></p>
-<h4 id="grouping-and-reuse">Grouping and Reuse</h4>
+<h4 id="grouping-and-reuse">Grouping and Reuse <a class="plnk" href="#grouping-and-reuse">#</a></h4>
 <p>It is easy to reuse predefined geometry by defining multiple g2 objects. Styles can be inherited
 by g2 children from their parents.</p>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"400"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"120"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
@@ -125,16 +146,16 @@ by g2 children from their parents.</p>
 <p><img src="img/car.png" alt="car" class="loading" id="image-hash-990699e5354bf07a1bc84ce0cd0cd28bfbb517c272991b3c6d2d1c9828ec78dc"></p>
 <p>Read more about how reuse is used <a href="./reuse" data-href="./reuse">here</a>.</p>
 <p><a name="insert"></a></p>
-<h4 id="insert">Insert</h4>
+<h4 id="insert">Insert <a class="plnk" href="#insert">#</a></h4>
 <p>Read more about how ins is used <a href="./insert" data-href="./insert">here</a>.</p>
 <p><a name="animation"></a></p>
-<h4 id="animation">Animation</h4>
+<h4 id="animation">Animation <a class="plnk" href="#animation">#</a></h4>
 <p>Read more about how animations are used <a href="./animation" data-href="./animation">here</a>.</p>
 <p><a name="interactivity"></a></p>
-<h4 id="interactivity">Interactivity</h4>
+<h4 id="interactivity">Interactivity <a class="plnk" href="#interactivity">#</a></h4>
 <p>Read more about interactive rendering <a href="./interactivity" data-href="./interactivity">here</a>.</p>
 <p><a name="extensions"></a></p>
-<h4 id="extensions">Extensions</h4>
+<h4 id="extensions">Extensions <a class="plnk" href="#extensions">#</a></h4>
 <p>Read more about g2's extensions here:</p>
 <ul>
 <li><a href="./g2.ext.md" data-href="./g2.ext.md">g2.ext</a></li>
@@ -142,7 +163,7 @@ by g2 children from their parents.</p>
 <li><a href="./g2.chart.md" data-href="./g2.chart.md">g2.chart</a></li>
 </ul>
 <p>// TODO: Put this in animation or interactivity.</p>
-<h3 id="arrow-notation">Arrow notation</h3>
+<h3 id="arrow-notation">Arrow notation <a class="plnk" href="#arrow-notation">#</a></h3>
 <p><code>g2</code> commands don't have to be declared with static parameters.
 They can be changed at 'run time' and display changes in the next rendering via <code>exe()</code>.</p>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
@@ -163,11 +184,12 @@ They can be changed at 'run time' and display changes in the next rendering via 
 <p><img src="img/chain.png" alt="chain" class="loading" id="image-hash-031879673638b231d5795d9855e38822d40efabe5b8b7922e779fb6ce0a3b560"></p>
 <p><em>Note that the command queue is not altered after its initial definition.</em></p>
 
-</main>
-<footer>
-  <span class="left">&copy; My Site</span>
-  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
-  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
-</footer>
-</body>
-</html>
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

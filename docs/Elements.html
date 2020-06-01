@@ -1,23 +1,44 @@
 <!doctype html>
-<html class="theme-dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
-<meta name="description" content="Elements">
-<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
-<meta name="keywords" content="">
-<title>Elements</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="Elements">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>Elements</title>
+  <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="./theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="./index.html" class="right">g²</a>
+  <a href="./Elements.html" class="left">g2-Elements</a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
+<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
+<li><a href="paths.html" data-href="paths.html">Paths</a></li>
+<li><a href="elements.html" data-href="elements.html">Elements</a></li>
+<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
+<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
+<li><a href="view.html" data-href="view.html">View</a></li>
+<li><a href="insert.html" data-href="insert.html">Insert</a></li>
+<li><a href="animation.html" data-href="animation.html">Animation</a></li>
+<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
+<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
+<li><a href="tests.html" data-href="tests.html">Tests</a></li>
+</ul>
 
-<link rel="stylesheet" href="./theme/styles.css">
-</head>
-<body>
-<header>
-  <a href="./index.html" class="left">g²</a>
-  <a href="./tests.html" class="right">Tests</a>
-</header>
-<main>
-<p>Element commands are higher level commands. The following elements are supported by <em>g2</em>.</p>
+    </nav>
+    <article>
+  <p>Element commands are higher level commands. The following elements are supported by <em>g2</em>.</p>
 <table>
 <thead>
 <tr>
@@ -72,7 +93,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="ply-element"><code>ply</code> Element</h4>
+<h4 id="ply-element"><code>ply</code> Element <a class="plnk" href="#ply-element">#</a></h4>
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ply" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ply">See the API Reference</a></p>
 <p>The <code>ply</code> command expects an object with a <code>pts</code> property.
 This property can have different formats, for each of which there must be provided an individual
@@ -130,7 +151,7 @@ Just fill an array in the appropriate format and render it.</p>
 })();
 </div></code></pre>
 <p><img src="img/ply.gif" alt="ply Animation" class="loading" id="image-hash-debbe424d1ef46d4954d5dfa04eb6927b4dac853c4627be0ebfc91997dfb023a"></p>
-<h3 id="text">Text</h3>
+<h3 id="text">Text <a class="plnk" href="#text">#</a></h3>
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+txt" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+txt">See the API Reference</a></p>
 <p>Text is supported by the <code>txt</code> command. One property of <code>txt</code>, <code>str</code> specifies the text string. The next two
 <code>x</code> and <code>y</code> determine the anchor position of the text element. <code>w</code> describes the rotation angle and
@@ -142,7 +163,7 @@ style properties have priority over previously defined properties, but do not ov
           .exe(ctx);
 </div></code></pre>
 <p><img src="img/txt-6.png" alt="txt Element" class="loading" id="image-hash-4a97b1764f9addab2631c92d139e83fe46dfe80f16fd2b1ba31fa79bdeff7792"></p>
-<h3 id="images">Images</h3>
+<h3 id="images">Images <a class="plnk" href="#images">#</a></h3>
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+img" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+img">See the API Reference</a></p>
 <p>Images can be inserted by the <code>img</code> command. One property, <code>uri</code>, is the URI of the image, which
 can also be a  <em>data:url</em>. <code>img</code> has a lot of properties for the desired representation of the
@@ -166,11 +187,12 @@ If more than one command queue is issued on one context, it may happen that the 
 <p>If an image can not be loaded, it will be replaced by a broken-image symbol:</p>
 <p><img src="img/broken_image.png" alt="broken" class="loading" id="image-hash-1e72890d9e25c05a09a4ecce36525115462f7ca7e0bceae67e59ffed2a042f63"></p>
 
-</main>
-<footer>
-  <span class="left">&copy; goessner</span>
-  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
-  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
-</footer>
-</body>
-</html>
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

@@ -1,8 +1,11 @@
 ---
 "layout": "page",
 "title": "Elements",
+"header": "g2-Elements",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

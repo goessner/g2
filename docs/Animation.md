@@ -1,8 +1,11 @@
 ---
 "layout": "page",
-"title": "Animation",
+"title": "g2-Animation",
+"header": "Animation",
 "date": "2020-06-01",
 "description": "",
+"permalink": "#",
+ "use": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 

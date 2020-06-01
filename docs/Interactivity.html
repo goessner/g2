@@ -1,28 +1,49 @@
 <!doctype html>
-<html class="theme-dark">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1,user-scalable=no">
-<meta name="description" content="Interactivity">
-<meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
-<meta name="keywords" content="">
-<title>Interactivity</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/github-gist.min.css">
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="Interactivity">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>Interactivity</title>
+  <link rel="shortcut icon" type="image/png" href="./img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="./theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="./index.html" class="right">g²</a>
+  <a href="./Interactivity.html" class="left">Interactivity</a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="getting-started.html" data-href="getting-started.html">Getting started</a></li>
+<li><a href="concepts.html" data-href="concepts.html">Concepts</a></li>
+<li><a href="paths.html" data-href="paths.html">Paths</a></li>
+<li><a href="elements.html" data-href="elements.html">Elements</a></li>
+<li><a href="state-and-style.html" data-href="state-and-style.html">State and Style</a></li>
+<li><a href="reuse.html" data-href="reuse.html">Reuse</a></li>
+<li><a href="view.html" data-href="view.html">View</a></li>
+<li><a href="insert.html" data-href="insert.html">Insert</a></li>
+<li><a href="animation.html" data-href="animation.html">Animation</a></li>
+<li><a href="interactivity.html" data-href="interactivity.html">Interactivity</a></li>
+<li><a href="g2.ext.html" data-href="g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="g2.mec.html" data-href="g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="g2.chart.html" data-href="g2.chart.html">Extension: g2.chart</a></li>
+<li><a href="tests.html" data-href="tests.html">Tests</a></li>
+</ul>
 
-<link rel="stylesheet" href="./theme/styles.css">
-</head>
-<body>
-<header>
-  <a href="./index.html" class="left">My Site</a>
-  <a href="./about.html" class="right">About</a>
-</header>
-<main>
-<p><em>g2</em> has no interactive capabilities built in. But if it runs in browser environment the browser's interactive features can be used.
+    </nav>
+    <article>
+  <p><em>g2</em> has no interactive capabilities built in. But if it runs in browser environment the browser's interactive features can be used.
 There are a lot of frameworks and libraries making web developer's life more easier regarding UI. For the sake of
 simplicity we confine ourselfs to pure HTML with the following examples.</p>
 <p>Please see below how <code>window.requestAnimationFrame</code> can be used with interactivity for easy and efficient rendering.
 Most of the time it should do nothing.</p>
-<h3 id="view-manipulation">View Manipulation</h3>
+<h3 id="view-manipulation">View Manipulation <a class="plnk" href="#view-manipulation">#</a></h3>
 <p>For letting the user modify <em>g2</em>'s view HTML's pointer events are used as well as the <code>view</code> method
 already presented in <a href="./View" data-href="./View">View</a>.</p>
 <pre><code class="code-line language-javascript"><div><span class="hljs-comment">// Pan the view when user moves the pointer with any button pressed.</span>
@@ -64,7 +85,7 @@ render();
 <p>Updating the command queue can occur directly in event handlers and drawing via <code>exe</code> is preferrably
 done in the <code>render</code> function.</p>
 <p>There is also another zoom example using an <a href="https://goessner.github.io/g2/examples/screw.html" data-href="https://goessner.github.io/g2/examples/screw.html">extra zoom window</a></p>
-<h3 id="html-input-element">HTML Input Element</h3>
+<h3 id="html-input-element">HTML Input Element <a class="plnk" href="#html-input-element">#</a></h3>
 <p>HTML input elements can be used to modify graphics related data.</p>
 <pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"300"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"200"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
@@ -122,7 +143,7 @@ done in the <code>render</code> function.</p>
 </div></code></pre>
 <p><img src="img/cross.gif" alt="map" class="loading" id="image-hash-9c64dd4945be6c95e50e536427b2e94fadb84066b3a24dcacef6bf608a1cf0ac"></p>
 <p>This example again uses an advantageous separation of static and dynamic geometry (s. <a href="./Animation" data-href="./Animation">Animation</a>).</p>
-<h3 id="using-layers">Using Layers</h3>
+<h3 id="using-layers">Using Layers <a class="plnk" href="#using-layers">#</a></h3>
 <p>In the case of having much rendering work to do with each user input one might consider to distribute graphics to a static
 background layer and an interactive foreground layer using two or more stacked canvases. So when interaction occurs
 only the interactive layer must be updated and thus the overall rendering effort may be reduced significantly.</p>
@@ -209,11 +230,12 @@ only the interactive layer must be updated and thus the overall rendering effort
 </div></code></pre>
 <p><img src="img/layer.gif" alt="layer" class="loading" id="image-hash-1a063823d9facbc185dd99f5eec3bf19c891d772574e2a2318ebbf6777185bd3"></p>
 
-</main>
-<footer>
-  <span class="left">&copy; My Site</span>
-  <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
-  <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
-</footer>
-</body>
-</html>
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>
