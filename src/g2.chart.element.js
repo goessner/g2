@@ -55,4 +55,4 @@ class G2ChartElement extends HTMLElement {
             style="border:solid 1px black;"></canvas>`
     }
 }
-customElements.define('g-2-chart', G2ChartElement);
+customElements.define('g2-chart', G2ChartElement);
