@@ -1,6 +1,7 @@
 ---
 "layout": "page",
-"title": "Interactivity",
+"title": "g2-Interactivity",
+"header": "Interactivity",
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
