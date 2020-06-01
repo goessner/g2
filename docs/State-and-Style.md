@@ -88,7 +88,7 @@ Property | Type | Default | Comment
         .exe(ctx);
 </script>
 ```
-![beg Element](img/beg.png)
+![beg Element](img/beg-2.png)
 
 ### Example Yinyang
 ```html

@@ -40,7 +40,7 @@ Another property of `ply` is `closed` which can have boolean values `true` and `
         .ply({pts:[[110,10],[140,70],[160,30],[190,80]],closed:true,...style})
         .exe(ctx);
 ```
-![ply Element](img/ply.png)
+![ply Element](img/ply-6.png)
 
 `ply` is also a convenient method for traces or paths to be drawn.
 Just fill an array in the appropriate format and render it.
@@ -83,7 +83,7 @@ const style={ls:"red",lw:3,fs:"ddd"};
           .txt({str:"default style",x:210,y:40})
           .exe(ctx);
 ```
-![txt Element](img/txt.png)
+![txt Element](img/txt-6.png)
 
 
 ### Images
@@ -110,7 +110,7 @@ If more than one command queue is issued on one context, it may happen that the 
         .exe(ctx);
 </script>
 ```
-![pre](img/img.png)
+![pre](img/img-20.png)
 
 If an image can not be loaded, it will be replaced by a broken-image symbol:
 

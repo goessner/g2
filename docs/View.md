@@ -57,7 +57,7 @@ g2().view({x:0,y:-50,scl:1.5})
     .exe(ctx3)
 ```
 
-![view-1](img/view-1.png) ![view-2](img/view-2.png) ![view-3](img/view-3.png)
+![view-1](img/view-1.png) ![view-2](img/view-6.png) ![view-3](img/view-7.png)
 
 
 Remark that `view` could be omitted here and the same picture could be generated just with `use`. This is for demonstation purpose only.

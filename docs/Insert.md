@@ -78,7 +78,7 @@ g2().use({grp:world,x:0,y:0})
     .ins(()=>{worldview.scl = 1.5, worldview.y = -50})
     .exe(ctx3)
 ```
-![view-1](img/view-1.png) ![view-2](img/view-2.png) ![view-3](img/view-3.png)
+![view-1](img/view-1.png) ![view-2](img/view-6.png) ![view-3](img/view-7.png)
 
 ### Conditional Rendering
 

@@ -13,8 +13,8 @@
 </head>
 <body>
 <header>
-  <a href="./index.html" class="left">My Site</a>
-  <a href="./about.html" class="right">About</a>
+  <a href="./index.html" class="left">g²</a>
+  <a href="./tests.html" class="right">Tests</a>
 </header>
 <main>
 <p>Element commands are higher level commands. The following elements are supported by <em>g2</em>.</p>
@@ -105,7 +105,7 @@ array iterator. <em>g2</em> implements three standard iterators:</p>
         .ply({<span class="hljs-attr">pts</span>:[[<span class="hljs-number">110</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">140</span>,<span class="hljs-number">70</span>],[<span class="hljs-number">160</span>,<span class="hljs-number">30</span>],[<span class="hljs-number">190</span>,<span class="hljs-number">80</span>]],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,...style})
         .exe(ctx);
 </div></code></pre>
-<p><img src="img/ply.png" alt="ply Element" class="loading" id="image-hash-1d7b8cda96bd9757dd16f7477b81fc54de50591564743e261b45e78357f8553f"></p>
+<p><img src="img/ply-6.png" alt="ply Element" class="loading" id="image-hash-5e8e47fe967521f23b6f964865530752927ee83d9938cc700b31a9b04cc0589e"></p>
 <p><code>ply</code> is also a convenient method for traces or paths to be drawn.
 Just fill an array in the appropriate format and render it.</p>
 <pre><code class="code-line language-js"><div><span class="hljs-keyword">const</span> arr = []; <span class="hljs-comment">// array to be filled</span>
@@ -141,7 +141,7 @@ style properties have priority over previously defined properties, but do not ov
           .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">"default style"</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">210</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">40</span>})
           .exe(ctx);
 </div></code></pre>
-<p><img src="img/txt.png" alt="txt Element" class="loading" id="image-hash-122a237addd0283996004518e055bc4d45f039ad46b8fc6bbdedda716dff3161"></p>
+<p><img src="img/txt-6.png" alt="txt Element" class="loading" id="image-hash-4a97b1764f9addab2631c92d139e83fe46dfe80f16fd2b1ba31fa79bdeff7792"></p>
 <h3 id="images">Images</h3>
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+img" data-href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+img">See the API Reference</a></p>
 <p>Images can be inserted by the <code>img</code> command. One property, <code>uri</code>, is the URI of the image, which
@@ -162,13 +162,13 @@ If more than one command queue is issued on one context, it may happen that the 
         .exe(ctx);
 </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
-<p><img src="img/img.png" alt="pre" class="loading" id="image-hash-70500b3f581c677ce7210df5937b230bcdc4a5af11bf0e0ab5b1b3ea713dcb19"></p>
+<p><img src="img/img-20.png" alt="pre" class="loading" id="image-hash-6aa0617c27008348fc7de62d4bb747ff9d7a82581fc1bfa0ce1e0d8efcc21aba"></p>
 <p>If an image can not be loaded, it will be replaced by a broken-image symbol:</p>
 <p><img src="img/broken_image.png" alt="broken" class="loading" id="image-hash-1e72890d9e25c05a09a4ecce36525115462f7ca7e0bceae67e59ffed2a042f63"></p>
 
 </main>
 <footer>
-  <span class="left">&copy; My Site</span>
+  <span class="left">&copy; goessner</span>
   <span class="center">powered by &mu;JAM &amp; VSCode &mdash; hosted by GitHub</span>
   <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
 </footer>
