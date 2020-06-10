@@ -34,40 +34,54 @@ new TestContainer(
     .ell({x:210,y:50,rx:10,ry:30,w:1,dw:5,ls:'blue'})`),
 
         new Test('arc',
-            `g2().arc({x:90,y:50,r:35,w:1/3*pi,dw:4/3*pi,ls:'blue',lw:5,fs:'#ddd'})
-    .arc({x:120,y:50,r:35,w:1/3*pi,dw:-2/3*pi,ls:'blue',lw:5,fs:'#ddd'})`),
+            `g2().arc({x:90,y:50,r:35,w:1/3*pi,dw:4/3*pi,
+        ls:'blue',lw:5,fs:'#ddd'})
+    .arc({x:120,y:50,r:35,w:1/3*pi,dw:-2/3*pi,
+        ls:'blue',lw:5,fs:'#ddd'})`),
 
         new Test('arc-2',
-            `g2().arc({x:90,y:50,r:35,w:1/3*pi,dw:4/3*pi,ls:'green',lw:5,fs:'#ddd',sh:[5,5,5,'rgba(0,0,0,0.5)']})
-  .arc({x:120,y:50,r:35,w:1/3*pi,dw:-2/3*pi,ls:'green',lw:5,fs:'#ddd',sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
+            `g2().arc({x:90,y:50,r:35,w:1/3*pi,dw:4/3*pi,
+        ls:'green',lw:5,fs:'#ddd',sh:[5,5,5,'rgba(0,0,0,0.5)']})
+    .arc({x:120,y:50,r:35,w:1/3*pi,dw:-2/3*pi,
+        ls:'green',lw:5,fs:'#ddd',sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
 
         new Test('rec',
             `g2().rec({x:60,y:20,b:80,h:40,ls:'red',lw:3,fs:'#ddd'})
-    .rec({x:120,y:70,b:80,h:40,ls:'blue',lw:3,fs:'#ddd',sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
+    .rec({x:120,y:70,b:80,h:40,ls:'blue',lw:3,
+        fs:'#ddd',sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
 
         new Test('lin',
             `g2().lin({x1:20,y1:30,x2:180,y2:80,ls:'green',lw:3})
-    .lin({x1:30,y1:100,x2:200,y2:120,ls:'orange',lw:3,sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
+    .lin({x1:30,y1:100,x2:200,y2:120,ls:'orange',
+        lw:3,sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
 
         new Test('ply',
-            `g2().ply({pts:[20,10,60,80,120,30,180,90],ls:'red',lw:3,fs:'#ddd'})`),
+            `g2().ply({pts:[20,10,60,80,120,30,180,90],
+        ls:'red',lw:3,fs:'#ddd'})`),
 
         new Test('ply-2',
-            `g2().ply({pts:[[20,10],[60,80],[120,30],[180,90]],ls:'red',lw:3,fs:'#ddd',w:0.3})`),
+            `g2().ply({pts:[[20,10],[60,80],[120,30],[180,90]],
+        ls:'red',lw:3,fs:'#ddd',w:0.3})`),
 
         new Test('ply-3',
-            `g2().ply({y:30,pts:[{x:20,y:10},{x:60,y:80},{x:120,y:30},{x:180,y:90}],ls:'red',lw:3,fs:'#ddd',w:-0.3})`),
+            `g2().ply({y:30,
+        pts:[{x:20,y:10},{x:60,y:80},{x:120,y:30},{x:180,y:90}],
+        ls:'red',lw:3,fs:'#ddd',w:-0.3})`),
 
         new Test('ply-4',
             `g2().ply({pts:[20,10,60,80,120,30,180,90],ls:'red',lw:3})
-    .ply({pts:[20,50,60,110,120,60,180,120],ls:'red',lw:3,sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
+    .ply({pts:[20,50,60,110,120,60,180,120],
+        ls:'red',lw:3,sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
 
         new Test('ply-5',
-            `g2().ply({pts:[20,10,60,80,120,30,180,90],closed:true,ls:'red',lw:3,fs:'#ddd'})`),
+            `g2().ply({pts:[20,10,60,80,120,30,180,90],closed:true,
+        ls:'red',lw:3,fs:'#ddd'})`),
 
         new Test('txt',
-            `g2().txt({str:'Hello',x:30,y:30,w:0,fs:'red',font:'normal 30px serif'})
-    .txt({str:'World!',x:120,y:30,w:0,fs:'blue',font:'normal 30px serif',sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
+            `g2().txt({str:'Hello',x:30,y:30,w:0,
+        fs:'red',font:'normal 30px serif'})
+    .txt({str:'World!',x:120,y:30,w:0,fs:'blue',font:'normal 30px serif',
+    sh:[5,5,5,'rgba(0,0,0,0.5)']})`),
 
         new Test('txt-2',
             `g2().txt({str:'Hello',x:100,y:50,w:0})
@@ -131,44 +145,46 @@ g2().img({uri:'unknown.png',x:1,y:1,b:30,h:30})`),
         `g2().img({uri:'img/imageTst.png', x: 10, y: 10, b: 100, h: 50})`),
 
         new Test('img-6',
-        `g2().img({uri:'img/imageTst.png', x: 10, y: 10 , b: 100, h: 50, w: 0.5})
-        .rec({x: 10, y: 10, b: 100, h: 50})`),
+        `g2().img({uri:'img/imageTst.png',x:10,y:10,b:100,h:50,w:0.5})
+        .rec({x:10,y:10,b:100,h:50})`),
 
         new Test('img-7',
-        `g2().img({uri:'img/imageTst.png', y: 60 , xoff:-10, yoff:-50, b: 100, h: 50})`),
+        `g2().img({uri:'img/imageTst.png',y:60,xoff:-10,yoff:-50,b:100,h:50})`),
 
         new Test('img-8',
-        `g2().img({uri:'img/imageTst.png', y: 60 , x:10, yoff:-50, b: 100, h: 50, w: 0.5})
-    .rec({x: 10, y: 10, b: 100, h: 50})`),
+        `g2().img({uri:'img/imageTst.png',y:60,x:10,yoff:-50,b:100,h:50,w:0.5})
+    .rec({x:10,y:10,b:100,h:50})`),
 
         new Test('img-9',
-        `g2().img({uri:'img/imageTst.png', y: 10, x: 10, scl: 0.5})`),
+        `g2().img({uri:'img/imageTst.png',y:10,x:10,scl:0.5})`),
     
         new Test('img-10',
-        `g2().img({uri:'img/imageTst.png', x: 10, y: 10, b:200, h: 100, sx:10, sy:10})
+        `g2().img({uri:'img/imageTst.png',x:10,y:10,b:200,h:100,sx:10,sy:10})
     .rec({x: 10, y: 10, b: 200, h: 100})`),
 
         new Test('img-11',
-        `g2().img({uri:'img/imageTst.png', x: 10, y: 10, b: 200, h: 100, sx: 10, sy: 10, w: 0.5})
+        `g2().img({uri:'img/imageTst.png',x:10,y:10,b:200,h:100,
+        sx:10,sy:10,w:0.5})
     .beg({x: 10, y: 10, w: 0.5})
     .rec({b: 200, h: 100})
     .end()`),
 
         new Test('img-12',
-        `g2().img({uri:'img/imageTst.png', x: 50, y: 50, b:140, h:65, xoff:10, yoff:10})
+        `g2().img({uri:'img/imageTst.png',x:50,y:50,b:140,h:65,xoff:10,yoff:10})
     .rec({x: 50, y: 50, b: 150, h: 75})`),
 
         new Test('img-13',
-        `g2().img({uri:'img/imageTst.png', x: 50, y: 50, b:140, h:65, xoff: 10, yoff: 10, w:0.5})
+        `g2().img({uri:'img/imageTst.png',x:50,y:50,b:140,h:65,
+        xoff:10,yoff:10,w:0.5})
     .beg({x:50, y:50, w:0.5})
     .rec({b: 150, h: 75})
     .end()`),
 
         new Test('img-14',
-        `g2().img({uri:'img/imageTst.png', x: 10, y: 10, sb: 100, sh: 100, h: 60})`),
+        `g2().img({uri:'img/imageTst.png',x:10,y:10,sb:100,sh:100,h:60})`),
 
         new Test('img-15',
-        `g2().img({uri:'img/imageTst.png', x: 10, y: 10, sb: 100, sh: 100, h: 60, w: 0.5})`),
+        `g2().img({uri:'img/imageTst.png',x:10,y:10,sb:100,sh:100,h:60,w:0.5})`),
 
         new Test('img-16',
         `g2().view({cartesian:true})
@@ -180,22 +196,25 @@ g2().img({uri:'unknown.png',x:1,y:1,b:30,h:30})`),
 
         new Test('img-18',
         `g2().view({cartesian:true})
-            .img({uri:'img/imageTst.png', x: 10, y: 10, scl:.4})
-            .img({uri:'img/imageTst.png', x: 80, y: 50, scl:.4})
-            .img({uri:'img/imageTst.png', x: 160, y: 100, scl:.4})`),
+            .img({uri:'img/imageTst.png',x:10,y:10,scl:.4})
+            .img({uri:'img/imageTst.png',x:80,y:50,scl:.4})
+            .img({uri:'img/imageTst.png',x:160,y:100,scl:.4})`),
 
         new Test('img-19',
-        `g2().view({cartesian:true}) .img({uri:'img/imageTst.png', x: 10, y: 10, sy:50, scl:.4})
+        `g2().view({cartesian:true})
+    .img({uri:'img/imageTst.png',x:10,y:10,sy:50,scl:.4})
     .cir({x:10,y:10,r:5})`),
 
         new Test('beg',
-            `g2().beg({w:0.2,scl:2,ls:'#666',fs:'orange',lw:3,lc:'round',lj:'round'})
+            `g2().beg({w:0.2,scl:2,ls:'#666',fs:'orange',
+        lw:3,lc:'round',lj:'round'})
     .rec({x:30,y:10,b:30,h:20})
     .cir({x:130,y:20,r:20,fs:'green'})
     .end()`),
 
         new Test('end',
-            `g2().beg({w:0.2,scl:2,ls:'#666',fs:'orange',lw:3,lc:'round',lj:'round'})
+            `g2().beg({w:0.2,scl:2,ls:'#666',fs:'orange',
+        lw:3,lc:'round',lj:'round'})
     .rec({x:30,y:10,b:30,h:20})
     .end()
     .cir({x:130,y:20,r:20,fs:'green'})`),
@@ -231,7 +250,8 @@ g2().img({uri:'unknown.png',x:1,y:1,b:30,h:30})`),
             `g2().drw({d:'M100,10L123.5,82.4L61,37.6'+'L138,37.6L76.5,82.4Z'})`),
 
         new Test('drw-3',
-            `g2().drw({lw:4,ls:'#080',fs:'#0f0',d:'M100,10L123.5,82.4L61,37.6'+'L138,37.6L76.5,82.4Z'})`),
+            `g2().drw({lw:4,ls:'#080',fs:'#0f0',
+    d:'M100,10L123.5,82.4L61,37.6'+'L138,37.6L76.5,82.4Z'})`),
 
         new Test('del',
             `g2().rec({x:60,y:30,b:80,h:40}).del().cir({x:100,y:50,r:35})`),

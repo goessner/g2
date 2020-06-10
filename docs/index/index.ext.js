@@ -8,7 +8,8 @@ new TestContainer("ext",
                `g2().spline({pts:[50,20,50,80,150,20],closed:false,lw:4,ls:'#080'})`),
 
           new Test('spline-3',
-               `g2().spline({pts:[50,30,150,20,150,80,50,70],closed:true,lw:4,ls:'#080',fs:'orange'})`),
+               `g2().spline({pts:[50,30,150,20,150,80,50,70],closed:true,
+          lw:4,ls:'#080',fs:'orange'})`),
 
           new Test('label',
                `g2().view({cartesian:true})
