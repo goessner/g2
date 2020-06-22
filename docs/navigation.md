@@ -8,6 +8,7 @@
   - [Insert](Insert.html)
   - [Animation](Animation.html)
   - [Interactivity](Interactivity.html)
+  - [Custom HTML Element](g2.html.html)
 
 ---
 
