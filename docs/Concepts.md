@@ -200,4 +200,4 @@ At current _g2_ is considered feature complete.
 
 
 As it is very easily extensible, adding custom commands or build custom symbol libraries on top of _g2_
-is a nobrainer. Have a look at [g2-mec](https://github.com/goessner/g2/wiki/g2.mec) as an example.
+is a nobrainer. Have a look at [g2-mec](./g2.mec.html) as an example.
