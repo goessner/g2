@@ -57,12 +57,12 @@ Also see the [API Reference for g2.ext](docs/api/g2.ext.md) and the [API Referen
 
 
 ## GitCDN
-Use the link [https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js](https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js)
-for getting the latest commit as a raw file.
+Use the link [https://cdn.jsdelivr.net/gh/goessner/g2@v2.5/src/g2.js](https://cdn.jsdelivr.net/gh/goessner/g2@v2.5/src/g2.js)
+for getting the current stable commit as a raw file.
 
 In HTML use ...
 ```html
-<script src="https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/goessner/g2@v2.5/src/g2.js"></script>
 ```
 
 ### Tests
