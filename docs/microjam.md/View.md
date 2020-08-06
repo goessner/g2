@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -18,7 +18,7 @@ That device viewport is usually rectangular and limited of course. Its coordinat
 upper left corner, is lefthanded with x-axis to the right and y-axis down and its
 positive rotation is clockwise, as usual in computer graphics.
 
-![origin](img/origin.png)
+![origin](../img/origin.png)
 
 So we want to displace the origin of our user coordinate system - named _View_ - relative
 to the renders rigid one. We also want to scale the user units, wich initially also coincide with the device units - think of pixels here.
@@ -60,7 +60,7 @@ g2().view({x:0,y:-50,scl:1.5})
     .exe(ctx3)
 ```
 
-![view-1](img/view-1.png) ![view-2](img/view-6.png) ![view-3](img/view-7.png)
+![view-1](../img/view-1.png) ![view-2](../img/view-6.png) ![view-3](../img/view-7.png)
 
 
 Remark that `view` could be omitted here and the same picture could be generated just with `use`. This is for demonstation purpose only.

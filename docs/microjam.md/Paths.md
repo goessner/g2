@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -30,7 +30,7 @@ Command | HTML Canvas | SVG | Result
 Drawing a path works somewhat like a pen plotter. With *pen up* you can move to an arbitrary position.
 With *pen down* lines or curves can be drawn. The pen always has a *current position*.
 
-![arcs](img/arcs.png)
+![arcs](../img/arcs.png)
 
 It might be worth to have a closer look at the compact and comfortable arc `a` command. The first
 parameter `dw` defines the angular region &phi; of the arc, which can be positive or negative.
@@ -60,4 +60,4 @@ g2().drw({d:star,lw:4,ls:"red",fs:"orange"})
     .exe(ctx);
 ```
 
-![star](img/star.png)
+![star](../img/star.png)

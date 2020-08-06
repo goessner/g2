@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -52,9 +52,9 @@ Note the simplicity of arc declarations.
             .exe(ctx);                      // draw to canvas
 </script>
 ```
-![umbrella](img/umbrella.png)
+![umbrella](../img/umbrella.png)
 
-Read more about how paths are used [here](../wiki/paths).
+Read more about how paths are used [here](./Paths.html).
 
 <a name="elements"></a>
 #### Elements
@@ -71,9 +71,9 @@ addressing a particular canvas context.
 </script>
 ```
 
-![Hello circle](img/hellocircle.png)
+![Hello circle](../img/hellocircle.png)
 
-Read more about how elements are used [here](./elements).
+Read more about how elements are used [here](./Elements.html).
 
 <a name="view"></a>
 
@@ -98,9 +98,9 @@ So _g2_ supports a cheap layering technique. Please note the ability to use SVG 
 </script>
 
 ```
-![star1](img/star-1.png)![star2](img/star-2.png)
+![star1](../img/star-1.png)![star2](../img/star-2.png)
 
-Read more about how the view is transformed [here](./view).
+Read more about how the view is transformed [here](./View.html).
 
 <a name="reuse"></a>
 
@@ -129,39 +129,39 @@ by g2 children from their parents.
         .exe(ctx);
 </script>
 ```
-![car](img/car.png)
+![car](../img/car.png)
 
-Read more about how reuse is used [here](./reuse).
+Read more about how reuse is used [here](./Reuse.html).
 
 <a name="insert"></a>
 
 #### Insert
 
-Read more about how ins is used [here](./insert).
+Read more about how ins is used [here](./Insert.html).
 
 <a name="animation"></a>
 
 #### Animation
 
-Read more about how animations are used [here](./animation).
+Read more about how animations are used [here](./Animation.html).
 
 <a name="interactivity"></a>
 
 #### Interactivity
 
-Read more about interactive rendering [here](./interactivity).
+Read more about interactive rendering [here](./Interactivity.html).
 
 <a name="extensions"></a>
 
 #### Extensions
 
 Read more about g2's extensions here:
-* [g2.ext](./g2.ext.md)
-* [g2.mec](./g2.mec.md)
-* [g2.chart](./g2.chart.md)
+* [g2.ext](./g2.ext.html)
+* [g2.mec](./g2.mec.html)
+* [g2.chart](./g2.chart.html)
 
 
-// TODO: Put this in animation or interactivity.
+<!-- TODO: Put this in animation or interactivity. -->
 ### Arrow notation
 
 `g2` commands don't have to be declared with static parameters.
@@ -183,6 +183,6 @@ They can be changed at 'run time' and display changes in the next rendering via 
   }
 </script>
 ```
-![chain](img/chain.png)
+![chain](../img/chain.png)
 
 _Note that the command queue is not altered after its initial definition._

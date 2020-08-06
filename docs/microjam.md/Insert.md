@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -49,7 +49,7 @@ g2().cir({x:40,y:50,r:15,fs:color,lw:4,sh:[8,8,8,"gray"]})
     .ins(node)
     .exe(ctx)
 ```
-![circles](img/circles.png)
+![circles](../img/circles.png)
 
 ### View transformation
 
@@ -81,7 +81,7 @@ g2().use({grp:world,x:0,y:0})
     .ins(()=>{worldview.scl = 1.5, worldview.y = -50})
     .exe(ctx3)
 ```
-![view-1](img/view-1.png) ![view-2](img/view-6.png) ![view-3](img/view-7.png)
+![view-1](../img/view-1.png) ![view-2](../img/view-6.png) ![view-3](../img/view-7.png)
 
 ### Conditional Rendering
 
@@ -124,4 +124,4 @@ g2().use({grp:world,x:0,y:0})
   render();
 </script>
 ```
-![insert_anim](img/insert_anim.gif)
+![insert_anim](../img/insert_anim.gif)

@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -42,7 +42,7 @@ Property | Type | Default | Comment
         .exe(ctx)
 </script>
 ```
-![element style](img/elemstyle.png)
+![element style](../img/elemstyle.png)
 
 _g2_ also maintains a graphics state stack similar to the HTML canvas context.
 So It manages current transformations and global style properties.
@@ -91,7 +91,7 @@ Property | Type | Default | Comment
         .exe(ctx);
 </script>
 ```
-![beg Element](img/beg-2.png)
+![beg Element](../img/beg-2.png)
 
 ### Example Yinyang
 ```html
@@ -117,7 +117,7 @@ Property | Type | Default | Comment
         .exe(ctx);
 </script>
 ```
-![yinyang example](img/yinyang.png)
+![yinyang example](../img/yinyang.png)
 
 ### Fonts
 

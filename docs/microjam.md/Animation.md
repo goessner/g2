@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -43,7 +43,7 @@ The most primitive way is to always create a new command queue in the callback f
     }
     render();                                   // initial render call.
 ```
-![anim-1](img/anim-1.gif)
+![anim-1](../img/anim-1.gif)
 
 The most important thing with animation is to always delete the command queue by `del`, as otherwise the queue array is
 ever growing - which is often not visible due to the `clr` command, but the execution gets jerky in the long run.
@@ -117,4 +117,4 @@ function render(time) {
 }
 render();
 ```
-![anim-3](img/anim-3.gif)
+![anim-3](../img/anim-3.gif)

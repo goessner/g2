@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -43,7 +43,7 @@ g.p()                               // begin path
 .drw({ls:"green",lw:3,fs:"orange"}) // stroke and fill
 .exe(ctx);                          // finally render graphics addressing 'ctx'.
 ```
-![star1](img/triangle.png)
+![star1](../img/triangle.png)
 
 There are only two objects `g2` and `ctx` involved. Both are nearly completely independent
 from each other. Only the last code line `exe` establishes a loose connection between them.
@@ -53,7 +53,7 @@ is stored in _g2_'s command queue. Finally with the help of the `g2.exe` method 
 function pointers are resolved accordingly and handed
 over to a graphics context instance for rendering.
 
-![g2 command queue](img/g2-concept.png)
+![g2 command queue](../img/g2-concept.png)
 
 The command queue is implemented as a simple array holding objects containing a
 function pointer and an optional arguments array. So the command queue of the example
@@ -156,7 +156,7 @@ for (let i of model) {  // build command queue of ...
 g.exe(ctx1);            // render to view 1
 g.exe(ctx2);            // render to view 2
 ```
-![ctx1](img/seperating.png)![ctx2](img/seperating.png)
+![ctx1](../img/seperating.png)![ctx2](../img/seperating.png)
 
 One or multiple lightweight _g2_ objects may act here as neutral mediators
 between the model's shapes and the graphics context,

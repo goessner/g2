@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -59,7 +59,7 @@ ctx.canvas.addEventListener("mousemove", onmove, false);// listen to move event 
 ctx.canvas.addEventListener("wheel", onwheel, false);   // listen to wheel event ..
 render();
 ```
-![map](img/map.gif)
+![map](../img/map.gif)
 
 
 Updating the command queue can occur directly in event handlers and drawing via `exe` is preferrably
@@ -127,7 +127,7 @@ HTML input elements can be used to modify graphics related data.
     render();
 </script>
 ```
-![map](img/cross.gif)
+![map](../img/cross.gif)
 
 This example again uses an advantageous separation of static and dynamic geometry (s. [Animation](./Animation)).
 
@@ -222,4 +222,4 @@ Here is a clearly written in depth article about [HTML canvas layering](http://w
     render();                                                       // initial call to render loop.
 </script>
 ```
-![layer](img/layer.gif)
+![layer](../img/layer.gif)

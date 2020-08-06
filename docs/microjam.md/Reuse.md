@@ -5,7 +5,7 @@
 "date": "2020-06-01",
 "description": "",
 "permalink": "#",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
 "tags": []
 ---
 
@@ -43,7 +43,7 @@ g2().use({grp:smiley,x:50,y:50,scl:4,lw:0.75,fs:"yellow"})
     .use({grp:smiley,x:150,y:50,scl:5,lw:0.4,fs:"orange",ls:"green"})
     .exe(ctx);
 ```
-![smiley example](img/smiley.png)
+![smiley example](../img/smiley.png)
 
 
 Building custom symbol libraries on top of _g2_ is as easy as reusing those library elements
@@ -71,7 +71,7 @@ function rollingWheel() {
         .use({grp:rollingWheel()})
         .exe(ctx);
 ```
-![rolling wheel](img/rollingwheel.png)
+![rolling wheel](../img/rollingwheel.png)
 
 The service function - here `rollingWheel` - simply has to return a previously filled _g2_ object
 and `use` will put its contents in its own command queue.
@@ -149,7 +149,7 @@ Use is exceptionally useful if the same element is used over and over again
         .exe(ctx2)                  // draw mighty forest
 </script>
 ```
-![tree](img/tree.png) ![forest](img/forest.png)
+![tree](../img/tree.png) ![forest](../img/forest.png)
 
 Since the main _g2_ object is returned, the `use` command recognizes that it has nothing
 to do - especially no copying, which is very efficient.

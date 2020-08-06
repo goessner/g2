@@ -4,7 +4,7 @@
  "header": "Main Page",
  "date": "2020-06-01",
  "description": "microjam for g2",
- "use": [ { "uri": "navigation.md" } ],
+ "uses": [ { "uri": "navigation.md" } ],
  "permalink": "#",
  "tags": []
  ---
