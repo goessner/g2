@@ -10,7 +10,6 @@ class G2ChartElement extends HTMLElement {
             'ymin',
             'ymax',
             'title',
-            'ref'
         ];
     }
 
@@ -33,8 +32,6 @@ class G2ChartElement extends HTMLElement {
     set ymax(q) { return q && +this.setAttribute('ymax', q) }
     get title() { return this.getAttribute('title') || ''; }
     set title(q) { return q && this.setAttribute('title', q) }
-    get ref() { return this.getAttribute('ref') }
-    set ref(q) { return q &&  this.setAttribute('ref', q) }
 
     connectedCallback() {
         this._root.innerHTML = G2ChartElement.template({
