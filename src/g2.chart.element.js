@@ -5,6 +5,11 @@ class G2ChartElement extends HTMLElement {
         return [
             'width',
             'height',
+            'xmin',
+            'xmax',
+            'ymin',
+            'ymax',
+            'title'
         ];
     }
 
