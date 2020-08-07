@@ -23,16 +23,16 @@ class G2ChartElement extends HTMLElement {
     set width(q) { q && this.setAttribute('width', q) }
     get height() { return +this.getAttribute('height') || 201; }
     set height(q) { q && this.setAttribute('height', q) }
-    get xmin() {return +this.getAttribute('xmin') || 0; }
-
-    get xmax() {return +this.getAttribute('xmax') || 0; }
-    
-    get ymin() {return +this.getAttribute('ymin') || 0; }
-    
-    get ymax() {return +this.getAttribute('ymax') || 0; }
-    
-    get title() {return this.getAttribute('title') || ''; }
-    
+    get xmin() { return +this.getAttribute('xmin') || 0; }
+    set xmin(q) { return q && +this.setAttribute('xmin', q) }
+    get xmax() { return +this.getAttribute('xmax') || 0; }
+    set xmax(q) { return q && +this.setAttribute('xmax', q) }
+    get ymin() { return +this.getAttribute('ymin') || 0; }
+    set ymin(q) { return q && +this.setAttribute('ymin', q) }
+    get ymax() { return +this.getAttribute('ymax') || 0; }
+    set ymax(q) { return q && +this.setAttribute('ymax', q) }
+    get title() { return this.getAttribute('title') || ''; }
+    set title(q) { return q && this.setAttribute('title', q) }
     get ref() { return this.getAttribute('ref') }
     set ref(q) { return q &&  this.setAttribute('ref', q) }
 
