@@ -9,7 +9,8 @@ class G2ChartElement extends HTMLElement {
             'xmax',
             'ymin',
             'ymax',
-            'title'
+            'title',
+            'ref'
         ];
     }
 
@@ -19,14 +20,21 @@ class G2ChartElement extends HTMLElement {
     }
 
     get width() { return +this.getAttribute('width') || 301; }
-    set width(q) { q && this.setAttribute('width', q)}
-    get xmin() {return +this.getAttribute('xmin') || 0; }
-    get xmax() {return +this.getAttribute('xmax') || 0; }
-    get ymin() {return +this.getAttribute('ymin') || 0; }
-    get ymax() {return +this.getAttribute('ymax') || 0; }
-    get title() {return this.getAttribute('title') || ''; }
+    set width(q) { q && this.setAttribute('width', q) }
     get height() { return +this.getAttribute('height') || 201; }
-    set height(q) { q && this.setAttribute('height', q)}
+    set height(q) { q && this.setAttribute('height', q) }
+    get xmin() {return +this.getAttribute('xmin') || 0; }
+
+    get xmax() {return +this.getAttribute('xmax') || 0; }
+    
+    get ymin() {return +this.getAttribute('ymin') || 0; }
+    
+    get ymax() {return +this.getAttribute('ymax') || 0; }
+    
+    get title() {return this.getAttribute('title') || ''; }
+    
+    get ref() { return this.getAttribute('ref') }
+    set ref(q) { return q &&  this.setAttribute('ref', q) }
 
     connectedCallback() {
         this._root.innerHTML = G2ChartElement.template({
