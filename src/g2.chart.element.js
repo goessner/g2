@@ -39,7 +39,7 @@ class G2ChartElement extends HTMLElement {
 
         this._ctx = this._root.getElementById('cnv').getContext('2d');
         
-        const g = g2().del().clr().view({cartesian: true});
+        this._g = g2().del().clr().view({cartesian: true});
 
         try {
             // Remove all functions (declared by "fn": fn) and fetch them before parsing.
@@ -55,7 +55,8 @@ class G2ChartElement extends HTMLElement {
                 itr++;
             }
             const t = 20;
-            const i = {
+            
+            this._chart = {
                 x: t,
                 y: t,
                 xmin: this.xmin,
@@ -67,14 +68,24 @@ class G2ChartElement extends HTMLElement {
                 h: this.height - t * 2,
                 xaxis: {},
                 yaxis: {},
-                funcs
+                funcs: [funcs],
             }
-            g.chart(i);
+            this._g.chart(this._chart);
+
         }
         catch(e) {
-            g.txt({str: e, y:5});
+            console.warn(e);
+            this._g.txt({str: e, y:5});
         }
-        g.exe(this._ctx);
+        this.render();
+    }
+
+    render() {
+        this._g.exe(this._ctx);
+    }
+
+    setChart(chart) {
+        this._chart = chart;
     }
 
     disconnectedCallback() {
