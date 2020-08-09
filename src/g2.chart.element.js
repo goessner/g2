@@ -81,7 +81,10 @@ class G2ChartElement extends HTMLElement {
             this._g.txt({ str: e, y: 5 });
         }
         finally {
-            this._g.chart(this._chart);
+            this._g.chart(this._chart).nod({
+                x: () => this.nod && this.nod().x,
+                y: () => this.nod && this.nod().y,
+                scl: () => this.nod && this.nod().scl || 0});
             this.render();
         }
     }
