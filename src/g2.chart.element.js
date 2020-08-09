@@ -22,13 +22,13 @@ class G2ChartElement extends HTMLElement {
     set width(q) { q && this.setAttribute('width', q) }
     get height() { return +this.getAttribute('height') || 201; }
     set height(q) { q && this.setAttribute('height', q) }
-    get xmin() { return +this.getAttribute('xmin') || 0; }
+    get xmin() { return +this.getAttribute('xmin') || undefined; }
     set xmin(q) { return q && +this.setAttribute('xmin', q) }
-    get xmax() { return +this.getAttribute('xmax') || 0; }
+    get xmax() { return +this.getAttribute('xmax') || undefined; }
     set xmax(q) { return q && +this.setAttribute('xmax', q) }
-    get ymin() { return +this.getAttribute('ymin') || 0; }
+    get ymin() { return +this.getAttribute('ymin') || undefined; }
     set ymin(q) { return q && +this.setAttribute('ymin', q) }
-    get ymax() { return +this.getAttribute('ymax') || 0; }
+    get ymax() { return +this.getAttribute('ymax') || undefined; }
     set ymax(q) { return q && +this.setAttribute('ymax', q) }
     get title() { return this.getAttribute('title') || ''; }
     set title(q) { return q && this.setAttribute('title', q) }
@@ -42,7 +42,7 @@ class G2ChartElement extends HTMLElement {
 
         this._g = g2().del().clr().view({ cartesian: true });
 
-        const t = 20;
+        const t = 35;
         this._chart = {
             x: t,
             y: t,
@@ -53,8 +53,9 @@ class G2ChartElement extends HTMLElement {
             title: this.title,
             b: this.width - t * 2,
             h: this.height - t * 2,
-            xaxis: {},
-            yaxis: {},
+            xaxis: () => this.xaxis || {},
+            yaxis: () => this.yaxis || {},
+            title: () => this.title || "",
             funcs: () => this.funcs
         };
 
