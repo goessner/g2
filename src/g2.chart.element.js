@@ -35,49 +35,54 @@ class G2ChartElement extends HTMLElement {
 
     connectedCallback() {
         this._root.innerHTML = G2ChartElement.template({
-            width: this.width, height: this.height });
+            width: this.width, height: this.height
+        });
 
         this._ctx = this._root.getElementById('cnv').getContext('2d');
-        
-        this._g = g2().del().clr().view({cartesian: true});
+
+        this._g = g2().del().clr().view({ cartesian: true });
+
+        const t = 20;
+        this._chart = {
+            x: t,
+            y: t,
+            xmin: this.xmin,
+            xmax: this.xmax,
+            ymin: this.ymin,
+            ymax: this.ymax,
+            title: this.title,
+            b: this.width - t * 2,
+            h: this.height - t * 2,
+            xaxis: {},
+            yaxis: {},
+            funcs: () => this.funcs
+        };
 
         try {
-            // Remove all functions (declared by "fn": fn) and fetch them before parsing.
-            // Then bring them back in using Function: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval#Never_use_eval
-            
-            // Find all functions declared by "fn:" like here: https://goessner.github.io/g2/g2.chart.html#example-multiple-functions
-            const funcRegEx = /(("|')fn("|'):)([^(,|})]+)/g;
-            const funcs = JSON.parse(this.innerHTML.replace(funcRegEx, '"fn":"PLACEHOLDER"').trim());
-            let itr = 0;
-            for (const a of this.innerHTML.matchAll(funcRegEx))
-            {
-                funcs[itr].fn = (() => Function('"use strict"; return (' + a[4] + ')')())();
-                itr++;
-            }
-            const t = 20;
-            
-            this._chart = {
-                x: t,
-                y: t,
-                xmin: this.xmin,
-                xmax: this.xmax,
-                ymin: this.ymin,
-                ymax: this.ymax,
-                title: this.title,
-                b: this.width - t * 2,
-                h: this.height - t * 2,
-                xaxis: {},
-                yaxis: {},
-                funcs: [funcs],
-            }
-            this._g.chart(this._chart);
+            // If not true, the element should be referenced by another module.
+            if (this.innerHTML !== '') {
+                // Remove all functions (declared by "fn": fn) and fetch them before parsing.
+                // Then bring them back in using Function: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval#Never_use_eval
 
+                // Find all functions declared by "fn:" like here: https://goessner.github.io/g2/g2.chart.html#example-multiple-functions
+                const funcRegEx = /(("|')fn("|'):)([^(,|})]+)/g;
+                const funcs = JSON.parse(this.innerHTML.replace(funcRegEx, '"fn":"PLACEHOLDER"').trim());
+                let itr = 0;
+                for (const a of this.innerHTML.matchAll(funcRegEx)) {
+                    funcs[itr].fn = (() => Function('"use strict"; return (' + a[4] + ')')())();
+                    itr++;
+                }
+                this.funcs = [funcs];          
+            }
         }
-        catch(e) {
+        catch (e) {
             console.warn(e);
-            this._g.txt({str: e, y:5});
+            this._g.txt({ str: e, y: 5 });
         }
-        this.render();
+        finally {
+            this._g.chart(this._chart);
+            this.render();
+        }
     }
 
     render() {
