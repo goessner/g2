@@ -282,7 +282,7 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     isSolid: true,
     lbloc: 'se',
     g2() {      // in contrast to `g2.prototype.cir.prototype`, `g2()` is called always !
-        return g2().cir(g2.flatten(this))
+        return g2().cir({...g2.flatten(this), r: this.r*this.scl})
                    .ins((g)=>this.label && this.drawLabel(g))
 }
 });
