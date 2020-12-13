@@ -1607,7 +1607,7 @@ g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
 * g2().nod({x:10,y:10})
 */
 
-g2.prototype.nod = function(args) { return this.addCommand({c:'nod',a:args}); }
+g2.prototype.nod = function(args={}) { return this.addCommand({c:'nod',a:args}); }
 g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     r: 5,
     ls: g2.symbol.nodcolor,
@@ -1615,7 +1615,7 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     isSolid: true,
     lbloc: 'se',
     g2() {      // in contrast to `g2.prototype.cir.prototype`, `g2()` is called always !
-        return g2().cir(g2.flatten(this))
+        return g2().cir({...g2.flatten(this), r: this.r*this.scl})
                    .ins((g)=>this.label && this.drawLabel(g))
 }
 });
@@ -1630,7 +1630,7 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
 * @example
 * g2().pol({x:10,y:10})
 */
-g2.prototype.pol = function (args) { return this.addCommand({c:'pol',a:args}); }
+g2.prototype.pol = function (args={}) { return this.addCommand({c:'pol',a:args}); }
 g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
@@ -1651,7 +1651,7 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
 * @example
 * g2().gnd({x:10,y:10})
 */
-g2.prototype.gnd = function (args) { return this.addCommand({c:'gnd',a:args}); }
+g2.prototype.gnd = function (args={}) { return this.addCommand({c:'gnd',a:args}); }
 g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
      g2() {
         return g2()
@@ -1669,7 +1669,7 @@ g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
 }
 })
 
-g2.prototype.nodfix = function (args) { return this.addCommand({c:'nodfix',a:args}); }
+g2.prototype.nodfix = function (args={}) { return this.addCommand({c:'nodfix',a:args}); }
 g2.prototype.nodfix.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
@@ -1694,7 +1694,7 @@ g2.prototype.nodfix.prototype = g2.mix(g2.prototype.nod.prototype, {
 * g2().view({cartesian:true})
  *     .nodflt({x:10,y:10})
 */
-g2.prototype.nodflt = function (args) { return this.addCommand({c:'nodflt',a:args}); }
+g2.prototype.nodflt = function (args={}) { return this.addCommand({c:'nodflt',a:args}); }
 g2.prototype.nodflt.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
@@ -1759,7 +1759,7 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype,{
 g2.prototype.avec = function adim(args) { return this.addCommand({c:'avec',a:args}); }
 g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
     g2() {
-        const {x,y,r,w,dw,lw=1,lc='round',lj='round',ls,fs=ls||"#000",label} = this;
+        const {x,y,r,w,dw=0,lw=1,lc='round',lj='round',ls,fs=ls||"#000",label} = this;
         const b = 3*(1 + lw) > r ? r/3 : (1 + lw), bw = 5*b/r;
         const arrowHead = () => g2().p().m({x:0,y:2*b}).l({x:0,y:-2*b}).m({x:0,y:0}).l({x:-5*b,y:b})
                                     .a({dw:-Math.PI/3,x:-5*b,y:-b}).z().drw({ls,fs});
@@ -1767,7 +1767,10 @@ g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
         return g2()
             .beg({x,y,w,ls,lw,lc,lj})
                 .arc({r,w:0,dw})
-                .use({grp:arrowHead,x:r*Math.cos(dw),y:r*Math.sin(dw),w:(dw > 0 ? dw+Math.PI/2-bw/2 : dw-Math.PI/2+bw/2)})
+                .use({
+                    grp:arrowHead,x:r*Math.cos(dw),y:r*Math.sin(dw),
+                    w:(dw >= 0 ? dw+Math.PI/2-bw/2 : dw-Math.PI/2+bw/2)
+                })
             .end()
             .ins((g)=>label && this.drawLabel(g));
 }
@@ -1804,10 +1807,12 @@ g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
         const arrowHead = () => g2().p().m({x:0,y:2*b}).l({x:0,y:-2*b}).m({x:0,y:0}).l({x:-5*b,y:b})
                                     .a({dw:-Math.PI/3,x:-5*b,y:-b}).z().drw({ls,fs});
         return g2()
-            .beg({ x:x1 + off/r*dy, y:y1 - off/r*dx, w:Math.atan2(dy,dx),ls,fs,lw,lc,lj})
+            .beg({ x:x1 + off/r*dy, y:y1 - off/r*dx, w: Math.atan2(dy,dx),ls,fs,lw,lc,lj})
                .lin({x1:(inside?4*b:0),y1:0,x2:(inside?r-4*b:r),y2:0})
                .use({grp:arrowHead,x:r,y:0,w:(inside?0:Math.PI)})
                .use({grp:arrowHead,x:0,y:0,w:(inside?Math.PI:0)})
+               .lin({x1:0,y1:off,x2:0,y2:0})
+               .lin({x1:r,y1:off,x2:r,y2:0})
             .end()
             .ins((g)=>label && this.drawLabel(g));
 }
@@ -1861,7 +1866,7 @@ g2.prototype.adim.prototype = g2.mix(g2.prototype.arc.prototype, {
 * g2().view({cartesian:true})
  *     .origin({x:10,y:10})
 */
-g2.prototype.origin = function (args) { return this.addCommand({c:'origin',a:args}); }
+g2.prototype.origin = function (args={}) { return this.addCommand({c:'origin',a:args}); }
 g2.prototype.origin.prototype = g2.mix(g2.prototype.nod.prototype, {
     lbloc: 'sw',
     g2() {
