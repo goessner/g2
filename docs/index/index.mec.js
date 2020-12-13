@@ -15,14 +15,26 @@ new Test('symbols',
 new Test('vec',
 `g2().vec({x1:50,y1:20,x2:250,y2:120})`),
 
+new Test('avec',
+`g2().avec({x: 220, y: 50, r: 30, w: 1, dw: -Math.PI})
+     .avec({x: 180, y: 80, w: Math.PI/2, dw: Math.PI, r: 50})
+     .lin({x1: 180, x2: 180, y1: 20, y2: 140})
+     .avec({x: 65, y: 65, r: 60, w: 1})
+     .avec({x: 80, y: 50, r: 70, dw: 1, w:2})
+     .lin({x1:80,y1:50,x2:80+Math.cos(3)*75,y2:50+Math.sin(3)*75})
+     .lin({x1:80,y1:50,x2:80+Math.cos(2)*75,y2:50+Math.sin(2)*75})`),
+
 new Test('dim',
 `g2().dim({x1:20,y1:75,x2:200,y2:75})
      .dim({x1:20,y1:125,x2:200,y2:125,inside:false})`),
 
 new Test('dim2',
-`A = {x1: 30,y1:50,x2:200,y2:120}
-g2().lin({...A,ls:"red",lw:2})
-     .dim({...A, off:-15,over:5})`),
+`A = {x1: 30, y1:50, x2: 200, y2: 50};
+B = {x1: 40, y1: 80, x2: 210, y2: 130};
+g2().lin({...A, ls: "red", lw: 2})
+    .dim({...A, off: 15})
+    .lin({...B, ls: "red", lw: 2})
+    .dim({...B, off: 10})`),
 
 new Test('adim',
 `g2().adim({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
@@ -52,11 +64,11 @@ new Test('link2',
     E = {x:50,y:125};
 g2().view({cartesian:true})
     .link2({pts:[A,B,E,A,D,C]})
-    .nodfix({...A,scl:1.5})
-    .nod({...B,scl:1.5})
-    .nod({...C,scl:1.5})
-    .nod({...D,scl:1.5})
-    .nodflt({...E,w:-Math.PI/2,scl:1.5})`),
+    .nodfix({...A,scl:1.2})
+    .nod({...B,scl:1.2})
+    .nod({...C,scl:1.2})
+    .nod({...D,scl:1.2})
+    .nodflt({...E,w:-Math.PI/2,scl:1.2})`),
 
 new Test('beam',
 `g2().view({cartesian:true})
@@ -103,17 +115,17 @@ new Test('mec',
     E = {x:50,y:125};
 g2().view({cartesian:true})
     .link2({pts:[A,B,E,A,D,C]})
-    .nodfix({...A,scl:1.5})
-    .nod({...B,scl:1.5})
-    .nod({...C,scl:1.5})
-    .nod({...D,scl:1.5})
-    .nodflt({...E,w:-Math.PI/2,scl:1.5})
+    .nodfix({...A,scl:1.2})
+    .nod({...B,scl:1.2})
+    .nod({...C,scl:1.2})
+    .nod({...D,scl:1.2})
+    .nodflt({...E,w:-Math.PI/2,scl:1.2})
     .ground({pts:[{x:E.x-23,y:E.y+20},{x:A.x-23,y:A.y-18},{x:D.x,y:A.y-18}]})
     .vec({x1:D.x,y1:D.y,x2:D.x+50,y2:D.y,ls:'darkred',lw:2})
     .vec({x1:B.x,y1:B.y,x2:B.x,y2:B.y-20,ls:'darkred',lw:0.5})
-    .dim({x1:E.x,y1:E.y+15,x2:D.x,y2:E.y+15}).label({str:'b',loc:'s'})
-    .dim({x1:D.x,y1:E.y+15,x2:B.x,y2:E.y+15}).label({str:'b',loc:'s'})
-    .dim({x1:B.x+15,y1:E.y,x2:B.x+15,y2:D.y}).label({str:'b',loc:'w'})
-    .dim({x1:B.x+15,y1:D.y,x2:B.x+15,y2:B.y}).label({str:'b',loc:'w'})`)
+    .dim({x1:E.x,y1:E.y+15,x2:D.x,y2:E.y+15,label:'b'})
+    .dim({x1:D.x,y1:E.y+15,x2:B.x,y2:E.y+15,label:'b'})
+    .dim({x1:B.x+15,y1:E.y,x2:B.x+15,y2:D.y,label:'b'})
+    .dim({x1:B.x+15,y1:D.y,x2:B.x+15,y2:B.y,label:'b'})`)
 
 )
