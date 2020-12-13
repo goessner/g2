@@ -803,17 +803,21 @@ g2.canvasHdl.prototype = {
         }
         return img;
     },
-    async img({uri,b,h,sx=0,sy=0,sb,sh,xoff=0,yoff=0,w=0,scl=1}) {
-        const {x=0,y=0} = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
+    async img({uri,x=0,y=0,b,h,sx=0,sy=0,sb,sh,xoff=0,yoff=0,w=0,scl=1}) {
         const img_ = await this.loadImage(uri);
-        b = (b || img_.width ) * scl;
-        h = (h || img_.height) * scl;
         this.ctx.save();
-        if(this.isCartesian) this.ctx.scale(1,-1);
-        this.ctx.translate(x,this.isCartesian ? -y : y);
-        this.ctx.rotate(this.isCartesian ? -w : w);
-        this.ctx.drawImage(img_,xoff,yoff,dx||img_.width,dy||img_.height,
-                    0,this.isCartesian ? -h:0,b,h);
+        const cart = this.isCartesian ? -1 : 1;
+        sb = sb || img_.width;
+        b = b || img_.width;
+        sh = (sh || img_.height);
+        h = (h || img_.height)*cart;
+        yoff*=cart;
+        w*=cart;
+        y = this.isCartesian ? -(y/scl)+sy : y/scl;
+        const [cw,sw] = [Math.cos(w), Math.sin(w)];
+        this.ctx.scale(scl, scl*cart);
+        this.ctx.transform(cw, sw, -sw, cw,x/scl,y);
+        this.ctx.drawImage(img_,sx,sy,sb,sh,xoff,yoff,b,h);
         this.ctx.restore();
     },
     use({grp}) {
@@ -2950,62 +2954,71 @@ class G2ChartElement extends HTMLElement {
     set width(q) { q && this.setAttribute('width', q) }
     get height() { return +this.getAttribute('height') || 201; }
     set height(q) { q && this.setAttribute('height', q) }
-    get xmin() { return +this.getAttribute('xmin') || 0; }
+    get xmin() { return +this.getAttribute('xmin') || undefined; }
     set xmin(q) { return q && +this.setAttribute('xmin', q) }
-    get xmax() { return +this.getAttribute('xmax') || 0; }
+    get xmax() { return +this.getAttribute('xmax') || undefined; }
     set xmax(q) { return q && +this.setAttribute('xmax', q) }
-    get ymin() { return +this.getAttribute('ymin') || 0; }
+    get ymin() { return +this.getAttribute('ymin') || undefined; }
     set ymin(q) { return q && +this.setAttribute('ymin', q) }
-    get ymax() { return +this.getAttribute('ymax') || 0; }
+    get ymax() { return +this.getAttribute('ymax') || undefined; }
     set ymax(q) { return q && +this.setAttribute('ymax', q) }
     get title() { return this.getAttribute('title') || ''; }
     set title(q) { return q && this.setAttribute('title', q) }
 
     connectedCallback() {
         this._root.innerHTML = G2ChartElement.template({
-            width: this.width, height: this.height });
+            width: this.width, height: this.height
+        });
 
         this._ctx = this._root.getElementById('cnv').getContext('2d');
-        
-        this._g = g2().del().clr().view({cartesian: true});
+
+        this._g = g2().del().clr().view({ cartesian: true });
+
+        const t = 35;
+        this._chart = {
+            x: t,
+            y: t,
+            xmin: this.xmin,
+            xmax: this.xmax,
+            ymin: this.ymin,
+            ymax: this.ymax,
+            title: this.title,
+            b: this.width - t * 2,
+            h: this.height - t * 2,
+            xaxis: () => this.xaxis || {},
+            yaxis: () => this.yaxis || {},
+            title: () => this.title || "",
+            funcs: () => this.funcs
+        };
 
         try {
-            // Remove all functions (declared by "fn": fn) and fetch them before parsing.
-            // Then bring them back in using Function: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval#Never_use_eval
-            
-            // Find all functions declared by "fn:" like here: https://goessner.github.io/g2/g2.chart.html#example-multiple-functions
-            const funcRegEx = /(("|')fn("|'):)([^(,|})]+)/g;
-            const funcs = JSON.parse(this.innerHTML.replace(funcRegEx, '"fn":"PLACEHOLDER"').trim());
-            let itr = 0;
-            for (const a of this.innerHTML.matchAll(funcRegEx))
-            {
-                funcs[itr].fn = (() => Function('"use strict"; return (' + a[4] + ')')())();
-                itr++;
-            }
-            const t = 20;
-            
-            this._chart = {
-                x: t,
-                y: t,
-                xmin: this.xmin,
-                xmax: this.xmax,
-                ymin: this.ymin,
-                ymax: this.ymax,
-                title: this.title,
-                b: this.width - t * 2,
-                h: this.height - t * 2,
-                xaxis: {},
-                yaxis: {},
-                funcs: [funcs],
-            }
-            this._g.chart(this._chart);
+            // If not true, the element should be referenced by another module.
+            if (this.innerHTML !== '') {
+                // Remove all functions (declared by "fn": fn) and fetch them before parsing.
+                // Then bring them back in using Function: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval#Never_use_eval
 
+                // Find all functions declared by "fn:" like here: https://goessner.github.io/g2/g2.chart.html#example-multiple-functions
+                const funcRegEx = /(("|')fn("|'):)([^(,|})]+)/g;
+                const funcs = JSON.parse(this.innerHTML.replace(funcRegEx, '"fn":"PLACEHOLDER"').trim());
+                let itr = 0;
+                for (const a of this.innerHTML.matchAll(funcRegEx)) {
+                    funcs[itr].fn = (() => Function('"use strict"; return (' + a[4] + ')')())();
+                    itr++;
+                }
+                this.funcs = [funcs];          
+            }
         }
-        catch(e) {
+        catch (e) {
             console.warn(e);
-            this._g.txt({str: e, y:5});
+            this._g.txt({ str: e, y: 5 });
         }
-        this.render();
+        finally {
+            this._g.chart(this._chart).nod({
+                x: () => this.nod && this.nod().x,
+                y: () => this.nod && this.nod().y,
+                scl: () => this.nod && this.nod().scl || 0});
+            this.render();
+        }
     }
 
     render() {
