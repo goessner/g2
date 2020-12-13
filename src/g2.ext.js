@@ -426,7 +426,7 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype,{
 g2.prototype.avec = function adim(args) { return this.addCommand({c:'avec',a:args}); }
 g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
     g2() {
-        const {x,y,r,w,dw,lw=1,lc='round',lj='round',ls,fs=ls||"#000",label} = this;
+        const {x,y,r,w,dw=0,lw=1,lc='round',lj='round',ls,fs=ls||"#000",label} = this;
         const b = 3*(1 + lw) > r ? r/3 : (1 + lw), bw = 5*b/r;
         const arrowHead = () => g2().p().m({x:0,y:2*b}).l({x:0,y:-2*b}).m({x:0,y:0}).l({x:-5*b,y:b})
                                     .a({dw:-Math.PI/3,x:-5*b,y:-b}).z().drw({ls,fs});
@@ -434,7 +434,10 @@ g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
         return g2()
             .beg({x,y,w,ls,lw,lc,lj})
                 .arc({r,w:0,dw})
-                .use({grp:arrowHead,x:r*Math.cos(dw),y:r*Math.sin(dw),w:(dw > 0 ? dw+Math.PI/2-bw/2 : dw-Math.PI/2+bw/2)})
+                .use({
+                    grp:arrowHead,x:r*Math.cos(dw),y:r*Math.sin(dw),
+                    w:(dw >= 0 ? dw+Math.PI/2-bw/2 : dw-Math.PI/2+bw/2)
+                })
             .end()
             .ins((g)=>label && this.drawLabel(g));
 }
