@@ -474,10 +474,12 @@ g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
         const arrowHead = () => g2().p().m({x:0,y:2*b}).l({x:0,y:-2*b}).m({x:0,y:0}).l({x:-5*b,y:b})
                                     .a({dw:-Math.PI/3,x:-5*b,y:-b}).z().drw({ls,fs});
         return g2()
-            .beg({ x:x1 + off/r*dy, y:y1 - off/r*dx, w:Math.atan2(dy,dx),ls,fs,lw,lc,lj})
+            .beg({ x:x1 + off/r*dy, y:y1 - off/r*dx, w: Math.atan2(dy,dx),ls,fs,lw,lc,lj})
                .lin({x1:(inside?4*b:0),y1:0,x2:(inside?r-4*b:r),y2:0})
                .use({grp:arrowHead,x:r,y:0,w:(inside?0:Math.PI)})
                .use({grp:arrowHead,x:0,y:0,w:(inside?Math.PI:0)})
+               .lin({x1:0,y1:off,x2:0,y2:0})
+               .lin({x1:r,y1:off,x2:r,y2:0})
             .end()
             .ins((g)=>label && this.drawLabel(g));
 }
