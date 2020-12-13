@@ -274,7 +274,7 @@ g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
 * g2().nod({x:10,y:10})
 */
 
-g2.prototype.nod = function(args) { return this.addCommand({c:'nod',a:args}); }
+g2.prototype.nod = function(args={}) { return this.addCommand({c:'nod',a:args}); }
 g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     r: 5,
     ls: g2.symbol.nodcolor,
@@ -297,7 +297,7 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
 * @example
 * g2().pol({x:10,y:10})
 */
-g2.prototype.pol = function (args) { return this.addCommand({c:'pol',a:args}); }
+g2.prototype.pol = function (args={}) { return this.addCommand({c:'pol',a:args}); }
 g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
@@ -318,7 +318,7 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
 * @example
 * g2().gnd({x:10,y:10})
 */
-g2.prototype.gnd = function (args) { return this.addCommand({c:'gnd',a:args}); }
+g2.prototype.gnd = function (args={}) { return this.addCommand({c:'gnd',a:args}); }
 g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
      g2() {
         return g2()
@@ -336,7 +336,7 @@ g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
 }
 })
 
-g2.prototype.nodfix = function (args) { return this.addCommand({c:'nodfix',a:args}); }
+g2.prototype.nodfix = function (args={}) { return this.addCommand({c:'nodfix',a:args}); }
 g2.prototype.nodfix.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
@@ -361,7 +361,7 @@ g2.prototype.nodfix.prototype = g2.mix(g2.prototype.nod.prototype, {
 * g2().view({cartesian:true})
  *     .nodflt({x:10,y:10})
 */
-g2.prototype.nodflt = function (args) { return this.addCommand({c:'nodflt',a:args}); }
+g2.prototype.nodflt = function (args={}) { return this.addCommand({c:'nodflt',a:args}); }
 g2.prototype.nodflt.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
@@ -528,7 +528,7 @@ g2.prototype.adim.prototype = g2.mix(g2.prototype.arc.prototype, {
 * g2().view({cartesian:true})
  *     .origin({x:10,y:10})
 */
-g2.prototype.origin = function (args) { return this.addCommand({c:'origin',a:args}); }
+g2.prototype.origin = function (args={}) { return this.addCommand({c:'origin',a:args}); }
 g2.prototype.origin.prototype = g2.mix(g2.prototype.nod.prototype, {
     lbloc: 'sw',
     g2() {
