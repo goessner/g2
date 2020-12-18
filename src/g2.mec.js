@@ -1,3 +1,6 @@
+
+"use strict"
+
 /**
  * g2.mec (c) 2013-18 Stefan Goessner
  * @author Stefan Goessner
@@ -8,8 +11,6 @@
  * @description Mechanical extensions. (Requires cartesian coordinates)
  * @returns {g2}
  */
-
-"use strict"
 
 var g2 = g2 || { prototype:{} };  // for jsdoc only ...
 
