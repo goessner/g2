@@ -645,16 +645,17 @@ g2.canvasHdl.prototype = {
     },
     async exe(commands) {
         for (let cmd of commands) {
-            if (cmd.c && this[cmd.c]) {         // explicit command name .. !
+            // cmd.a is an object offering a `g2` method, so call it and execute its returned commands array.
+            if (cmd.a && cmd.a.g2) {
+                this.exe(cmd.a.g2().commands);
+            }
+            // cmd.a is a `g2` object, so directly execute its commands array.
+            else if (cmd.a && cmd.a.commands) this.exe(cmd.a.commands);
+            else if (cmd.c && this[cmd.c]) {         // explicit command name .. !
                 const rx = this[cmd.c](cmd.a);
                 if (rx && rx instanceof Promise) {
                     await rx;
                 }
-            } else if (cmd.a) {                 // should be from 'ins' command
-                if (cmd.a.commands)                // cmd.a is a `g2` object, so directly execute its commands array.
-                    this.exe(cmd.a.commands);
-                if (cmd.a.g2)                      // cmd.a is an object offering a `g2` method, so call it and execute its returned commands array.
-                    this.exe(cmd.a.g2().commands);
             }
         }
     },
