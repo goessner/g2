@@ -628,15 +628,13 @@ g2.prototype.ply.prototype = g2.mix(g2.labelIfc, g2.markIfc, {
             len = [];
 
         for (let itr = 0; itr < pitr.len; itr++) {
-            const next = pitr(itr + 1) ? pitr(itr + 1) : pitr(0);
-            if ((itr === pitr.len - 1 && this.closed) || itr < pitr.len - 1) {
-                pts.push(pitr(itr));
-                len.push(Math.hypot(
-                    next.x - pitr(itr).x,
-                    next.y - pitr(itr).y)
-                );
-            }
+            const next = pitr((itr + 1) % pitr.len);
+            pts.push(pitr(itr));
+            len.push(Math.hypot(
+                next.x - pitr(itr).x,
+                next.y - pitr(itr).y));
         }
+        this.closed || len.pop();
         const { t2, x, y, dx, dy } = (() => {
             const target = t * len.reduce((a, b) => a + b);
             for (let itr = 0, tmp = 0; itr < pts.length; itr++) {
@@ -655,8 +653,8 @@ g2.prototype.ply.prototype = g2.mix(g2.labelIfc, g2.markIfc, {
         })();
         const len2 = Math.hypot(dx, dy);
         return {
-            x: this.x + x + dx * t2,
-            y: this.y + y + dy * t2,
+            x: (this.x || 0) + x + dx * t2,
+            y: (this.y || 0) + y + dy * t2,
             nx: len2 ? dy / len2 : 1,
             ny: len2 ? dx / len2 : 0,
         };

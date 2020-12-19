@@ -733,7 +733,7 @@ g2.canvasHdl.prototype = {
         this.ctx.lineTo(args.p2 && args.p2.x || args.x2 || 0, args.p2 && args.p2.y || args.y2 || 0);
         this.stroke(args);
     },
-    ply: function ({ pts, closed, w = 0, _itr }) {
+    ply({ pts, closed, w = 0, _itr }) {
         if (_itr && _itr.len) {
             const { x = 0, y = 0 } = arguments[0].p !== undefined ? arguments[0].p : arguments[0];
             let p, i, len = _itr.len, istrf = !!(x || y || w), cw, sw;

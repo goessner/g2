@@ -466,8 +466,8 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
             .ins(g => {
                 for (const pts of startLoc) {
                     let dist = (10*args.lw||10); // minimum distance a vector has to be
-                    const {x,y} = args.pointAt(pts),
-                    t = {
+                    const {x,y} = args.pointAt(pts);
+                    const t = {
                         x:x+Math.cos(args.w)*dist,
                         y:y+Math.sin(args.w)*dist
                     };
