@@ -606,7 +606,7 @@ g2.prototype.origin.prototype = g2.mix(g2.prototype.nod.prototype, {
     }
 });
 
-g2.prototype.ply.prototype = g2.mix(g2.markIfc, {
+g2.prototype.ply.prototype = g2.mix(g2.labelIfc, g2.markIfc, {
     get isSolid() { return this.closed && this.fs && this.fs !== 'transparent'; },
     get sh() { return this.state & g2.OVER ? [0, 0, 5, "black"] : false; },
     // get len() {
@@ -626,6 +626,7 @@ g2.prototype.ply.prototype = g2.mix(g2.markIfc, {
             pitr = g2.pntItrOf(this.pts),
             pts = [],
             len = [];
+
         for (let itr = 0; itr < pitr.len; itr++) {
             const next = pitr(itr + 1) ? pitr(itr + 1) : pitr(0);
             if ((itr === pitr.len - 1 && this.closed) || itr < pitr.len - 1) {
@@ -638,8 +639,7 @@ g2.prototype.ply.prototype = g2.mix(g2.markIfc, {
         }
         const { t2, x, y, dx, dy } = (() => {
             const target = t * len.reduce((a, b) => a + b);
-            let tmp = 0;
-            for (let itr = 0; itr < pts.length; itr++) {
+            for (let itr = 0, tmp = 0; itr < pts.length; itr++) {
                 tmp += len[itr];
                 const next = pitr(itr + 1).x ? pitr(itr + 1) : pitr(0);
                 if (tmp >= target) {
@@ -655,10 +655,10 @@ g2.prototype.ply.prototype = g2.mix(g2.markIfc, {
         })();
         const len2 = Math.hypot(dx, dy);
         return {
-            x: x + dx * t2,
-            y: y + dy * t2,
-            dx: len2 ? dx / len2 : 1,
-            dy: len2 ? dy / len2 : 0
+            x: this.x + x + dx * t2,
+            y: this.y + y + dy * t2,
+            nx: len2 ? dy / len2 : 1,
+            ny: len2 ? dx / len2 : 0,
         };
     },
     hit({ x, y, eps }) {
@@ -668,7 +668,7 @@ g2.prototype.ply.prototype = g2.mix(g2.markIfc, {
     drag({ dx, dy }) { this.x += dx; this.y += dy; },
     get g2() {
         const e = g2();
-        // TODO this.label && e.ins(e => this.drawLabel(e));
+        this.label && e.ins(e => this.drawLabel(e));
         this.mark && e.ins(e => this.drawMark(e, this.closed));
         return () => g2().ply(g2.flatten(this)).ins(e);
     }
