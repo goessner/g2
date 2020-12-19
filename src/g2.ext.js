@@ -88,13 +88,13 @@ g2.labelIfc = {
         if (s && s[0] === "@" && this[s.substr(1)]) {
             s = s.substr(1);
             let val = this[s];
-            val = Number.isInteger(val) ? val 
+            val = Number.isInteger(val) ? val
                 : Number(val).toFixed(Math.max(g2.symbol.labelSignificantDigits - Math.log10(val), 0));
 
             s = `${val}${s === 'angle' ? "°" : ""}`;
         }
         return s;
-},
+    },
     drawLabel(g) {
         const lbl = this.label;
         const font = lbl.font || g2.defaultStyle.font;
@@ -111,14 +111,43 @@ g2.labelIfc = {
         if (lbl.border) g.ell({ x: p.x, y: p.y, rx, ry, ls: lbl.fs || 'black', fs: lbl.fs2 || '#ffc' });
         g.txt({
             str, x: p.x, y: p.y,
-                thal: "center", tval: "middle",
+            thal: "center", tval: "middle",
             fs: lbl.fs || 'black', font: lbl.font
         });
         return g;
-}
+    }
 }
 
-g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
+g2.markIfc = {
+    markAt(loc) {
+        const p = this.pointAt(loc);
+        const w = Math.atan2(p.ny, p.nx) + Math.PI / 2;
+        return {
+            grp: this.getMarkSymbol(), x: p.x, y: p.y, w: w, scl: this.lw || 1,
+            ls: this.ls || '#000', fs: this.fs || this.ls || '#000'
+        }
+    },
+    getMarkSymbol() {
+        // Use tick as default
+        const mrk = this.mark
+        if (typeof mrk === 'number' || !mrk) return g2.symbol.tick;
+        if (typeof mrk.symbol === 'object') return mrk.symbol;
+        if (typeof mrk.symbol === 'string') return g2.symbol[mrk.symbol]
+    },
+    // loop is for elements that close, e.g. rec or cir => loc at 0 === loc at 1
+    drawMark(g, closed = false) {
+        const count = typeof this.mark === 'object' ? this.mark.count : this.mark;
+        const loc = count ?
+            Array.from(Array(count)).map((_, i) => i / (count - !closed)) :
+            this.mark.loc;
+        for (let l of loc) {
+            g.use(this.markAt(l));
+        }
+        return g;
+    }
+}
+
+g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, g2.markIfc, {
     w: 0,   // default start angle (used for dash-dot orgin and editing)
     lbloc: 'c',
     get isSolid() { return this.fs && this.fs !== 'transparent' },
@@ -126,10 +155,11 @@ g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
     get lsh() { return this.state & g2.OVER; },
     get sh() { return this.state & g2.OVER ? [0, 0, 5, "black"] : false },
     get g2() {      // dynamically switch existence of method via getter ... cool !
-        return !this.label ? false 
-                           : () => g2().cir(g2.flatten(this))      // hand object stripped from `g2`, 
-                                       .ins((g)=>this.drawLabel(g));  // avoiding infinite recursion !
-},
+        const e = g2(); // hand object stripped from `g2`
+        this.label && e.ins((g) => this.drawLabel(g));
+        this.mark && e.ins((g) => this.drawMark(g, true));
+        return () => g2().cir(g2.flatten(this)).ins(e); // avoiding infinite recursion !
+    },
     pointAt(loc) {
         const Q = Math.SQRT2 / 2;
         const LOC = { c: [0, 0], e: [1, 0], ne: [Q, Q], n: [0, 1], nw: [-Q, Q], w: [-1, 0], sw: [-Q, -Q], s: [0, -1], se: [Q, -Q] };
@@ -141,15 +171,15 @@ g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
             nx: q[0],
             ny: q[1]
         };
-},
+    },
     hit({ x, y, eps }) {
         return this.isSolid ? g2.isPntInCir({ x, y }, this, eps)
             : g2.isPntOnCir({ x, y }, this, eps);
-},
+    },
     drag({ dx, dy }) { this.x += dx; this.y += dy },
 });
 
-g2.prototype.lin.prototype = g2.mix(g2.labelIfc, {
+g2.prototype.lin.prototype = g2.mix(g2.labelIfc, g2.markIfc, {
     // p1 vector notation !
     get p1() { return { x1: this.x1, y1: this.y1 }; },  // relevant if 'p1' is *not* explicite given. 
     get x1() { return Object.getOwnPropertyDescriptor(this, 'p1') ? this.p1.x : 0; },
@@ -165,16 +195,19 @@ g2.prototype.lin.prototype = g2.mix(g2.labelIfc, {
 
     isSolid: false,
     get len() { return Math.hypot(this.x2 - this.x1, this.y2 - this.y1); },
-    get sh() { return this.state & g2.OVER ? [0,0,5,"black"] : false },
+    get sh() { return this.state & g2.OVER ? [0, 0, 5, "black"] : false },
     get g2() {      // dynamically switch existence of method via getter ... !
-        return !this.label ? false : () => g2().lin(g2.flatten(this)).ins((g)=>this.drawLabel(g));
-},
+        const e = g2();
+        this.label && e.ins(e => this.drawLabel(e));
+        this.mark && e.ins(e => this.drawMark(e));
+        return () => g2().lin(g2.flatten(this)).ins(e);
+    },
 
     pointAt(loc) {
         let t = loc === "beg" ? 0
             : loc === "end" ? 1
                 : (loc + 0 === loc) ? loc // numerical arg ..
-              : 0.5,   // 'mid' ..
+                    : 0.5,   // 'mid' ..
             dx = this.x2 - this.x1,
             dy = this.y2 - this.y1,
             len = Math.hypot(dx, dy);
@@ -183,66 +216,82 @@ g2.prototype.lin.prototype = g2.mix(g2.labelIfc, {
             y: this.y1 + dy * t,
             nx: len ? dy / len : 0,
             ny: len ? -dx / len : -1
-       };
-},
+        };
+    },
     hit({ x, y, eps }) {
         return g2.isPntOnLin({ x, y }, { x: this.x1, y: this.y1 }, { x: this.x2, y: this.y2 }, eps);
-},
+    },
     drag({ dx, dy }) {
         this.x1 += dx; this.x2 += dx;
         this.y1 += dy; this.y2 += dy;
-}
+    }
 });
 
-g2.prototype.rec.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
+g2.prototype.rec.prototype = g2.mix(g2.pointIfc, g2.labelIfc, g2.markIfc, {
     get len() { return 2 * (this.b + this.h); },
     get isSolid() { return this.fs && this.fs !== 'transparent' },
     get lsh() { return this.state & g2.OVER; },
     get sh() { return this.state & g2.OVER ? [0, 0, 5, "black"] : false; },
     get g2() {      // dynamically switch existence of method via getter ... !
-        return !this.label ? false : () => g2().rec(g2.flatten(this)).ins((g) => this.drawLabel(g));
-},
+        const e = g2();
+        this.label && e.ins(e => this.drawLabel(e));
+        this.mark && e.ins(e => this.drawMark(e, true));
+        return () => g2().rec(g2.flatten(this)).ins(e);
+    },
     lbloc: 'c',
     pointAt(loc) {
-        const LOC = { c: [0, 0], e: [1, 0], ne: [0.95, 0.95], n: [0, 1], nw: [-0.95, 0.95], w: [-1, 0], sw: [-0.95, -0.95], s: [0, -1], se: [0.95, -0.95] };
-        const q = LOC[loc || "c"] || [0, 0];
+        const locAt = (loc) => {
+            const o = { c: [0, 0], e: [1, 0], ne: [0.95, 0.95], n: [0, 1], nw: [-0.95, 0.95], w: [-1, 0], sw: [-0.95, -0.95], s: [0, -1], se: [0.95, -0.95] };
+
+            if (o[loc]) return o[loc];
+
+            const w = 2 * Math.PI * loc + pi / 4;
+            if (loc <= 0.25) return [1 / Math.tan(w), 1];
+            if (loc <= 0.50) return [-1, -Math.tan(w)];
+            if (loc <= 0.75) return [- 1 / Math.tan(w), -1];
+            if (loc <= 1.00) return [1, Math.tan(w)];
+        }
+        const q = locAt(loc);
         return {
             x: this.x + (1 + q[0]) * this.b / 2,
             y: this.y + (1 + q[1]) * this.h / 2,
-            nx: q[0],
-            ny: q[1]
+            nx: 1 - Math.abs(q[0]) < 0.01 ? q[0] : 0,
+            ny: 1 - Math.abs(q[1]) < 0.01 ? q[1] : 0
         };
-},
+    },
     hit({ x, y, eps }) {
         return this.isSolid ? g2.isPntInBox({ x, y }, { x: this.x + this.b / 2, y: this.y + this.h / 2, b: this.b / 2, h: this.h / 2 }, eps)
             : g2.isPntOnBox({ x, y }, { x: this.x + this.b / 2, y: this.y + this.h / 2, b: this.b / 2, h: this.h / 2 }, eps);
-},
+    },
     drag({ dx, dy }) { this.x += dx; this.y += dy }
 });
 
-g2.prototype.arc.prototype = g2.mix(g2.pointIfc, g2.labelIfc, {
+g2.prototype.arc.prototype = g2.mix(g2.pointIfc, g2.labelIfc, g2.markIfc, {
     get len() { return Math.abs(this.r * this.dw); },
     isSolid: false,
     get angle() { return this.dw / Math.PI * 180; },
     get sh() { return this.state & g2.OVER ? [0, 0, 5, "black"] : false },
     get g2() {      // dynamically switch existence of method via getter ... !
-        return !this.label ? false : () => g2().arc(g2.flatten(this)).ins((g) => this.drawLabel(g));
-},
+        const e = g2();
+        this.label && e.ins(e => this.drawLabel(e));
+        this.mark && e.ins(e => this.drawMark(e));
+        return () => g2().arc(g2.flatten(this)).ins(e);  
+    },
     lbloc: 'mid',
     pointAt(loc) {
         let t = loc === "beg" ? 0
             : loc === "end" ? 1
                 : loc === "mid" ? 0.5
                     : loc + 0 === loc ? loc
-              : 0.5,
+                        : 0.5,
             ang = (this.w || 0) + t * (this.dw || Math.PI * 2), cang = Math.cos(ang), sang = Math.sin(ang), r = loc === "c" ? 0 : this.r;
         return {
             x: this.x + r * cang,
             y: this.y + r * sang,
             nx: cang,
             ny: sang
-       };
-},
+        };
+    },
     hit({ x, y, eps }) { return g2.isPntOnArc({ x, y }, this, eps) },
     drag({ dx, dy }) { this.x += dx; this.y += dy; },
 });
@@ -269,7 +318,7 @@ g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
         const { x, y, r, b = 4, shape = 'cir', ls = 'black', fs = '#ccc', sh } = this;
         return shape === 'cir' ? g2().cir({ x, y, r, ls, fs, sh }).ins((g) => this.label && this.drawLabel(g))
             : g2().rec({ x: x - b, y: y - b, b: 2 * b, h: 2 * b, ls, fs, sh }).ins((g) => this.label && this.drawLabel(g));
-}
+    }
 });
 
 /**
@@ -290,9 +339,10 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     isSolid: true,
     lbloc: 'se',
     g2() {      // in contrast to `g2.prototype.cir.prototype`, `g2()` is called always !
-        return g2().cir({ ...g2.flatten(this), r: this.r * this.scl })
+        return g2()
+            .cir({ ...g2.flatten(this), r: this.r * this.scl })
             .ins((g) => this.label && this.drawLabel(g))
-}
+    }
 });
 
 /**
@@ -314,7 +364,7 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
             .cir({ r: 2.5, fs: '@ls', ls: 'transparent' })
             .end()
             .ins((g) => this.label && this.drawLabel(g));
-}
+    }
 })
 
 /**
@@ -328,20 +378,20 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
 */
 g2.prototype.gnd = function (args = {}) { return this.addCommand({ c: 'gnd', a: args }); }
 g2.prototype.gnd.prototype = g2.mix(g2.prototype.nod.prototype, {
-     g2() {
+    g2() {
         return g2()
             .beg(g2.flatten(this))
             .cir({ x: 0, y: 0, r: 6 })
-                .p()
+            .p()
             .m({ x: 0, y: 6 })
             .a({ dw: Math.PI / 2, x: -6, y: 0 })
             .l({ x: 6, y: 0 })
             .a({ dw: -Math.PI / 2, x: 0, y: -6 })
-                .z()
+            .z()
             .fill({ fs: g2.symbol.nodcolor })
             .end()
             .ins((g) => this.label && this.drawLabel(g));
-}
+    }
 })
 
 g2.prototype.nodfix = function (args = {}) { return this.addCommand({ c: 'nodfix', a: args }); }
@@ -349,7 +399,7 @@ g2.prototype.nodfix.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
             .beg(g2.flatten(this))
-                .p()
+            .p()
             .m({ x: -8, y: -12 })
             .l({ x: 0, y: 0 })
             .l({ x: 8, y: -12 })
@@ -357,7 +407,7 @@ g2.prototype.nodfix.prototype = g2.mix(g2.prototype.nod.prototype, {
             .cir({ x: 0, y: 0, r: this.r })
             .end()
             .ins((g) => this.label && this.drawLabel(g));
-}
+    }
 })
 /**
 * @method
@@ -374,7 +424,7 @@ g2.prototype.nodflt.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
             .beg(g2.flatten(this))
-                .p()
+            .p()
             .m({ x: -8, y: -12 })
             .l({ x: 0, y: 0 })
             .l({ x: 8, y: -12 })
@@ -384,7 +434,7 @@ g2.prototype.nodflt.prototype = g2.mix(g2.prototype.nod.prototype, {
             .lin({ x1: -9, y1: -15.5, x2: 9, y2: -15.5, ls: g2.symbol.nodcolor, lw: 2 })
             .end()
             .ins((g) => this.label && this.drawLabel(g));
-}
+    }
 })
 
 /**
@@ -414,7 +464,7 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype, {
             .use({ grp: arrowHead, x: r, y: 0 })
             .end()
             .ins((g) => this.label && this.drawLabel(g));
-}
+    }
 })
 
 /**
@@ -442,13 +492,13 @@ g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
         return g2()
             .beg({ x, y, w, ls, lw, lc, lj })
             .arc({ r, w: 0, dw })
-                .use({
+            .use({
                 grp: arrowHead, x: r * Math.cos(dw), y: r * Math.sin(dw),
                 w: (dw >= 0 ? dw + Math.PI / 2 - bw / 2 : dw - Math.PI / 2 + bw / 2)
-                })
+            })
             .end()
             .ins((g) => label && this.drawLabel(g));
-}
+    }
 });
 
 /**
@@ -474,7 +524,7 @@ g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
             pnt.y += this.off * pnt.ny;
         }
         return pnt;
-},
+    },
     g2() {
         const { x1, y1, x2, y2, lw = 1, lc = 'round', lj = 'round', off = 0, inside = true, ls, fs = ls || "#000", label } = this;
         const dx = x2 - x1, dy = y2 - y1, r = Math.hypot(dx, dy);
@@ -490,7 +540,7 @@ g2.prototype.dim.prototype = g2.mix(g2.prototype.lin.prototype, {
             .lin({ x1: r, y1: off, x2: r, y2: 0 })
             .end()
             .ins((g) => label && this.drawLabel(g));
-}
+    }
 });
 
 /**
@@ -526,7 +576,7 @@ g2.prototype.adim.prototype = g2.mix(g2.prototype.arc.prototype, {
             .use({ grp: arrowHead, x: r * Math.cos(dw), y: r * Math.sin(dw), w: (!outside && dw > 0 || outside && dw < 0 ? dw + Math.PI / 2 - bw / 2 : dw - Math.PI / 2 + bw / 2) })
             .end()
             .ins((g) => label && this.drawLabel(g));
-}
+    }
 });
 
 /**
@@ -553,10 +603,10 @@ g2.prototype.origin.prototype = g2.mix(g2.prototype.nod.prototype, {
             .cir({ x: 0, y: 0, r: lw + 1, fs: '#ccc' })
             .end()
             .ins((g) => this.label && this.drawLabel(g));
-}
-})
+    }
+});
 
-g2.prototype.ply.prototype = {
+g2.prototype.ply.prototype = g2.mix(g2.markIfc, {
     get isSolid() { return this.closed && this.fs && this.fs !== 'transparent'; },
     get sh() { return this.state & g2.OVER ? [0, 0, 5, "black"] : false; },
     // get len() {
@@ -572,7 +622,7 @@ g2.prototype.ply.prototype = {
         const t = loc === "beg" ? 0
             : loc === "end" ? 1
                 : (loc + 0 === loc) ? loc // numerical arg ..
-                : 0.5,   // 'mid' ..
+                    : 0.5,   // 'mid' ..
             pitr = g2.pntItrOf(this.pts),
             pts = [],
             len = [];
@@ -610,13 +660,19 @@ g2.prototype.ply.prototype = {
             dx: len2 ? dx / len2 : 1,
             dy: len2 ? dy / len2 : 0
         };
-},
+    },
     hit({ x, y, eps }) {
         return this.isSolid ? g2.isPntInPly({ x: x - this.x, y: y - this.y }, this, eps)   // translational transformation only .. at current .. !
             : g2.isPntOnPly({ x: x - this.x, y: y - this.y }, this, eps);
-},
-    drag({ dx, dy }) { this.x += dx; this.y += dy; }
-}
+    },
+    drag({ dx, dy }) { this.x += dx; this.y += dy; },
+    get g2() {
+        const e = g2();
+        // TODO this.label && e.ins(e => this.drawLabel(e));
+        this.mark && e.ins(e => this.drawMark(e, this.closed));
+        return () => g2().ply(g2.flatten(this)).ins(e);
+    }
+});
 
 g2.prototype.use.prototype = {
     // p vector notation !
@@ -627,17 +683,17 @@ g2.prototype.use.prototype = {
     set y(q) { if (Object.getOwnPropertyDescriptor(this, 'p')) this.p.y = q; },
 
     isSolid: false,
-/*
-    hit(at) {
-        for (const cmd of this.grp.commands) {
-            if (cmd.a.hit && cmd.a.hit(at))
-                return true;
-        }
-        return false;
-},
-
-    pointAt: g2.prototype.cir.prototype.pointAt,
-*/
+    /*
+        hit(at) {
+            for (const cmd of this.grp.commands) {
+                if (cmd.a.hit && cmd.a.hit(at))
+                    return true;
+            }
+            return false;
+    },
+    
+        pointAt: g2.prototype.cir.prototype.pointAt,
+    */
 };
 // complex macros / add prototypes to argument objects
 
@@ -712,7 +768,7 @@ g2.prototype.spline.prototype = g2.mixin({}, g2.prototype.ply.prototype, {
             if (istrf) gbez.end();
         }
         return gbez;
-}
+    }
 })
 
 /**
@@ -738,7 +794,7 @@ g2.prototype.label = function label({ str, loc, off, fs, font, fs2 }) {
     if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({ c: 'label', a: arguments[0] });
-}
+    }
     return this;
 }
 g2.prototype.label.prototype = {
@@ -753,7 +809,7 @@ g2.prototype.label.prototype = {
 
             if (str[0] === "@" && (s = this._refelem.a[str.substr(1)]) !== undefined)   // expect 's' as string convertable to a number ...
                 str = "" + (Number.isInteger(+s) ? +s : Number(s).toFixed(Math.max(g2.symbol.labelSignificantDigits - Math.log10(s), 0)))  // use at least 3 significant digits after decimal point.
-                         + (str.substr(1) === "angle" ? "°" : "");
+                    + (str.substr(1) === "angle" ? "°" : "");
             n = str.length;
             if (tanlen > Number.EPSILON) {
                 diag = Math.hypot(p.dx, n * p.dy);
@@ -772,7 +828,7 @@ g2.prototype.label.prototype = {
             });
         }
         return label;
-}
+    }
 }
 
 /**
@@ -798,7 +854,7 @@ g2.prototype.mark = function mark({ mrk, loc, dir, fs, ls }) {
     if (idx !== undefined) {
         arguments[0]['_refelem'] = this.commands[idx];
         this.addCommand({ c: 'mark', a: arguments[0] });
-}
+    }
     return this;
 }
 g2.prototype.mark.prototype = {
@@ -806,13 +862,13 @@ g2.prototype.mark.prototype = {
         const p = elem.pointAt(loc),
             w = dir < 0 ? Math.atan2(-p.dy, -p.dx)
                 : (dir > 0 || dir === undefined) ? Math.atan2(p.dy, p.dx)
-                : 0;
+                    : 0;
         return {
             grp: mrk, x: p.x, y: p.y, w: w, scl: elem.lw || 1,
             ls: ls || elem.ls || 'black',
             fs: fs || ls || elem.ls || 'black'
         }
-},
+    },
     g2() {
         let { mrk, loc, dir, fs, ls } = this,
             elem = this._refelem.a,
@@ -823,5 +879,5 @@ g2.prototype.mark.prototype = {
         else
             marks.use(this.markAt(elem, loc, mrk, dir, ls, fs));
         return marks;
-}
+    }
 }
