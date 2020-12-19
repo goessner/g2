@@ -362,7 +362,7 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
  * g2().dblnod({x:10,y:10})
 */
 g2.prototype.dblnod = function ({ x = 0, y = 0 }) { return this.addCommand({ c: 'dblnod', a: arguments[0] }); }
-g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
+g2.prototype.dblnod.prototype = g2.mix(g2.prototype.cir.prototype, {
     get r() { return 6; },
     get isSolid() { return true; },
     g2() {
@@ -495,7 +495,7 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype, {
             .end()
             .ins((g) => this.label && this.drawLabel(g));
     }
-})
+});
 
 /**
 * Arc as Vector
@@ -511,7 +511,7 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype, {
 * @example
 * g2().avec({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
 */
-g2.prototype.avec = function adim(args) { return this.addCommand({ c: 'avec', a: args }); }
+g2.prototype.avec = function avec(args) { return this.addCommand({ c: 'avec', a: args }); }
 g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
     g2() {
         const { x, y, r, w, dw = 0, lw = 1, lc = 'round', lj = 'round', ls, fs = ls || "#000", label } = this;
@@ -746,7 +746,7 @@ g2.prototype.spline = function spline({ pts, closed, x, y, w }) {
     arguments[0]._itr = g2.pntItrOf(pts);
     return this.addCommand({ c: 'spline', a: arguments[0] });
 }
-g2.prototype.spline.prototype = g2.mixin({}, g2.prototype.ply.prototype, {
+g2.prototype.spline.prototype = g2.mix(g2.prototype.ply.prototype, {
     g2: function () {
         let { pts, closed, x, y, w, ls, lw, fs, sh } = this, itr = this._itr, gbez;
         if (itr) {
@@ -797,115 +797,4 @@ g2.prototype.spline.prototype = g2.mixin({}, g2.prototype.ply.prototype, {
         }
         return gbez;
     }
-})
-
-/**
-* Add label to certain elements.
-* Deprecated !!
-* Please note that cartesian flag is necessary.
-* @method
-* @returns {object} g2
-* @param {object} - label arguments object.
-* @property {string} str - label text
-* @property {number | string} loc - label location depending on referenced element. <br>
- *                     'c': centered, wrt. rec, cir, arc <br>
- *                     'beg','mid', 'end', wrt. lin <br>
- *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
-* @property {number} off - offset distance [optional].
-* @example
-* g2().view({cartesian:true})
- *     .cir({x:10,y:10,r:5})
- *     .label({str:'hello',loc:'s',off:10})
-*/
-g2.prototype.label = function label({ str, loc, off, fs, font, fs2 }) {
-    let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a }); // find reference index of previous element adding label to ...
-    if (idx !== undefined) {
-        arguments[0]['_refelem'] = this.commands[idx];
-        this.addCommand({ c: 'label', a: arguments[0] });
-    }
-    return this;
-}
-g2.prototype.label.prototype = {
-    g2() {
-        let label = g2();
-        if (this._refelem) {
-            let { str, loc, off, fs, font, border, fs2 } = this,
-                p = this._refelem.a.pointAt(loc),          // 'loc'ation in coordinates ..
-                tanlen = p.dx * p.dx || p.dy * p.dy;            // tangent length .. (0 || 1) .. !
-            let h = parseInt(font || g2.defaultStyle.font),  // char height
-                diag, phi, n;                              // n .. str length
-
-            if (str[0] === "@" && (s = this._refelem.a[str.substr(1)]) !== undefined)   // expect 's' as string convertable to a number ...
-                str = "" + (Number.isInteger(+s) ? +s : Number(s).toFixed(Math.max(g2.symbol.labelSignificantDigits - Math.log10(s), 0)))  // use at least 3 significant digits after decimal point.
-                    + (str.substr(1) === "angle" ? "°" : "");
-            n = str.length;
-            if (tanlen > Number.EPSILON) {
-                diag = Math.hypot(p.dx, n * p.dy);
-                off = off === undefined ? 1 : off;
-                p.x += tanlen * p.dy * (off + n * n * 0.8 * h / 2 / diag * Math.sign(off));
-                p.y += tanlen * p.dx * (-off - h / 2 / diag * Math.sign(off));
-            }
-            fs = fs || 'black';
-            if (border)
-                label.ell({ x: p.x, y: p.y, rx: n * 0.8 * h / 2 + 2, ry: h / 2 + 2, ls: fs || 'black', fs: fs2 || '#ffc' });
-            //         .rec({x:p.x-n*0.8*h/2/Math.SQRT2,y:p.y-h/2/Math.SQRT2,b:n*0.8*h/Math.SQRT2,h:h/Math.SQRT2})
-            label.txt({
-                str, x: p.x, y: p.y,
-                thal: "center", tval: "middle",
-                fs: fs || 'black', font
-            });
-        }
-        return label;
-    }
-}
-
-/**
-* Draw marker on line element.
-* Deprecated !!
-* @method
-* @returns {object} g2
-* @param {object} - Marker arguments object.
-* @property {object | string} mrk - `g2` object or `name` of mark in `symbol` namespace.
-* @property {number | string | number[] | string[]} loc - line location ['beg','end',0.1,0.9,'mid',...].<br>
-*
-* @property {int} [dir=0] - Direction:<br>
- *                   -1 : negative tangent direction<br>
- *                    0 : no orientation (rotation)<br>
- *                    1 : positive tangent direction
-* @example
-* g2().lin({x1:10,y1:10,x2:100,y2:10})
- *     .mark({mrk:"tick",loc:0.75,dir:1})
-*
-*/
-g2.prototype.mark = function mark({ mrk, loc, dir, fs, ls }) {
-    let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a }); // find reference index of previous element adding mark to ...
-    if (idx !== undefined) {
-        arguments[0]['_refelem'] = this.commands[idx];
-        this.addCommand({ c: 'mark', a: arguments[0] });
-    }
-    return this;
-}
-g2.prototype.mark.prototype = {
-    markAt(elem, loc, mrk, dir, ls, fs) {
-        const p = elem.pointAt(loc),
-            w = dir < 0 ? Math.atan2(-p.dy, -p.dx)
-                : (dir > 0 || dir === undefined) ? Math.atan2(p.dy, p.dx)
-                    : 0;
-        return {
-            grp: mrk, x: p.x, y: p.y, w: w, scl: elem.lw || 1,
-            ls: ls || elem.ls || 'black',
-            fs: fs || ls || elem.ls || 'black'
-        }
-    },
-    g2() {
-        let { mrk, loc, dir, fs, ls } = this,
-            elem = this._refelem.a,
-            marks = g2();
-        if (Array.isArray(loc))
-            for (let l of loc)
-                marks.use(this.markAt(elem, l, mrk, dir, ls, fs));
-        else
-            marks.use(this.markAt(elem, loc, mrk, dir, ls, fs));
-        return marks;
-    }
-}
+});

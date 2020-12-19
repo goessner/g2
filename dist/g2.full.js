@@ -600,15 +600,6 @@ g2.mix = function mix(...protos) {
         mixture = Object.defineProperties(mixture, Object.getOwnPropertyDescriptors(p));
     return mixture;
 }
-/* deprecated */
-g2.mixin = function mixin(obj, ...protos) {
-    protos.forEach(p => {
-        Object.keys(p).forEach(k => {
-            Object.defineProperty(obj, k, Object.getOwnPropertyDescriptor(p, k));
-        })
-    })
-    return obj;
-}
 
 /**
  * Copy properties, even as getters .. a useful part of the above ..
@@ -1059,19 +1050,6 @@ g2.canvasHdl.prototype = {
         this.gridExp = exp;
         return sz;
     }
-}
-
-// utils
-// deprecated -- remove both !!!
-g2.zoomView = function ({ scl, x, y }) { return { scl, x: (1 - scl) * x, y: (1 - scl) * y } }
-// fn argument must be a function with (optional) timestamp 't' as single argument
-// returning true to continue or false to stop RAF.
-g2.render = function render(fn) {
-    function animate(t) {
-        if (fn(t))
-            requestAnimationFrame(animate);
-    }
-    animate(performance.now());
 }
 
 // use it with node.js ... ?
@@ -1613,7 +1591,7 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
  * g2().dblnod({x:10,y:10})
 */
 g2.prototype.dblnod = function ({ x = 0, y = 0 }) { return this.addCommand({ c: 'dblnod', a: arguments[0] }); }
-g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
+g2.prototype.dblnod.prototype = g2.mix(g2.prototype.cir.prototype, {
     get r() { return 6; },
     get isSolid() { return true; },
     g2() {
@@ -1746,7 +1724,7 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype, {
             .end()
             .ins((g) => this.label && this.drawLabel(g));
     }
-})
+});
 
 /**
 * Arc as Vector
@@ -1762,7 +1740,7 @@ g2.prototype.vec.prototype = g2.mix(g2.prototype.lin.prototype, {
 * @example
 * g2().avec({x:100,y:70,r:50,w:pi/3,dw:4*pi/3})
 */
-g2.prototype.avec = function adim(args) { return this.addCommand({ c: 'avec', a: args }); }
+g2.prototype.avec = function avec(args) { return this.addCommand({ c: 'avec', a: args }); }
 g2.prototype.avec.prototype = g2.mix(g2.prototype.arc.prototype, {
     g2() {
         const { x, y, r, w, dw = 0, lw = 1, lc = 'round', lj = 'round', ls, fs = ls || "#000", label } = this;
@@ -1997,7 +1975,7 @@ g2.prototype.spline = function spline({ pts, closed, x, y, w }) {
     arguments[0]._itr = g2.pntItrOf(pts);
     return this.addCommand({ c: 'spline', a: arguments[0] });
 }
-g2.prototype.spline.prototype = g2.mixin({}, g2.prototype.ply.prototype, {
+g2.prototype.spline.prototype = g2.mix(g2.prototype.ply.prototype, {
     g2: function () {
         let { pts, closed, x, y, w, ls, lw, fs, sh } = this, itr = this._itr, gbez;
         if (itr) {
@@ -2048,119 +2026,7 @@ g2.prototype.spline.prototype = g2.mixin({}, g2.prototype.ply.prototype, {
         }
         return gbez;
     }
-})
-
-/**
-* Add label to certain elements.
-* Deprecated !!
-* Please note that cartesian flag is necessary.
-* @method
-* @returns {object} g2
-* @param {object} - label arguments object.
-* @property {string} str - label text
-* @property {number | string} loc - label location depending on referenced element. <br>
- *                     'c': centered, wrt. rec, cir, arc <br>
- *                     'beg','mid', 'end', wrt. lin <br>
- *                     'n', 'ne', 'e', 'se', 's', 'sw', 'w', or 'nw': cardinal directions
-* @property {number} off - offset distance [optional].
-* @example
-* g2().view({cartesian:true})
- *     .cir({x:10,y:10,r:5})
- *     .label({str:'hello',loc:'s',off:10})
-*/
-g2.prototype.label = function label({ str, loc, off, fs, font, fs2 }) {
-    let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a }); // find reference index of previous element adding label to ...
-    if (idx !== undefined) {
-        arguments[0]['_refelem'] = this.commands[idx];
-        this.addCommand({ c: 'label', a: arguments[0] });
-    }
-    return this;
-}
-g2.prototype.label.prototype = {
-    g2() {
-        let label = g2();
-        if (this._refelem) {
-            let { str, loc, off, fs, font, border, fs2 } = this,
-                p = this._refelem.a.pointAt(loc),          // 'loc'ation in coordinates ..
-                tanlen = p.dx * p.dx || p.dy * p.dy;            // tangent length .. (0 || 1) .. !
-            let h = parseInt(font || g2.defaultStyle.font),  // char height
-                diag, phi, n;                              // n .. str length
-
-            if (str[0] === "@" && (s = this._refelem.a[str.substr(1)]) !== undefined)   // expect 's' as string convertable to a number ...
-                str = "" + (Number.isInteger(+s) ? +s : Number(s).toFixed(Math.max(g2.symbol.labelSignificantDigits - Math.log10(s), 0)))  // use at least 3 significant digits after decimal point.
-                    + (str.substr(1) === "angle" ? "°" : "");
-            n = str.length;
-            if (tanlen > Number.EPSILON) {
-                diag = Math.hypot(p.dx, n * p.dy);
-                off = off === undefined ? 1 : off;
-                p.x += tanlen * p.dy * (off + n * n * 0.8 * h / 2 / diag * Math.sign(off));
-                p.y += tanlen * p.dx * (-off - h / 2 / diag * Math.sign(off));
-            }
-            fs = fs || 'black';
-            if (border)
-                label.ell({ x: p.x, y: p.y, rx: n * 0.8 * h / 2 + 2, ry: h / 2 + 2, ls: fs || 'black', fs: fs2 || '#ffc' });
-            //         .rec({x:p.x-n*0.8*h/2/Math.SQRT2,y:p.y-h/2/Math.SQRT2,b:n*0.8*h/Math.SQRT2,h:h/Math.SQRT2})
-            label.txt({
-                str, x: p.x, y: p.y,
-                thal: "center", tval: "middle",
-                fs: fs || 'black', font
-            });
-        }
-        return label;
-    }
-}
-
-/**
-* Draw marker on line element.
-* Deprecated !!
-* @method
-* @returns {object} g2
-* @param {object} - Marker arguments object.
-* @property {object | string} mrk - `g2` object or `name` of mark in `symbol` namespace.
-* @property {number | string | number[] | string[]} loc - line location ['beg','end',0.1,0.9,'mid',...].<br>
-*
-* @property {int} [dir=0] - Direction:<br>
- *                   -1 : negative tangent direction<br>
- *                    0 : no orientation (rotation)<br>
- *                    1 : positive tangent direction
-* @example
-* g2().lin({x1:10,y1:10,x2:100,y2:10})
- *     .mark({mrk:"tick",loc:0.75,dir:1})
-*
-*/
-g2.prototype.mark = function mark({ mrk, loc, dir, fs, ls }) {
-    let idx = g2.cmdIdxBy(this.commands, (cmd) => { return cmd.a && 'pointAt' in cmd.a }); // find reference index of previous element adding mark to ...
-    if (idx !== undefined) {
-        arguments[0]['_refelem'] = this.commands[idx];
-        this.addCommand({ c: 'mark', a: arguments[0] });
-    }
-    return this;
-}
-g2.prototype.mark.prototype = {
-    markAt(elem, loc, mrk, dir, ls, fs) {
-        const p = elem.pointAt(loc),
-            w = dir < 0 ? Math.atan2(-p.dy, -p.dx)
-                : (dir > 0 || dir === undefined) ? Math.atan2(p.dy, p.dx)
-                    : 0;
-        return {
-            grp: mrk, x: p.x, y: p.y, w: w, scl: elem.lw || 1,
-            ls: ls || elem.ls || 'black',
-            fs: fs || ls || elem.ls || 'black'
-        }
-    },
-    g2() {
-        let { mrk, loc, dir, fs, ls } = this,
-            elem = this._refelem.a,
-            marks = g2();
-        if (Array.isArray(loc))
-            for (let l of loc)
-                marks.use(this.markAt(elem, l, mrk, dir, ls, fs));
-        else
-            marks.use(this.markAt(elem, loc, mrk, dir, ls, fs));
-        return marks;
-    }
-}
-
+});
 
 "use strict"
 
@@ -2191,7 +2057,7 @@ var g2 = g2 || { prototype:{} };  // for jsdoc only ...
  * g2().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})
  */
 g2.prototype.slider = function () { return this.addCommand({c:'slider',a:arguments[0]}); }
-g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
+g2.prototype.slider.prototype = g2.mix(g2.prototype.rec.prototype,{
     g2() {
         const args = Object.assign({b:32,h:16,fs:'@linkfill'}, this);
         return g2()
@@ -2215,7 +2081,7 @@ g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
  * g2().spring({x1:50,y1:100,x2:200,y2:75})
  */
 g2.prototype.spring = function () { return this.addCommand({c:'spring',a:arguments[0]}); }
-g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.spring.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({h:16}, this);
         const len = Math.hypot(args.x2-args.x1, args.y2-args.y1);
@@ -2249,7 +2115,7 @@ g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  *  * g2().damper({x1:60,y1:120,x2:200,y2:75})
  */
 g2.prototype.damper = function () { return this.addCommand({c:'damper',a:arguments[0]}); }
-g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.damper.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({h:16}, this);
         const len = Math.hypot(args.x2-args.x1, args.y2-args.y1);
@@ -2290,7 +2156,7 @@ g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  *     .link({pts:[A,B,E,A,D,C]})
  */
 g2.prototype.link = function () { return this.addCommand({c:'link',a:arguments[0]}); }
-g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.link.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         const args = Object.assign({ls:'@linkcolor',fs:'transparent'}, this);
         return g2().ply(Object.assign({}, this, {closed:true,ls:args.ls,fs:args.fs,lw:7,lc:'round',lj:'round'}));
@@ -2315,7 +2181,7 @@ g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *     .link({pts:[A,B,E,A,D,C]})
  */
 g2.prototype.link2 = function () { return this.addCommand({c:'link2',a:arguments[0]}); }
-g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.link2.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         return g2()
             .ply(Object.assign({closed:true,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this))
@@ -2338,7 +2204,7 @@ g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *     .beam({pts:[[200,125][50,125][50,50][200,50]]})
  */
 g2.prototype.beam = function () { return this.addCommand({c:'beam',a:arguments[0]}); }
-g2.prototype.beam.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.beam.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         return g2().ply(Object.assign({closed:false,ls:'@linkcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this));
     }
@@ -2358,7 +2224,7 @@ g2.prototype.beam.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *     .beam2({pts:[[200,125][50,125][50,50][200,50]]})
  */
 g2.prototype.beam2 = function () { return this.addCommand({c:'beam2',a:arguments[0]}); }
-g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.beam2.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         return g2()
             .ply(Object.assign({closed:false,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this))
@@ -2380,7 +2246,7 @@ g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * g2().bar({x1:50,y1:20,x2:250,y2:120})
  */
 g2.prototype.bar = function () { return this.addCommand({c:'bar',a:arguments[0]}); }
-g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.bar.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         return g2().lin(Object.assign({ls:'@linkcolor',lw:6,lc:'round'},this));
     }
@@ -2399,7 +2265,7 @@ g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * g2().bar2({x1:50,y1:20,x2:250,y2:120})
  */
 g2.prototype.bar2 = function () { return this.addCommand({c:'bar2',a:arguments[0]}); }
-g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.bar2.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({}, this);
         return g2()
@@ -2422,7 +2288,7 @@ g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * g2().pulley({x:100,y:75,r:50})
  */
 g2.prototype.pulley = function () { return this.addCommand({c:'pulley',a:arguments[0]}); }
-g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
+g2.prototype.pulley.prototype = g2.mix(g2.prototype.cir.prototype,{
     g2() {
         const args = Object.assign({}, this);
         return g2()
@@ -2449,7 +2315,7 @@ g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * g2().pulley2({x:50,y:30,r:25})
  */
 g2.prototype.pulley2 = function () { return this.addCommand({c:'pulley2',a:arguments[0]}); }
-g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
+g2.prototype.pulley2.prototype = g2.mix(g2.prototype.cir.prototype,{
     g2() {
         const args = Object.assign({}, this);
         return g2()
@@ -2479,7 +2345,7 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  *     .rope({p1:A,r1:20,p2:B,r2:40})
  */
 g2.prototype.rope = function () { return this.addCommand({c:'rope',a:arguments[0]}); }
-g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.rope.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({w:0}, this);
         let x1 = 'p1' in args ? args.p1.x
@@ -2533,7 +2399,7 @@ g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'})
  */
 g2.prototype.ground = function () { return this.addCommand({c:'ground',a:arguments[0]}); }
-g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.ground.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         const args = Object.assign({h:4}, this); // , {closed: this.closed || false});
         const itr = g2.pntItrOf(args.pts);
@@ -2591,7 +2457,7 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *                       * spacing &gt; 1: length of spacing.
  */
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
-g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.load.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         const args = Object.assign({ pointAt: this.pointAt, spacing: 20, w: -Math.PI/2 }, this);
         const pitr = g2.pntItrOf(args.pts), startLoc = [], arr = [];

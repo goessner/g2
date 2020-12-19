@@ -600,15 +600,6 @@ g2.mix = function mix(...protos) {
         mixture = Object.defineProperties(mixture, Object.getOwnPropertyDescriptors(p));
     return mixture;
 }
-/* deprecated */
-g2.mixin = function mixin(obj, ...protos) {
-    protos.forEach(p => {
-        Object.keys(p).forEach(k => {
-            Object.defineProperty(obj, k, Object.getOwnPropertyDescriptor(p, k));
-        })
-    })
-    return obj;
-}
 
 /**
  * Copy properties, even as getters .. a useful part of the above ..
@@ -1059,19 +1050,6 @@ g2.canvasHdl.prototype = {
         this.gridExp = exp;
         return sz;
     }
-}
-
-// utils
-// deprecated -- remove both !!!
-g2.zoomView = function ({ scl, x, y }) { return { scl, x: (1 - scl) * x, y: (1 - scl) * y } }
-// fn argument must be a function with (optional) timestamp 't' as single argument
-// returning true to continue or false to stop RAF.
-g2.render = function render(fn) {
-    function animate(t) {
-        if (fn(t))
-            requestAnimationFrame(animate);
-    }
-    animate(performance.now());
 }
 
 // use it with node.js ... ?

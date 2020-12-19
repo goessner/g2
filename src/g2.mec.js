@@ -28,7 +28,7 @@ var g2 = g2 || { prototype:{} };  // for jsdoc only ...
  * g2().slider({x:150,y:75,w:Math.PI/4,b:64,h:32})
  */
 g2.prototype.slider = function () { return this.addCommand({c:'slider',a:arguments[0]}); }
-g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
+g2.prototype.slider.prototype = g2.mix(g2.prototype.rec.prototype,{
     g2() {
         const args = Object.assign({b:32,h:16,fs:'@linkfill'}, this);
         return g2()
@@ -52,7 +52,7 @@ g2.prototype.slider.prototype = g2.mixin({},g2.prototype.rec.prototype,{
  * g2().spring({x1:50,y1:100,x2:200,y2:75})
  */
 g2.prototype.spring = function () { return this.addCommand({c:'spring',a:arguments[0]}); }
-g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.spring.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({h:16}, this);
         const len = Math.hypot(args.x2-args.x1, args.y2-args.y1);
@@ -86,7 +86,7 @@ g2.prototype.spring.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  *  * g2().damper({x1:60,y1:120,x2:200,y2:75})
  */
 g2.prototype.damper = function () { return this.addCommand({c:'damper',a:arguments[0]}); }
-g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.damper.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({h:16}, this);
         const len = Math.hypot(args.x2-args.x1, args.y2-args.y1);
@@ -127,7 +127,7 @@ g2.prototype.damper.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  *     .link({pts:[A,B,E,A,D,C]})
  */
 g2.prototype.link = function () { return this.addCommand({c:'link',a:arguments[0]}); }
-g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.link.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         const args = Object.assign({ls:'@linkcolor',fs:'transparent'}, this);
         return g2().ply(Object.assign({}, this, {closed:true,ls:args.ls,fs:args.fs,lw:7,lc:'round',lj:'round'}));
@@ -152,7 +152,7 @@ g2.prototype.link.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *     .link({pts:[A,B,E,A,D,C]})
  */
 g2.prototype.link2 = function () { return this.addCommand({c:'link2',a:arguments[0]}); }
-g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.link2.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         return g2()
             .ply(Object.assign({closed:true,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this))
@@ -175,7 +175,7 @@ g2.prototype.link2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *     .beam({pts:[[200,125][50,125][50,50][200,50]]})
  */
 g2.prototype.beam = function () { return this.addCommand({c:'beam',a:arguments[0]}); }
-g2.prototype.beam.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.beam.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         return g2().ply(Object.assign({closed:false,ls:'@linkcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this));
     }
@@ -195,7 +195,7 @@ g2.prototype.beam.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *     .beam2({pts:[[200,125][50,125][50,50][200,50]]})
  */
 g2.prototype.beam2 = function () { return this.addCommand({c:'beam2',a:arguments[0]}); }
-g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.beam2.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         return g2()
             .ply(Object.assign({closed:false,ls:'@nodcolor',fs:'transparent',lw:7,lc:'round',lj:'round'},this))
@@ -217,7 +217,7 @@ g2.prototype.beam2.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  * g2().bar({x1:50,y1:20,x2:250,y2:120})
  */
 g2.prototype.bar = function () { return this.addCommand({c:'bar',a:arguments[0]}); }
-g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.bar.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         return g2().lin(Object.assign({ls:'@linkcolor',lw:6,lc:'round'},this));
     }
@@ -236,7 +236,7 @@ g2.prototype.bar.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * g2().bar2({x1:50,y1:20,x2:250,y2:120})
  */
 g2.prototype.bar2 = function () { return this.addCommand({c:'bar2',a:arguments[0]}); }
-g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.bar2.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({}, this);
         return g2()
@@ -259,7 +259,7 @@ g2.prototype.bar2.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * g2().pulley({x:100,y:75,r:50})
  */
 g2.prototype.pulley = function () { return this.addCommand({c:'pulley',a:arguments[0]}); }
-g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
+g2.prototype.pulley.prototype = g2.mix(g2.prototype.cir.prototype,{
     g2() {
         const args = Object.assign({}, this);
         return g2()
@@ -286,7 +286,7 @@ g2.prototype.pulley.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  * g2().pulley2({x:50,y:30,r:25})
  */
 g2.prototype.pulley2 = function () { return this.addCommand({c:'pulley2',a:arguments[0]}); }
-g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
+g2.prototype.pulley2.prototype = g2.mix(g2.prototype.cir.prototype,{
     g2() {
         const args = Object.assign({}, this);
         return g2()
@@ -316,7 +316,7 @@ g2.prototype.pulley2.prototype = g2.mixin({}, g2.prototype.cir.prototype,{
  *     .rope({p1:A,r1:20,p2:B,r2:40})
  */
 g2.prototype.rope = function () { return this.addCommand({c:'rope',a:arguments[0]}); }
-g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
+g2.prototype.rope.prototype = g2.mix(g2.prototype.lin.prototype,{
     g2() {
         const args = Object.assign({w:0}, this);
         let x1 = 'p1' in args ? args.p1.x
@@ -370,7 +370,7 @@ g2.prototype.rope.prototype = g2.mixin({}, g2.prototype.lin.prototype,{
  * g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'})
  */
 g2.prototype.ground = function () { return this.addCommand({c:'ground',a:arguments[0]}); }
-g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.ground.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         const args = Object.assign({h:4}, this); // , {closed: this.closed || false});
         const itr = g2.pntItrOf(args.pts);
@@ -428,7 +428,7 @@ g2.prototype.ground.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
  *                       * spacing &gt; 1: length of spacing.
  */
 g2.prototype.load = function () { return this.addCommand({c:'load',a:arguments[0]}); }
-g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
+g2.prototype.load.prototype = g2.mix(g2.prototype.ply.prototype,{
     g2() {
         const args = Object.assign({ pointAt: this.pointAt, spacing: 20, w: -Math.PI/2 }, this);
         const pitr = g2.pntItrOf(args.pts), startLoc = [], arr = [];
