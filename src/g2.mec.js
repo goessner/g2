@@ -488,25 +488,3 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
             });
     }
 });
-
-/**
- * @method
- * @returns {object} g2
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().dblnod({x:10,y:10})
-*/
-g2.prototype.dblnod = function({x=0,y=0}) { return this.addCommand({c:'dblnod',a:arguments[0]}); }
-g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
-    get r() { return 6; },
-    get isSolid() { return true; },
-    g2() {
-        return g2()
-            .beg({x:this.x,y:this.y})
-                .cir({r:6,ls:'@nodcolor',fs:'@nodfill',sh:this.sh})
-                .cir({r:3,ls:'@nodcolor',fs:'@nodfill2'})
-            .end();
-    }
-})

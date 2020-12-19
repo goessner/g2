@@ -208,4 +208,14 @@ new Test('shadow',
 
 new Test('grid',
 `g2().grid()`),
+
+new Test('mark',
+`g2().view({cartesian:true})
+     .ply({y:40,pts:[40,40,100,40,100,100,200,100,200,40], mark:4})
+     .ply({y:-30,pts:[40,40,100,40,100,100,200,100,200,40], mark:4, closed:true})`),
+
+new Test('mark2',
+`g2().cir({x:50,y:50,r:25,mark:{symbol:'sqr',loc:[0,0.5,0.7]}})
+     .rec({x:150,y:30,b:40,h:60,mark:{symbol:g2.symbol.sqr,count:6}})
+     .lin({x1:50,y1:130,x2:150,y2:130,mark:8})`)
 ];

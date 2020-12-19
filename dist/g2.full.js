@@ -1387,10 +1387,16 @@ g2.markIfc = {
     },
     // loop is for elements that close, e.g. rec or cir => loc at 0 === loc at 1
     drawMark(g, closed = false) {
-        const count = typeof this.mark === 'object' ? this.mark.count : this.mark;
-        const loc = count ?
-            Array.from(Array(count)).map((_, i) => i / (count - !closed)) :
-            this.mark.loc;
+        let loc;
+        if (Array.isArray(this.mark)) {
+            loc = this.mark;
+        }
+        else {
+            const count = typeof this.mark === 'object' ? this.mark.count : this.mark;
+            loc = count ?
+                Array.from(Array(count)).map((_, i) => i / (count - !closed)) :
+                this.mark.loc;
+        }
         for (let l of loc) {
             g.use(this.markAt(l));
         }
@@ -1526,7 +1532,7 @@ g2.prototype.arc.prototype = g2.mix(g2.pointIfc, g2.labelIfc, g2.markIfc, {
         const e = g2();
         this.label && e.ins(e => this.drawLabel(e));
         this.mark && e.ins(e => this.drawMark(e));
-        return () => g2().arc(g2.flatten(this)).ins(e);  
+        return () => g2().arc(g2.flatten(this)).ins(e);
     },
     lbloc: 'mid',
     pointAt(loc) {
@@ -1585,16 +1591,40 @@ g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
 g2.prototype.nod = function (args = {}) { return this.addCommand({ c: 'nod', a: args }); }
 g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     r: 5,
-    ls: g2.symbol.nodcolor,
+    ls: '@nodcolor',
     fs: g2.symbol.nodfill,
     isSolid: true,
     lbloc: 'se',
     g2() {      // in contrast to `g2.prototype.cir.prototype`, `g2()` is called always !
         return g2()
-            .cir({ ...g2.flatten(this), r: this.r * this.scl })
+            .cir({ ...g2.flatten(this), r: this.r * (this.scl || 1) })
             .ins((g) => this.label && this.drawLabel(g))
     }
 });
+
+/**
+ * Double nod symbol
+ * @constructor
+ * @returns {object} g2
+ * @param {object} - symbol arguments object.
+ * @property {number} x - x-value center.
+ * @property {number} y - y-value center.
+ * @example
+ * g2().dblnod({x:10,y:10})
+*/
+g2.prototype.dblnod = function ({ x = 0, y = 0 }) { return this.addCommand({ c: 'dblnod', a: arguments[0] }); }
+g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
+    get r() { return 6; },
+    get isSolid() { return true; },
+    g2() {
+        return g2()
+            .beg({ x: this.x, y: this.y })
+            .cir({ r: 6, ls: '@nodcolor', fs: '@nodfill', sh: this.sh })
+            .cir({ r: 3, ls: '@nodcolor', fs: '@nodfill2' })
+            .end()
+            .ins((g) => this.label && this.drawLabel(g));
+    }
+})
 
 /**
 * Pole symbol.
@@ -2621,28 +2651,6 @@ g2.prototype.load.prototype = g2.mixin({}, g2.prototype.ply.prototype,{
             });
     }
 });
-
-/**
- * @method
- * @returns {object} g2
- * @param {object} - symbol arguments object.
- * @property {number} x - x-value center.
- * @property {number} y - y-value center.
- * @example
- * g2().dblnod({x:10,y:10})
-*/
-g2.prototype.dblnod = function({x=0,y=0}) { return this.addCommand({c:'dblnod',a:arguments[0]}); }
-g2.prototype.dblnod.prototype = g2.mixin({}, g2.prototype.cir.prototype, {
-    get r() { return 6; },
-    get isSolid() { return true; },
-    g2() {
-        return g2()
-            .beg({x:this.x,y:this.y})
-                .cir({r:6,ls:'@nodcolor',fs:'@nodfill',sh:this.sh})
-                .cir({r:3,ls:'@nodcolor',fs:'@nodfill2'})
-            .end();
-    }
-})
 
 "use strict"
 
