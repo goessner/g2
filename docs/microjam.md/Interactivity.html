@@ -33,7 +33,8 @@
 <li><a href="../microjam.md/Insert.html">Insert</a></li>
 <li><a href="../microjam.md/Animation.html">Animation</a></li>
 <li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
-<li><a href="../microjam.md/g2.html.html">Custom HTML Element</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
 </ul>
 <hr>
 <ul>
@@ -86,16 +87,16 @@ already presented in <a href="./View">View</a>.</p>
     requestAnimationFrame(render);
 }
 <span class="hljs-keyword">let</span> dirty = <span class="hljs-literal">true</span>;                                       <span class="hljs-comment">// render only on user action ...</span>
-<span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+<span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
         viewport = ctx.canvas.getBoundingClientRect(),  <span class="hljs-comment">// viewport size ..</span>
         vw = {<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">1</span>},
-        map = <span class="hljs-string">"M 163 1 C 162.6 1.6 162.3 ..."</span>,          <span class="hljs-comment">// map as SVG path data string ..</span>
+        map = <span class="hljs-string">&quot;M 163 1 C 162.6 1.6 162.3 ...&quot;</span>,          <span class="hljs-comment">// map as SVG path data string ..</span>
 g = g2().view(vw)                                       <span class="hljs-comment">// use vw to change view on the run</span>
         .clr().grid()
-        .drw({<span class="hljs-attr">d</span>:map, <span class="hljs-attr">ls</span>:<span class="hljs-string">"#666"</span>, <span class="hljs-attr">fs</span>:<span class="hljs-string">"orange"</span>, <span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">lc</span>:<span class="hljs-string">"round"</span>, <span class="hljs-attr">lj</span>:<span class="hljs-string">"round"</span>});
+        .drw({<span class="hljs-attr">d</span>:map, <span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;#666&quot;</span>, <span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;orange&quot;</span>, <span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">lc</span>:<span class="hljs-string">&quot;round&quot;</span>, <span class="hljs-attr">lj</span>:<span class="hljs-string">&quot;round&quot;</span>});
 
-ctx.canvas.addEventListener(<span class="hljs-string">"mousemove"</span>, onmove, <span class="hljs-literal">false</span>);<span class="hljs-comment">// listen to move event ..</span>
-ctx.canvas.addEventListener(<span class="hljs-string">"wheel"</span>, onwheel, <span class="hljs-literal">false</span>);   <span class="hljs-comment">// listen to wheel event ..</span>
+ctx.canvas.addEventListener(<span class="hljs-string">&quot;mousemove&quot;</span>, onmove, <span class="hljs-literal">false</span>);<span class="hljs-comment">// listen to move event ..</span>
+ctx.canvas.addEventListener(<span class="hljs-string">&quot;wheel&quot;</span>, onwheel, <span class="hljs-literal">false</span>);   <span class="hljs-comment">// listen to wheel event ..</span>
 render();
 </div></code></pre>
 <p><img src="../img/map.gif" alt="map" class="loading" id="image-hash--594124800"></p>
@@ -104,12 +105,12 @@ done in the <code>render</code> function.</p>
 <p>There is also another zoom example using an <a href="https://goessner.github.io/g2/examples/screw.html">extra zoom window</a></p>
 <h3 id="html-input-element">HTML Input Element <a class="plnk" href="#html-input-element">#</a></h3>
 <p>HTML input elements can be used to modify graphics related data.</p>
-<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"300"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"200"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;300&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;200&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"range"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"range"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"min-width:275px;vertical-align:middle;margin:0;padding:0"</span>
-       <span class="hljs-attr">min</span>=<span class="hljs-string">"0"</span> <span class="hljs-attr">max</span>=<span class="hljs-string">"360"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"0"</span> <span class="hljs-attr">step</span>=<span class="hljs-string">"1"</span> /&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">output</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"output"</span> <span class="hljs-attr">for</span>=<span class="hljs-string">"range"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"text-align:right;"</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">output</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'g2.core.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;range&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;range&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;min-width:275px;vertical-align:middle;margin:0;padding:0&quot;</span>
+       <span class="hljs-attr">min</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">max</span>=<span class="hljs-string">&quot;360&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">step</span>=<span class="hljs-string">&quot;1&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">output</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;output&quot;</span> <span class="hljs-attr">for</span>=<span class="hljs-string">&quot;range&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;text-align:right;&quot;</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">output</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">position</span>(<span class="hljs-params">phi</span>) </span>{
         <span class="hljs-keyword">const</span> sp = <span class="hljs-built_in">Math</span>.sin(phi), cp = <span class="hljs-built_in">Math</span>.cos(phi),
@@ -118,7 +119,7 @@ done in the <code>render</code> function.</p>
               xC = <span class="hljs-number">0</span>, yC = <span class="hljs-number">2</span>*a*sp;
 
         mec.del()                               <span class="hljs-comment">// ... and build new mechanism geometry.</span>
-           .ell({<span class="hljs-attr">x</span>:xA,<span class="hljs-attr">y</span>:yA,<span class="hljs-attr">rx</span>:a,<span class="hljs-attr">ry</span>:<span class="hljs-keyword">this</span>.rx,<span class="hljs-attr">rot</span>:-phi,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ld</span>:[<span class="hljs-number">12</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>]})
+           .ell({<span class="hljs-attr">x</span>:xA,<span class="hljs-attr">y</span>:yA,<span class="hljs-attr">rx</span>:a,<span class="hljs-attr">ry</span>:<span class="hljs-built_in">this</span>.rx,<span class="hljs-attr">rot</span>:-phi,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ld</span>:[<span class="hljs-number">12</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>]})
            .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,xA,yA,xB,yB,xC,yC],<span class="hljs-attr">lw</span>:<span class="hljs-number">5</span>})
            .beg({...el})
            .cir({<span class="hljs-attr">x</span>:xA,<span class="hljs-attr">y</span>:yA,<span class="hljs-attr">r</span>:<span class="hljs-number">6</span>})
@@ -144,17 +145,17 @@ done in the <code>render</code> function.</p>
     }
     <span class="hljs-keyword">let</span> dirty = <span class="hljs-literal">true</span>,
         phi = <span class="hljs-number">0</span>, xA, yA, xB, yB;
-    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
-          range = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"range"</span>),
-          output = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"output"</span>),
-          el = {<span class="hljs-attr">fs</span>:<span class="hljs-string">"papayawhip"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>},
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+          range = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;range&quot;</span>),
+          output = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;output&quot;</span>),
+          el = {<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;papayawhip&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>},
           xA0 = <span class="hljs-number">150</span>, yA0 = <span class="hljs-number">150</span>, a = <span class="hljs-number">60</span>, b = <span class="hljs-number">80</span>, e = <span class="hljs-number">0</span>;
           mec = g2(),                           <span class="hljs-comment">// dynamic mechanism.</span>
           world = g2().clr().cartesian().grid() <span class="hljs-comment">// static world.</span>
-                      .cir({<span class="hljs-attr">x</span>:xA0, <span class="hljs-attr">y</span>:yA0, <span class="hljs-attr">r</span>:<span class="hljs-number">2</span>*a, <span class="hljs-attr">ls</span>:<span class="hljs-string">"darkslategray"</span>, <span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">ld</span>:[<span class="hljs-number">12</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>]})
+                      .cir({<span class="hljs-attr">x</span>:xA0, <span class="hljs-attr">y</span>:yA0, <span class="hljs-attr">r</span>:<span class="hljs-number">2</span>*a, <span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkslategray&quot;</span>, <span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">ld</span>:[<span class="hljs-number">12</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>]})
                       .use({<span class="hljs-attr">grp</span>:mec, <span class="hljs-attr">x</span>:xA0, <span class="hljs-attr">y</span>:yA0})
                       .cir({<span class="hljs-attr">x</span>:xA0, <span class="hljs-attr">y</span>:yA0, <span class="hljs-attr">r</span>:<span class="hljs-number">6</span>,...el});
-    range.addEventListener(<span class="hljs-string">"input"</span>,setPhi,<span class="hljs-literal">false</span>);
+    range.addEventListener(<span class="hljs-string">&quot;input&quot;</span>,setPhi,<span class="hljs-literal">false</span>);
     render();
 </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
@@ -165,12 +166,12 @@ done in the <code>render</code> function.</p>
 background layer and an interactive foreground layer using two or more stacked canvases. So when interaction occurs
 only the interactive layer must be updated and thus the overall rendering effort may be reduced significantly.</p>
 <p>Here is a clearly written in depth article about <a href="http://www.ibm.com/developerworks/library/wa-canvashtml5layering/">HTML canvas layering</a>.</p>
-<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"position:relative; width:641px; height:481px;"</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"bg"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"641"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"481"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"position:absolute;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"fg"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"641"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"481"</span> <span class="hljs-attr">style</span>=<span class="hljs-string">"position:absolute;"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;position:relative; width:641px; height:481px;&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;bg&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;641&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;481&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;position:absolute;&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;fg&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;641&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;481&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;position:absolute;&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Select square by pointer and drag it.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'g2.core.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onbuttondown</span>(<span class="hljs-params">e</span>) </span>{                                      <span class="hljs-comment">// select square at pointer location.</span>
         <span class="hljs-keyword">const</span> x = e.clientX - <span class="hljs-built_in">Math</span>.floor(viewport.left),
@@ -181,7 +182,7 @@ only the interactive layer must be updated and thus the overall rendering effort
                 y - rects[i].y &gt;= <span class="hljs-number">0</span> &amp;&amp; y - rects[i].y &lt;= sz) {
                 bgDirty = fgDirty = <span class="hljs-literal">true</span>;                           <span class="hljs-comment">// mark layers by dirty flags.</span>
                 selIdx = i;                                         <span class="hljs-comment">// memoize selected square.</span>
-                ctxfg.canvas.addEventListener(<span class="hljs-string">'mousemove'</span>,onmove,<span class="hljs-literal">false</span>);    <span class="hljs-comment">// ready to drag.</span>
+                ctxfg.canvas.addEventListener(<span class="hljs-string">&#x27;mousemove&#x27;</span>,onmove,<span class="hljs-literal">false</span>);    <span class="hljs-comment">// ready to drag.</span>
                 <span class="hljs-keyword">break</span>;
             }
         }
@@ -189,7 +190,7 @@ only the interactive layer must be updated and thus the overall rendering effort
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onbuttonup</span>(<span class="hljs-params">e</span>) </span>{                                        <span class="hljs-comment">// deselect square</span>
         <span class="hljs-keyword">if</span> (selIdx != <span class="hljs-number">-1</span>) {                                         <span class="hljs-comment">// is one selected</span>
             bgDirty = fgDirty = <span class="hljs-literal">true</span>;                               <span class="hljs-comment">// mark layers by dirty flags.</span>
-            ctxfg.canvas.removeEventListener(<span class="hljs-string">'mousemove'</span>,onmove,<span class="hljs-literal">false</span>);     <span class="hljs-comment">// finish dragging.</span>
+            ctxfg.canvas.removeEventListener(<span class="hljs-string">&#x27;mousemove&#x27;</span>,onmove,<span class="hljs-literal">false</span>);     <span class="hljs-comment">// finish dragging.</span>
             selIdx = <span class="hljs-number">-1</span>;                                                    <span class="hljs-comment">// nothing selected.</span>
         }
     }
@@ -205,7 +206,7 @@ only the interactive layer must be updated and thus the overall rendering effort
             <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>; i&lt;rects.length<span class="hljs-number">-1</span>; i++) {
                 <span class="hljs-keyword">if</span> (i !== selIdx) {
                     bg.rec({<span class="hljs-attr">x</span>:rects[i].x,<span class="hljs-attr">y</span>:rects[i].y,<span class="hljs-attr">b</span>:sz,<span class="hljs-attr">h</span>:sz,
-                            <span class="hljs-attr">ls</span>:<span class="hljs-string">"darkslategray"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"papayawhip"</span>});
+                            <span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkslategray&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;papayawhip&quot;</span>});
                 }
             }
             bg.exe(ctxbg);
@@ -215,9 +216,9 @@ only the interactive layer must be updated and thus the overall rendering effort
             fg.del().clr();
             <span class="hljs-keyword">if</span> (selIdx != <span class="hljs-number">-1</span>) {
                 fg.rec({<span class="hljs-attr">x</span>:rects[selIdx].x,<span class="hljs-attr">y</span>:rects[selIdx].y,<span class="hljs-attr">b</span>:sz,<span class="hljs-attr">h</span>:sz,
-                        <span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">10</span>,<span class="hljs-string">"black"</span>]})
+                        <span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">10</span>,<span class="hljs-string">&quot;black&quot;</span>]})
                   .rec({<span class="hljs-attr">x</span>:rects[selIdx].x,<span class="hljs-attr">y</span>:rects[selIdx].y,<span class="hljs-attr">b</span>:sz,<span class="hljs-attr">h</span>:sz,
-                        <span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"darkslategray"</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"orange"</span>});
+                        <span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkslategray&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;orange&quot;</span>});
             }
             fg.exe(ctxfg);
             fgDirty = <span class="hljs-literal">false</span>;
@@ -227,8 +228,8 @@ only the interactive layer must be updated and thus the overall rendering effort
 
     <span class="hljs-keyword">let</span> bgDirty = <span class="hljs-literal">true</span>, fgDirty = <span class="hljs-literal">true</span>,
         selIdx = <span class="hljs-number">-1</span>;
-    <span class="hljs-keyword">const</span> ctxbg = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"bg"</span>).getContext(<span class="hljs-string">"2d"</span>),
-          ctxfg = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"fg"</span>).getContext(<span class="hljs-string">"2d"</span>),
+    <span class="hljs-keyword">const</span> ctxbg = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;bg&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+          ctxfg = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;fg&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
           viewport = ctxbg.canvas.getBoundingClientRect(),
           bg = g2(),                                                <span class="hljs-comment">// Background layer command queue.</span>
           fg = g2(),                                                <span class="hljs-comment">// Foreground layer command queue for dragging.</span>
@@ -239,8 +240,8 @@ only the interactive layer must be updated and thus the overall rendering effort
                      <span class="hljs-attr">y</span>: <span class="hljs-built_in">Math</span>.random()*(viewport.height-sz) };
     }
 
-    ctxfg.canvas.addEventListener(<span class="hljs-string">'mousedown'</span>, onbuttondown, <span class="hljs-literal">false</span>);
-    ctxfg.canvas.addEventListener(<span class="hljs-string">'mouseup'</span>,   onbuttonup, <span class="hljs-literal">false</span>);
+    ctxfg.canvas.addEventListener(<span class="hljs-string">&#x27;mousedown&#x27;</span>, onbuttondown, <span class="hljs-literal">false</span>);
+    ctxfg.canvas.addEventListener(<span class="hljs-string">&#x27;mouseup&#x27;</span>,   onbuttonup, <span class="hljs-literal">false</span>);
 
     render();                                                       <span class="hljs-comment">// initial call to render loop.</span>
 </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>

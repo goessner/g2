@@ -40,8 +40,6 @@ class G2ChartElement extends HTMLElement {
 
         this._ctx = this._root.getElementById('cnv').getContext('2d');
 
-        this._g = g2().del().clr().view({ cartesian: true });
-
         const t = 35;
         this._chart = {
             x: t,
@@ -59,6 +57,8 @@ class G2ChartElement extends HTMLElement {
             funcs: () => this.funcs
         };
 
+        this._g = g2().del().clr().view({ cartesian: true }).chart(this._chart);
+
         try {
             // If not true, the element should be referenced by another module.
             if (this.innerHTML !== '') {
@@ -73,7 +73,7 @@ class G2ChartElement extends HTMLElement {
                     funcs[itr].fn = (() => Function('"use strict"; return (' + a[4] + ')')())();
                     itr++;
                 }
-                this.funcs = funcs;          
+                this.funcs = funcs;
             }
         }
         catch (e) {
@@ -81,10 +81,11 @@ class G2ChartElement extends HTMLElement {
             this._g.txt({ str: e, y: 5 });
         }
         finally {
-            this._g.chart(this._chart).nod({
+            this._g.nod({
                 x: () => this.nod && this.nod().x,
                 y: () => this.nod && this.nod().y,
-                scl: () => this.nod && this.nod().scl || 0});
+                scl: () => this.nod && this.nod().scl || 0
+            });
             this.render();
         }
     }
@@ -93,8 +94,9 @@ class G2ChartElement extends HTMLElement {
         this._g.exe(this._ctx);
     }
 
-    setChart(chart) {
-        this._chart = chart;
+    setFuncs(funcs) {
+        this.funcs = funcs;
+        return this;
     }
 
     disconnectedCallback() {

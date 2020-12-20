@@ -33,7 +33,8 @@
 <li><a href="../microjam.md/Insert.html">Insert</a></li>
 <li><a href="../microjam.md/Animation.html">Animation</a></li>
 <li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
-<li><a href="../microjam.md/g2.html.html">Custom HTML Element</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
 </ul>
 <hr>
 <ul>
@@ -60,21 +61,16 @@ which allows to implement command queues directly into the page without the nece
 <p>The aim of this HTML element is to minimize the implementation overhead of the user,
 while maintaining the flexibility <em>g2</em> provides.</p>
 <p>To implement the <em>g2</em> element into your page just import the <code>g2.html.js</code>.</p>
-<blockquote>
-<p><strong>Warning</strong>: This custom html element is new and not implemented in the current version of <em>g2</em>. <br>
-The <strong>src</strong> will be deprecated in v2.6 and has to be updated accordingly. <br>
-The only thing you have to then is to remove the <strong>wip</strong>, or replace it with <strong>2.6</strong> or <strong>v2.6</strong>.</p>
-</blockquote>
-<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">g-2</span> <span class="hljs-attr">id</span>=<span class="hljs-string">'g'</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"601"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"401"</span> <span class="hljs-attr">cartesian</span> <span class="hljs-attr">x0</span>=<span class="hljs-string">"0"</span> <span class="hljs-attr">y0</span>=<span class="hljs-string">"0"</span> <span class="hljs-attr">grid</span> <span class="hljs-attr">interactive</span>&gt;</span>
-{ "main":[
-    {"c":"lin","a":{"x1":"@A.x","y1":"@A.y","x2":"@B.x","y2":"@B.y","lw":3,"ls":"@linkcolor"}},
-    {"c":"cir","a":{"id":"A","x":150,"y":50,"r":5,"fs":"orange"}},
-    {"c":"cir","a":{"id":"B","x":-50,"y":100,"r":5,"fs":"orange"}},
-    {"c":"cir","a":{"x":15,"y":150,"r":30,"fs":"orange"}},
-    {"c":"cir","a":{"x":15,"y":150,"r":15,"fs":"snow"}}
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">g-2</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&#x27;g&#x27;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;601&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;401&quot;</span> <span class="hljs-attr">cartesian</span> <span class="hljs-attr">x0</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">y0</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">grid</span> <span class="hljs-attr">interactive</span>&gt;</span>
+{ &quot;main&quot;:[
+    {&quot;c&quot;:&quot;lin&quot;,&quot;a&quot;:{&quot;x1&quot;:&quot;@A.x&quot;,&quot;y1&quot;:&quot;@A.y&quot;,&quot;x2&quot;:&quot;@B.x&quot;,&quot;y2&quot;:&quot;@B.y&quot;,&quot;lw&quot;:3,&quot;ls&quot;:&quot;@linkcolor&quot;}},
+    {&quot;c&quot;:&quot;cir&quot;,&quot;a&quot;:{&quot;id&quot;:&quot;A&quot;,&quot;x&quot;:150,&quot;y&quot;:50,&quot;r&quot;:5,&quot;fs&quot;:&quot;orange&quot;}},
+    {&quot;c&quot;:&quot;cir&quot;,&quot;a&quot;:{&quot;id&quot;:&quot;B&quot;,&quot;x&quot;:-50,&quot;y&quot;:100,&quot;r&quot;:5,&quot;fs&quot;:&quot;orange&quot;}},
+    {&quot;c&quot;:&quot;cir&quot;,&quot;a&quot;:{&quot;x&quot;:15,&quot;y&quot;:150,&quot;r&quot;:30,&quot;fs&quot;:&quot;orange&quot;}},
+    {&quot;c&quot;:&quot;cir&quot;,&quot;a&quot;:{&quot;x&quot;:15,&quot;y&quot;:150,&quot;r&quot;:15,&quot;fs&quot;:&quot;snow&quot;}}
 ]}
 <span class="hljs-tag">&lt;/<span class="hljs-name">g-2</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://cdn.jsdelivr.net/gh/goessner/g2@wip/dist/g2.html.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.html.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
 <g-2 id='g' width="281" height="201" cartesian x0="100" y0="0" grid interactive>
 { "main":[
@@ -85,7 +81,7 @@ The only thing you have to then is to remove the <strong>wip</strong>, or replac
     {"c":"cir","a":{"x":15,"y":150,"r":15,"fs":"snow"}}
 ]}
 </g-2>
-<script src="https://cdn.jsdelivr.net/gh/goessner/g2@wip/dist/g2.html.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.html.js"></script>
 <p>The overall styling is handled by respective properties of the <code>g-2</code> element:</p>
 <ul>
 <li><code>width</code>: Width of the element in <code>px</code>.</li>
@@ -104,14 +100,14 @@ defines the <a href="./Concepts.html">command queue</a> of the drawing.</p>
 each element is an object containing <code>&quot;c&quot;</code> (think command) and
 <code>&quot;a&quot;</code> (think arguments).
 So the given <code>&quot;main&quot;</code>:</p>
-<pre><code class="code-line language-json"><div><span class="hljs-string">"main"</span>:[
-    {<span class="hljs-attr">"c"</span>:<span class="hljs-string">"cir"</span>,<span class="hljs-attr">"a"</span>:{<span class="hljs-attr">"x"</span>:<span class="hljs-number">250</span>,<span class="hljs-attr">"y"</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">"r"</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">"fs"</span>:<span class="hljs-string">"orange"</span>}},
-    {<span class="hljs-attr">"c"</span>:<span class="hljs-string">"cir"</span>,<span class="hljs-attr">"a"</span>:{<span class="hljs-attr">"x"</span>:<span class="hljs-number">250</span>,<span class="hljs-attr">"y"</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">"r"</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">"fs"</span>:<span class="hljs-string">"snow"</span>}}
+<pre><code class="code-line language-json"><div><span class="hljs-string">&quot;main&quot;</span>:[
+    {<span class="hljs-attr">&quot;c&quot;</span>:<span class="hljs-string">&quot;cir&quot;</span>,<span class="hljs-attr">&quot;a&quot;</span>:{<span class="hljs-attr">&quot;x&quot;</span>:<span class="hljs-number">250</span>,<span class="hljs-attr">&quot;y&quot;</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">&quot;r&quot;</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">&quot;fs&quot;</span>:<span class="hljs-string">&quot;orange&quot;</span>}},
+    {<span class="hljs-attr">&quot;c&quot;</span>:<span class="hljs-string">&quot;cir&quot;</span>,<span class="hljs-attr">&quot;a&quot;</span>:{<span class="hljs-attr">&quot;x&quot;</span>:<span class="hljs-number">250</span>,<span class="hljs-attr">&quot;y&quot;</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">&quot;r&quot;</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">&quot;fs&quot;</span>:<span class="hljs-string">&quot;snow&quot;</span>}}
   ]
 </div></code></pre>
 <p>is equal to the command queue given by</p>
-<pre><code class="code-line language-js"><div>g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">250</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"orange"</span>})
-    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">250</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"snow"</span>});
+<pre><code class="code-line language-js"><div>g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">250</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;orange&quot;</span>})
+    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">250</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;snow&quot;</span>});
 </div></code></pre>
 <blockquote>
 <p><strong>Note</strong>: Don't forget to use quotations (e.g. <code>&quot;x&quot;</code>) for the properties,

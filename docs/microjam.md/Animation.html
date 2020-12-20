@@ -33,7 +33,8 @@
 <li><a href="../microjam.md/Insert.html">Insert</a></li>
 <li><a href="../microjam.md/Animation.html">Animation</a></li>
 <li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
-<li><a href="../microjam.md/g2.html.html">Custom HTML Element</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
 </ul>
 <hr>
 <ul>
@@ -87,13 +88,13 @@ method, which gets a callback function as parameter.</p>
         <span class="hljs-comment">// draw pendulum ...</span>
         g.del()                                 <span class="hljs-comment">// delete all commands in the queue ...</span>
         .clr()                                  <span class="hljs-comment">// clear the renderers viewport ...</span>
-        .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+        .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#ddd&quot;</span>})
         .lin({<span class="hljs-attr">x1</span>:x0,<span class="hljs-attr">y1</span>:y0,<span class="hljs-attr">x2</span>:x,<span class="hljs-attr">y2</span>:y,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>})      <span class="hljs-comment">// pendulum begins ..</span>
-        .cir({<span class="hljs-attr">x</span>:x0,<span class="hljs-attr">y</span>:y0,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})         <span class="hljs-comment">// .. and ends here.</span>
-        .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+        .cir({<span class="hljs-attr">x</span>:x0,<span class="hljs-attr">y</span>:y0,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#ddd&quot;</span>})         <span class="hljs-comment">// .. and ends here.</span>
+        .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#ddd&quot;</span>})
         .exe(ctx);
         phi += dphi;                            <span class="hljs-comment">// increment angle ...</span>
-        requestAnimationFrame(render);          <span class="hljs-comment">// requedst browser to call 'render' again ...</span>
+        requestAnimationFrame(render);          <span class="hljs-comment">// requedst browser to call &#x27;render&#x27; again ...</span>
     }
     render();                                   <span class="hljs-comment">// initial render call.</span>
 </div></code></pre>
@@ -109,7 +110,7 @@ So it makes sense, to only redefine the moving part of the drawing.</p>
 <span class="hljs-keyword">let</span> phi = <span class="hljs-number">0</span>;
 
 world = g2().clr()                              <span class="hljs-comment">// clear and then define static world</span>
-            .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+            .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#ddd&quot;</span>})
             .use({<span class="hljs-attr">grp</span>:pendulum})                <span class="hljs-comment">// reference pendulum here...</span>
             .cir({<span class="hljs-attr">x</span>:x0,<span class="hljs-attr">y</span>:y0,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>})
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
@@ -117,7 +118,7 @@ world = g2().clr()                              <span class="hljs-comment">// cl
 
     pendulum.del()                              <span class="hljs-comment">// rebuild pendulum...</span>
             .lin({<span class="hljs-attr">x1</span>:x0,<span class="hljs-attr">y1</span>:y0,<span class="hljs-attr">x2</span>:x,<span class="hljs-attr">y2</span>:y,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>})  <span class="hljs-comment">// pendulum begins ..</span>
-            .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+            .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#ddd&quot;</span>})
     world.exe(ctx);
     phi += dphi;
     requestAnimationFrame(render);
@@ -139,10 +140,10 @@ which is drawn only once then.</p>
 <h3 id="example---timed-animation">Example - Timed Animation <a class="plnk" href="#example---timed-animation">#</a></h3>
 <p>Using <code>window.requestAnimationFrame</code> makes timed animation particularly easy. It passes a timestamp with every call
 to the callback function.</p>
-<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
         pendulum = g2(), x0 = <span class="hljs-number">50</span>, y0 = <span class="hljs-number">50</span>, r = <span class="hljs-number">40</span>, omega = <span class="hljs-number">1.5</span>,
         world = g2().clr()
-                    .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+                    .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">44</span>,<span class="hljs-number">40</span>,<span class="hljs-number">56</span>,<span class="hljs-number">40</span>,x0,y0],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#ddd&quot;</span>})
                     .use({<span class="hljs-attr">grp</span>:pendulum})
                     .cir({<span class="hljs-attr">x</span>:x0,<span class="hljs-attr">y</span>:y0,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>});
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params">time</span>) </span>{
@@ -153,7 +154,7 @@ to the callback function.</p>
 
     pendulum.del()
             .lin({<span class="hljs-attr">x1</span>:x0,<span class="hljs-attr">y1</span>:y0,<span class="hljs-attr">x2</span>:x,<span class="hljs-attr">y2</span>:y,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>})
-            .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"#ddd"</span>})
+            .cir({<span class="hljs-attr">x</span>:x,<span class="hljs-attr">y</span>:y,<span class="hljs-attr">r</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#ddd&quot;</span>})
     world.exe(ctx);
     requestAnimationFrame(render);
 }

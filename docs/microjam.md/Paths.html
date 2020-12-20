@@ -33,7 +33,8 @@
 <li><a href="../microjam.md/Insert.html">Insert</a></li>
 <li><a href="../microjam.md/Animation.html">Animation</a></li>
 <li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
-<li><a href="../microjam.md/g2.html.html">Custom HTML Element</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
 </ul>
 <hr>
 <ul>
@@ -156,8 +157,8 @@ It might work with a HTML canvas 2D renderer, but it won't work with SVG.</p>
 </table>
 <p>An optional second argument <code>d</code> of <code>stroke</code>, <code>fill</code> or <code>drw</code> can be used to hand over an SVG path data string.
 In that case previously defined path commands are ignored.</p>
-<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> star = <span class="hljs-string">"M100,10L123.5,82.4L61,37.6L138,37.6L76.5,82.4Z"</span>;
-g2().drw({<span class="hljs-attr">d</span>:star,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"red"</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"orange"</span>})
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> star = <span class="hljs-string">&quot;M100,10L123.5,82.4L61,37.6L138,37.6L76.5,82.4Z&quot;</span>;
+g2().drw({<span class="hljs-attr">d</span>:star,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;red&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;orange&quot;</span>})
     .exe(ctx);
 </div></code></pre>
 <p><img src="../img/star.png" alt="star" class="loading" id="image-hash--56700289"></p>

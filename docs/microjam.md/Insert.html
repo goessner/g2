@@ -33,7 +33,8 @@
 <li><a href="../microjam.md/Insert.html">Insert</a></li>
 <li><a href="../microjam.md/Animation.html">Animation</a></li>
 <li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
-<li><a href="../microjam.md/g2.html.html">Custom HTML Element</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
 </ul>
 <hr>
 <ul>
@@ -87,16 +88,16 @@ This effect substitutes the old <code>cpy</code>, which is now deprecated and re
 <p><em>Note: Avoid invoking arbitrary javascript snippets in <code>ins</code> argument list, as the results may have side effects.</em></p>
 <p><code>ins()</code> has no limits in it's usage. You can modify your code relevant for the next rendering process via the <code>exe()</code> command.</p>
 <h3 id="manipulate-objects">Manipulate objects <a class="plnk" href="#manipulate-objects">#</a></h3>
-<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
-    node = { <span class="hljs-attr">fill</span>:<span class="hljs-string">'lime'</span>, g2() {
-        <span class="hljs-keyword">return</span> g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">160</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:<span class="hljs-keyword">this</span>.fill,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">"gray"</span>]})}
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+    node = { <span class="hljs-attr">fill</span>:<span class="hljs-string">&#x27;lime&#x27;</span>, g2() {
+        <span class="hljs-keyword">return</span> g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">160</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:<span class="hljs-built_in">this</span>.fill,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">&quot;gray&quot;</span>]})}
         };
-<span class="hljs-keyword">let</span>   color = <span class="hljs-string">'red'</span>;
+<span class="hljs-keyword">let</span>   color = <span class="hljs-string">&#x27;red&#x27;</span>;
 
-g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:color,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">"gray"</span>]})
-    .ins(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{color=<span class="hljs-string">'green'</span>})
-    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">80</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:color,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">"gray"</span>]})
-    .ins(<span class="hljs-function">(<span class="hljs-params">g</span>)=&gt;</span>g.cir({<span class="hljs-attr">x</span>:<span class="hljs-number">120</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">'orange'</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">"gray"</span>]}))
+g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:color,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">&quot;gray&quot;</span>]})
+    .ins(<span class="hljs-function">()=&gt;</span>{color=<span class="hljs-string">&#x27;green&#x27;</span>})
+    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">80</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:color,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">&quot;gray&quot;</span>]})
+    .ins(<span class="hljs-function">(<span class="hljs-params">g</span>)=&gt;</span>g.cir({<span class="hljs-attr">x</span>:<span class="hljs-number">120</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&#x27;orange&#x27;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">&quot;gray&quot;</span>]}))
     .ins(node)
     .exe(ctx)
 </div></code></pre>
@@ -108,47 +109,47 @@ Take a look at the example in <a href="./view">View</a> for a direct comparison.
 treeview = {<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">1</span>};
 
 world = g2().view(worldview)
-            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"skyblue"</span>})
-            .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">100</span>,<span class="hljs-number">40</span>,...],<span class="hljs-attr">fs</span>:<span class="hljs-string">"burlywood"</span>})
-            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"limegreen"</span>})
+            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;skyblue&quot;</span>})
+            .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">100</span>,<span class="hljs-number">40</span>,...],<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;burlywood&quot;</span>})
+            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;limegreen&quot;</span>})
 
 tree = g2().view(treeview)
-            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">-5</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"brown"</span>})
-            .beg({<span class="hljs-attr">fs</span>:<span class="hljs-string">"forestgreen"</span>})
+            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">-5</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;brown&quot;</span>})
+            .beg({<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;forestgreen&quot;</span>})
             .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">15</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">10</span>})
             ...
-            .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"transparent"</span>})
+            .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;transparent&quot;</span>})
             .end()
 
 g2().use({<span class="hljs-attr">grp</span>:world,<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>})
     .use({<span class="hljs-attr">grp</span>:tree,<span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>})
     .exe(ctx1)
-    .ins(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{treeview.scl = <span class="hljs-number">1.5</span>, treeview.x = <span class="hljs-number">50</span>, treeview.y = <span class="hljs-number">25</span>})
+    .ins(<span class="hljs-function">()=&gt;</span>{treeview.scl = <span class="hljs-number">1.5</span>, treeview.x = <span class="hljs-number">50</span>, treeview.y = <span class="hljs-number">25</span>})
     .exe(ctx2)
-    .ins(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{worldview.scl = <span class="hljs-number">1.5</span>, worldview.y = <span class="hljs-number">-50</span>})
+    .ins(<span class="hljs-function">()=&gt;</span>{worldview.scl = <span class="hljs-number">1.5</span>, worldview.y = <span class="hljs-number">-50</span>})
     .exe(ctx3)
 </div></code></pre>
 <p><img src="../img/view-1.png" alt="view-1" class="loading" id="image-hash-1893338934"> <img src="../img/view-6.png" alt="view-2" class="loading" id="image-hash-1897956539"> <img src="../img/view-7.png" alt="view-3" class="loading" id="image-hash-1898880060"></p>
 <h3 id="conditional-rendering">Conditional Rendering <a class="plnk" href="#conditional-rendering">#</a></h3>
 <p><code>ins</code> is capable of invoking javascript. This characteristic can be easily used to manipulate the command queue to fit certain conditions. Read more about animations <a href="https://github.com/goessner/g2/wiki/animation">here</a></p>
-<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"550"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"100"</span> <span class="hljs-attr">position</span>=<span class="hljs-string">"absolute"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">'g2.core.js'</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;550&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span> <span class="hljs-attr">position</span>=<span class="hljs-string">&quot;absolute&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
-    <span class="hljs-keyword">const</span> ctx=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+    <span class="hljs-keyword">const</span> ctx=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
           g=g2();
-    <span class="hljs-keyword">let</span> r=<span class="hljs-number">40</span>,pi=<span class="hljs-built_in">Math</span>.PI,dphi=<span class="hljs-number">1</span>/<span class="hljs-number">20</span>*pi,dalpha=<span class="hljs-number">1</span>/<span class="hljs-number">100</span>,style={<span class="hljs-attr">fs</span>:<span class="hljs-string">"transparent"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">8</span>},
+    <span class="hljs-keyword">let</span> r=<span class="hljs-number">40</span>,pi=<span class="hljs-built_in">Math</span>.PI,dphi=<span class="hljs-number">1</span>/<span class="hljs-number">20</span>*pi,dalpha=<span class="hljs-number">1</span>/<span class="hljs-number">100</span>,style={<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;transparent&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">8</span>},
         phi=<span class="hljs-number">0</span>, alpha=<span class="hljs-number">0.3</span>;
         wheel = g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:r,...style})
                     .lin({<span class="hljs-attr">x1</span>:<span class="hljs-number">-0.8</span>*r,<span class="hljs-attr">y1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">x2</span>:<span class="hljs-number">0.8</span>*r,<span class="hljs-attr">y2</span>:<span class="hljs-number">0</span>,...style})
-                    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"snow"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>});
+                    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;snow&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>});
 
     <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">rollingWheel</span>(<span class="hljs-params">g</span>) </span>{
-        <span class="hljs-keyword">let</span> r=<span class="hljs-number">40</span>,dphi=<span class="hljs-number">11</span>/<span class="hljs-number">20</span>*<span class="hljs-built_in">Math</span>.PI,style={<span class="hljs-attr">fs</span>:<span class="hljs-string">"transparent"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">8</span>},
+        <span class="hljs-keyword">let</span> r=<span class="hljs-number">40</span>,dphi=<span class="hljs-number">11</span>/<span class="hljs-number">20</span>*<span class="hljs-built_in">Math</span>.PI,style={<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;transparent&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">8</span>},
             wheel = g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:r,...style})
                         .lin({<span class="hljs-attr">x1</span>:<span class="hljs-number">-0.8</span>*r,<span class="hljs-attr">y1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">x2</span>:<span class="hljs-number">0.8</span>*r,<span class="hljs-attr">y2</span>:<span class="hljs-number">0</span>,...style})
-                        .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"snow"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>});
+                        .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;snow&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>});
         <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> alpha=<span class="hljs-number">0.3</span>,phi2=<span class="hljs-number">0</span>; alpha&lt;=<span class="hljs-number">1</span>&amp;&amp;phi&gt;phi2;alpha+=<span class="hljs-number">0.1</span>,phi2+=dphi)
-           g.use({<span class="hljs-attr">grp</span>:wheel,<span class="hljs-attr">x</span>:r*phi2,<span class="hljs-attr">y</span>:<span class="hljs-number">54</span>,<span class="hljs-attr">w</span>:phi2,<span class="hljs-attr">ls</span>:<span class="hljs-string">'rgba(0,0,0,'</span>+alpha*alpha*alpha+<span class="hljs-string">')'</span>});
+           g.use({<span class="hljs-attr">grp</span>:wheel,<span class="hljs-attr">x</span>:r*phi2,<span class="hljs-attr">y</span>:<span class="hljs-number">54</span>,<span class="hljs-attr">w</span>:phi2,<span class="hljs-attr">ls</span>:<span class="hljs-string">&#x27;rgba(0,0,0,&#x27;</span>+alpha*alpha*alpha+<span class="hljs-string">&#x27;)&#x27;</span>});
         <span class="hljs-keyword">return</span> g;
      }
 
@@ -158,8 +159,8 @@ g2().use({<span class="hljs-attr">grp</span>:world,<span class="hljs-attr">x</sp
       g.del()
        .clr()
        .grid()
-       .use({<span class="hljs-attr">grp</span>:wheel,<span class="hljs-attr">x</span>:r*phi,<span class="hljs-attr">y</span>:<span class="hljs-number">54</span>,<span class="hljs-attr">w</span>:phi,<span class="hljs-attr">ls</span>:<span class="hljs-string">'rgba(0,0,0,'</span>+alpha*alpha*alpha+<span class="hljs-string">')'</span>})
-       .ins(<span class="hljs-function"><span class="hljs-params">()</span>=&gt;</span>{<span class="hljs-keyword">if</span>(r*phi&gt;<span class="hljs-number">154</span>*pi||r*phi&lt;=<span class="hljs-number">0</span>){dphi=-dphi,dalpha=-dalpha}})
+       .use({<span class="hljs-attr">grp</span>:wheel,<span class="hljs-attr">x</span>:r*phi,<span class="hljs-attr">y</span>:<span class="hljs-number">54</span>,<span class="hljs-attr">w</span>:phi,<span class="hljs-attr">ls</span>:<span class="hljs-string">&#x27;rgba(0,0,0,&#x27;</span>+alpha*alpha*alpha+<span class="hljs-string">&#x27;)&#x27;</span>})
+       .ins(<span class="hljs-function">()=&gt;</span>{<span class="hljs-keyword">if</span>(r*phi&gt;<span class="hljs-number">154</span>*pi||r*phi&lt;=<span class="hljs-number">0</span>){dphi=-dphi,dalpha=-dalpha}})
        .ins(rollingWheel(g))
        .exe(ctx);
       requestAnimationFrame(render)
