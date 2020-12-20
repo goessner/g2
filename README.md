@@ -75,7 +75,7 @@ In HTML use ...
 ```
 
 ### Tests
-Tests are found on the [Github Page](https://goessner.github.io/g2/)
+Tests are found on the [Github Page](https://goessner.github.io/g2/tests.html)
 
 # License
 g<sup>2</sup> is licensed under the terms of the MIT License.

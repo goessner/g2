@@ -97,7 +97,8 @@ new Test('pulley2',
 new Test('rope',
 `let A = {x:50,y:30}, B = {x:200,y:75};
 g2().view({cartesian:true})
-    .pulley({...A,r:20}).pulley2({...B,r:40}).rope({p1:A,r1:20,p2:B,r2:40})`),
+    .pulley({...A,r:20}).pulley2({...B,r:40})
+    .rope({p1:A,r1:20,p2:B,r2:40})`),
 
 new Test('ground',
 `g2().ground({pts:[25,25,25,75,75,75,75,25,125,25],pos:'left'})`),
@@ -105,7 +106,8 @@ new Test('ground',
 new Test('load',
 `g2().view({cartesian:true})
      .bar({x1:20,y1:50,x2:220,y2:50})
-     .load({pts:[20,50,30,140,250,90,220,50],lw:1,w:-Math.PI/3,ls:"blue"})`),
+     .load({pts:[20,50,30,140,250,90,220,50],
+          lw:1,w:-Math.PI/3,ls:"blue"})`),
 
 new Test('load2',
 `g2().view({cartesian:true})
