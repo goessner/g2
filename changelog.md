@@ -19,3 +19,17 @@
 ### `g2.selector.js` / `canvasinteractor.js` 
 * `interactor.on('pan')`, `interactor.on('drag')` and  `interactor.on('wheel')` handling is moved out of the library and is now in the responsibility of the application (s. `g2.drag.html`).
 * `hdl` elements can be used elegantly to interactively modify geometry. 
+
+## [3.0.0]() on December 2020
+
+### `g2.core.js`
+* `g2.mixin` is replaced with `g2.mix`.
+
+### `g2.ext.js`
+* Symbols like `nod`, `origin` etc. are moved from `g2.mec` to `g2.ext`.
+* Commands `vec`, `avec`, `dim`, `adim` are also moved.
+* `label` is no command anymore, but a property on respective `g2` commands.
+* `mark` is no command anymore, but a property on respective `g2` commands.
+
+### `g2.chart.html.js`
+* A new custom HTML element used for easy rendering of `g2.chart` commands.
