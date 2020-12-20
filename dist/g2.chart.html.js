@@ -1666,7 +1666,7 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
     lbloc: 'se',
     g2() {      // in contrast to `g2.prototype.cir.prototype`, `g2()` is called always !
         return g2()
-            .cir({ ...g2.flatten(this), r: this.r * (this.scl || 1) })
+            .cir({ ...g2.flatten(this), r: this.r * (this.scl !== undefined ? this.scl  : 1) })
             .ins((g) => this.label && this.drawLabel(g))
     }
 });
@@ -2977,7 +2977,7 @@ class G2ChartElement extends HTMLElement {
                     funcs[itr].fn = (() => Function('"use strict"; return (' + a[4] + ')')())();
                     itr++;
                 }
-                this.funcs = [funcs];          
+                this.funcs = funcs;          
             }
         }
         catch (e) {

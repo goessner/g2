@@ -73,7 +73,7 @@ class G2ChartElement extends HTMLElement {
                     funcs[itr].fn = (() => Function('"use strict"; return (' + a[4] + ')')())();
                     itr++;
                 }
-                this.funcs = [funcs];          
+                this.funcs = funcs;          
             }
         }
         catch (e) {
