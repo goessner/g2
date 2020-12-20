@@ -62,57 +62,6 @@
 <p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.mec.md">See the API Reference</a></p>
 <h2 id="g2-extension-for-mechanical-applications">g2 extension for mechanical applications <a class="plnk" href="#g2-extension-for-mechanical-applications">#</a></h2>
 <p>Some of these elements use functions of <code>g2.ext</code>, so it is advisable to prepend <code>g2.ext</code> before using <code>g2.mec</code>.</p>
-<h3 id="mechanical-symbols">Mechanical Symbols <a class="plnk" href="#mechanical-symbols">#</a></h3>
-<p><img src="../img/symbols.png" alt="img.symbols.mec" class="loading" id="image-hash-1488137316"></p>
-<p>Since <code>g2.mec</code> is an extension for mechanical purposes, these symbols expect <code>g2</code> to be in <code>cartesian</code> mode.
-This is notable with <code>nodfix</code>, <code>nodflt</code> and <code>origin</code>, since they will be upside down if the <code>cartesian</code> mode is not set.</p>
-<p><code>g2.mec.js</code> provides some useful mechanical symbols for the <a href="https://github.com/goessner/g2.core"><code>g2.core.js</code></a> graphics library.</p>
-<table>
-<thead>
-<tr>
-<th>Element</th>
-<th>Image</th>
-<th>Meaning</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>pol({x,y})</code></td>
-<td><img src="../img/pol-2.png" alt="pol-def" class="loading" id="image-hash--1555505349"></td>
-<td>Creates a pol symbol.</td>
-</tr>
-<tr>
-<td><code>gnd({x,y})</code></td>
-<td><img src="../img/gnd.png" alt="gnd-def" class="loading" id="image-hash--1263074074"></td>
-<td>Creates a gnd symbol.</td>
-</tr>
-<tr>
-<td><code>nod({x,y})</code></td>
-<td><img src="../img/nod.png" alt="nod-def" class="loading" id="image-hash-683113548"></td>
-<td>Creates a nod symbol.</td>
-</tr>
-<tr>
-<td><code>dblnod({x,y})</code></td>
-<td><img src="../img/dblnod.png" alt="dblnod-def" class="loading" id="image-hash--1538277758"></td>
-<td>Creates a dblnod symbol.</td>
-</tr>
-<tr>
-<td><code>nodfix({x,y})</code></td>
-<td><img src="../img/nodfix.png" alt="nodfix-def" class="loading" id="image-hash--951497185"></td>
-<td>Creates a nodfix symbol.</td>
-</tr>
-<tr>
-<td><code>nodflt({x,y})</code></td>
-<td><img src="../img/nodflt.png" alt="nodflt-def" class="loading" id="image-hash--869303816"></td>
-<td>Creates a nodflt symbol.</td>
-</tr>
-<tr>
-<td><code>origin({x,y})</code></td>
-<td><img src="../img/origin_sym.png" alt="origin-def" class="loading" id="image-hash-2042321627"></td>
-<td>Creates a origin symbol.</td>
-</tr>
-</tbody>
-</table>
 <h3 id="mechanical-elements">Mechanical Elements <a class="plnk" href="#mechanical-elements">#</a></h3>
 <p><code>g2.mec.js</code> also provides some mechanical elements.</p>
 <table>
@@ -124,26 +73,6 @@ This is notable with <code>nodfix</code>, <code>nodflt</code> and <code>origin</
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><code>vec({x1,y1,x2,y2})</code></td>
-<td><img src="../img/vec-def.png" alt="vec-def" class="loading" id="image-hash-1657545813"></td>
-<td>Linear vector element which starts at <code>x1, y1</code> and points to <code>x2, y2</code>.</td>
-</tr>
-<tr>
-<td><code>avec({x,y,r,w,dw})</code></td>
-<td><img src="../img/avec-def.png" alt="avec-def" class="loading" id="image-hash--497846920"></td>
-<td>Angular vector element with center at <code>x, y</code>, radius <code>r</code> and spans a vectro from <code>w</code> to <code>w+dw</code>.</td>
-</tr>
-<tr>
-<td><code>dim({x1,y1,x2,y2,inside})</code></td>
-<td><img src="../img/dim-def.png" alt="dim-def" class="loading" id="image-hash--2037797559"></td>
-<td>Linear dimension element which starts at <code>x1, y1</code> and points to <code>x2, y2</code>.</td>
-</tr>
-<tr>
-<td><code>adim({x,y,r,w,dw,inside})</code></td>
-<td><img src="../img/adim-def.png" alt="adim-def" class="loading" id="image-hash-101777004"></td>
-<td>Arc dimension element by center coordinates <code>x</code>, <code>y</code>, radius <code>r</code>, start angle <code>w</code> and angular range <code>dw</code>.</td>
-</tr>
 <tr>
 <td><code>slider({x,y,w,b,h})</code></td>
 <td><img src="../img/slider-def.png" alt="slider-def" class="loading" id="image-hash--1520276410"></td>
@@ -216,93 +145,6 @@ This is notable with <code>nodfix</code>, <code>nodflt</code> and <code>origin</
 </tr>
 </tbody>
 </table>
-<h3 id="mechanical-styles">Mechanical Styles <a class="plnk" href="#mechanical-styles">#</a></h3>
-<p>There are some predefined colors, line styles and other constants.
-You can overwrite them, if you are not comfortable with it.</p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>State</td>
-<td><code>object</code></td>
-<td></td>
-<td><code>g2</code> state namespace.</td>
-</tr>
-<tr>
-<td>State.nodcolor</td>
-<td><code>string</code></td>
-<td><code>&quot;#333&quot;</code></td>
-<td>node color.</td>
-</tr>
-<tr>
-<td>State.nodfill</td>
-<td><code>string</code></td>
-<td><code>&quot;#dedede&quot;</code></td>
-<td>node fill color.</td>
-</tr>
-<tr>
-<td>State.nodfill2</td>
-<td><code>string</code></td>
-<td><code>&quot;#aeaeae&quot;</code></td>
-<td>alternate node fill color, somewhat darker.</td>
-</tr>
-<tr>
-<td>State.linkcolor</td>
-<td><code>string</code></td>
-<td><code>&quot;#666&quot;</code></td>
-<td>link color.</td>
-</tr>
-<tr>
-<td>State.linkfill</td>
-<td><code>string</code></td>
-<td><code>&quot;rgba(200,200,200,0.5)&quot;</code></td>
-<td>link fill color, semi-transparent.</td>
-</tr>
-<tr>
-<td>State.solid</td>
-<td><code>array</code></td>
-<td><code>[]</code></td>
-<td>solid line style.</td>
-</tr>
-<tr>
-<td>State.dash</td>
-<td><code>array</code></td>
-<td><code>[15,10]</code></td>
-<td>dashed line style.</td>
-</tr>
-<tr>
-<td>State.dot</td>
-<td><code>array</code></td>
-<td><code>[4,4]</code></td>
-<td>dotted line style.</td>
-</tr>
-<tr>
-<td>State.dashdot</td>
-<td><code>array</code></td>
-<td><code>[25,6.5,2,6.5]</code></td>
-<td>dashdotted line style.</td>
-</tr>
-<tr>
-<td>State.labelOffset</td>
-<td><code>number</code></td>
-<td><code>5</code></td>
-<td>default label offset distance.</td>
-</tr>
-<tr>
-<td>State.labelSignificantDigits</td>
-<td><code>number</code></td>
-<td><code>3</code></td>
-<td>default label's significant digits after floating point.</td>
-</tr>
-</tbody>
-</table>
 <h3 id="truss-example">Truss Example <a class="plnk" href="#truss-example">#</a></h3>
 <p>You can see a simple truss below, composed from mechanical symbols and elements.</p>
 <p><img src="../img/truss.png" alt="img.truss.mec" class="loading" id="image-hash--2095224224"></p>
@@ -319,14 +161,14 @@ You can overwrite them, if you are not comfortable with it.</p>
         g = g2()
             .view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
             .link2({<span class="hljs-attr">pts</span>:[A,B,E,A,D,C]})
-            .vec({...dxdy(B,<span class="hljs-number">0</span>,<span class="hljs-number">-50</span>),<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"darkred"</span>})
-            .vec({...dxdy(D, <span class="hljs-number">80</span>,<span class="hljs-number">0</span>),<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"darkred"</span>})
+            .vec({...dxdy(B,<span class="hljs-number">0</span>,<span class="hljs-number">-50</span>),<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkred&quot;</span>})
+            .vec({...dxdy(D, <span class="hljs-number">80</span>,<span class="hljs-number">0</span>),<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkred&quot;</span>})
             .nodfix(A)
             .nod(B)
             .nod(C)
             .nod(D)
             .nodflt({...E, <span class="hljs-attr">w</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>})
-            .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>));
+            .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>));
 </div></code></pre>
 <h3 id="truss-example-with-labels">Truss Example with Labels <a class="plnk" href="#truss-example-with-labels">#</a></h3>
 <p>The truss example above can now be improved by adding labels.</p>
@@ -349,27 +191,27 @@ You can overwrite them, if you are not comfortable with it.</p>
         E = {<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">250</span>},
         g = g2()
             .view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
-            .beg({<span class="hljs-attr">font</span>: <span class="hljs-string">"italic 400 12px Unknown Font"</span>})
-            .bar2(x1x2(A,B)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"1"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
-            .bar2(x1x2(A,C)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"2"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
-            .bar2(x1x2(A,D)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"3"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">15</span>})
-            .bar2(x1x2(B,D)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"4"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">15</span>})
-            .bar2(x1x2(C,D)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"5"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
-            .bar2(x1x2(C,E)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"6"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
-            .bar2(x1x2(D,E)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"7"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">15</span>})
+            .beg({<span class="hljs-attr">font</span>: <span class="hljs-string">&quot;italic 400 12px Unknown Font&quot;</span>})
+            .bar2(x1x2(A,B)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;1&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
+            .bar2(x1x2(A,C)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;2&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
+            .bar2(x1x2(A,D)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;3&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">15</span>})
+            .bar2(x1x2(B,D)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;4&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">15</span>})
+            .bar2(x1x2(C,D)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;5&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
+            .bar2(x1x2(C,E)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;6&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
+            .bar2(x1x2(D,E)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;7&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">15</span>})
             .end()
-            .vec({...dxdy(B,<span class="hljs-number">0</span>,<span class="hljs-number">-50</span>),<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"brown"</span>}).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"F"</span>,<span class="hljs-attr">loc</span>:<span class="hljs-number">0.5</span>})
-            .vec({...dxdy(D,<span class="hljs-number">80</span>,<span class="hljs-number">0</span>),<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"brown"</span>}).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"2F"</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">"end"</span>})
-            .nodfix(A).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"A"</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">"w"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
-            .nod(B).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"B"</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">"se"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">15</span>})
-            .nod(C).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"C"</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">"w"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
-            .nod(D).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"D"</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">"ne"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
-            .nodflt({...E, <span class="hljs-attr">w</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>}).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"E"</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">"e"</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
-            .dim(dxdy({<span class="hljs-attr">x</span>:A.x,<span class="hljs-attr">y</span>:<span class="hljs-number">275</span>},<span class="hljs-number">100</span>,<span class="hljs-number">0</span>)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"b"</span>})
-            .dim(dxdy({<span class="hljs-attr">x</span>:D.x,<span class="hljs-attr">y</span>:<span class="hljs-number">275</span>},<span class="hljs-number">100</span>,<span class="hljs-number">0</span>)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"b"</span>})
-            .dim(dxdy({<span class="hljs-attr">x</span>:<span class="hljs-number">275</span>,<span class="hljs-attr">y</span>:E.y},<span class="hljs-number">0</span>,<span class="hljs-number">-100</span>)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"b"</span>})
-            .dim(dxdy({<span class="hljs-attr">x</span>:<span class="hljs-number">275</span>,<span class="hljs-attr">y</span>:D.y},<span class="hljs-number">0</span>,<span class="hljs-number">-100</span>)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">"b"</span>})
-            .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>));
+            .vec({...dxdy(B,<span class="hljs-number">0</span>,<span class="hljs-number">-50</span>),<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;brown&quot;</span>}).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;F&quot;</span>,<span class="hljs-attr">loc</span>:<span class="hljs-number">0.5</span>})
+            .vec({...dxdy(D,<span class="hljs-number">80</span>,<span class="hljs-number">0</span>),<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;brown&quot;</span>}).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;2F&quot;</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">&quot;end&quot;</span>})
+            .nodfix(A).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;A&quot;</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">&quot;w&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
+            .nod(B).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;B&quot;</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">&quot;se&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">15</span>})
+            .nod(C).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;C&quot;</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">&quot;w&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
+            .nod(D).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;D&quot;</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">&quot;ne&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
+            .nodflt({...E, <span class="hljs-attr">w</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>}).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;E&quot;</span>,<span class="hljs-attr">loc</span>:<span class="hljs-string">&quot;e&quot;</span>,<span class="hljs-attr">off</span>:<span class="hljs-number">5</span>})
+            .dim(dxdy({<span class="hljs-attr">x</span>:A.x,<span class="hljs-attr">y</span>:<span class="hljs-number">275</span>},<span class="hljs-number">100</span>,<span class="hljs-number">0</span>)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;b&quot;</span>})
+            .dim(dxdy({<span class="hljs-attr">x</span>:D.x,<span class="hljs-attr">y</span>:<span class="hljs-number">275</span>},<span class="hljs-number">100</span>,<span class="hljs-number">0</span>)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;b&quot;</span>})
+            .dim(dxdy({<span class="hljs-attr">x</span>:<span class="hljs-number">275</span>,<span class="hljs-attr">y</span>:E.y},<span class="hljs-number">0</span>,<span class="hljs-number">-100</span>)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;b&quot;</span>})
+            .dim(dxdy({<span class="hljs-attr">x</span>:<span class="hljs-number">275</span>,<span class="hljs-attr">y</span>:D.y},<span class="hljs-number">0</span>,<span class="hljs-number">-100</span>)).label({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;b&quot;</span>})
+            .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>));
 </div></code></pre>
 
     </article>
