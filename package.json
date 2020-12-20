@@ -1,6 +1,6 @@
 {
   "name": "g2d",
-  "version": "2.6.0",
+  "version": "3.0.0",
   "description": "g2 - a tiny 2d graphics command library",
   "keywords": [
     "vector",

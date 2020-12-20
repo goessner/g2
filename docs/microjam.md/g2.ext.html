@@ -110,6 +110,9 @@ array iterator. <em>g2</em> implements three standard iterators which need not b
 <p>If you want to add text to a geometric element, you can always use the basic <code>txt</code> element.
 However, some element types support the smarter <code>label</code> property, which comes with a more intuitive relative positioning concerning its nearest previous element.
 Reliable positioning always requires <em>cartesian</em> coordinates.</p>
+<blockquote>
+<p>Please note that with <code>g2</code> version 3 labels as element have been deprecated in favor of usage as property.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -187,7 +190,10 @@ Reliable positioning always requires <em>cartesian</em> coordinates.</p>
 With linear, polygonial and spline elements a positive value means <em>right of</em> and a negativ value means <em>left of</em>
 the line at the specified point. If there is no offset distance specified, the global <code>g2.State.labelOffset</code>'s value is taken. Please note, that cardinal locations are not sensitive to transformations.</p>
 <h3 id="markers">Markers <a class="plnk" href="#markers">#</a></h3>
-<p>Markers can be placed onto the outline of the previous element.</p>
+<p>Markers can be placed onto the outline of an element.</p>
+<blockquote>
+<p>Please note that with <code>g2</code> version 3 marks as element have been deprecated in favor of usage as property.</p>
+</blockquote>
 <table>
 <thead>
 <tr>
@@ -197,8 +203,12 @@ the line at the specified point. If there is no offset distance specified, the g
 </thead>
 <tbody>
 <tr>
-<td style="text-align:center"><code>mark({mark,loc||count})</code></td>
-<td style="text-align:center">Marker element placing marker symbol <code>mrk</code> at locations <code>loc</code>. If <code>count</code> is given instead of <code>loc</code>, the marks are distributed evenly on the respective element.</td>
+<td style="text-align:center"><code>mark:{mark,loc||count}</code></td>
+<td style="text-align:center">Marker element placing marker symbol <code>mark</code> at locations <code>loc</code>. If <code>count</code> is given instead of <code>loc</code>, the marks are distributed evenly on the respective element.</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>mark:loc||count</code></td>
+<td style="text-align:center">Same, but with mark set to <code>&quot;tick&quot;</code> as default.</td>
 </tr>
 </tbody>
 </table>
@@ -207,6 +217,7 @@ Linear elements provide parameterized numerical or named locations.
 The <code>spline</code> element only supports indexed locations.
 It does not support parameterized locations.</p>
 <p>Locations can also be passed as arrays, which makes it convenient for multiple marks with the same <code>mark</code> to be just passed in one calling of the mark method e.g <code>mark({mark:&quot;tick&quot;,loc:[0,0.25,&quot;mid&quot;,0.9]})</code></p>
+<p>Default symbols are <code>&quot;tick&quot;</code>, <code>&quot;sqr&quot;</code> and <code>&quot;dot&quot;</code>.</p>
 <table>
 <thead>
 <tr>
