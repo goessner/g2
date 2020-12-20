@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>g2 Tests</title>
+    <!-- use bootstrap for styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        canvas,
+        img,
+        td {
+            border-style: solid;
+        }
+
+        td,
+        th {
+            border: 1px solid black;
+            white-space: pre;
+            font: 11px monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Import g2 -->
+    <!-- <script src="../dist/g2.full.js"></script> -->
+    <!-- <script src="../src/g2.core.js"></script> -->
+    <!-- <script src="../src/g2.ext.js"></script> -->
+    <!-- <script src="../src/g2.mec.js"></script> -->
+    <!-- <script src="../src/g2.chart.js"></script> -->
+    <script src="https://goessner.github.io/g2/g2.js"></script>
+    <!-- Import tests -->
+    <script src="./index/index.js"></script>
+    <script src="./index/index.mec.js"></script>
+    <script src="./index/index.chart.js"></script>
+    <div class="container-fluid">
+        <h1>g2 Tests</h1>
+        <h6>g2.js, g2.ext.js, g2.mec.js are referenced. canvas and image should look alike.</h6>
+        <p id="errind">Error at number: </p>
+        <table class="table table-hover">
+            <thead class="thead-dark" scope="row">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">name</th>
+                    <th scope="col">src</th>
+                    <th scope="col">canvas</th>
+                    <th scope="col">image</th>
+                    <th scope="col">error</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+    <script>
+        // render code to canvas and check for errors
+        function render() {
+            for (let idx in tests) {
+                const row = document.getElementById('row' + idx);
+                const src = document.getElementById('src' + idx);
+                const ctx = document.getElementById('cv' + idx).getContext('2d');
+                const error = document.getElementById('e' + idx);
+
+                src.innerHTML = tests[idx].src;
+                error.innerHTML = '';
+
+                try {
+                    g2().del().clr().exe(ctx);
+                    eval(tests[idx].src).exe(ctx);
+                }
+                catch (e) {
+                    error.innerHTML = e;
+                    row.classList.add('table-danger')
+                    document.getElementById('errind').innerHTML += idx + ' ';
+                }
+            }
+        }
+
+        // create elements
+        const ctx = [];
+        const tbody = document.getElementById('tbody');
+        for (let idx in tests) {
+            const tr = document.createElement('tr');
+            tr.id = 'row' + idx;
+
+            const number = document.createElement('td');
+            number.innerHTML = idx;
+            tr.appendChild(number);
+
+            const name = document.createElement('td');
+            name.innerHTML = tests[idx].name;
+            tr.appendChild(name);
+
+            const src = document.createElement('td');
+            src.id = 'src' + idx;
+            // src.classList.add('container-fluid');
+            tr.appendChild(src);
+
+            const canvas = document.createElement('td');
+            tr.appendChild(canvas);
+            const canvasarea = document.createElement('canvas');
+            canvasarea.id = 'cv' + idx;
+            // canvasarea.width = 300;
+            // canvasarea.height = 150;
+            canvas.appendChild(canvasarea);
+
+            const image = document.createElement('td');
+            tr.appendChild(image);
+            const imagearea = document.createElement('img');
+            // imagearea.width = 300;
+            // imagearea.height = 150;
+            imagearea.src = './img/' + name.innerHTML + '.png';
+            image.appendChild(imagearea);
+            tr.appendChild(image);
+
+            const error = document.createElement('td');
+            error.id = 'e' + idx;
+            tr.appendChild(error);
+
+            tbody.appendChild(tr);
+        }
+        // initial render call
+        render();
+    </script>
+</body>
+
+</html>
