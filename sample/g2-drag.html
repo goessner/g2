@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>g2 simple drag</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="c" width="601" height="401" style="border:1px solid black;"></canvas>
+<script src="../bin/canvasinteractor.js"></script>
+<script src="../src/g2.core.js"></script>
+<script src="../src/g2.lib.js"></script>
+<script src="../src/g2.ext.js"></script>
+<script src="../src/g2.selector.js"></script>
+<script>
+const ctx = document.getElementById('c').getContext('2d');
+const interactor = canvasInteractor.create(ctx, {x:300,y:200,cartesian:true});
+const selector = g2.selector(interactor.evt);  // sharing 'evt' object ... !
+const g = g2().clr()                           // important with 'interaction'
+              .view(interactor.view)           // view sharing ... !
+              .grid()
+              .cir({x:0,y:0,r:30,fs:'orange',draggable:true})
+              .cir({x:-100,y:0,r:30,fs:'orange'});
+
+interactor.on('tick', (e) => { g.exe(selector).exe(ctx); })
+          .on('pan',  (e) => { interactor.view.x += e.dx; interactor.view.y += e.dy; })
+          .on('drag', (e) => { 
+              if (selector.selection && selector.selection.drag) 
+                  selector.selection.drag({x:e.xusr,y:e.yusr,dx:e.dxusr,dy:e.dyusr,mode:'drag'});
+              })
+          .startTimer();
+</script>
+</body>
+</html>

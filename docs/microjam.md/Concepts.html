@@ -33,7 +33,8 @@
 <li><a href="../microjam.md/Insert.html">Insert</a></li>
 <li><a href="../microjam.md/Animation.html">Animation</a></li>
 <li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
-<li><a href="../microjam.md/g2.html.html">Custom HTML Element</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
 </ul>
 <hr>
 <ul>
@@ -77,8 +78,8 @@ g.p()                               <span class="hljs-comment">// begin path</sp
       .l({<span class="hljs-attr">x</span>:<span class="hljs-number">90</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">10</span>})              <span class="hljs-comment">// second point</span>
       .l({<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">90</span>})              <span class="hljs-comment">// third point</span>
   .z()                              <span class="hljs-comment">// close path</span>
-.drw({<span class="hljs-attr">ls</span>:<span class="hljs-string">"green"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"orange"</span>}) <span class="hljs-comment">// stroke and fill</span>
-.exe(ctx);                          <span class="hljs-comment">// finally render graphics addressing 'ctx'.</span>
+.drw({<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;green&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;orange&quot;</span>}) <span class="hljs-comment">// stroke and fill</span>
+.exe(ctx);                          <span class="hljs-comment">// finally render graphics addressing &#x27;ctx&#x27;.</span>
 </div></code></pre>
 <p><img src="../img/triangle.png" alt="star1" class="loading" id="image-hash--732970443"></p>
 <p>There are only two objects <code>g2</code> and <code>ctx</code> involved. Both are nearly completely independent
@@ -157,20 +158,20 @@ Discussing now the problem, how to render the shapes (the <em>view</em> in MVC) 
 to the demand, to strictly separate the model from the view. But then, who knows better
 how to draw a shape than the shape itself?</p>
 <pre><code class="code-line language-javascript"><div><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Circle</span> </span>{
-    <span class="hljs-keyword">constructor</span>(x,y,r) {<span class="hljs-keyword">this</span>.x=x;<span class="hljs-keyword">this</span>.y=y;<span class="hljs-keyword">this</span>.r=r}
-    render(g) {g.cir(<span class="hljs-keyword">this</span>.x,<span class="hljs-keyword">this</span>.y,<span class="hljs-keyword">this</span>.r)}
+    <span class="hljs-keyword">constructor</span>(x,y,r) {<span class="hljs-built_in">this</span>.x=x;<span class="hljs-built_in">this</span>.y=y;<span class="hljs-built_in">this</span>.r=r}
+    render(g) {g.cir(<span class="hljs-built_in">this</span>.x,<span class="hljs-built_in">this</span>.y,<span class="hljs-built_in">this</span>.r)}
 }
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Rect</span> </span>{
-    <span class="hljs-keyword">constructor</span>(x,y,b,h) {<span class="hljs-keyword">this</span>.x=x;<span class="hljs-keyword">this</span>.y=y;<span class="hljs-keyword">this</span>.b=b;<span class="hljs-keyword">this</span>.h=h}
-    render(g) {g.rec(<span class="hljs-keyword">this</span>.x,<span class="hljs-keyword">this</span>.y,<span class="hljs-keyword">this</span>.w,<span class="hljs-keyword">this</span>.h)}
+    <span class="hljs-keyword">constructor</span>(x,y,b,h) {<span class="hljs-built_in">this</span>.x=x;<span class="hljs-built_in">this</span>.y=y;<span class="hljs-built_in">this</span>.b=b;<span class="hljs-built_in">this</span>.h=h}
+    render(g) {g.rec(<span class="hljs-built_in">this</span>.x,<span class="hljs-built_in">this</span>.y,<span class="hljs-built_in">this</span>.w,<span class="hljs-built_in">this</span>.h)}
 }
 <span class="hljs-keyword">const</span> model = [<span class="hljs-keyword">new</span> Circle({<span class="hljs-attr">x</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">60</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>}),<span class="hljs-keyword">new</span> Rect({<span class="hljs-attr">x</span>:<span class="hljs-number">45</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">25</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">40</span>})],
         g = g2().grid(),
-        ctx1 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'c1'</span>).getContext(<span class="hljs-string">'2d'</span>), <span class="hljs-comment">// view 1</span>
-        ctx2 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'c2'</span>).getContext(<span class="hljs-string">'2d'</span>); <span class="hljs-comment">// view 2</span>
+        ctx1 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;c1&#x27;</span>).getContext(<span class="hljs-string">&#x27;2d&#x27;</span>), <span class="hljs-comment">// view 1</span>
+        ctx2 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;c2&#x27;</span>).getContext(<span class="hljs-string">&#x27;2d&#x27;</span>); <span class="hljs-comment">// view 2</span>
 
 <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i <span class="hljs-keyword">of</span> model) {  <span class="hljs-comment">// build command queue of ...</span>
-    i.render(g);        <span class="hljs-comment">// ... model's shapes drawing commands.</span>
+    i.render(g);        <span class="hljs-comment">// ... model&#x27;s shapes drawing commands.</span>
 }
 g.exe(ctx1);            <span class="hljs-comment">// render to view 1</span>
 g.exe(ctx2);            <span class="hljs-comment">// render to view 2</span>

@@ -33,7 +33,8 @@
 <li><a href="../microjam.md/Insert.html">Insert</a></li>
 <li><a href="../microjam.md/Animation.html">Animation</a></li>
 <li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
-<li><a href="../microjam.md/g2.html.html">Custom HTML Element</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
 </ul>
 <hr>
 <ul>
@@ -138,7 +139,7 @@ array iterator. <em>g2</em> implements three standard iterators:</p>
 </tbody>
 </table>
 <p>Another property of <code>ply</code> is <code>closed</code> which can have boolean values <code>true</code> and <code>false</code>.</p>
-<pre><code class="code-line language-javascript"><div>    <span class="hljs-keyword">const</span> style={<span class="hljs-attr">ls</span>:<span class="hljs-string">"red"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"ddd"</span>};
+<pre><code class="code-line language-javascript"><div>    <span class="hljs-keyword">const</span> style={<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;red&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;ddd&quot;</span>};
     g2().ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>,<span class="hljs-number">40</span>,<span class="hljs-number">70</span>,<span class="hljs-number">60</span>,<span class="hljs-number">30</span>,<span class="hljs-number">90</span>,<span class="hljs-number">80</span>],...style})
         .ply({<span class="hljs-attr">pts</span>:[[<span class="hljs-number">110</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">140</span>,<span class="hljs-number">70</span>],[<span class="hljs-number">160</span>,<span class="hljs-number">30</span>],[<span class="hljs-number">190</span>,<span class="hljs-number">80</span>]],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,...style})
         .exe(ctx);
@@ -162,7 +163,7 @@ Just fill an array in the appropriate format and render it.</p>
     g2().del()
         .clr()
         .view({<span class="hljs-attr">x</span>: <span class="hljs-number">75</span>,<span class="hljs-attr">y</span>: <span class="hljs-number">50</span>})
-        .ply({<span class="hljs-attr">pts</span>:arr,<span class="hljs-attr">ls</span>:<span class="hljs-string">'blue'</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>}) <span class="hljs-comment">// render this array.</span>
+        .ply({<span class="hljs-attr">pts</span>:arr,<span class="hljs-attr">ls</span>:<span class="hljs-string">&#x27;blue&#x27;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>}) <span class="hljs-comment">// render this array.</span>
         .exe(ctx);
     requestAnimationFrame(render);
 })();
@@ -174,9 +175,9 @@ Just fill an array in the appropriate format and render it.</p>
 <code>x</code> and <code>y</code> determine the anchor position of the text element. <code>w</code> describes the rotation angle and
 the last <code>style</code> argument is an object containing individual text and font style information. That
 style properties have priority over previously defined properties, but do not overwrite them.</p>
-<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> style={<span class="hljs-attr">ls</span>:<span class="hljs-string">"red"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">"ddd"</span>};
-      g2().txt({<span class="hljs-attr">str</span>:<span class="hljs-string">"Hello world"</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">w</span>:<span class="hljs-number">-0.15</span>,<span class="hljs-attr">font</span>:<span class="hljs-string">"32px cursive"</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">'rebeccapurple'</span>})
-          .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">"default style"</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">210</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">40</span>})
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> style={<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;red&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;ddd&quot;</span>};
+      g2().txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;Hello world&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">w</span>:<span class="hljs-number">-0.15</span>,<span class="hljs-attr">font</span>:<span class="hljs-string">&quot;32px cursive&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&#x27;rebeccapurple&#x27;</span>})
+          .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;default style&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">210</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">40</span>})
           .exe(ctx);
 </div></code></pre>
 <p><img src="../img/txt-6.png" alt="txt Element" class="loading" id="image-hash-1118791458"></p>
@@ -189,11 +190,11 @@ image. <code>x,y</code> define the position of the upper left corner, <code>b,h<
 It can be scaled with <code>scl</code>.</p>
 <p>Images are rendered asynchronously. The command queue stops when the image is to be drawn and continues after that.
 If more than one command queue is issued on one context, it may happen that the order of drawings is inconsistent.</p>
-<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"250px"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"500px"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"../../g2/src/g2.core.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;250px&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;500px&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;../../g2/src/g2.core.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
-    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>);
-    <span class="hljs-keyword">const</span> photo = <span class="hljs-string">"../img/photo.jpg"</span>;
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>);
+    <span class="hljs-keyword">const</span> photo = <span class="hljs-string">&quot;../img/photo.jpg&quot;</span>;
 
     g2().img({<span class="hljs-attr">uri</span>:photo,<span class="hljs-attr">b</span>:<span class="hljs-number">500</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">250</span>})
         .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">30</span>})

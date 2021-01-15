@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>g2.html - test</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<g-2 id='g' width="601" height="401" cartesian x0="0" y0="0" grid interactive>
+{ "main":[
+    {"c":"cir","a":{"x":250,"y":100,"r":30,"fs":"orange"}},
+    {"c":"cir","a":{"x":250,"y":100,"r":15,"fs":"snow"}}
+  ]
+}
+</g-2>
+<hr>
+<g-2 id='g' width="400" height="300" cartesian x0="100" y0="100" grid darkmode interactive>
+{ "main":[
+    {"c":"nodfix","a":{}},
+    {"c":"nod","a":{"y":50}},
+    {"c":"nod","a":{"x":150,"y":150}},
+    {"c":"nodfix","a":{"x":200}}
+  ]
+}
+</g-2>
+
+</body>
+<script src="../g2.html.js"></script>
+<script>
+const g2Elem = document.getElementById('g');
+g2Elem.g.lin({x1:100,y1:200,x2:400,y2:200,ls:'red',lw:2})
+g2Elem.update();
+</script>
+</html>

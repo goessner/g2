@@ -9,7 +9,7 @@
  "tags": []
  ---
 
- [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/blob/master/LICENSE)
+[![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/goessner/g2/blob/master/LICENSE)
 [![npm](https://img.shields.io/npm/v/g2d.svg)](https://npmjs.com/package/g2d)
 [![npm](https://img.shields.io/npm/dt/g2d.svg)](https://npmjs.com/package/g2d)
 [![no dependencies](https://img.shields.io/gemnasium/mathiasbynens/he.svg)](https://github.com/goessner/g2)
@@ -26,7 +26,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
 * Method chaining.
 * Support of cartesian coordinates.
 * Viewport pan and zoom transformations.
-* Low level path commands with short names adopted from SVG.
+* Low-level path commands with short names adopted from SVG.
 * Higher level element commands.
 * Maintaining a state stack for styling and transformations.
 * Easy way to build custom symbol libraries.
@@ -45,7 +45,7 @@ So the API is minimal and easy to understand. The library is tiny, fast and rend
         .exe(ctx);  // draw to canvas.
 </script>
 ```
-![first](/img/g2-first.png)
+![first](/img/g2-first.png
 
 ## API Reference
 See the [API Reference for g2](api/g2.core.md) for details.

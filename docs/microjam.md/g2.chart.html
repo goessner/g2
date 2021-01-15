@@ -33,7 +33,8 @@
 <li><a href="../microjam.md/Insert.html">Insert</a></li>
 <li><a href="../microjam.md/Animation.html">Animation</a></li>
 <li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
-<li><a href="../microjam.md/g2.html.html">Custom HTML Element</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
 </ul>
 <hr>
 <ul>
@@ -60,8 +61,8 @@
 <code>g2.chart</code> as a <a href="https://github.com/goessner/g2"><code>g2</code></a> addon generates x/y-line charts only, but it does that very well.</p>
 <h3 id="example-first-chart">Example: first chart <a class="plnk" href="#example-first-chart">#</a></h3>
 <p><img src="../img/chart_first.png" alt="g2 %amp; charts" class="loading" id="image-hash-1166953624"></p>
-<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"250"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"175"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;250&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;175&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
     g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
         .chart({<span class="hljs-attr">x</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">120</span>,
@@ -69,7 +70,7 @@
             <span class="hljs-attr">xaxis</span>:{},
             <span class="hljs-attr">yaxis</span>:{},
         })
-        .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>));
+        .exe(<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>));
   </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </div></code></pre>
 <h2 id="chart-usage">Chart usage <a class="plnk" href="#chart-usage">#</a></h2>
@@ -90,7 +91,7 @@ set.</p>
 <p><img src="../img/chart_sintan.png" alt="sintan" class="loading" id="image-hash-1280532855"></p>
 <pre><code class="code-line language-js"><div>g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
     .chart({<span class="hljs-attr">x</span>:<span class="hljs-number">25</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">25</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">100</span>,
-            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">"sine + tan"</span>},
+            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">&quot;sine + tan&quot;</span>},
             <span class="hljs-attr">xmin</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">2</span>*<span class="hljs-built_in">Math</span>.PI,
             <span class="hljs-attr">ymin</span>:<span class="hljs-number">-3</span>,<span class="hljs-attr">ymax</span>:<span class="hljs-number">3</span>,
             <span class="hljs-attr">funcs</span>:[
@@ -111,17 +112,17 @@ its semi-transparent function color.</p>
 <p><img src="../img/chart_sinaxis.png" alt="sin+axis" class="loading" id="image-hash-1144516257"></p>
 <pre><code class="code-line language-js"><div>g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
     .chart({ <span class="hljs-attr">x</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">100</span>,
-             <span class="hljs-attr">title</span>:{ <span class="hljs-attr">text</span>:<span class="hljs-string">"sin(φ)"</span>},
+             <span class="hljs-attr">title</span>:{ <span class="hljs-attr">text</span>:<span class="hljs-string">&quot;sin(φ)&quot;</span>},
                      <span class="hljs-attr">xmin</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">2</span>*<span class="hljs-built_in">Math</span>.PI,
                      <span class="hljs-attr">funcs</span>:[
                        {<span class="hljs-attr">fn</span>:<span class="hljs-built_in">Math</span>.sin,<span class="hljs-attr">dx</span>:<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">30</span>,<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}
                      ],
                      <span class="hljs-attr">xaxis</span>: {
-                       <span class="hljs-attr">title</span>:<span class="hljs-string">"φ"</span>,
+                       <span class="hljs-attr">title</span>:<span class="hljs-string">&quot;φ&quot;</span>,
                        <span class="hljs-attr">grid</span>:<span class="hljs-literal">true</span>
                      },
                      <span class="hljs-attr">yaxis</span>: {
-                       <span class="hljs-attr">title</span>:<span class="hljs-string">"sin(φ)"</span>,
+                       <span class="hljs-attr">title</span>:<span class="hljs-string">&quot;sin(φ)&quot;</span>,
                        <span class="hljs-attr">origin</span>:<span class="hljs-literal">true</span>
                      }
                    })
@@ -176,10 +177,10 @@ canvas coordinates for certain chart area coordinates. There is a small API for 
 its prototype on objects which are given as parameters to <code>g2</code> commands.</p>
 <h3 id="example-chart-marker">Example: chart marker <a class="plnk" href="#example-chart-marker">#</a></h3>
 <p><img src="../img/chart_marker.png" alt="chart marker" class="loading" id="image-hash--1158700696"></p>
-<pre><code class="code-line language-js"><div>    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>);
+<pre><code class="code-line language-js"><div>    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>);
     <span class="hljs-keyword">const</span> chrt = { <span class="hljs-attr">x</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">100</span>,
             <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">data</span>:[<span class="hljs-number">-1</span>,<span class="hljs-number">-2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>],<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}],
-            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">"marker on chart"</span>},
+            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">&quot;marker on chart&quot;</span>},
             <span class="hljs-attr">xaxis</span>:{},
             <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">origin</span>:<span class="hljs-literal">true</span>}
             };
@@ -191,9 +192,9 @@ its prototype on objects which are given as parameters to <code>g2</code> comman
 <p>Those markers can be set interactively then.</p>
 <h3 id="example-interactive-chart">Example: interactive chart <a class="plnk" href="#example-interactive-chart">#</a></h3>
 <p><img src="../img/chart_interactive.gif" alt="dynamic charts" class="loading" id="image-hash--1358805083"></p>
-<pre><code class="code-line language-javascript"><div>  <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
-      range = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"range"</span>),
-      output = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"output"</span>),
+<pre><code class="code-line language-javascript"><div>  <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+      range = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;range&quot;</span>),
+      output = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;output&quot;</span>),
       chrt = {
           <span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">150</span>,
           <span class="hljs-attr">xmin</span>:-<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">2</span>*<span class="hljs-built_in">Math</span>.PI,
@@ -202,9 +203,9 @@ its prototype on objects which are given as parameters to <code>g2</code> comman
               {<span class="hljs-attr">fn</span>:<span class="hljs-built_in">Math</span>.sin,<span class="hljs-attr">dx</span>:<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">30</span>,<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>},
               {<span class="hljs-attr">fn</span>:<span class="hljs-built_in">Math</span>.cos,<span class="hljs-attr">dx</span>:<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">30</span>,<span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>},
           ],
-          <span class="hljs-attr">title</span>:<span class="hljs-string">"sine + cosine (clipped)"</span>,
-          <span class="hljs-attr">xaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"phi"</span>},
-          <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"sin(phi)"</span>,<span class="hljs-attr">origin</span>:<span class="hljs-literal">true</span>}
+          <span class="hljs-attr">title</span>:<span class="hljs-string">&quot;sine + cosine (clipped)&quot;</span>,
+          <span class="hljs-attr">xaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">&quot;phi&quot;</span>},
+          <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">&quot;sin(phi)&quot;</span>,<span class="hljs-attr">origin</span>:<span class="hljs-literal">true</span>}
       };
   <span class="hljs-keyword">let</span> phi = -<span class="hljs-built_in">Math</span>.PI/<span class="hljs-number">2</span>, mrk1,mrk2;
   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
@@ -216,29 +217,29 @@ its prototype on objects which are given as parameters to <code>g2</code> comman
           .exe(ctx);
   };
   <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setPhi</span>(<span class="hljs-params">e</span>) </span>{
-      output.value = range.value + <span class="hljs-string">"°"</span>;
+      output.value = range.value + <span class="hljs-string">&quot;°&quot;</span>;
       phi = range.value/<span class="hljs-number">180</span>*<span class="hljs-built_in">Math</span>.PI;
       mrk1 = chrt.pntOf({<span class="hljs-attr">x</span>:phi,<span class="hljs-attr">y</span>:<span class="hljs-built_in">Math</span>.sin(phi)});
       mrk2 = chrt.pntOf({<span class="hljs-attr">x</span>:phi,<span class="hljs-attr">y</span>:<span class="hljs-built_in">Math</span>.cos(phi)});
       render();
   };
-  range.addEventListener(<span class="hljs-string">"input"</span>,setPhi,<span class="hljs-literal">false</span>);
+  range.addEventListener(<span class="hljs-string">&quot;input&quot;</span>,setPhi,<span class="hljs-literal">false</span>);
   render();
 </div></code></pre>
 <p>Markers can also get animated along simulation parameters.</p>
 <h3 id="example-animated-chart">Example: animated chart <a class="plnk" href="#example-animated-chart">#</a></h3>
 <p><img src="../img/chart_animated.gif" alt="dynamic charts" class="loading" id="image-hash--1440331988"></p>
-<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"c"</span> <span class="hljs-attr">width</span>=<span class="hljs-string">"501"</span> <span class="hljs-attr">height</span>=<span class="hljs-string">"301"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"https://gitcdn.xyz/repo/goessner/morphr/master/morphr.min.js"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;501&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;301&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://gitcdn.xyz/repo/goessner/g2/master/src/g2.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://gitcdn.xyz/repo/goessner/morphr/master/morphr.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
 <span class="hljs-keyword">let</span> phi = <span class="hljs-number">0</span>;
-    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">"c"</span>).getContext(<span class="hljs-string">"2d"</span>),
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
         posChart = { 
             <span class="hljs-attr">x</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-100</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">50</span>,
             <span class="hljs-attr">xmin</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">1</span>,
             <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">fn</span>:Morphr.quadratic, <span class="hljs-attr">dx</span>:<span class="hljs-number">0.02</span>, <span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}],
-            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"pos"</span>},
+            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">&quot;pos&quot;</span>},
             <span class="hljs-attr">xaxis</span>:{}
         },
         velChart = {
@@ -246,26 +247,26 @@ its prototype on objects which are given as parameters to <code>g2</code> comman
             <span class="hljs-attr">xmin</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">1</span>,
             <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">fn</span>:<span class="hljs-function">(<span class="hljs-params">q</span>) =&gt;</span> { <span class="hljs-keyword">return</span> q &lt; <span class="hljs-number">0.5</span> ? <span class="hljs-number">4</span>*q : <span class="hljs-number">4</span> - <span class="hljs-number">4</span>*q }, <span class="hljs-attr">dx</span>:<span class="hljs-number">0.02</span>, <span class="hljs-attr">color</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}],
             <span class="hljs-attr">xaxis</span>:<span class="hljs-literal">false</span>,
-            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"vel"</span>}
+            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">&quot;vel&quot;</span>}
         },
         accChart = {
             <span class="hljs-attr">x</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">70</span>,
-            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">"quadratic"</span>},
+            <span class="hljs-attr">title</span>:{<span class="hljs-attr">text</span>:<span class="hljs-string">&quot;quadratic&quot;</span>},
             <span class="hljs-attr">xmin</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">xmax</span>:<span class="hljs-number">1</span>,
             <span class="hljs-attr">funcs</span>:[{<span class="hljs-attr">fn</span>:<span class="hljs-function">(<span class="hljs-params">q</span>) =&gt;</span> { <span class="hljs-keyword">return</span> q &lt; <span class="hljs-number">0.5</span> ? <span class="hljs-number">4</span> : <span class="hljs-number">-4</span> }, <span class="hljs-attr">dx</span>:<span class="hljs-number">0.005</span>, <span class="hljs-attr">color</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">fill</span>:<span class="hljs-literal">true</span>}],
             <span class="hljs-attr">xaxis</span>:<span class="hljs-literal">false</span>,
-            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">"acc"</span>}
+            <span class="hljs-attr">yaxis</span>:{<span class="hljs-attr">title</span>:<span class="hljs-string">&quot;acc&quot;</span>}
         },
         g = g2().clr().view({<span class="hljs-attr">x</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>,<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
             .chart(posChart)
             .chart(velChart)
             .chart(accChart)
-            .beg({<span class="hljs-attr">w</span>:<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> phi,<span class="hljs-attr">fs</span>:<span class="hljs-string">"papayawhip"</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">"darkslategray"</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>})
+            .beg({<span class="hljs-attr">w</span>:<span class="hljs-function">() =&gt;</span> phi,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;papayawhip&quot;</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkslategray&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>})
             .lin({<span class="hljs-attr">x1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y1</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">x2</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y2</span>:<span class="hljs-number">0</span>})
             .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">5</span>})
             .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">5</span>})
             .end(),
-        morphr = Morphr.create(<span class="hljs-number">4</span>,<span class="hljs-number">0</span>,<span class="hljs-string">"quadratic"</span>)               <span class="hljs-comment">// create and configure Morphr object ...</span>
+        morphr = Morphr.create(<span class="hljs-number">4</span>,<span class="hljs-number">0</span>,<span class="hljs-string">&quot;quadratic&quot;</span>)               <span class="hljs-comment">// create and configure Morphr object ...</span>
                     .register(<span class="hljs-function">(<span class="hljs-params">q</span>) =&gt;</span> { phi = q*<span class="hljs-number">2</span>*<span class="hljs-built_in">Math</span>.PI; })  <span class="hljs-comment">// rotate by 360° in 4 s.</span>
                     .register(render)                         <span class="hljs-comment">// render to canvas</span>
                     .start();                                 <span class="hljs-comment">// init ...</span>

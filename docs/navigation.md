@@ -8,7 +8,8 @@
   - [Insert]({base}/microjam.md/Insert.html)
   - [Animation]({base}/microjam.md/Animation.html)
   - [Interactivity]({base}/microjam.md/Interactivity.html)
-  - [Custom HTML Element]({base}/microjam.md/g2.html.html)
+  - [Custom HTML element]({base}/microjam.md/g2.html.html)
+  - [Custom chart element]({base}/microjam.md/g2.chart.html.html)
 
 ---
 
