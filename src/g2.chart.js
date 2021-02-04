@@ -351,7 +351,7 @@ g2.prototype.chart.prototype = {
                 // The next point will not use this as "before" point,
                 // but will adjust this with the condition above anyway.
                 const {y} = fence(cur);
-                const x = cur.x + (y - cur.y) / m;
+                const x = cur.x + (m ? (y - cur.y) / m : 0);
                 plydata.push(this.pntOf({x, y}));
             }
             if (fill) {  // back to base line (y=0)

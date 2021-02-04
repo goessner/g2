@@ -4,6 +4,7 @@
 <canvas id="c4"></canvas>
 
 <script src="../dist/g2.full.js"></script>
+<script src="../src/g2.chart.js"></script>
 <script>
     const ctx1 = document.getElementById('c1').getContext('2d');
     const ctx2 = document.getElementById('c2').getContext('2d');
@@ -13,7 +14,7 @@
     g2().view({ cartesian: true })
         .chart({
             x: 40, y: 40, b: 190, h: 90,
-            funcs: () => [{ data: [-2, 4, 2, -1, 3, 3, 4, 2], fill: true }],
+            funcs: () => [{ data: [-4, 4, -2, 4, 2, -1, 3, 3, 4, 2], fill: true }],
             title: { text: "chart" },
             xaxis: { title: "x-axis", grid: true, origin: true },
             yaxis: { title: "y-axis" },
