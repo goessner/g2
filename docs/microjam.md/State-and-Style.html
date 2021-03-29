@@ -1,0 +1,291 @@
+<!doctype html>
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2-State and Style">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2-State and Style</title>
+  <link rel="shortcut icon" type="image/png" href="../img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="../theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="../index.html" class="right">g²</a>
+  <a href="../microjam.md/State-and-Style.html" class="left">State and Style</a>
+  <a href="https://github.com/goessner/g2"">
+    <svg height="32" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"></path></svg>
+  </a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="../microjam.md/Getting-Started.html">Getting started</a></li>
+<li><a href="../microjam.md/Concepts.html">Concepts</a></li>
+<li><a href="../microjam.md/Paths.html">Paths</a></li>
+<li><a href="../microjam.md/Elements.html">Elements</a></li>
+<li><a href="../microjam.md/State-and-Style.html">State and Style</a></li>
+<li><a href="../microjam.md/Reuse.html">Reuse</a></li>
+<li><a href="../microjam.md/View.html">View</a></li>
+<li><a href="../microjam.md/Insert.html">Insert</a></li>
+<li><a href="../microjam.md/Animation.html">Animation</a></li>
+<li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../microjam.md/g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="../microjam.md/g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="../microjam.md/g2.chart.html">Extension: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../api/g2.core">API: g2.core</a></li>
+<li><a href="../api/g2.ext">API: g2.ext</a></li>
+<li><a href="../api/g2.mec">API: g2.mec</a></li>
+<li><a href="../api/g2.chart">API: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../tests.html">Tests</a></li>
+</ul>
+
+    </nav>
+    <article>
+  <p><em>g2</em> allows styling of its commands.
+Color values are CSS colors as strings [hex colors, color names, rgb and rgba colors].
+You can also reference values from other style properties by their name via string <code>&quot;@name&quot;</code> (see example 2 below).</p>
+<p>Following style properties are supported:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th style="text-align:center">Type</th>
+<th>Default</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fs</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;transparent&quot;</code></td>
+<td>Fill color.</td>
+</tr>
+<tr>
+<td><code>ls</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;black&quot;</code></td>
+<td>Stroke color.</td>
+</tr>
+<tr>
+<td><code>lw</code></td>
+<td style="text-align:center">float</td>
+<td><code>1</code></td>
+<td>Line width.</td>
+</tr>
+<tr>
+<td><code>lc</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;butt&quot;</code></td>
+<td>Line cap [<code>butt</code>, <code>round</code> and <code>square</code>].</td>
+</tr>
+<tr>
+<td><code>lj</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;miter&quot;</code></td>
+<td>Line join [<code>round</code>, <code>bevel</code> and <code>miter</code>].</td>
+</tr>
+<tr>
+<td><code>ml</code></td>
+<td style="text-align:center">float</td>
+<td><code>10</code></td>
+<td>Miter limit.</td>
+</tr>
+<tr>
+<td><code>ld</code></td>
+<td style="text-align:center">array</td>
+<td><code>[]</code></td>
+<td>Line dash array.</td>
+</tr>
+<tr>
+<td><code>sh</code></td>
+<td style="text-align:center">array</td>
+<td><code>[0,0,0,&quot;transparent&quot;]</code></td>
+<td>Shadow values array<br> [<code>x-offset</code>,<code>y-offset</code>,<code>blur</code>,<code>color</code>].</td>
+</tr>
+<tr>
+<td><code>thal</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;start&quot;</code></td>
+<td>Text horizontal alignment [<code>'start'</code>,<code>'end'</code>,<br><code>'left'</code>,<code>'right'</code>,<code>'center'</code>].</td>
+</tr>
+<tr>
+<td><code>tval</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;alphabetic&quot;</code></td>
+<td>Text vertical alignment [<code>'top'</code>,<code>'hanging'</code>,<br><code>'middle'</code>,<code>'alphabetic'</code>,<br><code>'ideographic'</code>,<code>'bottom'</code>].</td>
+</tr>
+<tr>
+<td><code>font</code></td>
+<td style="text-align:center">string</td>
+<td><code>&quot;normal 14px serif&quot;</code></td>
+<td><a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font">Font</a> <a href="https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font">styling</a></td>
+</tr>
+</tbody>
+</table>
+<h3 id="example">Example 1 <a class="plnk" href="#example">#</a></h3>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;100&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+          style={<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;red&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;ddd&quot;</span>};
+    g2().rec({<span class="hljs-attr">x</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">60</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&#x27;maroon&#x27;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&#x27;khaki&#x27;</span>})
+        .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">75</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ld</span>:[<span class="hljs-number">6</span>,<span class="hljs-number">3</span>],<span class="hljs-attr">fs</span>:<span class="hljs-string">&#x27;orange&#x27;</span>})
+        .exe(ctx)
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/elemstyle.png" alt="element style" class="loading" id="image-hash--1744749813"></p>
+<p><em>g2</em> also maintains a graphics state stack similar to the HTML canvas context.
+So It manages current transformations and global style properties.</p>
+<p>Following commands manipulate the state stack:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>beg({styles})</code></td>
+<td>Save current state and set new transformation and style properties.</td>
+</tr>
+<tr>
+<td><code>end()</code></td>
+<td>Restore previous state while discarding current property values.</td>
+</tr>
+<tr>
+<td><code>use({grp,x,y,w,scl})</code></td>
+<td>Reuse commands stored in external <em>g2</em> object <code>g</code> while applying transformation and style properties from <code>args</code> to them.</td>
+</tr>
+</tbody>
+</table>
+<p>Transformation properties in <code>args</code> can be:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th style="text-align:center">Type</th>
+<th style="text-align:center">Default</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x</code></td>
+<td style="text-align:center">float</td>
+<td style="text-align:center"><code>0</code></td>
+<td>x translation value.</td>
+</tr>
+<tr>
+<td><code>y</code></td>
+<td style="text-align:center">float</td>
+<td style="text-align:center"><code>0</code></td>
+<td>y translation value.</td>
+</tr>
+<tr>
+<td><code>w</code></td>
+<td style="text-align:center">float</td>
+<td style="text-align:center"><code>0</code></td>
+<td>Rotation angle in radians. Positive values rotate counterclockwise.</td>
+</tr>
+<tr>
+<td><code>scl</code></td>
+<td style="text-align:center">float</td>
+<td style="text-align:center"><code>1</code></td>
+<td>scaling factor. Unified scaling only.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="example-2">Example 2 <a class="plnk" href="#example-2">#</a></h3>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;450&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+        fs1={<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;darkolivegreen&quot;</span>,<span class="hljs-attr">font</span>:<span class="hljs-string">&quot;24px serif&quot;</span>},
+        fs2={<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;steelblue&quot;</span>,<span class="hljs-attr">font</span>:<span class="hljs-string">&quot;30px serif&quot;</span>},
+        fs3={...fs2,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;midnightblue&quot;</span>};
+    g2().beg({<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;gainsboro&quot;</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;firebrick&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,
+            <span class="hljs-attr">thal</span>:<span class="hljs-string">&quot;center&quot;</span>,<span class="hljs-attr">tval</span>:<span class="hljs-string">&quot;middle&quot;</span>})
+            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">80</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">50</span>})
+            .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;one&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">60</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">45</span>,...fs1})
+            .beg({<span class="hljs-attr">y</span>:<span class="hljs-number">-10</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;darkseagreen&quot;</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;cadetblue&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">5</span>})
+                .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">120</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">80</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">50</span>})
+                .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;two&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">160</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">45</span>,...fs2})
+                .beg({<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;@fs&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;cadetblue&quot;</span>})
+                    .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">220</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">80</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">50</span>})
+                    .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;three&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">260</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">45</span>,...fs3})
+                .end()
+            .end()
+            .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">320</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">80</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">50</span>})
+            .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;four&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">360</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">45</span>,...fs1})
+        .end()
+        .exe(ctx);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/beg-2.png" alt="beg Element" class="loading" id="image-hash-1883235378"></p>
+<h3 id="example-yinyang">Example Yinyang <a class="plnk" href="#example-yinyang">#</a></h3>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;100&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+          pi = <span class="hljs-built_in">Math</span>.PI, dark = <span class="hljs-string">&quot;#444&quot;</span>, light = <span class="hljs-string">&quot;#eee&quot;</span>;
+    g2().beg({<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">fs</span>:light,<span class="hljs-attr">ls</span>:dark,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>})
+            .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">20</span>})
+            .beg({<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;@ls&quot;</span>})
+                .p()
+                .m({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>})
+                .a({<span class="hljs-attr">dw</span>:pi,<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>})
+                .a({<span class="hljs-attr">dw</span>:-pi,<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>})
+                .a({<span class="hljs-attr">dw</span>:-pi,<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-20</span>})
+                .z()
+                .fill()
+                .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">-10</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>})
+                .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">ls</span>:light,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;@ls&quot;</span>})
+            .end()
+        .end()
+        .exe(ctx);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/yinyang.png" alt="yinyang example" class="loading" id="image-hash--1725883480"></p>
+<h3 id="fonts">Fonts <a class="plnk" href="#fonts">#</a></h3>
+<p>Fonts are manipulated throught the <code>font</code> property.
+<em>g2</em> utilizes css styling methods.</p>
+<p>Read more about font styling
+<a href="https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font">here</a>
+and
+<a href="https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-font">here</a>:</p>
+<pre><code><code><div>For example, after the following statement:
+
+    context.font = 'italic 400 12px/2 Unknown Font, sans-serif';
+
+...the expression context.font would evaluate to the string &quot;italic 12px &quot;Unknown Font&quot;, sans-serif&quot;.
+The &quot;400&quot; font-weight doesn't appear because that is the default value.
+The line-height doesn't appear because it is forced to &quot;normal&quot;, the default value.
+</div></code></code></pre>
+<p>The <code>font</code> property accepts strings in the presented format.</p>
+
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

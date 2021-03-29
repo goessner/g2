@@ -1,0 +1,132 @@
+<!doctype html>
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2-chart-Element">
+  <meta name="date" content="Mon Jun 22 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2-chart-Element</title>
+  <link rel="shortcut icon" type="image/png" href="../img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="../theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="../index.html" class="right">g²</a>
+  <a href="../microjam.md/g2.chart.html.html" class="left">Custom Chart Element</a>
+  <a href="https://github.com/goessner/g2"">
+    <svg height="32" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"></path></svg>
+  </a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="../microjam.md/Getting-Started.html">Getting started</a></li>
+<li><a href="../microjam.md/Concepts.html">Concepts</a></li>
+<li><a href="../microjam.md/Paths.html">Paths</a></li>
+<li><a href="../microjam.md/Elements.html">Elements</a></li>
+<li><a href="../microjam.md/State-and-Style.html">State and Style</a></li>
+<li><a href="../microjam.md/Reuse.html">Reuse</a></li>
+<li><a href="../microjam.md/View.html">View</a></li>
+<li><a href="../microjam.md/Insert.html">Insert</a></li>
+<li><a href="../microjam.md/Animation.html">Animation</a></li>
+<li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../microjam.md/g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="../microjam.md/g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="../microjam.md/g2.chart.html">Extension: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../api/g2.core">API: g2.core</a></li>
+<li><a href="../api/g2.ext">API: g2.ext</a></li>
+<li><a href="../api/g2.mec">API: g2.mec</a></li>
+<li><a href="../api/g2.chart">API: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../tests.html">Tests</a></li>
+</ul>
+
+    </nav>
+    <article>
+  <p><em>g2</em> comes with another <a href="https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements">custom HTML element</a>.
+This element aims to allow the rendering of charts without the necessity of scripts and to minimize the implementation overhead for the user.
+while maintaining the flexibility <em>g2</em> provides.</p>
+<p>To implement the <em>g2</em> element into your page just import the <code>g2.chart.element.js</code>.</p>
+<p>The <code>&lt;g2-chart&gt;</code> follows the same syntax as the regular <code>g2.chart</code> element, but some things have to be considered.
+For the <code>g2.chart</code> element refer to its documentation <a href="./g2.chart.html">here</a>.</p>
+<p>The <code>funcs</code> array is given as <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML">innerHTML</a> that is the text between the <code>&lt;g2-chart&gt;</code> tags.</p>
+<p>All other properties are given as parameters into the opening tag:</p>
+<ul>
+<li><code>width</code>: Width of the element in <code>px</code>.</li>
+<li><code>height</code>: Height of the element in <code>px</code>.</li>
+<li><code>xmin</code>: The lowest number on the x-axis.</li>
+<li><code>ymin</code>: The lowest number on the y-axis.</li>
+<li><code>xmax</code>: The highest number on the x-axis.</li>
+<li><code>ymax</code>: The highest number on the y-axis.</li>
+<li><code>title</code>: The title of the graph.</li>
+</ul>
+<h2 id="examples">Examples <a class="plnk" href="#examples">#</a></h2>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">g2-chart</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;301&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;150&quot;</span> <span class="hljs-attr">ymin</span>=<span class="hljs-string">-3</span> <span class="hljs-attr">title</span>=<span class="hljs-string">&quot;Test&quot;</span>&gt;</span>
+[{ &quot;data&quot;: [-2,6,0,-2,2,1,4,1,6,5], &quot;fill&quot;:true, &quot;dots&quot;:true }]
+<span class="hljs-tag">&lt;/<span class="hljs-name">g2-chart</span>&gt;</span>
+</div></code></pre>
+<g2-chart width="301" height="150" ymin=-3 title="Test">
+[{ "data": [-2,6,0,-2,2,1,4,1,6,5], "fill":true, "dots":true }]
+</g2-chart>
+<script src="https://cdn.jsdelivr.net/gh/goessner/g2/dist/g2.chart.html.js"></script>
+<p>Functions to draw graphs are supported, but the usage of outside variables is not.
+However, the chart can be updated from the outside; see the third example.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">g2-chart</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;300&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;150&quot;</span> <span class="hljs-attr">xmin</span>=<span class="hljs-string">-1.8</span> <span class="hljs-attr">xmax</span>=<span class="hljs-string">6.28</span> <span class="hljs-attr">ymin</span>=<span class="hljs-string">-3</span> <span class="hljs-attr">ymax</span>=<span class="hljs-string">3</span> <span class="hljs-attr">title</span>=<span class="hljs-string">&quot;Test&quot;</span>&gt;</span>
+[
+    {&quot;fn&quot;:Math.sin,&quot;dx&quot;:0.104,&quot;fill&quot;:true},
+    {&quot;fn&quot;:Math.tan,&quot;dx&quot;:0.0349,&quot;fill&quot;:true}
+]
+<span class="hljs-tag">&lt;/<span class="hljs-name">g2-chart</span>&gt;</span>
+</div></code></pre>
+<g2-chart width="300" height="150" xmin=-1.8 xmax=6.28 ymin=-3 ymax=3 title="Test">
+[
+    {"fn":Math.sin,"dx":0.104,"fill":true},
+    {"fn":Math.tan,"dx":0.0349,"fill":true}
+]
+</g2-chart>
+<p>The <code>g2-chart</code> HTML element can also be used to be referenced by another instance of g2.
+The <code>funcs</code> object can be updated accordingly using the <code>setFuncs</code> function.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">g2-chart</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;chart&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">g2-chart</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> chart = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;chart&#x27;</span>);
+    <span class="hljs-keyword">const</span> funcs = [{<span class="hljs-string">&quot;data&quot;</span>: [<span class="hljs-number">-2</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,<span class="hljs-number">-2</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>], <span class="hljs-string">&quot;fill&quot;</span>:<span class="hljs-literal">true</span>, <span class="hljs-string">&quot;dots&quot;</span>:<span class="hljs-literal">true</span>}]
+
+    chart.setFuncs(funcs).render();
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><g2-chart id="chart"></g2-chart></p>
+<script>
+    const chart = document.getElementById('chart');
+    const funcs = [{"data": [-2,6,0,-2,2,1,4,1,6,5], "fill":true, "dots":true}]
+
+    chart.setFuncs(funcs).render();
+</script>
+<blockquote>
+<p><strong>Note</strong>: Don't forget to use quotations (e.g. <code>&quot;data&quot;</code>) for the properties,
+since the <code>g2-chart</code> interprets the <code>innerHTML</code> using the
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON"><strong>JSON</strong></a>
+format.</p>
+</blockquote>
+
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

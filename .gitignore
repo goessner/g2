@@ -3,3 +3,6 @@ g2d-*.tgz
 
 yarn.lock
 node_modules
+.vscode
+node_modules
+docs/pages.json

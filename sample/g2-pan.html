@@ -1,0 +1,23 @@
+<html>
+<head>
+<title>g2 simple pan</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="c" width="601" height="401" style="border:1px solid black;"></canvas>
+<script src="../bin/canvasinteractor.js"></script>
+<script src="../src/g2.core.js"></script>
+<script>
+const ctx = document.getElementById('c').getContext('2d');
+const interactor = canvasInteractor.create(ctx, {x:300,y:200,cartesian:true});
+const g = g2().clr()                           // important with 'interaction'
+              .view(interactor.view)           // view sharing ... !
+              .grid()
+              .cir({x:0,y:0,r:30,fs:'orange'});
+
+interactor.on('tick', (e) => { g.exe(ctx); })
+          .on('pan',  (e) => { interactor.view.x += e.dx; interactor.view.y += e.dy; })
+          .startTimer();
+</script>
+</body>
+</html>

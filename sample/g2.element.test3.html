@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>g2.html - bug</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<g-2 id='g' width="400" height="300" x0="100" y0="100" cartesian interactive>
+  { "main":[
+    {"c":"lin","a":{"x1":"@A.x","y1":"@A.y","x2":"@B.x","y2":"@B.y","lw":3,"ls":"@linkcolor"}},
+    {"c":"cir","a":{"id":"A","x":150,"y":100,"r":5,"fs":"orange"}},
+    {"c":"cir","a":{"id":"B","x":-50,"y":100,"r":5,"fs":"orange"}}
+  ]
+}
+</g-2>
+</body>
+<script src="../g2.html.js"></script>
+<script>
+    const g = document.getElementById('g');
+</script>
+</html>

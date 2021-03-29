@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>g2.html - constraining</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<g-2 id='g' width="400" height="300" x0="100" y0="100" cartesian interactive></g-2>
+</body>
+<script src="../g2.html.js"></script>
+<script>
+    const g2elm = document.getElementById('g');
+    const A = {x:0,y:0,r:5,fs:'#ccc'}, 
+          B = {x:100,y:0,r:5,fs:'orange'},
+          C = {x:25,y:Math.sqrt(25*75),r:5,fs:'orange'};
+
+    function constraining() {
+        B.y = 0;
+        B.x = Math.max(B.x,0);
+        C.x = Math.max(Math.min(C.x,B.x),0);
+        C.y = Math.sqrt(C.x*(B.x-C.x));
+    }
+
+    g2elm.g.ply({pts:[A,B,C],closed:true,fs:'snow',lw:2,ls:'darkslategray',lj:'round'})
+           .arc({x:()=>B.x/2,y:0,r:()=>B.x/2,w:0,dw:Math.PI,lw:2,ls:'darkslategray'})
+           .cir(A)
+           .cir(B)
+           .cir(C)
+
+    g2elm.addEventListener("tick", constraining, false);
+</script>
+</html>

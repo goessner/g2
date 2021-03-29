@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>g2 use bug</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="c" width="601" height="401"></canvas>
+<script src="../src/g2.core.js"></script>
+<script src="../src/g2.ext.js"></script>
+<script src="../src/g2.mec.js"></script>
+<script>
+const ctx = document.getElementById('c').getContext('2d'), g = g2();
+
+g.view({cartesian:true,x:300,y:200})
+ .use({grp:'pfrupfel',x:100})          /* unknown symbol/group name should not result in runtime error */
+ .nodfix()
+ .exe(ctx)
+
+</script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!doctype html>
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2-Getting started">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2-Getting started</title>
+  <link rel="shortcut icon" type="image/png" href="../img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="../theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="../index.html" class="right">g²</a>
+  <a href="../microjam.md/Getting-Started.html" class="left">Getting started</a>
+  <a href="https://github.com/goessner/g2"">
+    <svg height="32" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"></path></svg>
+  </a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="../microjam.md/Getting-Started.html">Getting started</a></li>
+<li><a href="../microjam.md/Concepts.html">Concepts</a></li>
+<li><a href="../microjam.md/Paths.html">Paths</a></li>
+<li><a href="../microjam.md/Elements.html">Elements</a></li>
+<li><a href="../microjam.md/State-and-Style.html">State and Style</a></li>
+<li><a href="../microjam.md/Reuse.html">Reuse</a></li>
+<li><a href="../microjam.md/View.html">View</a></li>
+<li><a href="../microjam.md/Insert.html">Insert</a></li>
+<li><a href="../microjam.md/Animation.html">Animation</a></li>
+<li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../microjam.md/g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="../microjam.md/g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="../microjam.md/g2.chart.html">Extension: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../api/g2.core">API: g2.core</a></li>
+<li><a href="../api/g2.ext">API: g2.ext</a></li>
+<li><a href="../api/g2.mec">API: g2.mec</a></li>
+<li><a href="../api/g2.chart">API: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../tests.html">Tests</a></li>
+</ul>
+
+    </nav>
+    <article>
+  <p>Let's start with a quick tour of g2.core's features and look at it by short examples.</p>
+<ul>
+<li><a href="#paths">Paths</a></li>
+<li><a href="#elements">Elements</a></li>
+<li><a href="#style">State and Style</a></li>
+<li><a href="#view">View</a></li>
+<li><a href="#reuse">Grouping and Reuse</a></li>
+<li><a href="#insert">Insert</a></li>
+<li><a href="#animation">Animation</a></li>
+<li><a href="#interactivity">Interactivity</a></li>
+<li><a href="#extensions">Extensions</a></li>
+</ul>
+<p>For a more thorough explanation please make use of the sidebar.</p>
+<p><a name="paths"></a></p>
+<h4 id="paths">Paths <a class="plnk" href="#paths">#</a></h4>
+<p>Path definitions are similar to canvas notation while using short SVG syntax.
+Note the simplicity of arc declarations.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;200&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;200&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;g2.core.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+          pi = <span class="hljs-built_in">Math</span>.PI,
+          style = {<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#690&quot;</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;#050&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">8</span>,<span class="hljs-attr">lj</span>:<span class="hljs-string">&quot;round&quot;</span>};
+    <span class="hljs-keyword">let</span> umbrella = g2();
+    umbrella.p()                            <span class="hljs-comment">// make stick</span>
+                .m({<span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">10</span>})            <span class="hljs-comment">// top of shaft</span>
+                .l({<span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>})           <span class="hljs-comment">// shaft</span>
+                .a({<span class="hljs-attr">dw</span>:-pi,<span class="hljs-attr">x</span>:<span class="hljs-number">130</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">150</span>})    <span class="hljs-comment">// handle</span>
+            .stroke(style)                  <span class="hljs-comment">// style stick.</span>
+            .p()                            <span class="hljs-comment">// make covering</span>
+                .m({<span class="hljs-attr">x</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">80</span>})             <span class="hljs-comment">// leftmost point</span>
+                .a({<span class="hljs-attr">dw</span>:pi/<span class="hljs-number">3</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">70</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">80</span>})     <span class="hljs-comment">// three ...</span>
+                .a({<span class="hljs-attr">dw</span>:pi/<span class="hljs-number">3</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">130</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">80</span>})    <span class="hljs-comment">// ... small ...</span>
+                .a({<span class="hljs-attr">dw</span>:pi/<span class="hljs-number">3</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">190</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">80</span>})    <span class="hljs-comment">// ... arcs</span>
+                .a({<span class="hljs-attr">dw</span>:<span class="hljs-number">-2</span>*pi/<span class="hljs-number">3</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">10</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">80</span>})  <span class="hljs-comment">// big arc back to leftmost point.</span>
+            .z()                            <span class="hljs-comment">// close gap</span>
+            .drw(style)                     <span class="hljs-comment">// style covering.</span>
+            .exe(ctx);                      <span class="hljs-comment">// draw to canvas</span>
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/umbrella.png" alt="umbrella" class="loading" id="image-hash-2138007409"></p>
+<p>Read more about how paths are used <a href="./Paths.html">here</a>.</p>
+<p><a name="elements"></a></p>
+<h4 id="elements">Elements <a class="plnk" href="#elements">#</a></h4>
+<p>Two consecutive commands <code>cir-txt</code> are building the command queue. Then these commands are executed
+addressing a particular canvas context.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;100&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;g2.core.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>);
+    g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;moccasin&quot;</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;maroon&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>})
+        .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;Hello&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">55</span>,<span class="hljs-attr">w</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">thal</span>:<span class="hljs-string">&quot;center&quot;</span>,<span class="hljs-attr">font</span>:<span class="hljs-string">&quot;24px serif&quot;</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;maroon&quot;</span>})
+        .exe(ctx);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/hellocircle.png" alt="Hello circle" class="loading" id="image-hash--1730622421"></p>
+<p>Read more about how elements are used <a href="./Elements.html">here</a>.</p>
+<p><a name="view"></a></p>
+<h4 id="view-transformation">View transformation <a class="plnk" href="#view-transformation">#</a></h4>
+<p>Once built, a graphics command queue can be used to address multiple renderers.
+Renderer instances can also be placed on top of each other.
+So <em>g2</em> supports a cheap layering technique. Please note the ability to use SVG path strings.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c1&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;200&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c2&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;200&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;./g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+   <span class="hljs-keyword">const</span> star = <span class="hljs-string">&quot;M100,10L123.5,82.4L61,37.6L138,37.6L76.5,82.4Z&quot;</span>,
+         ctx1 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c1&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+         ctx2 = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c2&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+         vw = {<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">1</span>},
+         g = g2().view(vw).drw({<span class="hljs-attr">d</span>:star,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;#080&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#0f0&quot;</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-number">8</span>,<span class="hljs-string">&quot;black&quot;</span>]});
+
+    g.exe(ctx1);
+    vw.x = <span class="hljs-number">-225</span>; vw.y = <span class="hljs-number">-50</span>; vw.scl = <span class="hljs-number">2.5</span>;
+    g.exe(ctx2);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+
+</div></code></pre>
+<p><img src="../img/star-1.png" alt="star1" class="loading" id="image-hash-1256891683"><img src="../img/star-2.png" alt="star2" class="loading" id="image-hash-1257815204"></p>
+<p>Read more about how the view is transformed <a href="./View.html">here</a>.</p>
+<p><a name="reuse"></a></p>
+<h4 id="grouping-and-reuse">Grouping and Reuse <a class="plnk" href="#grouping-and-reuse">#</a></h4>
+<p>It is easy to reuse predefined geometry by defining multiple g2 objects. Styles can be inherited
+by g2 children from their parents.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;400&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;120&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;g2.core.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+        pi = <span class="hljs-built_in">Math</span>.PI,
+        wheel = g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">15</span>})
+                    .cir({<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">r</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;@ls&quot;</span>}),
+        car   = g2().p()
+                        .m({<span class="hljs-attr">x</span>:<span class="hljs-number">-75</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>})
+                        .a({<span class="hljs-attr">dw</span>:<span class="hljs-number">-5</span>*pi/<span class="hljs-number">6</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">35</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>})
+                        .a({<span class="hljs-attr">dw</span>:-pi/<span class="hljs-number">2</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">75</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>})
+                        .z()
+                    .drw()
+                    .use({<span class="hljs-attr">grp</span>:wheel,<span class="hljs-attr">x</span>:<span class="hljs-number">-40</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;snow&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>})
+                    .use({<span class="hljs-attr">grp</span>:wheel,<span class="hljs-attr">x</span>: <span class="hljs-number">40</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#9c9&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>});
+    g2().view({<span class="hljs-attr">cartesian</span>:<span class="hljs-literal">true</span>})
+        .use({<span class="hljs-attr">grp</span>:car,<span class="hljs-attr">x</span>:<span class="hljs-number">100</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">25</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;#900&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;#f4a460&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>})
+        .use({<span class="hljs-attr">grp</span>:car,<span class="hljs-attr">x</span>:<span class="hljs-number">300</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">25</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">0.75</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;green&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;orange&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">4</span>})
+        .exe(ctx);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/car.png" alt="car" class="loading" id="image-hash--877371171"></p>
+<p>Read more about how reuse is used <a href="./Reuse.html">here</a>.</p>
+<p><a name="insert"></a></p>
+<h4 id="insert">Insert <a class="plnk" href="#insert">#</a></h4>
+<p>Read more about how ins is used <a href="./Insert.html">here</a>.</p>
+<p><a name="animation"></a></p>
+<h4 id="animation">Animation <a class="plnk" href="#animation">#</a></h4>
+<p>Read more about how animations are used <a href="./Animation.html">here</a>.</p>
+<p><a name="interactivity"></a></p>
+<h4 id="interactivity">Interactivity <a class="plnk" href="#interactivity">#</a></h4>
+<p>Read more about interactive rendering <a href="./Interactivity.html">here</a>.</p>
+<p><a name="extensions"></a></p>
+<h4 id="extensions">Extensions <a class="plnk" href="#extensions">#</a></h4>
+<p>Read more about g2's extensions here:</p>
+<ul>
+<li><a href="./g2.ext.html">g2.ext</a></li>
+<li><a href="./g2.mec.html">g2.mec</a></li>
+<li><a href="./g2.chart.html">g2.chart</a></li>
+</ul>
+<!-- TODO: Put this in animation or interactivity. -->
+<h3 id="arrow-notation">Arrow notation <a class="plnk" href="#arrow-notation">#</a></h3>
+<p><code>g2</code> commands don't have to be declared with static parameters.
+They can be changed at 'run time' and display changes in the next rendering via <code>exe()</code>.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;./g2.core.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+  <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>);
+  <span class="hljs-keyword">let</span> radius = <span class="hljs-number">10</span>, color = <span class="hljs-string">&quot;rgb(0,255,0)&quot;</span>, x = <span class="hljs-number">10</span>,
+  g = g2().cir({<span class="hljs-attr">x</span>:<span class="hljs-function">()=&gt;</span>x, <span class="hljs-attr">y</span>:<span class="hljs-number">75</span>,<span class="hljs-attr">r</span>:<span class="hljs-function">()=&gt;</span>radius,<span class="hljs-attr">fs</span>:<span class="hljs-function">()=&gt;</span>color});
+  g.exe(ctx);
+  <span class="hljs-keyword">while</span>(x&lt;=<span class="hljs-number">250</span>) {
+    x+=radius;
+    radius+=<span class="hljs-number">1</span>;
+    color=<span class="hljs-string">&quot;rgb(&quot;</span>+x+<span class="hljs-string">&quot;,&quot;</span>+(<span class="hljs-number">255</span>-x)+<span class="hljs-string">&quot;,0)&quot;</span>;
+    g.exe(ctx);
+  }
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/chain.png" alt="chain" class="loading" id="image-hash-1752350154"></p>
+<p><em>Note that the command queue is not altered after its initial definition.</em></p>
+
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

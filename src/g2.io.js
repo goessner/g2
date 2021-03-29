@@ -1,41 +1,41 @@
 /**
- * g2.io (c) 2013-17 Stefan Goessner
+ * g2.io (c) 2017-18 Stefan Goessner
  * @license MIT License
- * @link https://github.com/goessner/g2
  */
-"use strict"
+"use strict";
 
 g2.io = function() {
-    if (this instanceof g2.io) {
-        this.model = null;
-        this.grpidx = 0;
-        return this;
-    }
-    return g2.io.apply(Object.create(g2.io.prototype));
+   if (this instanceof g2.io) {
+      this.model = null;
+      this.grpidx = 0;
+      return this;
+   }
+   return g2.io.apply(Object.create(g2.io.prototype));
 };
 g2.handler.factory.push((ctx) => ctx instanceof g2.io ? ctx : false);
 
-g2.io.parse = function(str) {
-    let model = JSON.parse(str);
-    return g2.io.parseGrp(model,'main');
-}
-g2.io.parseGrp = function(model, id) {
+g2.io.parseGrp = function(model, id, onErr) {
     let g;
+    onErr = onErr || console.error;
     if (id in model) {
         g = g2({id});
         for (let cmd of model[id]) {
-            if (cmd.c === 'use')
+            if (cmd.c === 'use') {
                 cmd.a.grp = g2.io.parseGrp(model, cmd.a.grp);
-            else if (this[cmd.c])
-                cmd.a ? this[cmd.c](cmd.a) : this[cmd.c]();
-            else    // invalid g2 command !
-                console.error(`io: Unable to handle command '${cmd.c}'`);
+                g[cmd.c](cmd.a);
+            }
+            else if (g[cmd.c])
+                cmd.a ? g[cmd.c](cmd.a) : g[cmd.c]();
+            else  // invalid g2 command !
+               onErr(`g2.io: Unable to handle command '${cmd.c}'`)
         }
         return g;
     }
     else if (id in g2.symbol)
         return g2.symbol[id];
-    return null;
+    else
+        onErr(`g2.io: Unable to find group with id '${id}'!`);
+    return false;
 }
 
 g2.io.prototype = {
@@ -43,7 +43,7 @@ g2.io.prototype = {
         this.model = {'main':[]};
         this.curgrp = this.model.main;
         this.grpidx = 0;
-        return true;
+        return true; 
     },
     exe: function(commands) {
         for (let cmd of commands) {

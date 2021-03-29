@@ -1,0 +1,259 @@
+<!doctype html>
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="g2-Interactivity">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>g2-Interactivity</title>
+  <link rel="shortcut icon" type="image/png" href="../img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="../theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="../index.html" class="right">g²</a>
+  <a href="../microjam.md/Interactivity.html" class="left">Interactivity</a>
+  <a href="https://github.com/goessner/g2"">
+    <svg height="32" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"></path></svg>
+  </a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="../microjam.md/Getting-Started.html">Getting started</a></li>
+<li><a href="../microjam.md/Concepts.html">Concepts</a></li>
+<li><a href="../microjam.md/Paths.html">Paths</a></li>
+<li><a href="../microjam.md/Elements.html">Elements</a></li>
+<li><a href="../microjam.md/State-and-Style.html">State and Style</a></li>
+<li><a href="../microjam.md/Reuse.html">Reuse</a></li>
+<li><a href="../microjam.md/View.html">View</a></li>
+<li><a href="../microjam.md/Insert.html">Insert</a></li>
+<li><a href="../microjam.md/Animation.html">Animation</a></li>
+<li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../microjam.md/g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="../microjam.md/g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="../microjam.md/g2.chart.html">Extension: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../api/g2.core">API: g2.core</a></li>
+<li><a href="../api/g2.ext">API: g2.ext</a></li>
+<li><a href="../api/g2.mec">API: g2.mec</a></li>
+<li><a href="../api/g2.chart">API: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../tests.html">Tests</a></li>
+</ul>
+
+    </nav>
+    <article>
+  <p><em>g2</em> has no interactive capabilities built in. But if it runs in browser environment the browser's interactive features can be used.
+There are a lot of frameworks and libraries making web developer's life more easier regarding UI. For the sake of
+simplicity we confine ourselfs to pure HTML with the following examples.</p>
+<p>Please see below how <code>window.requestAnimationFrame</code> can be used with interactivity for easy and efficient rendering.
+Most of the time it should do nothing.</p>
+<h3 id="view-manipulation">View Manipulation <a class="plnk" href="#view-manipulation">#</a></h3>
+<p>For letting the user modify <em>g2</em>'s view HTML's pointer events are used as well as the <code>view</code> method
+already presented in <a href="./View">View</a>.</p>
+<pre><code class="code-line language-javascript"><div><span class="hljs-comment">// Pan the view when user moves the pointer with any button pressed.</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onmove</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">if</span> (e.buttons !== <span class="hljs-literal">undefined</span> ? e.buttons : (e.which || e.button)) {
+        <span class="hljs-keyword">const</span> dx = e.movementX || e.mozMovementX || e.webkitMovementX || <span class="hljs-number">0</span>,
+              dy = e.movementY || e.mozMovementY || e.webkitMovementY || <span class="hljs-number">0</span>;
+              vw.x+=dx,vw.y+=dy;                        <span class="hljs-comment">// g2.view uses device coordinates</span>
+    dirty = <span class="hljs-literal">true</span>;
+    }
+}
+<span class="hljs-comment">// Zoom the view when user uses the mouse wheel.</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onwheel</span>(<span class="hljs-params">e</span>) </span>{
+    <span class="hljs-keyword">const</span> delta = <span class="hljs-built_in">Math</span>.max(<span class="hljs-number">-1</span>,<span class="hljs-built_in">Math</span>.min(<span class="hljs-number">1</span>,e.deltaY||e.wheelDelta));
+            vw.scl *= delta &gt; <span class="hljs-number">0</span>?<span class="hljs-number">9</span>/<span class="hljs-number">10</span>:<span class="hljs-number">10</span>/<span class="hljs-number">9</span>;              <span class="hljs-comment">// g2.view again uses device coordinates</span>
+            vw.x = e.clientX - <span class="hljs-built_in">Math</span>.floor(viewport.left),
+            vw.y = e.clientY - <span class="hljs-built_in">Math</span>.floor(viewport.top),
+    dirty = <span class="hljs-literal">true</span>;
+}
+<span class="hljs-comment">// Render the view on user action ..</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+    dirty = dirty &amp;&amp; !g.exe(ctx);
+    requestAnimationFrame(render);
+}
+<span class="hljs-keyword">let</span> dirty = <span class="hljs-literal">true</span>;                                       <span class="hljs-comment">// render only on user action ...</span>
+<span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+        viewport = ctx.canvas.getBoundingClientRect(),  <span class="hljs-comment">// viewport size ..</span>
+        vw = {<span class="hljs-attr">x</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">0</span>,<span class="hljs-attr">scl</span>:<span class="hljs-number">1</span>},
+        map = <span class="hljs-string">&quot;M 163 1 C 162.6 1.6 162.3 ...&quot;</span>,          <span class="hljs-comment">// map as SVG path data string ..</span>
+g = g2().view(vw)                                       <span class="hljs-comment">// use vw to change view on the run</span>
+        .clr().grid()
+        .drw({<span class="hljs-attr">d</span>:map, <span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;#666&quot;</span>, <span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;orange&quot;</span>, <span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">lc</span>:<span class="hljs-string">&quot;round&quot;</span>, <span class="hljs-attr">lj</span>:<span class="hljs-string">&quot;round&quot;</span>});
+
+ctx.canvas.addEventListener(<span class="hljs-string">&quot;mousemove&quot;</span>, onmove, <span class="hljs-literal">false</span>);<span class="hljs-comment">// listen to move event ..</span>
+ctx.canvas.addEventListener(<span class="hljs-string">&quot;wheel&quot;</span>, onwheel, <span class="hljs-literal">false</span>);   <span class="hljs-comment">// listen to wheel event ..</span>
+render();
+</div></code></pre>
+<p><img src="../img/map.gif" alt="map" class="loading" id="image-hash--594124800"></p>
+<p>Updating the command queue can occur directly in event handlers and drawing via <code>exe</code> is preferrably
+done in the <code>render</code> function.</p>
+<p>There is also another zoom example using an <a href="https://goessner.github.io/g2/examples/screw.html">extra zoom window</a></p>
+<h3 id="html-input-element">HTML Input Element <a class="plnk" href="#html-input-element">#</a></h3>
+<p>HTML input elements can be used to modify graphics related data.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;300&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;200&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;range&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;range&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;min-width:275px;vertical-align:middle;margin:0;padding:0&quot;</span>
+       <span class="hljs-attr">min</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">max</span>=<span class="hljs-string">&quot;360&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;0&quot;</span> <span class="hljs-attr">step</span>=<span class="hljs-string">&quot;1&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">output</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;output&quot;</span> <span class="hljs-attr">for</span>=<span class="hljs-string">&quot;range&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;text-align:right;&quot;</span>&gt;</span>0<span class="hljs-tag">&lt;/<span class="hljs-name">output</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">position</span>(<span class="hljs-params">phi</span>) </span>{
+        <span class="hljs-keyword">const</span> sp = <span class="hljs-built_in">Math</span>.sin(phi), cp = <span class="hljs-built_in">Math</span>.cos(phi),
+              xA = a*cp, yA = a*sp,             <span class="hljs-comment">// calculate current position data ...</span>
+              xB = <span class="hljs-number">2</span>*a*cp, yB = <span class="hljs-number">0</span>,
+              xC = <span class="hljs-number">0</span>, yC = <span class="hljs-number">2</span>*a*sp;
+
+        mec.del()                               <span class="hljs-comment">// ... and build new mechanism geometry.</span>
+           .ell({<span class="hljs-attr">x</span>:xA,<span class="hljs-attr">y</span>:yA,<span class="hljs-attr">rx</span>:a,<span class="hljs-attr">ry</span>:<span class="hljs-built_in">this</span>.rx,<span class="hljs-attr">rot</span>:-phi,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>,<span class="hljs-attr">ld</span>:[<span class="hljs-number">12</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>]})
+           .ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,xA,yA,xB,yB,xC,yC],<span class="hljs-attr">lw</span>:<span class="hljs-number">5</span>})
+           .beg({...el})
+           .cir({<span class="hljs-attr">x</span>:xA,<span class="hljs-attr">y</span>:yA,<span class="hljs-attr">r</span>:<span class="hljs-number">6</span>})
+           .rec({<span class="hljs-attr">x</span>:xB<span class="hljs-number">-20</span>,<span class="hljs-attr">y</span>:yB<span class="hljs-number">-10</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">40</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">20</span>})
+           .cir({<span class="hljs-attr">x</span>:xB,<span class="hljs-attr">y</span>:yB,<span class="hljs-attr">r</span>:<span class="hljs-number">6</span>})
+           .rec({<span class="hljs-attr">x</span>:xC<span class="hljs-number">-10</span>,<span class="hljs-attr">y</span>:yC<span class="hljs-number">-20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">40</span>})
+           .cir({<span class="hljs-attr">x</span>:xC,<span class="hljs-attr">y</span>:yC,<span class="hljs-attr">r</span>:<span class="hljs-number">6</span>})
+           .end();
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setPhi</span>(<span class="hljs-params">e</span>) </span>{                        <span class="hljs-comment">// set user controlled angle.</span>
+        <span class="hljs-keyword">if</span> (dirty = (range.value !== output.value)) {
+            phi = (output.value = range.value)/<span class="hljs-number">180</span>*<span class="hljs-built_in">Math</span>.PI;
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">if</span> (dirty) {
+            position(phi);
+            world.exe(ctx);
+            dirty = <span class="hljs-literal">false</span>;
+        }
+        requestAnimationFrame(render);
+    }
+    <span class="hljs-keyword">let</span> dirty = <span class="hljs-literal">true</span>,
+        phi = <span class="hljs-number">0</span>, xA, yA, xB, yB;
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+          range = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;range&quot;</span>),
+          output = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;output&quot;</span>),
+          el = {<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;papayawhip&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>},
+          xA0 = <span class="hljs-number">150</span>, yA0 = <span class="hljs-number">150</span>, a = <span class="hljs-number">60</span>, b = <span class="hljs-number">80</span>, e = <span class="hljs-number">0</span>;
+          mec = g2(),                           <span class="hljs-comment">// dynamic mechanism.</span>
+          world = g2().clr().cartesian().grid() <span class="hljs-comment">// static world.</span>
+                      .cir({<span class="hljs-attr">x</span>:xA0, <span class="hljs-attr">y</span>:yA0, <span class="hljs-attr">r</span>:<span class="hljs-number">2</span>*a, <span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkslategray&quot;</span>, <span class="hljs-attr">lw</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">ld</span>:[<span class="hljs-number">12</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>]})
+                      .use({<span class="hljs-attr">grp</span>:mec, <span class="hljs-attr">x</span>:xA0, <span class="hljs-attr">y</span>:yA0})
+                      .cir({<span class="hljs-attr">x</span>:xA0, <span class="hljs-attr">y</span>:yA0, <span class="hljs-attr">r</span>:<span class="hljs-number">6</span>,...el});
+    range.addEventListener(<span class="hljs-string">&quot;input&quot;</span>,setPhi,<span class="hljs-literal">false</span>);
+    render();
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/cross.gif" alt="map" class="loading" id="image-hash-1831634276"></p>
+<p>This example again uses an advantageous separation of static and dynamic geometry (s. <a href="./Animation">Animation</a>).</p>
+<h3 id="using-layers">Using Layers <a class="plnk" href="#using-layers">#</a></h3>
+<p>In the case of having much rendering work to do with each user input one might consider to distribute graphics to a static
+background layer and an interactive foreground layer using two or more stacked canvases. So when interaction occurs
+only the interactive layer must be updated and thus the overall rendering effort may be reduced significantly.</p>
+<p>Here is a clearly written in depth article about <a href="http://www.ibm.com/developerworks/library/wa-canvashtml5layering/">HTML canvas layering</a>.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;position:relative; width:641px; height:481px;&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;bg&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;641&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;481&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;position:absolute;&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;fg&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;641&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;481&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;position:absolute;&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Select square by pointer and drag it.<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&#x27;g2.core.js&#x27;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onbuttondown</span>(<span class="hljs-params">e</span>) </span>{                                      <span class="hljs-comment">// select square at pointer location.</span>
+        <span class="hljs-keyword">const</span> x = e.clientX - <span class="hljs-built_in">Math</span>.floor(viewport.left),
+              y = e.clientY - <span class="hljs-built_in">Math</span>.floor(viewport.top);
+
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=rects.length<span class="hljs-number">-1</span>; i&gt;=<span class="hljs-number">0</span>; i--) {                     <span class="hljs-comment">// test all squares.</span>
+            <span class="hljs-keyword">if</span> (x - rects[i].x &gt;= <span class="hljs-number">0</span> &amp;&amp; x - rects[i].x &lt;= sz &amp;&amp;      <span class="hljs-comment">// hit occured?</span>
+                y - rects[i].y &gt;= <span class="hljs-number">0</span> &amp;&amp; y - rects[i].y &lt;= sz) {
+                bgDirty = fgDirty = <span class="hljs-literal">true</span>;                           <span class="hljs-comment">// mark layers by dirty flags.</span>
+                selIdx = i;                                         <span class="hljs-comment">// memoize selected square.</span>
+                ctxfg.canvas.addEventListener(<span class="hljs-string">&#x27;mousemove&#x27;</span>,onmove,<span class="hljs-literal">false</span>);    <span class="hljs-comment">// ready to drag.</span>
+                <span class="hljs-keyword">break</span>;
+            }
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onbuttonup</span>(<span class="hljs-params">e</span>) </span>{                                        <span class="hljs-comment">// deselect square</span>
+        <span class="hljs-keyword">if</span> (selIdx != <span class="hljs-number">-1</span>) {                                         <span class="hljs-comment">// is one selected</span>
+            bgDirty = fgDirty = <span class="hljs-literal">true</span>;                               <span class="hljs-comment">// mark layers by dirty flags.</span>
+            ctxfg.canvas.removeEventListener(<span class="hljs-string">&#x27;mousemove&#x27;</span>,onmove,<span class="hljs-literal">false</span>);     <span class="hljs-comment">// finish dragging.</span>
+            selIdx = <span class="hljs-number">-1</span>;                                                    <span class="hljs-comment">// nothing selected.</span>
+        }
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onmove</span>(<span class="hljs-params">e</span>) </span>{                                            <span class="hljs-comment">// drag square ...</span>
+        <span class="hljs-keyword">const</span> rec = rects[selIdx];
+        rec.x += (e.movementX || e.mozMovementX || e.webkitMovementX || <span class="hljs-number">0</span>); <span class="hljs-comment">// by relative ...</span>
+        rec.y += (e.movementY || e.mozMovementY || e.webkitMovementY || <span class="hljs-number">0</span>); <span class="hljs-comment">// displacement..</span>
+        fgDirty = <span class="hljs-literal">true</span>;               <span class="hljs-comment">// only mark interactive foreground layer by dirty flag.</span>
+    }
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{                                             <span class="hljs-comment">// render loop.</span>
+        <span class="hljs-keyword">if</span> (bgDirty) {                                              <span class="hljs-comment">// render background ...</span>
+            bg.del().clr().grid();
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">0</span>; i&lt;rects.length<span class="hljs-number">-1</span>; i++) {
+                <span class="hljs-keyword">if</span> (i !== selIdx) {
+                    bg.rec({<span class="hljs-attr">x</span>:rects[i].x,<span class="hljs-attr">y</span>:rects[i].y,<span class="hljs-attr">b</span>:sz,<span class="hljs-attr">h</span>:sz,
+                            <span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkslategray&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;papayawhip&quot;</span>});
+                }
+            }
+            bg.exe(ctxbg);
+            bgDirty = <span class="hljs-literal">false</span>;
+        }
+        <span class="hljs-keyword">if</span> (fgDirty) {                                              <span class="hljs-comment">// render foreground ...</span>
+            fg.del().clr();
+            <span class="hljs-keyword">if</span> (selIdx != <span class="hljs-number">-1</span>) {
+                fg.rec({<span class="hljs-attr">x</span>:rects[selIdx].x,<span class="hljs-attr">y</span>:rects[selIdx].y,<span class="hljs-attr">b</span>:sz,<span class="hljs-attr">h</span>:sz,
+                        <span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">sh</span>:[<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">10</span>,<span class="hljs-string">&quot;black&quot;</span>]})
+                  .rec({<span class="hljs-attr">x</span>:rects[selIdx].x,<span class="hljs-attr">y</span>:rects[selIdx].y,<span class="hljs-attr">b</span>:sz,<span class="hljs-attr">h</span>:sz,
+                        <span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;darkslategray&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;orange&quot;</span>});
+            }
+            fg.exe(ctxfg);
+            fgDirty = <span class="hljs-literal">false</span>;
+        }
+        requestAnimationFrame(render);
+    }
+
+    <span class="hljs-keyword">let</span> bgDirty = <span class="hljs-literal">true</span>, fgDirty = <span class="hljs-literal">true</span>,
+        selIdx = <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">const</span> ctxbg = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;bg&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+          ctxfg = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;fg&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>),
+          viewport = ctxbg.canvas.getBoundingClientRect(),
+          bg = g2(),                                                <span class="hljs-comment">// Background layer command queue.</span>
+          fg = g2(),                                                <span class="hljs-comment">// Foreground layer command queue for dragging.</span>
+          rects = [], sz = <span class="hljs-number">50</span>;
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">300</span>; i++) {
+        rects[i] = { <span class="hljs-attr">x</span>: <span class="hljs-built_in">Math</span>.random()*(viewport.width-sz),
+                     <span class="hljs-attr">y</span>: <span class="hljs-built_in">Math</span>.random()*(viewport.height-sz) };
+    }
+
+    ctxfg.canvas.addEventListener(<span class="hljs-string">&#x27;mousedown&#x27;</span>, onbuttondown, <span class="hljs-literal">false</span>);
+    ctxfg.canvas.addEventListener(<span class="hljs-string">&#x27;mouseup&#x27;</span>,   onbuttonup, <span class="hljs-literal">false</span>);
+
+    render();                                                       <span class="hljs-comment">// initial call to render loop.</span>
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/layer.gif" alt="layer" class="loading" id="image-hash--1230188043"></p>
+
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

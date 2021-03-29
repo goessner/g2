@@ -1,0 +1,216 @@
+<!doctype html>
+  <html class="theme-light">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, user-scalable=no">
+  <meta name="description" content="Elements">
+  <meta name="date" content="Mon Jun 01 2020 02:00:00 GMT+0200 (Central European Summer Time)">
+  <meta name="keywords" content="">
+  <title>Elements</title>
+  <link rel="shortcut icon" type="image/png" href="../img/favicon.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.18.1/styles/vs2015.min.css">
+  
+  <link rel="stylesheet" href="../theme/styles.css">
+  </head>
+  <body id="top">
+  <header>
+  <a href="../index.html" class="right">g²</a>
+  <a href="../microjam.md/Elements.html" class="left">g2-Elements</a>
+  <a href="https://github.com/goessner/g2"">
+    <svg height="32" viewBox="0 0 16 16" width="32"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"></path></svg>
+  </a>
+  </header>
+  <main>
+    <nav>
+       <ul>
+<li><a href="../microjam.md/Getting-Started.html">Getting started</a></li>
+<li><a href="../microjam.md/Concepts.html">Concepts</a></li>
+<li><a href="../microjam.md/Paths.html">Paths</a></li>
+<li><a href="../microjam.md/Elements.html">Elements</a></li>
+<li><a href="../microjam.md/State-and-Style.html">State and Style</a></li>
+<li><a href="../microjam.md/Reuse.html">Reuse</a></li>
+<li><a href="../microjam.md/View.html">View</a></li>
+<li><a href="../microjam.md/Insert.html">Insert</a></li>
+<li><a href="../microjam.md/Animation.html">Animation</a></li>
+<li><a href="../microjam.md/Interactivity.html">Interactivity</a></li>
+<li><a href="../microjam.md/g2.html.html">Custom HTML element</a></li>
+<li><a href="../microjam.md/g2.chart.html.html">Custom chart element</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../microjam.md/g2.ext.html">Extension: g2.ext</a></li>
+<li><a href="../microjam.md/g2.mec.html">Extension: g2.mec</a></li>
+<li><a href="../microjam.md/g2.chart.html">Extension: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../api/g2.core">API: g2.core</a></li>
+<li><a href="../api/g2.ext">API: g2.ext</a></li>
+<li><a href="../api/g2.mec">API: g2.mec</a></li>
+<li><a href="../api/g2.chart">API: g2.chart</a></li>
+</ul>
+<hr>
+<ul>
+<li><a href="../tests.html">Tests</a></li>
+</ul>
+
+    </nav>
+    <article>
+  <p>Element commands are higher level commands. The following elements are supported by <em>g2</em>.</p>
+<table>
+<thead>
+<tr>
+<th>Element</th>
+<th style="text-align:center">Canvas</th>
+<th style="text-align:center">SVG</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lin({x1,y1,x2,y2})</code></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><code>line</code></td>
+<td>Line element by start and end point.</td>
+</tr>
+<tr>
+<td><code>rec({x,y,b,h})</code></td>
+<td style="text-align:center"><code>rect</code></td>
+<td style="text-align:center"><code>rect</code></td>
+<td>Rectangle element by anchor point, width and height.</td>
+</tr>
+<tr>
+<td><code>cir({x,y,r})</code></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><code>circle</code></td>
+<td>Circle element by center point and radius.</td>
+</tr>
+<tr>
+<td><code>arc({x,y,r,w,dw})</code></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td>Arc element by center point, radius, start angle [radians] and angular range [radians].</td>
+</tr>
+<tr>
+<td><code>ply({pts,closed,x,y,w})</code></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><code>polygon</code></td>
+<td>Polyline element by points array, closed mode [boolean] and iterator function.</td>
+</tr>
+<tr>
+<td><code>txt({str,x,y,w})</code></td>
+<td style="text-align:center"><code>fillText</code></td>
+<td style="text-align:center"><code>text</code></td>
+<td>Text element by string, anchor point, angle and style object.</td>
+</tr>
+<tr>
+<td><code>img({uri,x,y,b,h,</code><br><code>    xoff,yoff,dx,dy})</code></td>
+<td style="text-align:center"><code>drawImage</code></td>
+<td style="text-align:center"><code>image</code></td>
+<td>Image element by URI, anchor point, width, height, offset and range.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ply-element"><code>ply</code> Element <a class="plnk" href="#ply-element">#</a></h4>
+<p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+ply">See the API Reference</a></p>
+<p>The <code>ply</code> command expects an object with a <code>pts</code> property.
+This property can have different formats, for each of which there must be provided an individual
+array iterator. <em>g2</em> implements three standard iterators:</p>
+<table>
+<thead>
+<tr>
+<th>Property Format</th>
+<th>comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{pts:[x1,y1,x2,y2,...,xn,yn]}</code></td>
+<td>Flat array of <code>x</code> and <code>y</code> values [default].</td>
+</tr>
+<tr>
+<td><code>{pts:[[x1,y1],[x2,y2],...,[xn,yn]]}</code></td>
+<td>Array of arrays of <code>x</code> and <code>y</code> values.</td>
+</tr>
+<tr>
+<td><code>{pts:[{x:x1,y:y1},{x:x2,y:y2},...,{x:xn,y:yn}]}</code></td>
+<td>Array of objects with <code>x</code> and <code>y</code> members.</td>
+</tr>
+</tbody>
+</table>
+<p>Another property of <code>ply</code> is <code>closed</code> which can have boolean values <code>true</code> and <code>false</code>.</p>
+<pre><code class="code-line language-javascript"><div>    <span class="hljs-keyword">const</span> style={<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;red&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;ddd&quot;</span>};
+    g2().ply({<span class="hljs-attr">pts</span>:[<span class="hljs-number">10</span>,<span class="hljs-number">10</span>,<span class="hljs-number">40</span>,<span class="hljs-number">70</span>,<span class="hljs-number">60</span>,<span class="hljs-number">30</span>,<span class="hljs-number">90</span>,<span class="hljs-number">80</span>],...style})
+        .ply({<span class="hljs-attr">pts</span>:[[<span class="hljs-number">110</span>,<span class="hljs-number">10</span>],[<span class="hljs-number">140</span>,<span class="hljs-number">70</span>],[<span class="hljs-number">160</span>,<span class="hljs-number">30</span>],[<span class="hljs-number">190</span>,<span class="hljs-number">80</span>]],<span class="hljs-attr">closed</span>:<span class="hljs-literal">true</span>,...style})
+        .exe(ctx);
+</div></code></pre>
+<p><img src="../img/ply-6.png" alt="ply Element" class="loading" id="image-hash-462338287"></p>
+<p><code>ply</code> is also a convenient method for traces or paths to be drawn.
+Just fill an array in the appropriate format and render it.</p>
+<pre><code class="code-line language-js"><div><span class="hljs-keyword">const</span> arr = []; <span class="hljs-comment">// array to be filled</span>
+<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;      <span class="hljs-comment">// iterator</span>
+<span class="hljs-keyword">let</span> forward = <span class="hljs-literal">true</span>;
+(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">render</span>(<span class="hljs-params"></span>) </span>{
+    i+=<span class="hljs-number">0.5</span>;
+    <span class="hljs-comment">// Fill array with values when going forward</span>
+    forward ? arr.push({<span class="hljs-attr">x</span>: <span class="hljs-built_in">Math</span>.cos(<span class="hljs-built_in">Math</span>.PI * i / <span class="hljs-number">60</span> ) * <span class="hljs-number">40</span>, <span class="hljs-attr">y</span>: <span class="hljs-built_in">Math</span>.sin(<span class="hljs-built_in">Math</span>.PI * i / <span class="hljs-number">20</span>) * <span class="hljs-number">40</span>}) 
+    <span class="hljs-comment">// And remove values otherwise</span>
+            : arr.shift();
+    <span class="hljs-comment">// Toggle direction when path closes</span>
+    <span class="hljs-keyword">if</span> (arr.length === <span class="hljs-number">240</span> || arr.length === <span class="hljs-number">0</span>) {
+        forward = !forward;
+    }
+    g2().del()
+        .clr()
+        .view({<span class="hljs-attr">x</span>: <span class="hljs-number">75</span>,<span class="hljs-attr">y</span>: <span class="hljs-number">50</span>})
+        .ply({<span class="hljs-attr">pts</span>:arr,<span class="hljs-attr">ls</span>:<span class="hljs-string">&#x27;blue&#x27;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>}) <span class="hljs-comment">// render this array.</span>
+        .exe(ctx);
+    requestAnimationFrame(render);
+})();
+</div></code></pre>
+<p><img src="../img/ply.gif" alt="ply Animation" class="loading" id="image-hash--1903348703"></p>
+<h3 id="text">Text <a class="plnk" href="#text">#</a></h3>
+<p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+txt">See the API Reference</a></p>
+<p>Text is supported by the <code>txt</code> command. One property of <code>txt</code>, <code>str</code> specifies the text string. The next two
+<code>x</code> and <code>y</code> determine the anchor position of the text element. <code>w</code> describes the rotation angle and
+the last <code>style</code> argument is an object containing individual text and font style information. That
+style properties have priority over previously defined properties, but do not overwrite them.</p>
+<pre><code class="code-line language-javascript"><div><span class="hljs-keyword">const</span> style={<span class="hljs-attr">ls</span>:<span class="hljs-string">&quot;red&quot;</span>,<span class="hljs-attr">lw</span>:<span class="hljs-number">3</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&quot;ddd&quot;</span>};
+      g2().txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;Hello world&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">30</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">w</span>:<span class="hljs-number">-0.15</span>,<span class="hljs-attr">font</span>:<span class="hljs-string">&quot;32px cursive&quot;</span>,<span class="hljs-attr">fs</span>:<span class="hljs-string">&#x27;rebeccapurple&#x27;</span>})
+          .txt({<span class="hljs-attr">str</span>:<span class="hljs-string">&quot;default style&quot;</span>,<span class="hljs-attr">x</span>:<span class="hljs-number">210</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">40</span>})
+          .exe(ctx);
+</div></code></pre>
+<p><img src="../img/txt-6.png" alt="txt Element" class="loading" id="image-hash-1118791458"></p>
+<h3 id="images">Images <a class="plnk" href="#images">#</a></h3>
+<p><a href="https://github.com/goessner/g2/blob/master/docs/api/g2.core.md#g2+img">See the API Reference</a></p>
+<p>Images can be inserted by the <code>img</code> command. One property, <code>uri</code>, is the URI of the image, which
+can also be a  <em>data:url</em>. <code>img</code> has a lot of properties for the desired representation of the
+image. <code>x,y</code> define the position of the upper left corner, <code>b,h</code> the breath and height,
+<code>xoff, yoff</code> create an offset, <code>sb,sh</code> a region for the image and <code>sx, sy</code> may crop the image.
+It can be scaled with <code>scl</code>.</p>
+<p>Images are rendered asynchronously. The command queue stops when the image is to be drawn and continues after that.
+If more than one command queue is issued on one context, it may happen that the order of drawings is inconsistent.</p>
+<pre><code class="code-line language-html"><div><span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;c&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;250px&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;500px&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;../../g2/src/g2.core.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&quot;c&quot;</span>).getContext(<span class="hljs-string">&quot;2d&quot;</span>);
+    <span class="hljs-keyword">const</span> photo = <span class="hljs-string">&quot;../img/photo.jpg&quot;</span>;
+
+    g2().img({<span class="hljs-attr">uri</span>:photo,<span class="hljs-attr">b</span>:<span class="hljs-number">500</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">250</span>})
+        .rec({<span class="hljs-attr">x</span>:<span class="hljs-number">200</span>,<span class="hljs-attr">y</span>:<span class="hljs-number">20</span>,<span class="hljs-attr">b</span>:<span class="hljs-number">50</span>,<span class="hljs-attr">h</span>:<span class="hljs-number">30</span>})
+        .exe(ctx);
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+</div></code></pre>
+<p><img src="../img/img-20.png" alt="pre" class="loading" id="image-hash--404723403"></p>
+<p>If an image can not be loaded, it will be replaced by a broken-image symbol:</p>
+<p><img src="../img/broken_image.png" alt="broken" class="loading" id="image-hash--1494801634"></p>
+
+    </article>
+  </main>
+  <footer>
+    <span class="left">&copy; goessner</span>
+    <span class="center">powered by &mu;Jam &amp; VSCode &mdash; hosted by GitHub</span>
+    <span class="right" onclick="document.documentElement.className = document.documentElement.className === 'theme-dark' ? 'theme-light' : 'theme-dark';">&#9788;</span>
+  </footer>
+  </body>
+  </html>

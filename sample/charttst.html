@@ -1,0 +1,58 @@
+<canvas id="c1"></canvas>
+<canvas id="c2"></canvas>
+<canvas id="c3"></canvas>
+<canvas id="c4"></canvas>
+
+<script src="../dist/g2.full.js"></script>
+<script src="../src/g2.chart.js"></script>
+<script>
+    const ctx1 = document.getElementById('c1').getContext('2d');
+    const ctx2 = document.getElementById('c2').getContext('2d');
+    const ctx3 = document.getElementById('c3').getContext('2d');
+    const ctx4 = document.getElementById('c4').getContext('2d');
+
+    g2().view({ cartesian: true })
+        .chart({
+            x: 40, y: 40, b: 190, h: 90,
+            funcs: () => [{ data: [-4, 4, -2, 4, 2, -1, 3, 3, 4, 2], fill: true }],
+            title: { text: "chart" },
+            xaxis: { title: "x-axis", grid: true, origin: true },
+            yaxis: { title: "y-axis" },
+        }).exe(ctx1);
+
+    g2().view({ cartesian: true })
+        .chart({
+            x: 40, y: 40, b: 190, h: 90, fs: 'black',
+            funcs: [
+                { data: [-2, 4, 2, -1, 3, 3, 4, 2], style: { ls: 'violet', lw: 3 } },
+                { fn: Math.sin, dx: Math.PI / 20, style: { ls: 'green', lw: 3 } }
+            ],
+            title: { text: "chart" },
+            xaxis: { title: "x-axis", origin: true },
+            yaxis: { title: "y-axis", origin: true },
+        }).exe(ctx2);
+
+    g2().view({ cartesian: true })
+        .chart({
+            x: 40, y: 40, b: 190, h: 90, fs: 'black',
+            funcs: [
+                { data: [-2, 4, 2, -1, 3, 3, 4, 2], style: { ls: 'violet', lw: 3, sh: [5, 5, 5, 'rgba(255,0,255,0.7)'] } },
+                { fn: Math.sin, dx: Math.PI / 20, style: { ls: 'green', lw: 3, sh: [5, 5, 5, 'rgba(0,255,0,0.5)'] } }
+            ],
+            title: { text: "chart" },
+            xaxis: { title: "x-axis", origin: true },
+            yaxis: { title: "y-axis", origin: true },
+        }).exe(ctx3);
+
+    g2().view({ cartesian: true })
+        .chart({
+            x: 40, y: 40, b: 190, h: 90,
+            funcs: [{ data: [-2, 4, 2, -1, 3, 3, 4, 2], fill: true }],
+            title: { text: "chart", style: { fs: 'blue' } },
+            xaxis: {
+                title: { text: "x-axis", style: { fs: '#0f0' } },
+                grid: true, origin: true, labels: { style: { fs: '#f0f' } }
+            },
+            yaxis: { title: "y-axis", style: { fs: 'rgb(255,0,0)' } },
+        }).exe(ctx4);
+</script>
