@@ -1054,7 +1054,6 @@ g2.canvasHdl.prototype = {
 
 // use it with node.js ... ?
 if (typeof module !== 'undefined') module.exports = g2;
-
 /**
  * g2.lib (c) 2013-17 Stefan Goessner
  * geometric constants and higher functions
