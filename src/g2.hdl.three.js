@@ -1,4 +1,4 @@
-(function register() {
+export function register() {
     g2.handler.factory.push((ctx) => {
         const width = ctx.drawingBufferWidth;
         const height = ctx.drawingBufferHeight;
@@ -16,7 +16,7 @@
 
         return Object.assign({}, g2ThreeHandler, { ctx, camera, scene, renderer });
     });
-})();
+};
 
 const g2ThreeHandler = {
     ctx: undefined,

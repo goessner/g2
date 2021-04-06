@@ -15,8 +15,10 @@ g2.canvasHdl = function (ctx) {
     }
     return g2.canvasHdl.apply(Object.create(g2.canvasHdl.prototype), arguments);
 };
-g2.handler.factory.push((ctx) => ctx instanceof g2.canvasHdl ? ctx
-    : ctx instanceof CanvasRenderingContext2D ? g2.canvasHdl(ctx) : false);
+export function register() {
+    g2.handler.factory.push((ctx) => ctx instanceof g2.canvasHdl ? ctx
+        : ctx instanceof CanvasRenderingContext2D ? g2.canvasHdl(ctx) : false);
+}
 
 g2.canvasHdl.prototype = {
     init(grp, style) {
