@@ -1,0 +1,48 @@
+<p>Obviously not done yet</p>
+<canvas id="c" height="1000" width="1000"></canvas>
+<script src="https://goessner.github.io/g2/g2.js"></script>
+<script src="http://threejs.org/build/three.min.js"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gagan-bansal/parse-svg/parse-svg.min.js"></script>
+<script src="../src/g2.hdl.three.js"></script>
+<script>
+    const ctx = document.getElementById("c").getContext("webgl");
+    const pi = Math.PI;
+    const g = g2()
+        .lin({ x1: 0, y1: 0, x2: 300, y2: 500 })
+        .lin({ x1: 0, y1: 0, x2: 100, y2: 300 })
+        .p()
+        .m({ x: 400, y: 200 })
+        .l({ x: 200, y: 200 })
+        .l({ x: 100, y: 200 })
+        .z()
+        .m({ x: 100, y: 300 })
+        .l({ x: 200, y: 400 })
+        .l({ x: 100, y: 400 })
+        .a({ x: 600, y: 200, dw: Math.PI })
+        .l({ x: 500, y: 100 })
+        // .a({ x: 800, y: 200, dw: -Math.PI })
+        .fill({ fs: 'red' })
+        .stroke({ ls: 'green', lw: 3 })
+        .lin({ x1: 100, x2: 300, y1: 1000 / 2, y2: 1000 / 2, lw: 1, ls: 'blue' })
+        .lin({ x1: 14.14, x2: 300, y1: 14.14, y2: 300, lw: 20, ls: 'green' })
+        .lin({ x1: 100, x2: 1000 - 100, y1: 1000 - 100, y2: 1000 - 100, lw: 10, ls: 'purple' })
+        .cir({ x: 400, y: 500, r: 50, ls: 'blue', fs: 'green', lw: 2 })
+        .end()
+        .rec({ x: 600, y: 500, b: 40, h: 80, lw: 5, fs: 'green', ls: 'red' })
+        .ply({pts:[20,10,60,80,120,30,180,90],ls:'blue',lw:3})
+        .ply({pts:[{x:20,y:10},{x:60,y:80},{x:120,y:30},{x:180,y:90}],ls:'green',lw:3,fs:'#ddd'})
+        .ply({pts:[[20,10],[60,80],[120,30],[180,90]],ls:'red',lw:3,fs:'red', closed: true})
+        .txt({x: 200, y: 550, ls: 'green', fs: 'red', str: 'hello world', lw: 5})
+        .exe(ctx);
+
+        g2().p()
+        .m({ x: 25, y: 25 })
+        .q({ x1: 50, y1: 0, x: 75, y: 25 })
+        .a({ dw: -pi / 2, x: 75, y: 75 })
+        .c({ x1: 50, y1: 75, x2: 50, y2: 25, x: 25, y: 25 })
+        .z()
+        .stroke()
+        .fill({ fs: 'green' });
+    g.exe(ctx);
+</script>
