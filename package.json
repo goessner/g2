@@ -1,5 +1,5 @@
 {
-  "name": "g2d",
+  "name": "g2-module",
   "version": "3.0.0",
   "description": "g2 - a tiny 2d graphics command library",
   "keywords": [
