@@ -12,8 +12,6 @@
 import {g2} from './g2.core';
 import './g2.ext';
 
-var g2 = g2 || { prototype:{} };  // for jsdoc only ...
-
 /**
  * Draw slider.
  * @method

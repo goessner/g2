@@ -46,6 +46,9 @@
  * @property {float} [ymin] - minimal y-axis value. If not given it is calculated from chart data values.
  * @property {float} [ymax] - maximal y-axis value. If not given it is calculated from chart data values.
  */
+ import {g2} from './g2.core';
+ import './g2.ext';
+
 g2.prototype.chart = function chart({ x, y, b, h, style, title, funcs, xaxis, xmin, xmax, yaxis, ymin, ymax }) {
     return this.addCommand({ c: 'chart', a: arguments[0] });
 }

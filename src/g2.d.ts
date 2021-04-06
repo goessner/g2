@@ -2,12 +2,6 @@
 // // Project: https://github.com/goessner/g2
 // // Definitions by: Stefan Goessner
 
-/**
- * create a g2object
- * @see https://github.com/goessner/g2/wiki
- */
-export function g2(): g2;
-
 export interface coordinate {
     x?: number;
     y?: number;
@@ -28,10 +22,7 @@ export interface position2 {
     x2: number;
     y2: number;
 }
-export interface position_n {
-    x: number;
-    y: number;
-}
+export interface position_n extends coordinate { }
 export interface delta_coordinate {
     dx?: number;
     dy?: number;
@@ -43,7 +34,6 @@ export interface off_coordinate {
 export interface radius { r: number; }
 export interface scale { scl?: number; }
 export interface cartesian { cartesian?: boolean; }
-export interface color { color?: string; }
 export interface size { size?: number; }
 export interface delta_angle { dw?: number; }
 export interface angle { w?: number; }
@@ -62,30 +52,42 @@ export interface svg {
     d: string;
 }
 
+interface linestyle extends Partial<color> {
+    lw?: number,
+}
+
+interface color {
+    fs?: string,
+    ls?: string,
+}
+
 export interface view extends coordinate, scale, cartesian { }
-export interface grid extends color, size { }
-export interface cir extends coordinate, radius { }
-export interface ell extends coordinate, radii, angle, delta_angle, rotation { }
-export interface arc extends coordinate, radius, angle, delta_angle { }
-export interface rec extends coordinate, magnitude { }
-export interface lin extends position1, position2 { }
-export interface ply extends coordinate, closed, angle, points { }
-export interface txt extends text, coordinate, angle { }
-export interface use extends g2object, coordinate, scale, angle { }
-export interface img extends uri, coordinate, angle, magnitude, delta_coordinate, off_coordinate { }
+export interface grid extends size { color: string }
+export interface cir extends coordinate, radius, linestyle { }
+export interface ell extends
+    coordinate, radii, angle, delta_angle, rotation, linestyle { }
+export interface arc extends coordinate, radius, angle, delta_angle, linestyle { }
+export interface rec extends coordinate, magnitude, linestyle { }
+export interface lin extends position1, position2, linestyle { }
+export interface ply extends coordinate, closed, angle, points, linestyle { }
+export interface txt extends text, coordinate, angle, linestyle { }
+export interface use extends g2object, coordinate, scale, angle, linestyle { }
+export interface img extends
+    uri, coordinate, angle, magnitude, delta_coordinate, off_coordinate { }
 export interface beg extends coordinate, angle, scale, matrix { }
 export interface m extends coordinate { }
 export interface l extends coordinate { }
-export interface q extends position1, position2 { }
+export interface q extends position1, position_n { }
 export interface c extends coordinate, position1, position2 { }
-export interface a extends coordinate, angle { }
-export interface stroke extends svg { }
-export interface fill extends svg { }
-export interface drw extends svg { }
+export interface a extends coordinate, delta_angle { _xp: number, _yp: number }
+export interface stroke extends svg, linestyle { }
+export interface fill extends svg, linestyle { }
+export interface drw extends svg, linestyle { }
 
 export interface spline extends coordinate, points { }
-export interface label extends text { loc?: string | number, off?: number }
-export interface mark extends g2symbol { loc?: number | number[] }
+// NOTE Deprecated.
+// export interface label extends text { loc?: string | number, off?: number }
+// export interface mark extends g2symbol { loc?: number | number[] }
 
 export interface dim extends position1, position2 { }
 export interface adim extends coordinate, radius, angle, delta_angle { }
@@ -98,9 +100,9 @@ export interface link2 extends coordinate, angle, points { }
 export interface beam extends coordinate, angle, points { }
 export interface beam2 extends coordinate, angle, points { }
 export interface bar extends position1, position2 { }
-export interface bar2 extends position1, position2 { }
+export interface bar2 extends bar { }
 export interface pulley extends coordinate, radius { }
-export interface pulley2 extends coordinate, radius { }
+export interface pulley2 extends pulley { }
 export interface rope extends position1, position2 { r1: number, r2: number }
 export interface ground extends coordinate, closed, angle, points { }
 export interface load extends points, angle { spacing?: number }
@@ -112,8 +114,27 @@ export interface nodfix extends coordinate { }
 export interface nodflt extends coordinate { }
 export interface origin extends coordinate { }
 
-export interface g2 {
+export const g2: g2;
 
+type ctx = any;
+type handler = any;
+export interface g2 {
+    /**
+     * create a g2object
+     * @see https://github.com/goessner/g2/wiki
+     */
+    (): g2,
+    /**
+     * handler factory.
+     * Please note that ctx and handler could be kind of anything...
+     */
+    handler: {
+        factory: Array<(ctx: ctx) => handler>,
+    },
+    /**
+     * command queue
+     */
+    commands: { a: any, c: keyof g2 }[]
     /**
      * clear viewport
      * @see https://github.com/goessner/g2/wiki/animation
@@ -270,17 +291,6 @@ export interface g2 {
      * @see https://github.com/goessner/g2/wiki/g2.ext
      */
     spline: (obj: spline) => g2;
-
-    /**
-     * create label for last element
-     * @see https://github.com/goessner/g2/wiki/g2.ext
-     */
-    label: (obj: label) => g2;
-
-    /**
-     * set marks on last element
-     */
-    mark: (obj: mark) => g2;
 
     /**
      * set dimensions between two points
