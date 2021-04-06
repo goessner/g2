@@ -1054,7 +1054,6 @@ g2.canvasHdl.prototype = {
 
 // use it with node.js ... ?
 if (typeof module !== 'undefined') module.exports = g2;
-
 /**
  * g2.io (c) 2017-18 Stefan Goessner
  * @license MIT License

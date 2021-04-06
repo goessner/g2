@@ -25,11 +25,11 @@
   "microjam": {},
   "scripts": {
     "build": "npm run minify && npm run jsdoc && npm run 7z",
-    "minify": "uglifyjs ./src/g2.core.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js -o ./dist/g2.js --comments",
-    "concat": "concat ./src/g2.core.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js  >./dist/g2.full.js",
+    "minify": "uglifyjs ./src/g2.core.js ./src/g2.hdl.canvas.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js -o ./dist/g2.js --comments",
+    "concat": "concat ./src/g2.core.js ./src/g2.hdl.canvas.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js  >./dist/g2.full.js",
     "jsdoc": "jsdoc2md ./src/g2.core.js > ./docs/api/g2.core.md && jsdoc2md ./src/g2.mec.js > ./docs/api/g2.mec.md && jsdoc2md ./src/g2.ext.js > ./docs/api/g2.ext.md && jsdoc2md ./src/g2.chart.js > ./docs/api/g2.chart.md",
-    "g2.html": "concat ./src/g2.core.js ./src/g2.io.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.selector.js ./bin/canvasInteractor.js ./src/g2.element.js >./dist/g2.html.js",
-    "g2.chart.html": "concat ./src/g2.core.js ./src/g2.io.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.chart.js ./src/g2.selector.js ./bin/canvasInteractor.js ./src/g2.chart.element.js > ./dist/g2.chart.html.js",
+    "g2.html": "concat ./src/g2.core.js ./src/g2.hdl.canvas.js ./src/g2.io.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.selector.js ./bin/canvasInteractor.js ./src/g2.element.js >./dist/g2.html.js",
+    "g2.chart.html": "concat ./src/g2.core.js ./src/g2.hdl.canvas.js ./src/g2.io.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.chart.js ./src/g2.selector.js ./bin/canvasInteractor.js ./src/g2.chart.element.js > ./dist/g2.chart.html.js",
     "7z": "7z -tgzip a ./g2.min.js.gz ./g2.min.js"
   },
   "author": "Stefan Goessner <fang03@web.de>",
