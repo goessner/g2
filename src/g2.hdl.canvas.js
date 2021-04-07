@@ -442,6 +442,3 @@ g2.canvasHdl.prototype = {
         return sz;
     }
 }
-
-// use it with node.js ... ?
-if (typeof module !== 'undefined') module.exports = g2;
