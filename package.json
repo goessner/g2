@@ -1,6 +1,6 @@
 {
   "name": "g2-module",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "g2 - a tiny 2d graphics command library",
   "keywords": [
     "vector",
@@ -16,6 +16,8 @@
   "files": [
     "index.js",
     "src/g2.d.ts",
+    "src/g2.hdl.canvas.js",
+    "src/g2.hdl.three.js",
     "src/g2.core.js",
     "src/g2.ext.js",
     "src/g2.lib.js",
@@ -39,6 +41,9 @@
   },
   "license": "MIT",
   "microjam": {},
+  "dependencies": {
+    "three": "^0.127.0"
+  },
   "devDependencies": {
     "concat": "^1.0.0",
     "jsdoc-to-markdown": "^5.0.3",

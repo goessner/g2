@@ -1,3 +1,7 @@
+import * as THREE from 'three';
+import { g2 } from 'g2-module';
+import { parseSVG } from 'svg-path-parser';
+
 export function register() {
     g2.handler.factory.push((ctx) => {
         const width = ctx.drawingBufferWidth;
