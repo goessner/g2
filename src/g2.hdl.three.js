@@ -22,6 +22,7 @@ export function register() {
     });
 };
 
+
 const g2ThreeHandler = {
     ctx: undefined,
     scene: undefined,
@@ -36,6 +37,7 @@ const g2ThreeHandler = {
         this.ctx.endFrameEXP && this.ctx.endFrameEXP();
     },
     exe(commands) {
+        // this.matrix = [new THREE.Matrix4()];
         for (let cmd of commands) {
             if (cmd.a && cmd.a.g2) {
                 const cmds = cmd.a.g2().commands;
@@ -74,17 +76,16 @@ const g2ThreeHandler = {
     },
     ell(a) {
         this.p();
-        this._path.add(new THREE.EllipseCurve(
+        this.m({ x: 0, y: 0 });
+        this._path.currentPath.add(new THREE.EllipseCurve(
             a.x, a.y,  // ax, aY
             a.rx, a.ry,  // xRadius, yRadius
             a.w, a.dw, // aStartAngle, aEndAngle
             false,     // aClockwise
             0          // aRotation
         ));
-        if (a.fs && a.fs !== 'transparent') {
-            this.fill({ fs: a.fs });
-        }
-        this.stroke({ lw: a.lw, ls: a.ls });
+        this.fill(a);
+        this.stroke(a);
     },
     rec(a) {
         const { x, y, b, h, lw, ls = '#000', fs } = a;
@@ -94,64 +95,48 @@ const g2ThreeHandler = {
         this.l({ x: x + b, y: y + h });
         this.l({ x: x, y: y + h });
         this.z();
-        if (fs && fs !== 'transparent') {
-            this.fill({ fs });
-        }
-        this.stroke({ ls, lw });
+        this.fill(a);
+        this.stroke(a);
     },
     lin(a) {
         this.p();
         this.m({ x: a.x1, y: a.y1 });
         this.l({ x: a.x2, y: a.y2 });
-        this.stroke({ ...a });
+        this.stroke(a);
+    },
+    _notTransaprent(fs) {
+        return !fs && fs !== 'transparent';
     },
     ply(a) {
         const pts = Array.isArray(a.pts[0]) ? a.pts.flat() : a.pts[0].x ? a.pts.map(a => [a.x, a.y]).flat() : a.pts;
         this.p();
         this.m({ x: pts[0], y: pts[1] });
-        for (let i = 2, j = 3; j < pts.length; i+=2, j+=2) {
+        for (let i = 2, j = 3; j < pts.length; i += 2, j += 2) {
             this.l({ x: pts[i], y: pts[j] });
         }
         if (a.closed) {
             this.z();
         }
-        if (a.fs && a.fs !== 'transparent') {
-            this.fill({ ...a });
-        }
-        this.stroke({ ...a });
-        // TODO
+        this._notTransaprent(a.fs) && this.fill(a);
+        this.stroke(a);
     },
     // TODO txt needs some work...
     font: undefined,
     loadFont(a) {
-        const loader = new THREE.FontLoader();
-        loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.json', (font) => {
-            this.font = font;
-            this._txt(a);
-            this.render();
-        });
-    },
-    _txt(a) {
-        const material = new THREE.MeshBasicMaterial({
-            side: THREE.DoubleSide,
-            color: a.ls || '#000',
-        });
-        const geometry = new THREE.TextGeometry(a.str, {
-            font: this.font,
-            size: 20,
-        });
-        const mesh = new THREE.Mesh(geometry, material);
-        mesh.position.x = a.x;
-        mesh.position.y = a.y;
-        mesh.rotateX(Math.PI);
-        this.scene.add(mesh);
+        // const loader = new THREE.FontLoader();
+        // loader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/fonts/helvetiker_regular.typeface.json', (font) => {
+        //     this.font = font;
+        //     this._txt(a);
+        //     this.render();
+        // });
     },
     txt(a) {
-        if (this.font) {
-            this._txt(a);
-        } else {
-            this.loadFont(a);
-        }
+        // TODO
+        // if (this.font) {
+        //     this._txt(a);
+        // } else {
+        //     this.loadFont(a);
+        // }
     },
     img() {
         // TODO
@@ -163,15 +148,18 @@ const g2ThreeHandler = {
     },
     cartesian: false,
     beg(a) {
+        const { x = 0, y = 0, w = 0, scl = 1 } = a;
         const m = new THREE.Matrix4();
-        const rotate = new THREE.Quaternion(0, 0, 0, 0);
-        rotate.setFromAxisAngle(new THREE.Vector3(0, 0, 1), a.w);
-        const translate = new THREE.Vector3(a.x || 1, a.y || 1, 0);
-        const scale = new THREE.Vector3(a.scl || 1, a.scl || 1, 1);
+        const rotate = new THREE.Quaternion();
+        rotate.setFromAxisAngle(new THREE.Vector3(0, 0, 1), w);
+        const translate = new THREE.Vector3(x, y, 0);
+        const scale = new THREE.Vector3(scl, scl, 1);
         m.compose(translate, rotate, scale);
+        this.stack.push(this.setStyle(a));
         this.matrix.push(m)
     },
     end() {
+        this.stack.pop();
         if (this.matrix.length > 1) {
             this.matrix.pop();
         }
@@ -183,44 +171,50 @@ const g2ThreeHandler = {
     },
     stroke(a) {
         // NOTE this cuts off the previously defined path
-        if (a.d) {
+        if (a && a.d) {
             this._parseSVG(a.d);
         }
         /**
          * If the linewidth is 1 a Line is enough,
          * but if the linewidth is not a rectangle is drawn for each line segment.
          */
-        if (a.lw === 0) return; // Short circuit.
-        if (!a.lw || a.lw === 1) {
-            const material = new THREE.LineBasicMaterial({ color: a.ls || '#000' });
-            const geometry = new THREE.BufferGeometry()
-                .setFromPoints(this._path.getPoints());
-            const line = new THREE.Line(geometry, material);
-            this.applyMatrix(line);
-            this.scene.add(line);
+        const { ls, lw } = this.setStyle(a);
+        if (lw === 0) return; // Short circuit.
+        // NOTE This is not true if scale is anything other than 1...
+        if (!lw || lw === 1) {
+            const material = new THREE.LineBasicMaterial({ color: ls });
+            for (const path of this._path.subPaths) {
+                const geometry = new THREE.BufferGeometry()
+                    .setFromPoints(path.getPoints(200));
+                const line = new THREE.Line(geometry, material);
+                this.applyMatrix(line);
+                this.scene.add(line);
+            }
         } else {
             const material = new THREE.MeshBasicMaterial({
                 side: THREE.DoubleSide,
-                color: a.ls,
+                color: ls,
             });
 
-            const path = this._path.getPoints();
-            for (let i = 0, j = 1; j < path.length; ++i, ++j) {
-                const angle = Math.atan2(path[j].y - path[i].y, path[j].x - path[i].x);
-                const xoff = a.lw / 2 * Math.sin(angle);
-                const yoff = a.lw / 2 * Math.cos(angle);
+            for (const subPath of this._path.subPaths) {
+                const path = subPath.getPoints();
+                for (let i = 0, j = 1; j < path.length; ++i, ++j) {
+                    const angle = Math.atan2(path[j].y - path[i].y, path[j].x - path[i].x);
+                    const xoff = lw / 2 * Math.sin(angle);
+                    const yoff = lw / 2 * Math.cos(angle);
 
-                const shape = new THREE.Shape();
+                    const shape = new THREE.Shape();
 
-                shape.moveTo(path[i].x + xoff, path[i].y - yoff);
-                shape.lineTo(path[i].x - xoff, path[i].y + yoff);
-                shape.lineTo(path[j].x - xoff, path[j].y + yoff);
-                shape.lineTo(path[j].x + xoff, path[j].y - yoff);
+                    shape.moveTo(path[i].x + xoff, path[i].y - yoff);
+                    shape.lineTo(path[i].x - xoff, path[i].y + yoff);
+                    shape.lineTo(path[j].x - xoff, path[j].y + yoff);
+                    shape.lineTo(path[j].x + xoff, path[j].y - yoff);
 
-                const geometry = new THREE.ShapeGeometry(shape);
-                const mesh = new THREE.Mesh(geometry, material);
-                this.applyMatrix(mesh);
-                this.scene.add(mesh);
+                    const geometry = new THREE.ShapeGeometry(shape);
+                    const mesh = new THREE.Mesh(geometry, material);
+                    this.applyMatrix(mesh);
+                    this.scene.add(mesh);
+                }
             }
         }
     },
@@ -229,16 +223,21 @@ const g2ThreeHandler = {
         if (a.d) {
             this._parseSVG(a.d);
         }
+        const { fs } = this.setStyle(a);
+        if (!fs) return;
         const material = new THREE.MeshBasicMaterial({
             side: THREE.DoubleSide,
-            color: a.fs,
+            color: fs,
         });
 
-        const shape = new THREE.Shape(this._path.getPoints());
-        const geometry = new THREE.ShapeGeometry(shape);
-        const mesh = new THREE.Mesh(geometry, material);
-        this.applyMatrix(mesh);
-        this.scene.add(mesh);
+        // TODO This is not working like it should.
+        // see g2().drw({lw:4,ls:'#080',fs:'#0f0',d:'M100,10L123.5,82.4L61,37.6'+'L138,37.6L76.5,82.4Z'})
+        for (const shape of this._path.toShapes()) {
+            const geometry = new THREE.ShapeGeometry(shape);
+            const mesh = new THREE.Mesh(geometry, material);
+            this.applyMatrix(mesh);
+            this.scene.add(mesh);
+        }
     },
     _parseSVG(d) {
         this.p();
@@ -269,24 +268,23 @@ const g2ThreeHandler = {
     },
     drw(a) {
         this._parseSVG(a.d);
-        if (a.fs && a.fs !== "transparent") {
-            this.fill(a);
-        }
+        this.fill(a);
         this.stroke(a);
     },
     a(a) {
-        const x12 = a.x - a._xp;
-        const y12 = a.y - a._yp;
-        const tdw_2 = Math.tan(a.dw / 2);
+        const { x = 0, y = 0, dw = 0, _xp = 0, _yp = 0} = a;
+        const x12 = x - _xp;
+        const y12 = y - _yp;
+        const tdw_2 = Math.tan(dw / 2);
         const rx = (x12 - y12 / tdw_2) / 2;
         const ry = (y12 + x12 / tdw_2) / 2;
         const R = Math.hypot(rx, ry);
         const w = Math.atan2(-ry, -rx);
-        this._path.arc(rx, ry, R, w, w + a.dw, a.dw < 0);
+        this._path.currentPath.arc(rx, ry, R, w, w + a.dw, a.dw < 0);
     },
     _path: undefined,
     p() {
-        this._path = new THREE.Path();
+        this._path = new THREE.ShapePath();
     },
     m(a) {
         this._path.moveTo(a.x, a.y);
@@ -301,10 +299,11 @@ const g2ThreeHandler = {
         this._path.bezierCurveTo(a.x1, a.y1, a.x2, a.y2, a.x, a.y);
     },
     z() {
-        this._path.closePath();
+        this._path.currentPath.closePath();
     },
     stack: [],
     setStyle(s) {
+        const a = this.stack;
         const ds = g2.defaultStyle;
         const getStyle = (key) => {
             let stack
@@ -314,17 +313,26 @@ const g2ThreeHandler = {
                     break;
                 }
             }
-            let symbol;
+            let link;
             if (typeof s[key] === 'string' && s[key][0] === '@') {
                 let ref = s[key].substr(1);
-                symbol = g2.symbol[ref];
+                if (s.hasOwnProperty(ref)) {
+                    link = s[ref];
+                }
+                else {
+                    link = g2.symbol[ref];
+                }
             }
-            return symbol || s[key] || stack || ds[key]
+            const ret = link || s[key] || stack || ds[key];
+            if (key === 'fs' && ret === 'transparent' || !ret ) {
+              return false;
+            }
+            return ret;
         }
         return {
-            linewidth: getStyle('lw'),
-            color: getStyle('ls'),
-            // fill: getStyle('fs'),
+            lw: getStyle('lw'),
+            fs: getStyle('fs'),
+            ls: getStyle('ls'),
         }
     },
 };
