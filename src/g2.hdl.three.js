@@ -1,5 +1,17 @@
+
 (function register() {
+    g2.devicePixelRatioCompensatorSymbol = Symbol();
     g2.handler.factory.push((ctx) => {
+        if (!(ctx instanceof WebGL2RenderingContext ||
+            ctx instanceof WebGLRenderingContext)) {
+                return null;
+            }
+        const dPR = globalThis && globalThis.devicePixelRatio || 1;
+        ctx[devicePixelRatioCompensatorSymbol] =
+            ctx[devicePixelRatioCompensatorSymbol] || {
+            width: ctx.drawingBufferWidth / dPR,
+            height: ctx.drawingBufferHeight / dPR,
+        }
         const width = ctx.drawingBufferWidth;
         const height = ctx.drawingBufferHeight;
         const renderer = new THREE.WebGLRenderer({ gl: ctx, canvas: ctx.canvas });
