@@ -2,6 +2,9 @@
 // // Project: https://github.com/goessner/g2
 // // Definitions by: Stefan Goessner
 
+export const g2: g2;
+export function registerThree(): void;
+
 export interface coordinate {
     x?: number;
     y?: number;
@@ -113,8 +116,6 @@ export interface dblnod extends coordinate { }
 export interface nodfix extends coordinate { }
 export interface nodflt extends coordinate { }
 export interface origin extends coordinate { }
-
-export const g2: g2;
 
 type ctx = any;
 type handler = any;
