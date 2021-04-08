@@ -7,16 +7,15 @@ export function register() {
     g2.handler.factory.push((ctx) => {
         if (!(ctx instanceof WebGL2RenderingContext ||
             ctx instanceof WebGLRenderingContext)) {
-                return null;
-            }
+            return false;
+        }
         const dPR = globalThis && globalThis.devicePixelRatio || 1;
         ctx[devicePixelRatioCompensatorSymbol] =
             ctx[devicePixelRatioCompensatorSymbol] || {
-            width: ctx.drawingBufferWidth / dPR,
-            height: ctx.drawingBufferHeight / dPR,
-        }
-        const width = ctx.drawingBufferWidth;
-        const height = ctx.drawingBufferHeight;
+                width: ctx.drawingBufferWidth / dPR,
+                height: ctx.drawingBufferHeight / dPR,
+            }
+        const { width, height } = ctx[g2.devicePixelRatioCompensatorSymbol];
         const renderer = new THREE.WebGLRenderer({ gl: ctx, canvas: ctx.canvas });
 
         const scene = new THREE.Scene();
@@ -283,7 +282,7 @@ const g2ThreeHandler = {
         this.stroke(a);
     },
     a(a) {
-        const { x = 0, y = 0, dw = 0, _xp = 0, _yp = 0} = a;
+        const { x = 0, y = 0, dw = 0, _xp = 0, _yp = 0 } = a;
         const x12 = x - _xp;
         const y12 = y - _yp;
         const tdw_2 = Math.tan(dw / 2);
@@ -335,8 +334,8 @@ const g2ThreeHandler = {
                 }
             }
             const ret = link || s[key] || stack || ds[key];
-            if (key === 'fs' && ret === 'transparent' || !ret ) {
-              return false;
+            if (key === 'fs' && ret === 'transparent' || !ret) {
+                return false;
             }
             return ret;
         }
