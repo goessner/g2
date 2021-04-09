@@ -1,4 +1,15 @@
 
+/*
+ * ⚠ This is still a work in progress.
+ * Things that are not working as of now are:
+ * View, beg: The Matrices do not persist correctly.
+ * Check for mec2 and prepend view... only one element is influenced.
+ * If the matrix is swapped with a translate, rotation quaternion and scale vector,
+ * all elements are rotated equally, which is also wrong.
+ * txt: Font has to be loaded. Txt has to be made async.
+ * clr, img: Not implemented.
+ */
+
 (function register() {
     g2.devicePixelRatioCompensatorSymbol = Symbol();
     g2.handler.factory.push((ctx) => {
