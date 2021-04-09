@@ -1,6 +1,6 @@
 {
   "name": "g2-module",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "g2 - a tiny 2d graphics command library",
   "keywords": [
     "vector",
@@ -42,7 +42,8 @@
   "license": "MIT",
   "microjam": {},
   "dependencies": {
-    "three": "^0.127.0"
+    "three": "^0.127.0",
+    "svg-path-parser": "^1.1.0"
   },
   "devDependencies": {
     "concat": "^1.0.0",
