@@ -346,13 +346,16 @@ g2.canvasHdl.prototype = {
         let q, prv = {};
         for (const key in style) {
             if (this.get[key]) {  // style keys only ...
+                let keyval = style[key];
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
-                    let ref = style[key].substr(1);
-                    style[key] = g2.symbol[ref] || this.get[ref] && this.get[ref](this.ctx);
+                    // also check inherited styles ...
+                    const ref = style[key].substr(1);
+                    keyval = g2.symbol[ref] || ref in this.get && this.get[ref](this.ctx)
+                                            || ref in this.cur && this.cur[ref];
                 }
-                if ((q = this.get[key](this.ctx)) !== style[key]) {
+                if ((q = this.get[key](this.ctx)) !== keyval) {
                     prv[key] = q;
-                    this.set[key](this.ctx, style[key]);
+                    this.set[key](this.ctx, keyval);
                 }
             }
         }
@@ -364,14 +367,17 @@ g2.canvasHdl.prototype = {
     },
     pushStyle(style) {
         let cur = {};  // hold changed properties ...
-        for (const key in style)
-            if (this.get[key]) {  // style keys only ...
+        for (const key in style)  // allow extended style syntax ('fs-2', ...)
+            if (g2.styleRex.test(key)) {  // (extended) style keys only ...
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
                     let ref = style[key].substr(1);
                     style[key] = g2.symbol[ref] || this.get[ref] && this.get[ref](this.ctx);
                 }
-                if (this.cur[key] !== style[key])
-                    this.set[key](this.ctx, (cur[key] = style[key]));
+                if (this.cur[key] !== style[key]) {
+                    if (key in this.set)
+                        this.set[key](this.ctx, style[key]);
+                    cur[key] = style[key];
+                }
             }
         this.stack.push(this.cur = Object.assign({}, this.cur, cur));
     },

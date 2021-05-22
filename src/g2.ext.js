@@ -2,7 +2,7 @@
 "use strict"
 
 /**
- * g2.ext (c) 2015-20 Stefan Goessner
+ * g2.ext (c) 2015-21 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @requires g2.core.js
@@ -27,7 +27,7 @@ g2.NONE = 0x0; g2.OVER = 0x1; g2.DRAG = 0x2; g2.EDIT = 0x4;
  * @property {object} [symbol.sqr] Predefined symbol: a little square
  * @property {string} [symbol.nodcolor=#333]    node color.
  * @property {string} [symbol.nodfill=#dedede]   node fill color.
- * @property {string} [symbol.nodfill2=#aeaeae]    alternate node fill color, somewhat darker.
+ * @property {string} [symbol.nodfill2=#aeaeae]  alternate node fill color, somewhat darker.
  * @property {string} [symbol.linkcolor=#666]   link color.
  * @property {string} [symbol.linkfill=rgba(225,225,225,0.75)]   link fill color, semi-transparent.
  * @property {string} [symbol.dimcolor=darkslategray]   dimension color.
@@ -100,7 +100,8 @@ g2.labelIfc = {
         const font = lbl.font || g2.defaultStyle.font;
         const h = parseInt(font);   // font height (px assumed !)
         const str = this.getLabelString();
-        const rx = (str.length || 1) * 0.75 * h / 2, ry = 1.25 * h / 2;   // ellipse semi-axes length 
+        const rx = (str.length || 1) * 0.65 * h / 2, 
+              ry = 1.25 * h / 2;   // ellipse semi-axes length 
         const pos = this.pointAt(lbl.loc || this.lbloc || 'se');
         const off = this.getLabelOffset();
         const p = {
@@ -321,9 +322,9 @@ g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
     get lsh() { return this.state & g2.OVER; },
     get sh() { return this.state & g2.OVER ? [0, 0, 5, "black"] : false },
     g2() {
-        const { x, y, r, b = 4, shape = 'cir', ls = 'black', fs = '#ccc', sh } = this;
-        return shape === 'cir' ? g2().cir({ x, y, r, ls, fs, sh }).ins((g) => this.label && this.drawLabel(g))
-            : g2().rec({ x: x - b, y: y - b, b: 2 * b, h: 2 * b, ls, fs, sh }).ins((g) => this.label && this.drawLabel(g));
+        const { x, y, r, b = 4, ls = 'black', fs = 'palegreen', sh } = this;
+        
+        return g2().cir({ x, y, r, ls, fs, sh }).ins((g) => this.label && this.drawLabel(g));
     }
 });
 
@@ -363,8 +364,8 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
 */
 g2.prototype.dblnod = function ({ x = 0, y = 0 }) { return this.addCommand({ c: 'dblnod', a: arguments[0] }); }
 g2.prototype.dblnod.prototype = g2.mix(g2.prototype.cir.prototype, {
-    get r() { return 6; },
-    get isSolid() { return true; },
+    r: 6,
+    isSolid: true,
     g2() {
         return g2()
             .beg({ x: this.x, y: this.y })
@@ -390,7 +391,7 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
             .beg(g2.flatten(this))
-            .cir({ r: 6, fs: g2.symbol.nodfill })
+            .cir({ r: 6, fs: '@fs2' })
             .cir({ r: 2.5, fs: '@ls', ls: 'transparent' })
             .end()
             .ins((g) => this.label && this.drawLabel(g));

@@ -2,7 +2,7 @@
 "use strict"
 
 /**
- * g2.core (c) 2013-20 Stefan Goessner
+ * g2.core (c) 2013-21 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
@@ -538,6 +538,8 @@ g2.prototype = {
 
 // statics
 g2.defaultStyle = { fs: 'transparent', ls: '#000', lw: 1, lc: "butt", lj: "miter", ld: [], ml: 10, sh: [0, 0], lsh: false, font: '14px serif', thal: 'start', tval: 'alphabetic' };
+g2.styleRex = /^(fs|ls|lw|lc|lj|ld|ldoff|ml|sh|lsh|font|thal|tval)([-0-9].*)?$/,
+
 g2.symbol = {
     unknown: g2().cir({ r: 12, fs: 'orange' }).txt({ str: '?', thal: 'center', tval: 'middle', font: 'bold 20pt serif' })
 };
@@ -955,13 +957,16 @@ g2.canvasHdl.prototype = {
         let q, prv = {};
         for (const key in style) {
             if (this.get[key]) {  // style keys only ...
+                let keyval = style[key];
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
-                    let ref = style[key].substr(1);
-                    style[key] = g2.symbol[ref] || this.get[ref] && this.get[ref](this.ctx);
+                    // also check inherited styles ...
+                    const ref = style[key].substr(1);
+                    keyval = g2.symbol[ref] || ref in this.get && this.get[ref](this.ctx)
+                                            || ref in this.cur && this.cur[ref];
                 }
-                if ((q = this.get[key](this.ctx)) !== style[key]) {
+                if ((q = this.get[key](this.ctx)) !== keyval) {
                     prv[key] = q;
-                    this.set[key](this.ctx, style[key]);
+                    this.set[key](this.ctx, keyval);
                 }
             }
         }
@@ -973,14 +978,17 @@ g2.canvasHdl.prototype = {
     },
     pushStyle(style) {
         let cur = {};  // hold changed properties ...
-        for (const key in style)
-            if (this.get[key]) {  // style keys only ...
+        for (const key in style)  // allow extended style syntax ('fs-2', ...)
+            if (g2.styleRex.test(key)) {  // (extended) style keys only ...
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
                     let ref = style[key].substr(1);
                     style[key] = g2.symbol[ref] || this.get[ref] && this.get[ref](this.ctx);
                 }
-                if (this.cur[key] !== style[key])
-                    this.set[key](this.ctx, (cur[key] = style[key]));
+                if (this.cur[key] !== style[key]) {
+                    if (key in this.set)
+                        this.set[key](this.ctx, style[key]);
+                    cur[key] = style[key];
+                }
             }
         this.stack.push(this.cur = Object.assign({}, this.cur, cur));
     },
@@ -1052,8 +1060,6 @@ g2.canvasHdl.prototype = {
     }
 }
 
-// use it with node.js ... ?
-if (typeof module !== 'undefined') module.exports = g2;
 /**
  * g2.lib (c) 2013-17 Stefan Goessner
  * geometric constants and higher functions
@@ -1230,7 +1236,7 @@ g2 = Object.assign(g2, {
 "use strict"
 
 /**
- * g2.ext (c) 2015-20 Stefan Goessner
+ * g2.ext (c) 2015-21 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @requires g2.core.js
@@ -1255,7 +1261,7 @@ g2.NONE = 0x0; g2.OVER = 0x1; g2.DRAG = 0x2; g2.EDIT = 0x4;
  * @property {object} [symbol.sqr] Predefined symbol: a little square
  * @property {string} [symbol.nodcolor=#333]    node color.
  * @property {string} [symbol.nodfill=#dedede]   node fill color.
- * @property {string} [symbol.nodfill2=#aeaeae]    alternate node fill color, somewhat darker.
+ * @property {string} [symbol.nodfill2=#aeaeae]  alternate node fill color, somewhat darker.
  * @property {string} [symbol.linkcolor=#666]   link color.
  * @property {string} [symbol.linkfill=rgba(225,225,225,0.75)]   link fill color, semi-transparent.
  * @property {string} [symbol.dimcolor=darkslategray]   dimension color.
@@ -1381,7 +1387,7 @@ g2.markIfc = {
     }
 }
 
-g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, g2.markIfc, {
+g2.prototype.cir.prototype = g2.mix(g2.labelIfc, g2.markIfc, {
     w: 0,   // default start angle (used for dash-dot orgin and editing)
     lbloc: 'c',
     get isSolid() { return this.fs && this.fs !== 'transparent' },
@@ -1591,8 +1597,8 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
 */
 g2.prototype.dblnod = function ({ x = 0, y = 0 }) { return this.addCommand({ c: 'dblnod', a: arguments[0] }); }
 g2.prototype.dblnod.prototype = g2.mix(g2.prototype.cir.prototype, {
-    get r() { return 6; },
-    get isSolid() { return true; },
+    r: 6,
+    isSolid: true,
     g2() {
         return g2()
             .beg({ x: this.x, y: this.y })
@@ -1618,7 +1624,7 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
             .beg(g2.flatten(this))
-            .cir({ r: 6, fs: g2.symbol.nodfill })
+            .cir({ r: 6, fs: '@fs2' })
             .cir({ r: 2.5, fs: '@ls', ls: 'transparent' })
             .end()
             .ins((g) => this.label && this.drawLabel(g));
@@ -2588,10 +2594,10 @@ g2.prototype.chart.prototype = {
             ];
             funcs.forEach(f => this.initFunc(f, ...tmp));
         }
-        // if (this.xaxis)
-        this.xAxis = this.autoAxis(this.get('xmin'), this.get('xmax'), 0, this.b);
-        // if (this.yaxis)
-        this.yAxis = this.autoAxis(this.get('ymin'), this.get('ymax'), 0, this.h);
+        if (this.xaxis)
+            this.xAxis = this.autoAxis(this.get('xmin'), this.get('xmax'), 0, this.b);
+        if (this.yaxis)
+            this.yAxis = this.autoAxis(this.get('ymin'), this.get('ymax'), 0, this.h);
 
         // draw background & border ...
         g.rec({
@@ -2671,15 +2677,14 @@ g2.prototype.chart.prototype = {
         }
     },
     autoAxis(zmin, zmax, tmin, tmax) {
-        let base = 2, exp = 1, eps = Math.sqrt(Number.EPSILON),
+        let base = 1, exp = 1, eps = Math.sqrt(Number.EPSILON),
             Dz = zmax - zmin || 1,      // value range
             Dt = tmax - tmin || 1,      // area range
             scl = Dz > eps ? Dt / Dz : 1, // scale [usr]->[pix]
             dz = base * Math.pow(10, exp), // tick size [usr]
             dt = Math.floor(scl * dz),    // tick size [pix]
             N,                          // # segments
-            dt01,                       // reminder segment
-            i0, j0, jth, t0, res;
+            i0, j0, jth, t0;
 
         while (dt < 14 || dt > 35) {
             if (dt < 14) {
@@ -2700,8 +2705,6 @@ g2.prototype.chart.prototype = {
             : Math.floor(zmin / dz) + 1;
         let z0 = i0 * dz;
         t0 = Math.round(scl * (z0 - zmin));
-        // console.log("Dt="+Dt+",N="+(Dt - t0)/ dt)
-        // console.log("DT="+Dt+",N="+(Dt - t0)/ dt)
         N = Math.floor((Dt - t0) / dt) + 1;
         j0 = base % 2 && i0 % 2 ? i0 + 1 : i0;
         jth = exp === 0 && N < 11 ? 1 : base === 2 && N > 9 ? 5 : 2;
@@ -2745,8 +2748,6 @@ g2.prototype.chart.prototype = {
             ticklen = showticks ? this.get("xaxis", "ticks", "len") : 0,
             showorigin = showaxis && this.get("xaxis", "origin"),
             title = this.xaxis && (this.get("xaxis", "title", "text") || this.xaxis.title) || '';
-        // console.log(this.xAxis)
-        // draw tick/grid lines
         g.beg(axisstyle);
         for (let i = 0; i < this.xAxis.N; i++) {
             tick = this.xAxis.itr(i);

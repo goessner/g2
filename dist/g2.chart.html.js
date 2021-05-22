@@ -2,7 +2,7 @@
 "use strict"
 
 /**
- * g2.core (c) 2013-20 Stefan Goessner
+ * g2.core (c) 2013-21 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
@@ -538,6 +538,8 @@ g2.prototype = {
 
 // statics
 g2.defaultStyle = { fs: 'transparent', ls: '#000', lw: 1, lc: "butt", lj: "miter", ld: [], ml: 10, sh: [0, 0], lsh: false, font: '14px serif', thal: 'start', tval: 'alphabetic' };
+g2.styleRex = /^(fs|ls|lw|lc|lj|ld|ldoff|ml|sh|lsh|font|thal|tval)([-0-9].*)?$/,
+
 g2.symbol = {
     unknown: g2().cir({ r: 12, fs: 'orange' }).txt({ str: '?', thal: 'center', tval: 'middle', font: 'bold 20pt serif' })
 };
@@ -955,13 +957,16 @@ g2.canvasHdl.prototype = {
         let q, prv = {};
         for (const key in style) {
             if (this.get[key]) {  // style keys only ...
+                let keyval = style[key];
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
-                    let ref = style[key].substr(1);
-                    style[key] = g2.symbol[ref] || this.get[ref] && this.get[ref](this.ctx);
+                    // also check inherited styles ...
+                    const ref = style[key].substr(1);
+                    keyval = g2.symbol[ref] || ref in this.get && this.get[ref](this.ctx)
+                                            || ref in this.cur && this.cur[ref];
                 }
-                if ((q = this.get[key](this.ctx)) !== style[key]) {
+                if ((q = this.get[key](this.ctx)) !== keyval) {
                     prv[key] = q;
-                    this.set[key](this.ctx, style[key]);
+                    this.set[key](this.ctx, keyval);
                 }
             }
         }
@@ -973,14 +978,17 @@ g2.canvasHdl.prototype = {
     },
     pushStyle(style) {
         let cur = {};  // hold changed properties ...
-        for (const key in style)
-            if (this.get[key]) {  // style keys only ...
+        for (const key in style)  // allow extended style syntax ('fs-2', ...)
+            if (g2.styleRex.test(key)) {  // (extended) style keys only ...
                 if (typeof style[key] === 'string' && style[key][0] === '@') {
                     let ref = style[key].substr(1);
                     style[key] = g2.symbol[ref] || this.get[ref] && this.get[ref](this.ctx);
                 }
-                if (this.cur[key] !== style[key])
-                    this.set[key](this.ctx, (cur[key] = style[key]));
+                if (this.cur[key] !== style[key]) {
+                    if (key in this.set)
+                        this.set[key](this.ctx, style[key]);
+                    cur[key] = style[key];
+                }
             }
         this.stack.push(this.cur = Object.assign({}, this.cur, cur));
     },
@@ -1052,8 +1060,6 @@ g2.canvasHdl.prototype = {
     }
 }
 
-// use it with node.js ... ?
-if (typeof module !== 'undefined') module.exports = g2;
 /**
  * g2.io (c) 2017-18 Stefan Goessner
  * @license MIT License
@@ -1321,7 +1327,7 @@ g2 = Object.assign(g2, {
 "use strict"
 
 /**
- * g2.ext (c) 2015-20 Stefan Goessner
+ * g2.ext (c) 2015-21 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @requires g2.core.js
@@ -1346,7 +1352,7 @@ g2.NONE = 0x0; g2.OVER = 0x1; g2.DRAG = 0x2; g2.EDIT = 0x4;
  * @property {object} [symbol.sqr] Predefined symbol: a little square
  * @property {string} [symbol.nodcolor=#333]    node color.
  * @property {string} [symbol.nodfill=#dedede]   node fill color.
- * @property {string} [symbol.nodfill2=#aeaeae]    alternate node fill color, somewhat darker.
+ * @property {string} [symbol.nodfill2=#aeaeae]  alternate node fill color, somewhat darker.
  * @property {string} [symbol.linkcolor=#666]   link color.
  * @property {string} [symbol.linkfill=rgba(225,225,225,0.75)]   link fill color, semi-transparent.
  * @property {string} [symbol.dimcolor=darkslategray]   dimension color.
@@ -1472,7 +1478,7 @@ g2.markIfc = {
     }
 }
 
-g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, g2.markIfc, {
+g2.prototype.cir.prototype = g2.mix(g2.labelIfc, g2.markIfc, {
     w: 0,   // default start angle (used for dash-dot orgin and editing)
     lbloc: 'c',
     get isSolid() { return this.fs && this.fs !== 'transparent' },
@@ -1682,8 +1688,8 @@ g2.prototype.nod.prototype = g2.mix(g2.prototype.cir.prototype, {
 */
 g2.prototype.dblnod = function ({ x = 0, y = 0 }) { return this.addCommand({ c: 'dblnod', a: arguments[0] }); }
 g2.prototype.dblnod.prototype = g2.mix(g2.prototype.cir.prototype, {
-    get r() { return 6; },
-    get isSolid() { return true; },
+    r: 6,
+    isSolid: true,
     g2() {
         return g2()
             .beg({ x: this.x, y: this.y })
@@ -1709,7 +1715,7 @@ g2.prototype.pol.prototype = g2.mix(g2.prototype.nod.prototype, {
     g2() {
         return g2()
             .beg(g2.flatten(this))
-            .cir({ r: 6, fs: g2.symbol.nodfill })
+            .cir({ r: 6, fs: '@fs2' })
             .cir({ r: 2.5, fs: '@ls', ls: 'transparent' })
             .end()
             .ins((g) => this.label && this.drawLabel(g));
@@ -2188,10 +2194,10 @@ g2.prototype.chart.prototype = {
             ];
             funcs.forEach(f => this.initFunc(f, ...tmp));
         }
-        // if (this.xaxis)
-        this.xAxis = this.autoAxis(this.get('xmin'), this.get('xmax'), 0, this.b);
-        // if (this.yaxis)
-        this.yAxis = this.autoAxis(this.get('ymin'), this.get('ymax'), 0, this.h);
+        if (this.xaxis)
+            this.xAxis = this.autoAxis(this.get('xmin'), this.get('xmax'), 0, this.b);
+        if (this.yaxis)
+            this.yAxis = this.autoAxis(this.get('ymin'), this.get('ymax'), 0, this.h);
 
         // draw background & border ...
         g.rec({
@@ -2271,15 +2277,14 @@ g2.prototype.chart.prototype = {
         }
     },
     autoAxis(zmin, zmax, tmin, tmax) {
-        let base = 2, exp = 1, eps = Math.sqrt(Number.EPSILON),
+        let base = 1, exp = 1, eps = Math.sqrt(Number.EPSILON),
             Dz = zmax - zmin || 1,      // value range
             Dt = tmax - tmin || 1,      // area range
             scl = Dz > eps ? Dt / Dz : 1, // scale [usr]->[pix]
             dz = base * Math.pow(10, exp), // tick size [usr]
             dt = Math.floor(scl * dz),    // tick size [pix]
             N,                          // # segments
-            dt01,                       // reminder segment
-            i0, j0, jth, t0, res;
+            i0, j0, jth, t0;
 
         while (dt < 14 || dt > 35) {
             if (dt < 14) {
@@ -2300,8 +2305,6 @@ g2.prototype.chart.prototype = {
             : Math.floor(zmin / dz) + 1;
         let z0 = i0 * dz;
         t0 = Math.round(scl * (z0 - zmin));
-        // console.log("Dt="+Dt+",N="+(Dt - t0)/ dt)
-        // console.log("DT="+Dt+",N="+(Dt - t0)/ dt)
         N = Math.floor((Dt - t0) / dt) + 1;
         j0 = base % 2 && i0 % 2 ? i0 + 1 : i0;
         jth = exp === 0 && N < 11 ? 1 : base === 2 && N > 9 ? 5 : 2;
@@ -2345,8 +2348,6 @@ g2.prototype.chart.prototype = {
             ticklen = showticks ? this.get("xaxis", "ticks", "len") : 0,
             showorigin = showaxis && this.get("xaxis", "origin"),
             title = this.xaxis && (this.get("xaxis", "title", "text") || this.xaxis.title) || '';
-        // console.log(this.xAxis)
-        // draw tick/grid lines
         g.beg(axisstyle);
         for (let i = 0; i < this.xAxis.N; i++) {
             tick = this.xAxis.itr(i);
@@ -2950,6 +2951,12 @@ class G2ChartElement extends HTMLElement {
             'ymin',
             'ymax',
             'title',
+            'xlabels',
+            'ylabels',
+            'xticks',
+            'yticks',
+            'xtitle',
+            'ytitle'
         ];
     }
 
@@ -2972,33 +2979,52 @@ class G2ChartElement extends HTMLElement {
     set ymax(q) { return q && +this.setAttribute('ymax', q) }
     get title() { return this.getAttribute('title') || ''; }
     set title(q) { return q && this.setAttribute('title', q) }
+    get xlabels() { return this.getAttribute('xlabels') !== 'false'; }
+    get ylabels() { return this.getAttribute('ylabels') !== 'false'; }
+    get xticks() { return this.getAttribute('xticks') !== 'false'; }
+    get yticks() { return this.getAttribute('yticks') !== 'false'; }
+    get xtitle() { return this.getAttribute('xtitle'); }
+    get ytitle() { return this.getAttribute('ytitle'); }
 
     connectedCallback() {
         this._root.innerHTML = G2ChartElement.template({
             width: this.width, height: this.height
         });
 
-        this._ctx = this._root.getElementById('cnv').getContext('2d');
+        const xmargin = (this.yticks && 5) + (this.ylabels && 15) + (this.ytitle && 15);
+        const ymargin = (this.xticks && 5) + (this.xlabels && 15) + (this.xtitle && 15);
 
-        const t = 35;
         this._chart = {
-            x: t,
-            y: t,
+            x: xmargin,
+            y: ymargin,
             xmin: this.xmin,
             xmax: this.xmax,
             ymin: this.ymin,
             ymax: this.ymax,
             title: this.title,
-            b: this.width - t * 2,
-            h: this.height - t * 2,
-            xaxis: () => this.xaxis || {},
-            yaxis: () => this.yaxis || {},
+            b: this.width - 5 - xmargin,
+            h: this.height - 5 - ymargin - (this.title && 15),
+            xaxis: () => this.xaxis || { ticks: this.xticks, labels: this.xlabels, title: this.xtitle },
+            yaxis: () => this.yaxis || { ticks: this.yticks, labels: this.ylabels, title: this.ytitle },
             title: () => this.title || "",
-            funcs: () => this.funcs
+            funcs: []
         };
 
-        this._g = g2().del().clr().view({ cartesian: true }).chart(this._chart);
+        if (this.innerHTML) {
+            let res;
 
+            try { res = JSON.parse(this.innerHTML); }
+            catch (e) { 
+                console.error(e); 
+                this._g.txt({ str: e, y: 5 });
+            }
+
+            this._chart.funcs.push(...G2ChartElement.validateFunc(res));
+        }
+
+        this._ctx = this._root.getElementById('cnv').getContext('2d');
+        this._g = g2().del().clr().view({ cartesian: true }).chart(this._chart);
+/*
         try {
             // If not true, the element should be referenced by another module.
             if (this.innerHTML !== '') {
@@ -3028,24 +3054,41 @@ class G2ChartElement extends HTMLElement {
             });
             this.render();
         }
+*/
+        this.render();
     }
 
     render() {
         this._g.exe(this._ctx);
     }
-
+/*
     setFuncs(funcs) {
         this.funcs = funcs;
         return this;
     }
-
+*/
     disconnectedCallback() {
         // TODO
     }
 
+    static validateFunc(obj, funcs) {
+        funcs = funcs || [];
+        if (Array.isArray(obj))  // array of functions ...
+            for (const o of obj)
+                G2ChartElement.validateFunc(o, funcs);
+        else if (typeof obj === 'object') {  // single function ...
+            if ('fn' in obj) {
+                const fnc = Function('"use strict";return (' + obj['fn'] + ')')();
+                obj.fn = typeof fnc === 'function' ? fnc : undefined;  // todo: error message ...
+            }
+            if ('fn' in obj || 'data' in obj)
+                funcs.push(obj);
+        }
+        return funcs;
+    }
+
     static template({ width, height }) {
-        return `<canvas id='cnv' width=${width} height=${height}
-            style="border:solid 1px black;"></canvas>`
+        return `<canvas id='cnv' width=${width} height=${height}></canvas>`
     }
 }
 customElements.define('g2-chart', G2ChartElement);

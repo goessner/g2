@@ -69,10 +69,10 @@ g2.prototype.chart.prototype = {
             ];
             funcs.forEach(f => this.initFunc(f, ...tmp));
         }
-        // if (this.xaxis)
-        this.xAxis = this.autoAxis(this.get('xmin'), this.get('xmax'), 0, this.b);
-        // if (this.yaxis)
-        this.yAxis = this.autoAxis(this.get('ymin'), this.get('ymax'), 0, this.h);
+        if (this.xaxis)
+            this.xAxis = this.autoAxis(this.get('xmin'), this.get('xmax'), 0, this.b);
+        if (this.yaxis)
+            this.yAxis = this.autoAxis(this.get('ymin'), this.get('ymax'), 0, this.h);
 
         // draw background & border ...
         g.rec({
@@ -152,15 +152,14 @@ g2.prototype.chart.prototype = {
         }
     },
     autoAxis(zmin, zmax, tmin, tmax) {
-        let base = 2, exp = 1, eps = Math.sqrt(Number.EPSILON),
+        let base = 1, exp = 1, eps = Math.sqrt(Number.EPSILON),
             Dz = zmax - zmin || 1,      // value range
             Dt = tmax - tmin || 1,      // area range
             scl = Dz > eps ? Dt / Dz : 1, // scale [usr]->[pix]
             dz = base * Math.pow(10, exp), // tick size [usr]
             dt = Math.floor(scl * dz),    // tick size [pix]
             N,                          // # segments
-            dt01,                       // reminder segment
-            i0, j0, jth, t0, res;
+            i0, j0, jth, t0;
 
         while (dt < 14 || dt > 35) {
             if (dt < 14) {
@@ -181,8 +180,6 @@ g2.prototype.chart.prototype = {
             : Math.floor(zmin / dz) + 1;
         let z0 = i0 * dz;
         t0 = Math.round(scl * (z0 - zmin));
-        // console.log("Dt="+Dt+",N="+(Dt - t0)/ dt)
-        // console.log("DT="+Dt+",N="+(Dt - t0)/ dt)
         N = Math.floor((Dt - t0) / dt) + 1;
         j0 = base % 2 && i0 % 2 ? i0 + 1 : i0;
         jth = exp === 0 && N < 11 ? 1 : base === 2 && N > 9 ? 5 : 2;
@@ -226,8 +223,6 @@ g2.prototype.chart.prototype = {
             ticklen = showticks ? this.get("xaxis", "ticks", "len") : 0,
             showorigin = showaxis && this.get("xaxis", "origin"),
             title = this.xaxis && (this.get("xaxis", "title", "text") || this.xaxis.title) || '';
-        // console.log(this.xAxis)
-        // draw tick/grid lines
         g.beg(axisstyle);
         for (let i = 0; i < this.xAxis.N; i++) {
             tick = this.xAxis.itr(i);

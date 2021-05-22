@@ -1,6 +1,6 @@
 {
   "name": "g2d",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "g2 - a tiny 2d graphics command library",
   "keywords": [
     "vector",
@@ -12,7 +12,6 @@
     "javascript"
   ],
   "main": "g2.js",
-  "microjam": {},
   "scripts": {
     "build": "npm run minify && npm run jsdoc && npm run 7z",
     "minify": "uglifyjs ./src/g2.core.js ./src/g2.hdl.canvas.js ./src/g2.lib.js ./src/g2.ext.js ./src/g2.mec.js ./src/g2.chart.js -o ./dist/g2.js --comments",

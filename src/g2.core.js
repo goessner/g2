@@ -2,7 +2,7 @@
 "use strict"
 
 /**
- * g2.core (c) 2013-20 Stefan Goessner
+ * g2.core (c) 2013-21 Stefan Goessner
  * @author Stefan Goessner
  * @license MIT License
  * @link https://github.com/goessner/g2
@@ -538,6 +538,8 @@ g2.prototype = {
 
 // statics
 g2.defaultStyle = { fs: 'transparent', ls: '#000', lw: 1, lc: "butt", lj: "miter", ld: [], ml: 10, sh: [0, 0], lsh: false, font: '14px serif', thal: 'start', tval: 'alphabetic' };
+g2.styleRex = /^(fs|ls|lw|lc|lj|ld|ldoff|ml|sh|lsh|font|thal|tval)([-0-9].*)?$/,
+
 g2.symbol = {
     unknown: g2().cir({ r: 12, fs: 'orange' }).txt({ str: '?', thal: 'center', tval: 'middle', font: 'bold 20pt serif' })
 };

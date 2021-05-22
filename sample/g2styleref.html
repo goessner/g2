@@ -1,0 +1,25 @@
+<html>
+<head>
+<title>duck</title>
+<meta charset='utf-8'>
+</head>
+<body>
+<canvas id="c" width="601" height="401"></canvas>
+<script src="../src/g2.core.js"></script>
+<script src="../src/g2.ext.js"></script>
+<script>
+// main =======================
+const torad = Math.PI/180,
+      duck = g2().p().m({x:0,y:30}).l({x:30,y:30}).a({x:0,y:10,dw:-90*torad}).z().drw({lw:2,fs:'@fs3'})
+                 .p().m({x:0,y:0}).a({x:-40,y:0,dw:270*torad}).a({x:-80,y:0,dw:30*torad}).a({x:-100,y:20,dw:45*torad})
+                     .a({x:-100,y:-60,dw:60*torad}).a({x:0,y:-60,dw:60*torad}).a({x:0,y:0,dw:60*torad}).z()
+                     .drw({lw:2})
+                .cir({x:-10,y:30,r:3,lw:6}),
+      g = g2().view({x:120,y:120,cartesian:true}).grid()
+              .use({grp:duck, x:0, y:120, w:0 ,ls:'black',fs:'yellow',fs3:'orange'})
+              .use({grp:duck, x:120, y:0, w:60*torad, ls:'black',fs:'snow'})
+              .pol({x:100,y:100,fs2:'lightgreen'})
+              .exe(document.getElementById('c').getContext('2d'))
+</script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 /**
- * g2.element.js (c) 2019-20 Stefan Goessner
+ * g2.element.js (c) 2019-21 Stefan Goessner
  * @license MIT License
  */
 "use strict";
