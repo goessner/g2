@@ -1425,7 +1425,8 @@ g2.labelIfc = {
         const font = lbl.font || g2.defaultStyle.font;
         const h = parseInt(font);   // font height (px assumed !)
         const str = this.getLabelString();
-        const rx = (str.length || 1) * 0.75 * h / 2, ry = 1.25 * h / 2;   // ellipse semi-axes length 
+        const rx = (str.length || 1) * 0.65 * h / 2, 
+              ry = 1.25 * h / 2;   // ellipse semi-axes length 
         const pos = this.pointAt(lbl.loc || this.lbloc || 'se');
         const off = this.getLabelOffset();
         const p = {
@@ -1478,7 +1479,7 @@ g2.markIfc = {
     }
 }
 
-g2.prototype.cir.prototype = g2.mix(g2.labelIfc, g2.markIfc, {
+g2.prototype.cir.prototype = g2.mix(g2.pointIfc, g2.labelIfc, g2.markIfc, {
     w: 0,   // default start angle (used for dash-dot orgin and editing)
     lbloc: 'c',
     get isSolid() { return this.fs && this.fs !== 'transparent' },
@@ -1646,9 +1647,9 @@ g2.prototype.hdl.prototype = g2.mix(g2.prototype.cir.prototype, {
     get lsh() { return this.state & g2.OVER; },
     get sh() { return this.state & g2.OVER ? [0, 0, 5, "black"] : false },
     g2() {
-        const { x, y, r, b = 4, shape = 'cir', ls = 'black', fs = '#ccc', sh } = this;
-        return shape === 'cir' ? g2().cir({ x, y, r, ls, fs, sh }).ins((g) => this.label && this.drawLabel(g))
-            : g2().rec({ x: x - b, y: y - b, b: 2 * b, h: 2 * b, ls, fs, sh }).ins((g) => this.label && this.drawLabel(g));
+        const { x, y, r, b = 4, ls = 'black', fs = 'palegreen', sh } = this;
+        
+        return g2().cir({ x, y, r, ls, fs, sh }).ins((g) => this.label && this.drawLabel(g));
     }
 });
 
