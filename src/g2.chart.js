@@ -304,66 +304,115 @@ g2.prototype.chart.prototype = {
      * @private
      */
     drawFunc(g, fn, defaultcolor) {
-        let itr = fn.itr;
+        if (!fn.itr) {
+            return;
+        }
 
-        if (itr) {
-            let fill = fn.fill || fn.style && fn.style.fs && fn.style.fs !== "transparent",
-                color = fn.color = fn.color || fn.style && fn.style.ls || defaultcolor,
-                plydata = [],
-                args = Object.assign({
-                    pts: plydata,
-                    closed: false,
-                    ls: color,
-                    fs: (fill ? g2.color.rgbaStr(color, 0.125) : 'transparent'),
-                    lw: 1
-                }, fn.style);
+        function m(cur, nxt) {
+            return (nxt.y - cur.y) / (nxt.x - cur.x);
+        }
 
-            if (fill) { // start from base line (y=0)
-                plydata.push(this.pntOf({ x: itr(0).x, y: 0 }));
+        const alignX = (pts, i) => {
+            const cur = fn.itr(i);
+            const nxt = fn.itr(i + 1);
+
+            // If the next isn't even in view or the current is not, skip.
+            if (nxt.x < this.xmin || cur.x > this.xmax) {
+                return pts;
             }
 
-            const fence = ({ x, y }) => ({
-                x: Math.max(Math.min(this.xmax, x), this.xmin),
-                y: Math.max(Math.min(this.ymax, y), this.ymin)
-            });
-
-            plydata.push(this.pntOf(fence(itr(0))));
-            
-            for (let i = 1, n = itr.len; i < n; i++) {
-                const cur = itr(i);
-                let bfr = itr(i - 1);
-                const m = (cur.y - bfr.y) / (cur.x - bfr.x);
-                // If the point before is out of bounds, draw a point to the next
-                // point "in bounds" and use this as point before.
-                // Please note, that the gradient "m" stays the same.
-                if (bfr.y > this.ymax || bfr.y < this.ymin) {
-                    const {y} = fence(bfr);
-                    const x = bfr.x + (y - bfr.y) / m;
-                    bfr = {x, y};
-                    plydata.push(this.pntOf(bfr));
-                }
-                // Put the next point in bounds.
-                // The next point will not use this as "before" point,
-                // but will adjust this with the condition above anyway.
-                const {y} = fence(cur);
-                const x = cur.x + (m ? (y - cur.y) / m : 0);
-                plydata.push(this.pntOf({x, y}));
-            }
-            if (fill) {  // back to base line (y=0)
-                plydata.push(this.pntOf({ x: itr(itr.len - 1).x, y: 0 }));
-            }
-            if (fn.spline && g.spline) {
-                g.spline(args);
+            // If cur is the first point before coming into view, draw the one on the left most side.
+            if (cur.x < this.xmin) {
+                const pnt = { ...cur };
+                pnt.x = this.xmin;
+                pnt.y = m(cur, nxt) * (this.xmin - cur.x) + cur.y;
+                pts.push(pnt);
             }
             else {
-                g.ply(args);
+                pts.push(cur);
             }
-            if (fn.dots) {
-                g.beg({ fs: "snow" });
-                for (var i = 0; i < plydata.length; i++)
-                    g.cir(Object.assign({}, plydata[i], { r: 2, lw: 1 }));
-                g.end();
+
+            // If cur is the last one in view, add a point for the last one in view.
+            if (nxt.x > this.xmax) {
+                const pnt = { ...nxt };
+                pnt.x = this.xmax;
+                pnt.y = m(cur, nxt) * (this.xmax - cur.x) + cur.y;
+                pts.push(pnt);
             }
+
+            return pts;
+        }
+
+        const alignY = (pre, pts, i) => {
+            const cur = pre[i];
+            const bfr = pre[i - 1];
+            const nxt = pre[i + 1];
+
+            // If cur is in bounds, just place the point.
+            if (cur.y >= this.ymin && cur.y <= this.ymax) {
+                pts.push(cur);
+                return pts;
+            }
+            // If cur is out of bounds, place it on the edge.
+            const pt = {};
+            pt.y = cur.y < this.ymin ? this.ymin : this.ymax;
+            pt.x = cur.x + (pt.y - cur.y) / m(bfr, cur);
+
+            pts.push(pt);
+
+            if (nxt) {
+                const pt2 = {};
+                pt2.y = pt.y;
+                pt2.x = cur.x + (pt2.y - cur.y) / m(cur, nxt)
+                pts.push(pt2)
+            }
+
+            return pts;
+        }
+
+        let preAligned = [];
+        for (let i = 0; i < fn.itr.len; ++i) {
+            preAligned = alignX(preAligned, i);
+        }
+
+        let pts = [{...preAligned[0]}];
+        for (let i = 1; i < preAligned.length; ++i) {
+            pts = alignY(preAligned, pts, i);
+        }
+
+
+        let fill = fn.fill || fn.style && fn.style.fs && fn.style.fs !== "transparent",
+            color = fn.color = fn.color || fn.style && fn.style.ls || defaultcolor,
+            plydata = [],
+            args = Object.assign({
+                pts: plydata,
+                closed: false,
+                ls: color,
+                fs: (fill ? g2.color.rgbaStr(color, 0.125) : 'transparent'),
+                lw: 1
+            }, fn.style);
+
+        if (fill) { // start from base line (y=0)
+            plydata.push(this.pntOf({ x: fn.itr(0).x, y: 0 }));
+        }
+
+        for (let i = 0; i < pts.length; ++i) {
+            plydata.push(this.pntOf(pts[i]));
+        }
+        if (fill) {  // back to base line (y=0)
+            plydata.push(this.pntOf({ x: fn.itr(fn.itr.len - 1).x, y: 0 }));
+        }
+        if (fn.spline && g.spline) {
+            g.spline(args);
+        }
+        else {
+            g.ply(args);
+        }
+        if (fn.dots) {
+            g.beg({ fs: "snow" });
+            for (var i = 0; i < plydata.length; i++)
+                g.cir(Object.assign({}, plydata[i], { r: 2, lw: 1 }));
+            g.end();
         }
     },
     /**
