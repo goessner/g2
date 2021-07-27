@@ -108,12 +108,11 @@ g2.labelIfc = {
             x: pos.x + pos.nx * (off + Math.sign(off) * rx),
             y: pos.y + pos.ny * (off + Math.sign(off) * ry)
         };
-
         if (lbl.border) g.ell({ x: p.x, y: p.y, rx, ry, ls: lbl.fs || 'black', fs: lbl.fs2 || '#ffc' });
         g.txt({
             str, x: p.x, y: p.y,
             thal: "center", tval: "middle",
-            fs: lbl.fs || 'black', font: lbl.font
+            fs: lbl.fs || this.ls || 'black', font: lbl.font
         });
         return g;
     }
